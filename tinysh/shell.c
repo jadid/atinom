@@ -176,13 +176,19 @@ portTASK_FUNCTION(shell, pvParameters )
   	int again=1;
   	xTaskHandle xHandle;
 
-  	printf("\nStarting Babelan Komon-Counter 1.0\n");
+#ifdef BOARD_KOMON
+  	printf("\nStarting Babelan Komon-Counter %s\n", VERSI);
+#endif
+
+#ifdef BOARD_TAMPILAN
+  	printf("\nStarting Babelan Tampilan %s\n", VERSI);
+#endif
+
   	printf("Daun Biru Engineering, Des 2008\n");
   	printf("=========================================\n");
   	printf("ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
-  	printf("CPU = NXP LPC 2368, %d MHz\n", configCPU_CLOCK_HZ/1000000);
-  	printf("FreeRTOS 5.1.1 by Richard Barry\n");
-	printf("uIP TCP/IP by Adam Dunkels\n");
+  	printf("CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
+  	printf(" FreeRTOS 5.1.1\n");
 
   	//tes_tulis_flash();
   	//tes_baca_flash();
@@ -222,7 +228,6 @@ portTASK_FUNCTION(shell, pvParameters )
 	/* add a background command */
   	//tinysh_add_command(&bgcmd);
   	//xTaskCreate( bg_cmd_thread, "bg_cmd", 1000, NULL, 2, &xHandle);
-	
 
   	vTaskDelay(450);
   	tinysh_set_prompt("Babelan $ ");
@@ -241,5 +246,5 @@ portTASK_FUNCTION(shell, pvParameters )
 void init_shell(void)
 {
 	//xTaskCreate( shell, "Shell", 1000, NULL, 1, ( xTaskHandle * ) NULL);
-	xTaskCreate( shell, "UsrTsk1", 2048, NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
+	xTaskCreate( shell, "UsrTsk1", 2048, NULL, 1, ( xTaskHandle * ) NULL);
 }

@@ -36,6 +36,8 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
+#define BOARD_TAMPILAN
+#define VERSI	"1.1"
 
 //#define printf(c, ...) serial_puts(c)
 

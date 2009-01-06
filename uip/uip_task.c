@@ -4,8 +4,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "uip/uip/uip.h"
-#include "uip/uip/uip_arp.h"
+#include "uip.h"
+#include "uip_arp.h"
 
 //#include "../monita/monita_uip.h"
 #include "../tinysh/enviro.h"

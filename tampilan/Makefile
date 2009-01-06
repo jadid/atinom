@@ -57,7 +57,7 @@ CFLAGS= $(DEBUG) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
-		-I uip/uip \
+		-I ../uip/uip \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -78,25 +78,26 @@ THUMB_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
-		../tinysh/tinysh.c tinysh/shell.c \
+		../tinysh/tinysh.c \
+		../tinysh/shell.c \
 		../tinysh/enviro.c \
 		../GPIO/gpio.c \
 		LCD/lcd_320.c \
 		tampilan.c \
 		LCD/menu_monita.c \
-		spi/spi.c \
-		uip/hardware/enc28j60.c	\
-		uip/clock.c \
-		uip/lib/memb.c \
-		uip/uip/uip.c \
-		uip/uip/uip_arch.c \
-		uip/uip/uip_arp.c \
-		uip/uip/uip_timer.c \
-		uip/uip/uip-fw.c \
-		uip/uip/psock.c \
-		uip/uip/uiplib.c \
-		uip/uip_task.c \
-		monita/monita_uip.c \
+		../spi/spi.c \
+		../uip/hardware/enc28j60.c	\
+		../uip/clock.c \
+		../uip/lib/memb.c \
+		../uip/uip/uip.c \
+		../uip/uip/uip_arch.c \
+		../uip/uip/uip_arp.c \
+		../uip/uip/uip_timer.c \
+		../uip/uip/uip-fw.c \
+		../uip/uip/psock.c \
+		../uip/uip/uiplib.c \
+		../uip/uip_task.c \
+		../monita/monita_uip.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \
 #		webserver/http-strings.c \
@@ -104,8 +105,8 @@ THUMB_SOURCE= \
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
-		serial/serialISR.c \
-		GPIO/gpio_ISR.c 
+		../serial/serialISR.c \
+		../GPIO/gpio_ISR.c 
 		
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
@@ -123,8 +124,8 @@ RTOSDemo.bin : RTOSDemo.hex
 RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
 
-RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) system/boot.s Makefile 
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) system/boot.s $(LINKER_FLAGS) 
+RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../system/boot.s Makefile 
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../system/boot.s $(LINKER_FLAGS) 
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) -mthumb $< -o $@

@@ -69,19 +69,19 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
-		system/setup_cpu.c \
-		system/syscall.c \
-		system/reset_cpu.c \
-		serial/serial.c \
+		../system/setup_cpu.c \
+		../system/syscall.c \
+		../system/reset_cpu.c \
+		../serial/serial.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
-		tinysh/tinysh.c tinysh/shell.c \
-		tinysh/enviro.c \
-		GPIO/gpio.c \
-		lcd_320.c \
+		../tinysh/tinysh.c tinysh/shell.c \
+		../tinysh/enviro.c \
+		../GPIO/gpio.c \
+		LCD/lcd_320.c \
 		tampilan.c \
 		LCD/menu_monita.c \
 		spi/spi.c \

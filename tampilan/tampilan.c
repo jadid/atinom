@@ -103,7 +103,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			teks_h(200, 30 + (i*9), "Normal");
 		if (sumber[i].status == 2)
 			teks_h(200, 30 + (i*9), "TimeOut");
-	
 		
 	}
 	vTaskDelay(800);
@@ -120,6 +119,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	{
 		if ((FIO1PIN & PF14) == PF14)
 		{
+			cls_layar();
+			
 			// cek tombol apa yang ditekan
 			key_press = (FIO1PIN & KEY_DAT);
 			printf("tombol ditekan = %d\n", key_press);	
@@ -143,7 +144,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				mesin_index++;
 				if (mesin_index > 4) mesin_index = 0;
 			}
-			cls_layar();
 			menu_monita();
 			menu_pilih(key_index, mesin_index);
 			update_lcd();	

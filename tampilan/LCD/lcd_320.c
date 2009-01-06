@@ -85,33 +85,29 @@ void init_port_lcd(void)
 void tulis_param(unsigned char param)
 {
 	//AD
-	FIO0CLR |= A1;
+	FIO0CLR = A1;
 	//CS
-	FIO2CLR |= AMS0;
+	FIO2CLR = AMS0;
 	//WR
-	FIO0CLR |= WR;
+	FIO0CLR = WR;
 	//data
 	FIO1PIN3 = (unsigned char) param;
-	// UN-WR
-	FIO0SET |= WR;
-	// UN-CS
-	FIO2SET |= AMS0;	
+	// UN-WR & UN-CS
+	FIO0SET = WR | AMS0;
 }
 
 void tulis_command(unsigned char param)
 {
 	//AD
-	FIO0SET |= A1;
+	FIO0SET = A1;
 	//CS
-	FIO2CLR |= AMS0;
+	FIO2CLR = AMS0;
 	//WR
-	FIO0CLR |= WR;
+	FIO0CLR = WR;
 	//data
 	FIO1PIN3 = (unsigned char) param;
-	// UN-WR
-	FIO0SET |= WR;
-	// UN-CS
-	FIO2SET |= AMS0;	
+	// UN-WR & UN-CS
+	FIO0SET = WR | AMS0;	
 }
 
 void init_lcd(void)

@@ -135,12 +135,10 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 	vSemaphoreCreateBinary( lcd_sem );
     xSemaphoreTake( lcd_sem, 0 );
 	for(;;) {
-	    //while( xSemaphoreTake( lcd_sem, 100 ) != pdPASS );
 		if ( xSemaphoreTake( lcd_sem, 100 ) == pdTRUE )
 		{
 			//printf("*LCD_task*\n");
 			update_hard_lcd();
-			//vTaskDelay( 5 );
 		}
 		else
 		{

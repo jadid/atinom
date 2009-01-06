@@ -46,6 +46,7 @@ void menu_jacket(unsigned char mes);
 void menu_exhaust(unsigned char mes);
 void menu_generator(unsigned char mes);
 
+//char s[128];
 
 void init_scroll(void)
 {
@@ -82,7 +83,7 @@ void tabel_data(void)
 
 void menu_monita(void)
 {
-	char s[32];
+	//char s[32];
 	//sprintf(s,"%s", loc_data.nama);
 	
    //teks_arial(230, 2, "SWD #1");
@@ -200,7 +201,7 @@ void menu_pilih(unsigned char p, unsigned char mesin)
 
 void menu_charge(unsigned char mes)
 {
-	char s[128];
+	//char s[128];
 	float f1;
 	float f2;
 	
@@ -226,7 +227,7 @@ void menu_charge(unsigned char mes)
 
 void menu_jacket(unsigned char mes)
 {
-	char s[128];
+	//char s[128];
 	float f1;
 	float f2;
 	
@@ -255,7 +256,7 @@ void menu_jacket(unsigned char mes)
 
 void menu_pelumas(unsigned char mes)
 {
-	char s[128];
+	//char s[128];
 	float f1;
 	float f2;
 	
@@ -284,7 +285,7 @@ void menu_pelumas(unsigned char mes)
 
 void menu_exhaust(unsigned char mes)
 {
-	char s[128];
+	//char s[128];
 	char i;
 	float f1;
 	float f2;
@@ -318,7 +319,7 @@ void menu_exhaust(unsigned char mes)
 
 void menu_generator(unsigned char mes)
 {
-	char s[128];
+	//char s[128];
 	float f1;
 	float f2;
 	
@@ -355,24 +356,27 @@ void menu_generator(unsigned char mes)
 void menu_setting(void)
 {
 	int i;
-	char s[128];
+	char bb[64];
 	
-	teks_layar(85, 40, "Sumber Data");
+	//teks_layar(85, 40, "Sumber Data");
+	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Sumber Data");
+	
+	
 	for (i=0; i<10; i++)
 	{
-		teks_layar(85, 50 + (i*9), sumber[i].nama);
+		teks_layar(95, 50 + (i*9), sumber[i].nama);
 		
 		// print out IP
-		sprintf(s,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_layar(140, 50 + (i*9), s);
+		sprintf(bb,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+		teks_layar(80, 50 + (i*9), bb);
 		
 		// status
 		if (sumber[i].status == 0)
-			teks_layar(250, 50 + (i*9), "Null");
+			teks_layar(205, 50 + (i*9), "Null");
 		if (sumber[i].status == 1)
-			teks_layar(250, 50 + (i*9), "Normal");
+			teks_layar(205, 50 + (i*9), "Normal");
 		if (sumber[i].status == 2)
-			teks_layar(250, 50 + (i*9), "TimeOut");	
-	}	
+			teks_layar(205, 50 + (i*9), "TimeOut");	
+	}
 	
 }

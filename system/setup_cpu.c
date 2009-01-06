@@ -1,0 +1,102 @@
+/*
+ * setup CPU supaya siap
+ */
+
+
+#include "FreeRTOS.h"
+
+
+
+/*-----------------------------------------------------------*/
+#define PLL_MUL				(60)					// 4 MHz * 60 = 480 MHz
+#define PLL_DIV             (1)
+#define PLLCFG_MSEL   		((PLL_MUL - 1) << 0) 	// PLL Multiplier
+#define PLLCFG_NSEL   		((PLL_DIV - 1) << 16UL) // PLL Divider
+#define CCLKCFG_CCLKSEL_VAL ((CCLK_DIV -1 ) << 0UL )
+#define CCLK_DIV           	(8)         			// PLL out -> CPU clock divider --> 480 / 8 = 60 MHz
+
+typedef unsigned int		uint32_t;
+#define MEMMAP_FLASH		1
+
+// PLLCON Register Bit Definitions
+#define PLLCON_PLLE   		(1 << 0)          // PLL Enable
+#define PLLCON_PLLC   		(1 << 1)          // PLL Connect
+
+// PLLSTAT Register Bit Definitions
+#define PLLSTAT_PLLE  		(1UL<<24)
+#define PLLSTAT_PLLC  		(1UL<<25)
+#define PLLSTAT_PLOCK 		(1UL<<26)
+
+static void init_PLL(void)
+{
+	uint32_t readback;
+
+	// clock source berasal dari internal 4 MHz
+	// check if PLL connected, disconnect if yes
+	if ( PLLSTAT & PLLSTAT_PLLC ) {
+		PLLCON = PLLCON_PLLE;       /* Enable PLL, disconnected ( PLLC = 0 )*/
+		PLLFEED = 0xaa;
+		PLLFEED = 0x55;
+	}
+
+	PLLCON  = 0;        /* Disable PLL, disconnected */
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+
+	PLLCFG = PLLCFG_MSEL | PLLCFG_NSEL;
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+
+	PLLCON = PLLCON_PLLE;       /* Enable PLL, disconnected ( PLLC = 0 ) */
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+
+	CCLKCFG = CCLKCFG_CCLKSEL_VAL;     /* Set clock divider, Manual p.45 */
+
+	while ( ( PLLSTAT & PLLSTAT_PLOCK ) == 0 )  {
+		; /* Check lock bit status */
+	}
+
+	readback = PLLSTAT & 0x00FF7FFF;
+	while ( readback != (PLLCFG_MSEL | PLLCFG_NSEL) )
+	{
+		; // stall - invalid readback
+	}
+
+	PLLCON = ( PLLCON_PLLE | PLLCON_PLLC );  /* enable and connect */
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+	while ( ((PLLSTAT & PLLSTAT_PLLC) == 0) ) {
+		;  /* Check connect bit status, wait for connect */
+	}
+}
+
+static void lowInit(void)
+{
+	init_PLL();
+	// setup & enable the MAM
+	MAMCR = 0;
+	MAMTIM = 3;
+	MAMCR = 2;
+
+	PCLKSEL0 = 0x55555555;	/* PCLK is the same as CCLK */
+	PCLKSEL1 = 0x55555555;
+
+	return;
+}
+
+void sysInit(void)
+{
+	uint32_t i = 0;
+	volatile uint32_t *vect_addr, *vect_prio;
+
+	PINSEL0 = PINSEL0 | 0x50; // enable TX & RX
+
+	lowInit();                            			// setup clocks and processor port pins
+
+	// set the interrupt controller defaults
+	MEMMAP = MEMMAP_FLASH;                // map interrupt vectors space into FLASH
+
+	SCS |= (1UL<<0); // set GPIOM in SCS for fast IO
+
+}

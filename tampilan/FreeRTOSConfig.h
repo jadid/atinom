@@ -39,6 +39,8 @@
 #define BOARD_TAMPILAN
 #define VERSI	"1.1"
 
+#define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 //#define printf(c, ...) serial_puts(c)
 
 /*-----------------------------------------------------------
@@ -71,8 +73,9 @@
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-//#define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 512 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
+//#define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 208 )
+//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 12 * 1024 ) )
 //#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 6 * 1024 ) )
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
@@ -88,14 +91,14 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#define INCLUDE_vTaskPrioritySet            1
-#define INCLUDE_uxTaskPriorityGet           1
-#define INCLUDE_vTaskDelete                 1
+#define INCLUDE_vTaskPrioritySet            0
+#define INCLUDE_uxTaskPriorityGet           0
+#define INCLUDE_vTaskDelete                 0
 #define INCLUDE_vTaskCleanUpResources       0
-#define INCLUDE_vTaskSuspend                1
-#define INCLUDE_vTaskDelayUntil             1
+#define INCLUDE_vTaskSuspend                0
+#define INCLUDE_vTaskDelayUntil             0
 #define INCLUDE_vTaskDelay                  1
-#define INCLUDE_xTaskGetCurrentTaskHandle	1
+#define INCLUDE_xTaskGetCurrentTaskHandle	0
 
 
 #endif /* FREERTOS_CONFIG_H */
@@ -119,11 +122,5 @@ to exclude the API function. */
 
 #ifndef BIT
 #define BIT(x)	(1 << (x))
-
-typedef struct
-{
-	long xColumn;
-	char *pcMessage;
-} xLCDMessage;
 
 #endif

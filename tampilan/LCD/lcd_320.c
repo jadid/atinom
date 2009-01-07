@@ -351,10 +351,8 @@ void update_hard_lcd(void)
 	}
 	else
 	{
-		//portENTER_CRITICAL();
 		teks_h_hard(layar.pos_x, layar.pos_y, layar.teks);
 		layar.flag = 0;
-		//portEXIT_CRITICAL();	
 	}
 }
 
@@ -499,9 +497,10 @@ void teks_h_hard(unsigned short x, unsigned short y, char *pc)
   	
   	tulis_command(0x42);
    */
+   
    for (z = 0 ; z < 50 ; z++)
    {
-   	hasil = div(x,8);	
+   		hasil = div(x,8);	
 		offsetku = hasil.quot + (y*40);
    	
 		if (pc[z]==NULL) break;  	//untuk mengecek panjangnya string pc
@@ -523,9 +522,11 @@ void teks_h_hard(unsigned short x, unsigned short y, char *pc)
    	
    	for (i=0; i<7; i++)		// 7 kebawah
    	{
-   		tulis_command(0x46);
-  				tulis_param((char) (awal_grafik + offsetku));	
-  				tulis_param((char) ((awal_grafik + offsetku)>>8));
+   		//portENTER_CRITICAL();
+		
+		tulis_command(0x46);
+  			tulis_param((char) (awal_grafik + offsetku));	
+  			tulis_param((char) ((awal_grafik + offsetku)>>8));
   			tulis_command(0x42);
    		layar.buf[offsetku]= layar.buf[offsetku] ^ (font_h[i] >> hasil.rem);
    		tulis_param(layar.buf[offsetku]);
@@ -535,7 +536,9 @@ void teks_h_hard(unsigned short x, unsigned short y, char *pc)
 				tulis_param(layar.buf[offsetku+1]);	
 			}
 			offsetku = offsetku+40;
-   	}
+   		
+		//portEXIT_CRITICAL();
+	}
 	  x = x+6;			//lebar font yang dipakai --> tinggal ganti ini jika mau lebih lebar jaraknya
    }
 }
@@ -601,4 +604,37 @@ void cls_layar(void)
 	
 	for (i=0; i<BESAR_LAYAR; i++)
 		layar.buf[i] = 0;	
+}
+
+// membersihkan bagian tertentu dari ram, supaya ditulis bersih
+void teks_clear(unsigned short x, unsigned short y, unsigned short pjg)
+{
+   	int offsetku;
+   	unsigned int z, i;
+	int f;
+ 	
+   	div_t hasil;
+   
+	/* x adalah jarak dari kiri 0 - 320 pixel
+   		y adalah jarak dari atas 0 - 240 pixel juga
+      jadi data harus digeser sejauh y kebawah kemudian di or kan dengan
+      data yang sudah ada */
+   f = x;
+   for (z = 0 ; z < pjg ; z++)
+   {
+   		hasil = div(f,8);	
+		offsetku = hasil.quot + (y*40);
+		
+		for (i=0; i<7; i++)		// 7 kebawah
+   		{   		
+   			layar.buf[offsetku]= 0x00;
+			
+			if (hasil.rem != 0)
+			{
+			   layar.buf[offsetku+1]= 0x00;		
+			}
+			offsetku = offsetku+40;
+   		}
+	   	f = f+6;
+   }
 }

@@ -22,6 +22,12 @@ static char tog;
 static void sysInit(void);
 void init_led_utama(void);
 
+xTaskHandle hdl_lcd;
+xTaskHandle hdl_led;
+xTaskHandle hdl_tampilan;
+xTaskHandle hdl_shell;
+xTaskHandle hdl_ether;
+
 void dele(int dd)
 {
 	int g;
@@ -61,7 +67,7 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, 128 );
+	xSerialPortInitMinimal( BAUD_RATE, 64 );
 	//init_gpio();
 
 
@@ -122,7 +128,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) NULL );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 52 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
 
@@ -132,20 +138,59 @@ void init_led_utama(void)
 portTASK_FUNCTION( LCD_task, pvParameters )
 {
 	int lewat=0;
+	char t[46];
+	unsigned int hari=0;
+	unsigned int jam=0;
+	unsigned int menit=0;
+	unsigned int detik=0;
+	
+	extern unsigned long tick_ku;
+	
 	vSemaphoreCreateBinary( lcd_sem );
     xSemaphoreTake( lcd_sem, 0 );
+	
 	for(;;) {
 		if ( xSemaphoreTake( lcd_sem, 100 ) == pdTRUE )
 		{
 			//printf("*LCD_task*\n");
 			update_hard_lcd();
+			lewat = 0;
 		}
 		else
 		{
 			lewat++;
-			if (lewat > 100)
+			if (lewat > 10) /* 1 detik */
 			{
+				teks_clear(10, 232, 5);
+				
+				detik = tick_ku / 1000;
+				if (detik > 60)
+				{
+					menit = detik / 60;
+					if (menit > 60)
+					{
+						jam = menit / 24;
+						
+						if (jam > 24)
+						{
+							hari = jam / 24;	
+						}	
+					}	
+				}
+				
+				//sprintf(t, "%d", tick_ku);
+				//sprintf(t, "%d:%d:%d", jam, (menit % 60), (detik % 60));
+				menit = menit % 60;
+				detik = detik % 60;
+				sprintf(t, "%d:%d:%d", jam, menit, detik);
+				
+			//	sprintf(t, "%d", (detik % 60));
+				teks_h_hard(10, 232, t);
+				
+				//printf("\nLCD %d", uxTaskGetStackHighWaterMark(NULL));
+				//
 				//printf("lewat > 100\n");
+				
 				lewat = 0;	
 			}
 		}
@@ -154,7 +199,7 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 
 void init_task_lcd(void)
 {
-	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL );	
+	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", (configMINIMAL_STACK_SIZE * 2), NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
 }
 
 

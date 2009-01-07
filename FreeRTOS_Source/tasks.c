@@ -56,6 +56,8 @@
 #include "task.h"
 #include "StackMacros.h"
 
+unsigned long tick_ku=0;
+
 /*
  * Macro to define the amount of stack available to the idle task.
  */
@@ -1275,6 +1277,8 @@ void vTaskIncrementTick( void )
 	}
 	#endif
 
+	tick_ku++;
+	
 	traceTASK_INCREMENT_TICK( xTickCount );
 }
 /*-----------------------------------------------------------*/

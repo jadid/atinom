@@ -87,7 +87,7 @@ _ssize_t _write_r (
 	for (i = 0; i < len; i++) {
 		xSerialPutChar(1, (unsigned char *) *p++, 0);
 	}
-	vTaskDelay(10);
+	vTaskDelay(5);
 
 	return len;
 }

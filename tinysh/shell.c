@@ -17,6 +17,11 @@
 void reset_cpu(void);
 extern struct t2_konter konter;
 
+extern xTaskHandle *hdl_shell;
+extern xTaskHandle *hdl_lcd;
+extern xTaskHandle *hdl_led;
+extern xTaskHandle *hdl_tampilan;
+
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
 
@@ -32,7 +37,20 @@ static tinysh_cmd_t printenv_cmd={0,"printenv","menampilkan env","[args]",
 							  
 static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
                               reset_cpu,0,0,0};
-							  
+							 
+void cek_stack(void)
+{
+	printf(" Shell : %d\n", uxTaskGetStackHighWaterMark(hdl_shell));
+	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(" Led : %d\n", uxTaskGetStackHighWaterMark(hdl_led));
+	printf(" Tampilan : %d\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	
+}							 
+
+static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
+                              cek_stack,0,0,0};
+
+#ifdef BOARD_KOMON
 char *uptime(void)
 {
 	float upt;
@@ -89,7 +107,7 @@ static void cek_rpm(int argc, char **argv)
 static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",
                               cek_rpm,0,0,0};
 
-
+#endif
 /*****************************************************************************/
 
 //extern void *tinysh_get_arg(void);
@@ -198,10 +216,14 @@ portTASK_FUNCTION(shell, pvParameters )
 	 */
   	tinysh_add_command(&myfoocmd);
   	tinysh_add_command(&printenv_cmd);
-  	tinysh_add_command(&cek_rpm_cmd);
 	tinysh_add_command(&setenv_cmd);
 	tinysh_add_command(&save_env_cmd);
 	tinysh_add_command(&reset_cmd);
+	tinysh_add_command(&cek_stack_cmd);
+	
+#ifdef BOARD_KOMON
+	tinysh_add_command(&cek_rpm_cmd);
+#endif
 
 	/* add sub commands
  	*/
@@ -246,5 +268,5 @@ portTASK_FUNCTION(shell, pvParameters )
 void init_shell(void)
 {
 	//xTaskCreate( shell, "Shell", 1000, NULL, 1, ( xTaskHandle * ) NULL);
-	xTaskCreate( shell, "UsrTsk1", 2048, NULL, 1, ( xTaskHandle * ) NULL);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), NULL, 1, ( xTaskHandle * ) &hdl_shell);
 }

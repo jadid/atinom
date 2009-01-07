@@ -356,7 +356,8 @@ void menu_generator(unsigned char mes)
 void menu_setting(void)
 {
 	int i;
-	char bb[64];
+	//char bb[32];
+	extern unsigned char tek[];
 	
 	//teks_layar(85, 40, "Sumber Data");
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Sumber Data");
@@ -367,8 +368,8 @@ void menu_setting(void)
 		teks_layar(95, 50 + (i*9), sumber[i].nama);
 		
 		// print out IP
-		sprintf(bb,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_layar(80, 50 + (i*9), bb);
+		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+		teks_layar(80, 50 + (i*9), tek);
 		
 		// status
 		if (sumber[i].status == 0)

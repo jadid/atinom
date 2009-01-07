@@ -32,14 +32,16 @@ struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
 struct t_titik	titik[TIAP_MESIN * JML_MESIN];
 
+extern xTaskHandle *hdl_tampilan;
 
 void set_awal_mesin(void);
 void set_awal_sumber(void);
 void set_awal_titik(void);
 
+unsigned char tek[64];	
+
 portTASK_FUNCTION( tampilan_task, pvParameters )
 {
-	unsigned char bf[64];
 	unsigned int key_press;
 	unsigned char key_index=0;
 	unsigned char mesin_index=0;
@@ -57,8 +59,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	teks_h(14, 38, "uIP TCP/IP by Adam Dunkels");
 	teks_h(14, 47, "NXP LPC2367, 60 MHz");
 	
-	sprintf(bf, "ARM-GCC %s : %s : %s", __VERSION__, __DATE__, __TIME__);
-	teks_h(14, 56, bf);
+	sprintf(tek, "ARM-GCC %s : %s : %s", __VERSION__, __DATE__, __TIME__);
+	teks_h(14, 56, tek);
 	
 	teks_arial(22, 70, "Monita");
 	teks_komik(18, 87, "Online Monitoring System");
@@ -79,8 +81,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	for (i=0; i<5; i++)
 	{
 		teks_h(20, 30 + (i*9), mesin[i].nama);
-		sprintf(bf, "%d", mesin[i].ID_mesin);	
-		teks_h(100, 30 + (i*9), bf);
+		sprintf(tek, "%d", mesin[i].ID_mesin);	
+		teks_h(100, 30 + (i*9), tek);
 	}
 	cls_layar();
 	vTaskDelay(800);
@@ -93,8 +95,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		teks_h(20, 30 + (i*9), sumber[i].nama);	
 		
 		// print out IP
-		sprintf(bf,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_h(100, 30 + (i*9), bf);
+		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+		teks_h(100, 30 + (i*9), tek);
 		
 		// status
 		if (sumber[i].status == 0)
@@ -156,7 +158,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 
 void init_task_tampilan(void)
 {
-	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY - 1, NULL );	
+	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
 
 void set_awal_mesin(void)

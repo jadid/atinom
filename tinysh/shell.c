@@ -21,6 +21,7 @@ extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
+extern xTaskHandle *hdl_ether;
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -37,13 +38,19 @@ static tinysh_cmd_t printenv_cmd={0,"printenv","menampilkan env","[args]",
 							  
 static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
                               reset_cpu,0,0,0};
+							  
+static tinysh_cmd_t defenv_cmd={0,"defenv","set default env","[args]",
+                              getdef_env,0,0,0};
 							 
 void cek_stack(void)
 {
+	printf("Sisa stack masing2 task\n");
+	
 	printf(" Shell : %d\n", uxTaskGetStackHighWaterMark(hdl_shell));
 	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	printf(" Led : %d\n", uxTaskGetStackHighWaterMark(hdl_led));
 	printf(" Tampilan : %d\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(" Ether : %d\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	
 }							 
 
@@ -220,6 +227,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&save_env_cmd);
 	tinysh_add_command(&reset_cmd);
 	tinysh_add_command(&cek_stack_cmd);
+	tinysh_add_command(&defenv_cmd);
 	
 #ifdef BOARD_KOMON
 	tinysh_add_command(&cek_rpm_cmd);

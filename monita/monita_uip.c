@@ -112,6 +112,10 @@ void monita_appcall (void)
 
 ////*************************************** ethernet tampilan **************************************/
 static uip_ipaddr_t tujuan;
+
+static uip_ipaddr_t modul[10];
+
+
 static struct sambungan_state samb __attribute__ ((section (".eth_test")));
 
 void sambungan_init(void)
@@ -120,9 +124,15 @@ void sambungan_init(void)
 	samb.state = 0;
 	uip_ipaddr(&tujuan, 192,168,1,53);
 	//uip_connect(&tujuan, HTONS(5002));
-	printf("sambungan init\n");
+	printf("sambungan ethernet init\n");
 			
 }
+
+/* sambungan konek dipanggil periodik
+ * sesuai dengan server / modul yang akan
+ * diminta datanya, misalnya dipanggil dari 
+ * task led
+ */
 
 void sambungan_connect(void)
 {
@@ -135,7 +145,7 @@ void sambungan_connect(void)
 	conn = uip_connect(&tujuan, HTONS(5002));
 	if (conn == NULL)
 	{
-		printf("conn NULL ..");	
+		printf("connection sudah NULL ..");	
 	}
 	samb.state = 1;
 	
@@ -169,7 +179,7 @@ static PT_THREAD(samb_thread(void))
 
 void samb_appcall (void)
 {
-	//printf("sambungan called\n");
+	printf("sambungan called\n");
 	if(uip_closed()) 
 	{
   		//printf("sambungan closed\n");
@@ -178,7 +188,7 @@ void samb_appcall (void)
 	}
 	if(uip_aborted() || uip_timedout()) 
 	{
-  		//printf("sambungan aborted / timeout\n");
+  		printf("sambungan aborted / timeout\n");
 		samb.state = 0;
   		return;
 	}

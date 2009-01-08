@@ -27,6 +27,14 @@ void print_env(int argc, char **argv)
 	baca_env(1);
 }
 
+void getdef_env(int argc, char **argv)
+{
+	printf(" Set Default Environtment \n");
+	garis_bawah();	
+	set_default_ip();
+	printf(" OK\n");
+}
+
 
 void save_env(int argc, char **argv)
 {
@@ -185,7 +193,9 @@ int baca_env(char tampil)
 			if (tampil == 1)
 			{
 				printf(" Faktor kalibrasi :\n");
-				for (i=0; i<20; i++)
+				
+				//for (i=0; i<20; i++)
+				for (i=0; i<5; i++)
 				{
 					printf("  (%2d) m = %3.3f, y=%3.3f", i+1, env2.kalib[i].m, env2.kalib[i].y);
 					i++;
@@ -220,6 +230,8 @@ int baca_env(char tampil)
 
 void set_default_ip(void)
 {
+	int i;	
+
 	printf(" Default IP = ");	
 	env2.IP0 = 192;
 	env2.IP1 = 168;
@@ -232,5 +244,14 @@ void set_default_ip(void)
 	env2.GW1 = 168;
 	env2.GW2 = 1;
 	env2.GW3 = 13;
-	printf("%d.%d.%d.%d\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
+	printf("%d.%d.%d.%d\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+
+	for (i=0; i<20; i++)
+	{
+		env2.kalib[i].m = 1.00;
+		env2.kalib[i].y = 0.00;
+		sprintf(env2.kalib[i].ket, "--");
+	} 
+
+	sprintf(env2.nama_board, "Gantilah namanya !");
 }

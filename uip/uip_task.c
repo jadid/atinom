@@ -24,6 +24,7 @@
 //#define PAKE_TELNETD
 
 extern struct t_env env2;
+extern xTaskHandle hdl_ether;
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -61,9 +62,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
     telnetd_init ();
 	#endif
 
-    //printf("MONITA : monita init\n");
-    //monita_init();
+#ifdef BOARD_KOMON
+    printf("MONITA : monita init\n");
+    monita_init();
+#endif
+
+#ifdef BOARD_TAMPILAN
 	sambungan_init();
+#endif
 
 	//  Initialise the local timers
 	xStartTime = xTaskGetTickCount ();
@@ -80,7 +86,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		         uip_buf buffer. */
 		      if ((uip_len = enc28j60Receive ()) > 0)
 		      {
-		    	  //serial_puts("PKT!\n");
 		    	  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
 		    	            uip_arp_ipin ();
@@ -167,7 +172,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 void start_ether(void)
 {
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", 1024, NULL, prio, ( xTaskHandle * ) NULL );
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", 1024, NULL, prio, ( xTaskHandle * ) &hdl_ether );
 }
 
 void dispatch_tcp_appcall (void)
@@ -188,8 +193,7 @@ void dispatch_tcp_appcall (void)
 	if (uip_conn->rport == HTONS(5002))
 	  samb_appcall();
 	  
-	//printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
-
+	printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
 }
 
 void dispatch_udp_appcall (void)

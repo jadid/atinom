@@ -30,5 +30,6 @@ void save_env(int argc, char **argv);
 void print_env(int argc, char **argv);
 void set_default_ip(void);
 int baca_env(char tampil);
+void getdef_env(int argc, char **argv);
 
 #endif

@@ -161,7 +161,7 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 			lewat++;
 			if (lewat > 10) /* 1 detik */
 			{
-				teks_clear(10, 232, 5);
+				teks_clear(10, 232, 15);
 				
 				detik = tick_ku / 1000;
 				if (detik > 60)
@@ -182,7 +182,7 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 				//sprintf(t, "%d:%d:%d", jam, (menit % 60), (detik % 60));
 				menit = menit % 60;
 				detik = detik % 60;
-				sprintf(t, "%d:%d:%d", jam, menit, detik);
+				sprintf(t, "%d:%d:%d  ", jam, menit, detik);
 				
 			//	sprintf(t, "%d", (detik % 60));
 				teks_h_hard(10, 232, t);

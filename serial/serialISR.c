@@ -171,7 +171,8 @@ portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 		default				:	/* There is nothing to do, leave the ISR. */
 								break;
 	}
-
+	
+	
 	if( xHigherPriorityTaskWoken )
 	{
 		portYIELD_FROM_ISR();

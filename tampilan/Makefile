@@ -86,19 +86,19 @@ THUMB_SOURCE= \
 		LCD/lcd_320.c \
 		tampilan.c \
 		LCD/menu_monita.c \
-#		../spi/spi.c \
-#		../uip/hardware/enc28j60.c	\
-#		../uip/clock.c \
-#		../uip/lib/memb.c \
-#		../uip/uip/uip.c \
-#		../uip/uip/uip_arch.c \
-#		../uip/uip/uip_arp.c \
-#		../uip/uip/uip_timer.c \
-#		../uip/uip/uip-fw.c \
-#		../uip/uip/psock.c \
-#		../uip/uip/uiplib.c \
-#		../uip/uip_task.c \
-#		../monita/monita_uip.c \
+		../spi/spi.c \
+		../uip/hardware/enc28j60.c	\
+		../uip/clock.c \
+		../uip/lib/memb.c \
+		../uip/uip/uip.c \
+		../uip/uip/uip_arch.c \
+		../uip/uip/uip_arp.c \
+		../uip/uip/uip_timer.c \
+		../uip/uip/uip-fw.c \
+		../uip/uip/psock.c \
+		../uip/uip/uiplib.c \
+		../uip/uip_task.c \
+		../monita/monita_uip.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \
 #		webserver/http-strings.c \

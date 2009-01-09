@@ -11,6 +11,7 @@
 #include "enviro.h"
 
 #include "../GPIO/gpio.h"
+#include "../monita/monita_uip.h"
 
 #include <stdlib.h>
 
@@ -44,7 +45,7 @@ static tinysh_cmd_t defenv_cmd={0,"defenv","set default env","[args]",
 							 
 void cek_stack(void)
 {
-	printf("Sisa stack masing2 task\n");
+	printf("Sisa stack masing2 task %d\n", 123);
 	garis_bawah();
 	printf(" Shell : %d\n", uxTaskGetStackHighWaterMark(hdl_shell));
 	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
@@ -56,6 +57,36 @@ void cek_stack(void)
 
 static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
                               cek_stack,0,0,0};
+							  
+void cek_sumber(void)
+{
+	int i;
+	extern struct t_sumber sumber[];
+	
+	printf(" Sumber data\n");
+	garis_bawah();
+	
+	for (i=0; i<20; i++)
+	{
+		printf(" (%2d): %s : ", (i+1), sumber[i].nama);	
+		printf("%d.%d.%d.%d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+		
+		// cek status
+		if (sumber[i].status == 0)
+			printf("Null\n");
+		if (sumber[i].status == 1)
+			printf("Normal\n");
+		if (sumber[i].status == 2)
+			printf("TimeOut\n");
+		
+	}
+	
+}							 
+
+static tinysh_cmd_t cek_sumber_cmd={0,"cek_sumber","--","[args]",
+                              cek_sumber,0,0,0};
+
+							  
 
 #ifdef BOARD_KOMON
 char *uptime(void)
@@ -215,9 +246,6 @@ portTASK_FUNCTION(shell, pvParameters )
   	printf("CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\n");
 
-  	//tes_tulis_flash();
-  	//tes_baca_flash();
-
 	/* 
 	 * add command
 	 */
@@ -231,6 +259,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	
 #ifdef BOARD_KOMON
 	tinysh_add_command(&cek_rpm_cmd);
+#endif
+
+#ifdef BOARD_TAMPILAN
+	tinysh_add_command(&cek_sumber_cmd);
 #endif
 
 	/* add sub commands

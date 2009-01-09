@@ -69,14 +69,14 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, 16 );
+	xSerialPortInitMinimal( BAUD_RATE, 256 );	// 128 OK
 	//init_gpio();
 
 
 #ifdef jalankan
 	init_led_utama();
 	init_task_lcd();
-	//start_ether();
+	start_ether();
 	init_shell();
 	init_task_tampilan();
 
@@ -130,7 +130,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 102 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
 

@@ -126,9 +126,9 @@ void serial_puts(char *ss)
 }*/
 
 #include <stdarg.h>
-char printbuffer[64];
+char printbuffer[128] __attribute__ ((section (".eth_test")));
    
-int printf (const char *fmt, ...)
+int printf2 (const char *fmt, ...)
 {
    va_list args;
    uint i;
@@ -142,16 +142,7 @@ int printf (const char *fmt, ...)
    va_end (args);
 
    /* Print the string */
-   	//serial_puts(printbuffer);
-   	vSerialPutString(1, printbuffer);
-   	/*
-	i = xQueueSend( xCharsForTx, printbuffer, 200 );
-	if( ( *plTHREEmpty == ( portLONG ) pdTRUE ) && ( i == pdPASS ) )
-	{
-		*plTHREEmpty = pdFALSE;
-		UART0_THR = printbuffer[0];
-	}*/
-   
+   vSerialPutString(1, printbuffer);
    return 0;
 } 
 
@@ -255,7 +246,7 @@ signed portCHAR *pxNext;
 	while( *pxNext )
 	{
 		//xSerialPutChar( pxPort, *pxNext, serNO_BLOCK );
-		xSerialPutChar( pxPort, *pxNext, 100 );
+		xSerialPutChar( pxPort, *pxNext, 1000 );	// 100 OK
 		pxNext++;
 	}
 }
@@ -295,10 +286,6 @@ signed portBASE_TYPE xReturn;
 				xQueueReceive( xCharsForTx, &cOutChar, serNO_BLOCK );
 				*plTHREEmpty = pdFALSE;
 				UART0_THR = cOutChar;
-			}
-			else
-			{
-					
 			}
 		}
 	}

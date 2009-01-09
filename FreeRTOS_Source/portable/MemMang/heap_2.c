@@ -256,3 +256,38 @@ xBlockLink *pxLink;
 }
 /*-----------------------------------------------------------*/
 
+
+#define awal_stack	0x7FD01000	/* USB RAM */
+//#define awal_stack 0x7FE00800
+#define maks_stack	0x2000			/* 8 KB */
+
+static unsigned int  stack_used = 0;
+void *pvPortMallocKU( size_t xWantedSize )
+{
+	void *pvReturn=NULL;
+	
+	if( xWantedSize & heapBYTE_ALIGNMENT_MASK )
+	{
+			/* Byte alignment required. */
+			xWantedSize += ( portBYTE_ALIGNMENT - ( xWantedSize & heapBYTE_ALIGNMENT_MASK ) );
+	}
+	
+	stack_used = stack_used + xWantedSize;
+	if (stack_used > maks_stack)
+	{
+		//printf("heap tidak cukup !\n");
+		return pvReturn;
+	}
+	
+	vTaskSuspendAll();
+	{
+		//pvReturn = malloc( xWantedSize );
+		pvReturn = (awal_stack - stack_used);
+	}
+	xTaskResumeAll();
+
+	//printf("minta %X, used = %X, pv %X \n", xWantedSize, stack_used, pvReturn);
+	return pvReturn;
+
+
+}

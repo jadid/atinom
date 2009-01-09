@@ -23,7 +23,8 @@
 #include "tinysh.h"
 
 #ifndef BUFFER_SIZE
-#define BUFFER_SIZE 256
+//#define BUFFER_SIZE 256
+#define BUFFER_SIZE 128
 #endif
 #ifndef HISTORY_DEPTH
 #define HISTORY_DEPTH 4	//16

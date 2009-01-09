@@ -115,10 +115,47 @@ transmitted. */
 static xQueueHandle xRxedChars;
 static xQueueHandle xCharsForTx;
 
-/*-----------------------------------------------------------*/
-
 /* Communication flag between the interrupt service routine and serial API. */
 static volatile portLONG *plTHREEmpty;
+
+/*-----------------------------------------------------------*/
+/*
+void serial_puts(char *ss)
+{
+	vSerialPutString(1, ss, 10);	
+}*/
+
+#include <stdarg.h>
+char printbuffer[64];
+   
+int printf (const char *fmt, ...)
+{
+   va_list args;
+   uint i;
+
+   va_start (args, fmt);
+
+   /* For this to work, printbuffer must be larger than
+    * anything we ever want to print.
+    */
+   i = vsprintf (printbuffer, fmt, args);
+   va_end (args);
+
+   /* Print the string */
+   	//serial_puts(printbuffer);
+   	vSerialPutString(1, printbuffer);
+   	/*
+	i = xQueueSend( xCharsForTx, printbuffer, 200 );
+	if( ( *plTHREEmpty == ( portLONG ) pdTRUE ) && ( i == pdPASS ) )
+	{
+		*plTHREEmpty = pdFALSE;
+		UART0_THR = printbuffer[0];
+	}*/
+   
+   return 0;
+} 
+
+
 
 /*
  * The queues are created in serialISR.c as they are used from the ISR.
@@ -202,7 +239,7 @@ signed portBASE_TYPE xSerialGetChar( xComPortHandle pxPort, signed portCHAR *pcR
 }
 /*-----------------------------------------------------------*/
 
-void vSerialPutString( xComPortHandle pxPort, const signed portCHAR * const pcString, unsigned portSHORT usStringLength )
+void vSerialPutString( xComPortHandle pxPort, const signed portCHAR * const pcString)
 {
 signed portCHAR *pxNext;
 
@@ -211,13 +248,14 @@ signed portCHAR *pxNext;
 
 	/* The port handle is not required as this driver only supports UART0. */
 	( void ) pxPort;
-	( void ) usStringLength;
+	//( void ) usStringLength;
 
 	/* Send each character in the string, one at a time. */
 	pxNext = ( signed portCHAR * ) pcString;
 	while( *pxNext )
 	{
-		xSerialPutChar( pxPort, *pxNext, serNO_BLOCK );
+		//xSerialPutChar( pxPort, *pxNext, serNO_BLOCK );
+		xSerialPutChar( pxPort, *pxNext, 100 );
 		pxNext++;
 	}
 }
@@ -235,8 +273,8 @@ signed portBASE_TYPE xReturn;
 		/* Is there space to write directly to the UART? */
 		if( *plTHREEmpty == ( portLONG ) pdTRUE )
 		{
-			/* We wrote the character directly to the UART, so was
-			successful. */
+			//* We wrote the character directly to the UART, so was
+			//successful. 
 			*plTHREEmpty = pdFALSE;
 			UART0_THR = cOutChar;
 			xReturn = pdPASS;
@@ -257,6 +295,10 @@ signed portBASE_TYPE xReturn;
 				xQueueReceive( xCharsForTx, &cOutChar, serNO_BLOCK );
 				*plTHREEmpty = pdFALSE;
 				UART0_THR = cOutChar;
+			}
+			else
+			{
+					
 			}
 		}
 	}

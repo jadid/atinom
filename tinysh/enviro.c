@@ -12,6 +12,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+// kalau ditaruh di ethram, nulisnya jadi error
 //struct t_env env2  __attribute__ ((section (".eth_test")));
 struct t_env env2;
 
@@ -164,6 +165,7 @@ int baca_env(char tampil)
 {
 	struct t_env *ev;
 	int i;
+	char teku[128];
 	
 	if (tampil == 1)
 	{
@@ -194,13 +196,24 @@ int baca_env(char tampil)
 			{
 				printf(" Faktor kalibrasi :\n");
 				
-				//for (i=0; i<20; i++)
-				for (i=0; i<5; i++)
+				extern char tek;
+				
+				double ff = 0.123;
+				int t;
+				
+				portENTER_CRITICAL();
+				//snprintf(teku, 64, " float %f", ff);
+				//teku = (char *) fcvt(ff, 6, i, t);
+				printf("%f", ff);
+				
+				portEXIT_CRITICAL();
+				/*
+				for (i=0; i<20; i++)
 				{
 					printf("  (%2d) m = %3.3f, y=%3.3f", i+1, env2.kalib[i].m, env2.kalib[i].y);
 					i++;
 					printf("  (%2d) m = %3.3f, y=%3.3f\n", i+1, env2.kalib[i].m, env2.kalib[i].y);
-				}
+				}*/
 				
 				printf(" Keterangan kanal :\n");
 				for (i=0; i<20; i++)

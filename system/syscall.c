@@ -25,18 +25,16 @@ _ssize_t _read_r(struct _reent *r, int file, void *ptr, size_t len)
 
   for (i = 0; i < len; i++)
   {
-    //c = uart0GetchW();
 	 xSerialGetChar(1, &c, 0xFFFF );
 
     *p++ = c;
-    //uart0Putch(c);
-    xSerialPutChar(1, c, 0);
+    //xSerialPutChar(1, c, 0);
 
     if (c == 0x0D && i <= (len - 2))
     {
       *p = 0x0A;
       //uart0Putch(0x0A);
-      xSerialPutChar(1, 0x0A, 0);
+      //xSerialPutChar(1, 0x0A, 0);
       return i + 2;
     }
   }
@@ -78,17 +76,19 @@ _ssize_t _write_r (
     const void *ptr,
     size_t len)
 {
-
+	/*
 	int i;
 	const unsigned char *p;
 
 	p = (const unsigned char*) ptr;
 
 	for (i = 0; i < len; i++) {
-		xSerialPutChar(1, (unsigned char *) *p++, 0);
+		//xSerialPutChar(1, (unsigned char *) *p++, 0);
+		xSerialPutChar(1, (unsigned char *) *p++, 100);
 	}
-	vTaskDelay(5);
-
+	//vTaskDelay(10);
+	*/
+	
 	return len;
 }
 

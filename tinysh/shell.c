@@ -45,7 +45,7 @@ static tinysh_cmd_t defenv_cmd={0,"defenv","set default env","[args]",
 void cek_stack(void)
 {
 	printf("Sisa stack masing2 task\n");
-	
+	garis_bawah();
 	printf(" Shell : %d\n", uxTaskGetStackHighWaterMark(hdl_shell));
 	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	printf(" Led : %d\n", uxTaskGetStackHighWaterMark(hdl_led));
@@ -275,6 +275,7 @@ portTASK_FUNCTION(shell, pvParameters )
 
 void init_shell(void)
 {
-	//xTaskCreate( shell, "Shell", 1000, NULL, 1, ( xTaskHandle * ) NULL);
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), NULL, 1, ( xTaskHandle * ) &hdl_shell);
+
+	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), NULL, 1, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 8), NULL, 1, ( xTaskHandle * ) &hdl_shell);
 }

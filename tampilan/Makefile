@@ -45,6 +45,7 @@ UKURAN=$(PAT)arm-elf-size
 
 NAMA_FILE=konter_1
 
+#LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 
 OPTIM=-O1
@@ -85,19 +86,19 @@ THUMB_SOURCE= \
 		LCD/lcd_320.c \
 		tampilan.c \
 		LCD/menu_monita.c \
-		../spi/spi.c \
-		../uip/hardware/enc28j60.c	\
-		../uip/clock.c \
-		../uip/lib/memb.c \
-		../uip/uip/uip.c \
-		../uip/uip/uip_arch.c \
-		../uip/uip/uip_arp.c \
-		../uip/uip/uip_timer.c \
-		../uip/uip/uip-fw.c \
-		../uip/uip/psock.c \
-		../uip/uip/uiplib.c \
-		../uip/uip_task.c \
-		../monita/monita_uip.c \
+#		../spi/spi.c \
+#		../uip/hardware/enc28j60.c	\
+#		../uip/clock.c \
+#		../uip/lib/memb.c \
+#		../uip/uip/uip.c \
+#		../uip/uip/uip_arch.c \
+#		../uip/uip/uip_arp.c \
+#		../uip/uip/uip_timer.c \
+#		../uip/uip/uip-fw.c \
+#		../uip/uip/psock.c \
+#		../uip/uip/uiplib.c \
+#		../uip/uip_task.c \
+#		../monita/monita_uip.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \
 #		webserver/http-strings.c \
@@ -112,7 +113,7 @@ ARM_SOURCE= \
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)
 
-#LIBS = -lc -lgcc -lm -lnosys
+LIBS = -lc -lgcc -lm
 
 
 

@@ -75,7 +75,7 @@
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
 //#define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 208 )
 //#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 12 * 1024 ) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 12 * 1024 ) )		// batasanya 11 x
 //#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 6 * 1024 ) )
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1

@@ -58,10 +58,11 @@ struct t_sumber {
 };
 
 struct t_titik {
-	char nama[10];
-	char ID_mesin;
+	//char nama[10];
+	//char ID_mesin;
 	char ID_sumber;
 	char kanal;
+	float data;
 };
 
 struct t_mesin {

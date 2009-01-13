@@ -26,7 +26,7 @@
 
 #define JML_SUMBER	20
 #define JML_MESIN	10
-#define TIAP_MESIN	40
+#define TIAP_MESIN	70
 
 struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
@@ -169,11 +169,11 @@ void set_awal_mesin(void)
 	sprintf(mesin[3].nama, "Msn #4");
 	sprintf(mesin[4].nama, "Msn #5");
 	
-	mesin[0].ID_mesin = 0;
-	mesin[1].ID_mesin = 1;
-	mesin[2].ID_mesin = 2;
-	mesin[3].ID_mesin = 3;
-	mesin[4].ID_mesin = 4;		
+	mesin[0].ID_mesin = 1;
+	mesin[1].ID_mesin = 2;
+	mesin[2].ID_mesin = 3;
+	mesin[3].ID_mesin = 4;
+	mesin[4].ID_mesin = 5;		
 }
 
 void set_awal_sumber(void)
@@ -201,9 +201,39 @@ void set_awal_titik(void)
 	
 	for (i=0; i<(TIAP_MESIN * JML_MESIN) ; i++)
 	{
-		sprintf(titik[i].nama, "-");
-		titik[i].ID_mesin = 0;
+		//sprintf(titik[i].nama, "-");
+		//titik[i].ID_mesin = 0;
 		titik[i].ID_sumber = 0;
 		titik[i].kanal = 0;
 	}	
+	/*
+	sprintf(titik[0].nama,"CA_P_L");
+	sprintf(titik[1].nama,"CA_P_R");
+	sprintf(titik[2].nama,"CA_T_L");
+	sprintf(titik[3].nama,"CA_P_R");
+	
+	sprintf(titik[4].nama,"JW_P_in_1");
+	sprintf(titik[5].nama,"JW_P_in_2");
+	sprintf(titik[6].nama,"JW_P_ot_1");
+	sprintf(titik[7].nama,"JW_P_ot_2");
+	sprintf(titik[8].nama,"JW_T_in_1");
+	sprintf(titik[9].nama,"JW_T_in_2");
+	sprintf(titik[10].nama,"JW_T_ot_1");
+	sprintf(titik[11].nama,"JW_T_ot_2");
+	
+	sprintf(titik[12].nama,"LO_P_in_1");
+	sprintf(titik[13].nama,"LO_P_in_2");
+	sprintf(titik[14].nama,"LO_P_ot_1");
+	sprintf(titik[15].nama,"LO_P_ot_2");
+	sprintf(titik[16].nama,"LO_T_in_1");
+	sprintf(titik[17].nama,"LO_T_in_2");
+	sprintf(titik[18].nama,"LO_T_ot_1");
+	sprintf(titik[19].nama,"LO_T_ot_2");
+	
+	sprintf(titik[20].nama,"LO_P_in_1");
+	*/
+	
+	
+	
+	
 }

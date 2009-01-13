@@ -30,7 +30,7 @@ void print_env(int argc, char **argv)
 
 void getdef_env(int argc, char **argv)
 {
-	printf(" Set Default Environtment \n");
+	printf(" Set Default Environtment \r\n");
 	garis_bawah();	
 	set_default_ip();
 	printf(" OK\n");
@@ -39,12 +39,12 @@ void getdef_env(int argc, char **argv)
 
 void save_env(int argc, char **argv)
 {
-	printf(" Saving environtment\n");
+	printf(" Saving environtment\r\n");
 	garis_bawah();
 
 	tulis_env();
 	
-	printf("\n");
+	printf("\r\n");
 }
 
 int tulis_env(void)
@@ -101,7 +101,7 @@ int tulis_env(void)
 		taskEXIT_CRITICAL();
 
 		if (result[0]) {
-			printf(" prepare error !\n");
+			printf(" prepare error !\r\n");
 			return;
 		}
 
@@ -116,7 +116,7 @@ int tulis_env(void)
 		taskEXIT_CRITICAL();
 
 		if (result[0]) {
-			printf(" hapus error !\n");
+			printf(" hapus error !\r\n");
 			return;
 		}
 
@@ -130,7 +130,7 @@ int tulis_env(void)
 		taskEXIT_CRITICAL();
 
 		if (result[0]) {
-			printf(" prepare2 error !\n");
+			printf(" prepare2 error !\r\n");
 			return;
 		}
 
@@ -147,7 +147,7 @@ int tulis_env(void)
 		taskEXIT_CRITICAL();
 
 		if (result[0]) {
-			printf(" flash write error %d!\n", result[0]);
+			printf(" flash write error %d!\r\n", result[0]);
 			return;
 		}
 		printf(".. OK");
@@ -169,7 +169,7 @@ int baca_env(char tampil)
 	
 	if (tampil == 1)
 	{
-		printf(" Data Environtment \n");
+		printf(" Data Environtment \r\n");
 		garis_bawah();
 	}
 	else
@@ -185,16 +185,16 @@ int baca_env(char tampil)
 		{			
 			printf(" Nama board = ");
 			printf(env2.nama_board);
-			printf("\n IP Address = ");
-			printf("%d.%d.%d.%d\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+			printf("\r\n IP Address = ");
+			printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
 			
 			// tampilkan GW address, pakai env2 sekalian buat ngetes
 			printf(" Gateway IP = ");
-			printf("%d.%d.%d.%d\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
+			printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
 			
 			if (tampil == 1)
 			{
-				printf(" Faktor kalibrasi :\n");
+				printf(" Faktor kalibrasi :\r\n");
 				
 				extern char tek;
 				
@@ -214,13 +214,13 @@ int baca_env(char tampil)
 				{
 					printf("  (%2d) m = %3.3f, y=%3.3f", i+1, env2.kalib[i].m, env2.kalib[i].y);
 					i++;
-					printf("  (%2d) m = %3.3f, y=%3.3f\n", i+1, env2.kalib[i].m, env2.kalib[i].y);
+					printf("  (%2d) m = %3.3f, y=%3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].y);
 				}
 				
-				printf(" Keterangan kanal :\n");
+				printf(" Keterangan kanal :\r\n");
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) %s\n", i+1, env2.kalib[i].ket);
+					printf("  (%2d) %s\r\n", i+1, env2.kalib[i].ket);
 				}
 				printf("\n");
 			}			
@@ -228,7 +228,7 @@ int baca_env(char tampil)
 		}
 		else
 		{
-			printf(" Magic number2 salah !\n");
+			printf(" Magic number2 salah !\r\n");
 			set_default_ip();
 			
 			return -1;
@@ -236,7 +236,7 @@ int baca_env(char tampil)
 	}
 	else
 	{
-		printf(" Magic number1 salah !\n");		
+		printf(" Magic number1 salah !\r\n");		
 		set_default_ip();
 		
 		return -1;
@@ -252,14 +252,14 @@ void set_default_ip(void)
 	env2.IP1 = 168;
 	env2.IP2 = 1;
 	env2.IP3 = 250;	
-	printf("%d.%d.%d.%d\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+	printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
 	
 	printf(" Default GW = ");	
 	env2.GW0 = 192;
 	env2.GW1 = 168;
 	env2.GW2 = 1;
 	env2.GW3 = 13;
-	printf("%d.%d.%d.%d\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+	printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
 
 	for (i=0; i<20; i++)
 	{

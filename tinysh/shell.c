@@ -8,6 +8,13 @@
 
 #include "rw_flash.c"
 #include "set_ipaddr.c"
+
+#ifdef BOARD_TAMPILAN
+#include "sumber.c"
+#include "mesin.c"
+#include "titik.c"
+#endif
+
 #include "enviro.h"
 
 #include "../GPIO/gpio.h"
@@ -57,34 +64,7 @@ void cek_stack(void)
 
 static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
                               cek_stack,0,0,0};
-							  
-void cek_sumber(void)
-{
-	int i;
-	extern struct t_sumber sumber[];
-	
-	printf(" Sumber data\n");
-	garis_bawah();
-	
-	for (i=0; i<20; i++)
-	{
-		printf(" (%2d): %s : ", (i+1), sumber[i].nama);	
-		printf("%d.%d.%d.%d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		
-		// cek status
-		if (sumber[i].status == 0)
-			printf("Null\n");
-		if (sumber[i].status == 1)
-			printf("Normal\n");
-		if (sumber[i].status == 2)
-			printf("TimeOut\n");
-		
-	}
-	
-}							 
 
-static tinysh_cmd_t cek_sumber_cmd={0,"cek_sumber","--","[args]",
-                              cek_sumber,0,0,0};
 
 							  
 
@@ -148,6 +128,7 @@ static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",
 #endif
 /*****************************************************************************/
 
+
 //extern void *tinysh_get_arg(void);
 
 //static 
@@ -160,6 +141,7 @@ void display_args(int argc, char **argv)
     }
 }
 
+#ifdef CONTOH_SHELL
 static void foo_fnt(int argc, char **argv)
 {
   printf("foo command called\n");
@@ -224,6 +206,7 @@ portTASK_FUNCTION( bg_cmd_thread, pvParameters )
 		printf("**** this is a back ground task *****\n");
 	}
 }
+#endif // contoh shell
 
 //int shell(int argc, char **argv)
 portTASK_FUNCTION(shell, pvParameters )
@@ -233,23 +216,23 @@ portTASK_FUNCTION(shell, pvParameters )
   	xTaskHandle xHandle;
 
 #ifdef BOARD_KOMON
-  	printf("\nStarting Babelan Komon-Counter %s\n", VERSI);
+  	printf("\nStarting Babelan Komon-Counter %s\r\n", VERSI);
 #endif
 
 #ifdef BOARD_TAMPILAN
-  	printf("\nStarting Babelan Tampilan %s\n", VERSI);
+  	printf("\nStarting Babelan Tampilan %s\r\n", VERSI);
 #endif
 
-  	printf("Daun Biru Engineering, Des 2008\n");
-  	printf("=========================================\n");
-  	printf("ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
+  	printf("Daun Biru Engineering, Des 2008\r\n");
+  	printf("=========================================\r\n");
+  	printf("ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
   	printf("CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
-  	printf(" FreeRTOS 5.1.1\n");
+  	printf(" FreeRTOS 5.1.1\r\n");
 
 	/* 
 	 * add command
 	 */
-  	tinysh_add_command(&myfoocmd);
+  	//tinysh_add_command(&myfoocmd);
   	tinysh_add_command(&printenv_cmd);
 	tinysh_add_command(&setenv_cmd);
 	tinysh_add_command(&save_env_cmd);
@@ -263,6 +246,10 @@ portTASK_FUNCTION(shell, pvParameters )
 
 #ifdef BOARD_TAMPILAN
 	tinysh_add_command(&cek_sumber_cmd);
+	tinysh_add_command(&set_sumber_cmd);
+	tinysh_add_command(&cek_mesin_cmd);
+	tinysh_add_command(&set_mesin_cmd);
+	tinysh_add_command(&cek_titik_cmd);
 #endif
 
 	/* add sub commands

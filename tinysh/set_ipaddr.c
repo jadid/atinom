@@ -18,7 +18,7 @@ int baca_kanal(char *c);
 
 void garis_bawah(void)
 {
-	printf(" ---------------------------------\n");	
+	printf("---------------------------------\r\n");	
 }
 
 
@@ -31,11 +31,11 @@ static void setenv_fnt(int argc, char **argv)
 {
   	if (argc < 2) 
 	{
-		printf(" argument kurang !\n");
+		printf(" argument kurang !\r\n");
 		return;	
 	}
 	
-	printf(" setenv %s dipanggil\n", argv[1]);
+	printf(" setenv %s dipanggil\r\n", argv[1]);
 	garis_bawah();
   	display_args(argc,argv);
 	
@@ -44,7 +44,7 @@ static void setenv_fnt(int argc, char **argv)
 	
   	if (strcmp(argv[1], "ipaddr") == 0)
   	{
-		printf(" set IP address\n");  
+		printf(" set IP address\r\n");  
 		memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
@@ -58,11 +58,11 @@ static void setenv_fnt(int argc, char **argv)
 		printf("%d.", env2.IP0);
 		printf("%d.", env2.IP1);
 		printf("%d.", env2.IP2);
-		printf("%d\n", env2.IP3);
+		printf("%d\r\n", env2.IP3);
 	}
 	else if (strcmp(argv[1], "gateway") == 0)
   	{
-		printf(" set GATEWAY address\n");  
+		printf(" set GATEWAY address\r\n");  
 		memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
@@ -80,7 +80,7 @@ static void setenv_fnt(int argc, char **argv)
 	}
 	else if (strcmp(argv[1], "nama") == 0)
 	{
-		printf(" set nama_board\n");
+		printf(" set nama_board\r\n");
 		memset(env2.nama_board, 0, sizeof (env2.nama_board));
 		if (strlen(argv[2]) > sizeof (env2.nama_board))
 		{
@@ -97,7 +97,7 @@ static void setenv_fnt(int argc, char **argv)
 	{
 		int kanal;
 		
-		printf(" set param kanal \n");
+		printf(" set param kanal \r\n");
 		memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
@@ -105,7 +105,7 @@ static void setenv_fnt(int argc, char **argv)
 		
 		if (kanal > 0 && kanal < 21)
 		{
-			printf(" kanal terbaca = %d\n", kanal);
+			printf(" kanal terbaca = %d\r\n", kanal);
 			
 			if (strcmp(argv[3], "ket") == 0)
 			{
@@ -120,13 +120,13 @@ static void setenv_fnt(int argc, char **argv)
 			}
 		}
 		else if (kanal == 0 || kanal > 20)
-			printf(" kanal %d diluar range !\n");
+			printf(" kanal %d diluar range !\r\n");
 		else
-			printf(" format kanal salah !\n");
+			printf(" format kanal salah !\r\n");
 		
 	}
 	else
-		printf(" perintah setenv %s belum ada !\n", argv[1]); 
+		printf(" perintah setenv %s belum ada !\r\n", argv[1]); 
 		
 	return;
   

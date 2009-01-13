@@ -12,6 +12,10 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
+#define JML_SUMBER	20
+#define JML_MESIN	10
+#define TIAP_MESIN	70
+
 struct t_data_float {
 	float data[20];
 };

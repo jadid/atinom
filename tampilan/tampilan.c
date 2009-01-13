@@ -24,10 +24,6 @@
 #define OK		196608
 #define CANCEL	262144
 
-#define JML_SUMBER	20
-#define JML_MESIN	10
-#define TIAP_MESIN	70
-
 struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
 struct t_titik	titik[TIAP_MESIN * JML_MESIN];

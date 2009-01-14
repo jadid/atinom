@@ -15,6 +15,7 @@
 #define JML_SUMBER	20
 #define JML_MESIN	10
 #define TIAP_MESIN	70
+#define JML_KANAL	20
 
 struct t_data_float {
 	float data[20];

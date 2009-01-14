@@ -250,6 +250,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_mesin_cmd);
 	tinysh_add_command(&set_mesin_cmd);
 	tinysh_add_command(&cek_titik_cmd);
+	tinysh_add_command(&set_titik_cmd);
+	
 #endif
 
 	/* add sub commands

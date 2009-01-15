@@ -17,6 +17,16 @@
 #define TIAP_MESIN	70
 #define JML_KANAL	20
 
+#define SEKTOR_SUMBER	25
+#define ALMT_SUMBER		0x7B000
+
+#define SEKTOR_MESIN	26
+#define ALMT_MESIN		0x7C000
+
+#define SEKTOR_TITIK	21
+#define ALMT_TITIK		0x70000
+
+
 struct t_data_float {
 	float data[20];
 };

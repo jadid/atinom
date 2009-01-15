@@ -14,7 +14,7 @@
 
 #include "../monita/monita_uip.h"
 extern struct t_mesin mesin[];
-extern struct t_titik titik[];
+extern struct t_titik titik[TIAP_MESIN * JML_MESIN];
 
 char *f_out(float ff);
 							  
@@ -164,11 +164,29 @@ static tinysh_cmd_t set_titik_cmd={0,"set_titik","titik sumber kanal","[args]",
                               set_titik,0,0,0};
 
 
-void save_titik(int argc, char **argv)
+void save_titik(void)
 {
+	printf("Save struct titik ke flash ..");
+	if(prepare_flash(SEKTOR_TITIK, SEKTOR_TITIK)) return;
+	printf("..");
 	
+	if(hapus_flash(SEKTOR_TITIK, SEKTOR_TITIK)) return;
+	printf("..");
+	
+	if(prepare_flash(SEKTOR_TITIK, SEKTOR_TITIK)) return;
+	printf("..");
+	
+	if(tulis_flash(ALMT_TITIK, (unsigned short *) &titik, sizeof (titik))) return;
+	printf(".. OK\r\n");
 }
 
 
 static tinysh_cmd_t save_titik_cmd={0,"save_titik","--","[args]",
                               save_titik,0,0,0};
+
+void read_titik(void)
+{
+	taskENTER_CRITICAL();
+	memcpy((char *)&titik, (char *) ALMT_TITIK, sizeof (titik));
+	taskEXIT_CRITICAL();		
+}

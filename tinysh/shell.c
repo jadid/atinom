@@ -25,6 +25,10 @@
 void reset_cpu(void);
 extern struct t2_konter konter;
 
+extern struct t_mesin mesin[];
+extern struct t_titik titik[];
+extern struct t_sumber sumber[];
+
 extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
@@ -252,6 +256,9 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_titik_cmd);
 	tinysh_add_command(&set_titik_cmd);
 	
+	tinysh_add_command(&save_sumber_cmd);
+	tinysh_add_command(&save_mesin_cmd);
+	tinysh_add_command(&save_titik_cmd);
 #endif
 
 	/* add sub commands
@@ -281,6 +288,12 @@ portTASK_FUNCTION(shell, pvParameters )
   	//xTaskCreate( bg_cmd_thread, "bg_cmd", 1000, NULL, 2, &xHandle);
 
   	vTaskDelay(450);
+	
+	// cek ukuran struk
+	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);
+	printf("size struct Sumber = %d\r\n", sizeof (struct t_sumber) * JML_SUMBER);
+	printf("size struct Titik  = %d\r\n", sizeof (struct t_titik) * JML_MESIN * TIAP_MESIN);
+	
   	tinysh_set_prompt("Babelan $ ");
 	/* 
 	 * main loop shell

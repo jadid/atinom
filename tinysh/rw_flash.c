@@ -1,23 +1,14 @@
 /*
  * baca tulis flash
+ * furkan jadid
+ * 
+ * Jan 09, daun biru engineering
  *
  */
 
 
 #include "enviro.h"
-
-
-
-unsigned int command[5]; // For Command Table
-unsigned int result[2]; 	// For Result Table
-
-IAP iap_entry;
-
-
-
-char* ftostr(float value, int places );
-
-int Write_to_Flash(unsigned char Start_Sector, unsigned End_Sector, int No_of_Bytes, unsigned long Mem_Addr);
+#include "../monita/monita_uip.h"
 
 #ifdef TES_BACA_TULIS
 int tes_tulis_flash()
@@ -109,7 +100,101 @@ int tes_baca_flash()
 #endif
 
 
+int prepare_flash(int sektor_start, int sektor_end)
+{
+	unsigned int command[5]; 	// For Command Table
+	unsigned int result[2]; 	// For Result Table
+	IAP iap_entry;
 
+	iap_entry = (IAP)IAP_LOCATION; // Set Function Pointer
+
+	command[0] = 50; 	// Prepare sector(s) for a Erase/Write Operation
+	command[1] = sektor_start;	// start sector
+	command[2] = sektor_end;	// end sector
+
+	taskENTER_CRITICAL();
+	iap_entry(command,result);
+	taskEXIT_CRITICAL();
+
+	if (result[0]) {
+			printf(" prepare error !\r\n");
+			return result[0];
+	}
+	
+	return result[0];	
+}
+
+int hapus_flash(int sektor_start, int sektor_end)
+{
+	unsigned int command[5]; 	// For Command Table
+	unsigned int result[2]; 	// For Result Table
+	IAP iap_entry;
+	
+	iap_entry = (IAP)IAP_LOCATION; // Set Function Pointer
+	
+	command[0] = 52; 	// Hapus dulu
+	command[1] = sektor_start;	// start sector
+	command[2] = sektor_end;	// end sector
+	command[3] = 60000;	// PCLK
+
+	taskENTER_CRITICAL();
+	iap_entry(command,result);
+	taskEXIT_CRITICAL();
+
+	if (result[0]) {
+			printf(" hapus error !\r\n");
+			return result[0];
+	}	
+	return result[0];
+}
+
+int tulis_flash(int dst, unsigned short *data, int pjg)
+{
+	unsigned int command[5]; 	// For Command Table
+	unsigned int result[2]; 	// For Result Table
+	IAP iap_entry;
+	int uk;
+	int posisi=0;
+	
+	iap_entry = (IAP)IAP_LOCATION; // Set Function Pointer
+	
+	//printf("pjg = %d, pos=%X", pjg, &data[posisi]);
+	
+	while(pjg > 0)
+	{
+		uk=256;
+	
+		if (pjg > 256) uk = 512;
+		if (pjg > 512) uk = 1024;
+		if (pjg > 1024 && pjg > 4096) uk = 4096;
+		
+		
+		//printf(" uk=%d ", uk);
+		
+		command[0] = 51;
+		command[1] = dst+(posisi * 2);	// tujuan flash (seuai dengan sektor flash)
+		command[2] = (unsigned short *) &data[posisi];		// source ram
+		command[3] = uk;
+		command[4] = 60000;// PCLK = 60000 KHz
+
+		taskENTER_CRITICAL();
+		iap_entry(command,result);
+		taskEXIT_CRITICAL();
+
+		if (result[0]) {
+			printf(" flash write error %d!\r\n", result[0]);
+			return result[0];
+		}	
+		printf("%%");
+		posisi = posisi + (uk / 2);		// karena dalam word / short
+		pjg = pjg - uk;	
+		
+		if (pjg > 0)
+			prepare_flash(SEKTOR_TITIK, SEKTOR_TITIK);
+	}
+	
+	return result[0];	
+}
 
 /*
 char* ftostr(float value, int places )

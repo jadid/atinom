@@ -7,9 +7,9 @@
 	*/
 	
 #include "../monita/monita_uip.h"
-extern struct t_sumber sumber[];
+extern struct t_sumber sumber[JML_SUMBER];
 int cek_nomer_sumber(char *arg, int maks);
-
+void set_awal_sumber(void);
 							  
 void cek_sumber(void)
 {
@@ -26,7 +26,7 @@ void cek_sumber(void)
 		
 		// cek status
 		if (sumber[i].status == 0)
-			printf("Null\r\n");
+			printf("Tidak Aktif\r\n");
 		if (sumber[i].status == 1)
 			printf("Normal\r\n");
 		if (sumber[i].status == 2)
@@ -59,6 +59,13 @@ void set_sumber(int argc, char **argv)
 			
 				return;
 			} 
+			else if (strcmp(argv[1], "default") == 0)
+			{
+				set_awal_sumber();
+				
+				return;
+			}
+			
 		}
 		printf(" ERR: argument kurang !\r\n");
 		printf(" coba set_sumber help \r\n");
@@ -112,7 +119,7 @@ void set_sumber(int argc, char **argv)
 	}
 }							 
 
-static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama","[args]",
+static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama default","[args]",
                               set_sumber,0,0,0};
 
 int cek_nomer_sumber(char *arg, int maks)
@@ -137,4 +144,58 @@ int cek_nomer_sumber(char *arg, int maks)
 		printf("\r\n ERR: format salah !\r\n");
 		return -2;
 	}
+}
+
+void save_sumber(void)
+{
+	printf("Save struct sumber ke flash ..");
+	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return;
+	printf("..");
+	
+	if(hapus_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return;
+	printf("..");
+	
+	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return;
+	printf("..");
+	
+	if(tulis_flash(ALMT_SUMBER, (unsigned short *) &sumber, sizeof (sumber))) return;
+	printf(".. OK\r\n");
+	
+}
+
+static tinysh_cmd_t save_sumber_cmd={0,"save_sumber","--","[args]",
+                              save_sumber,0,0,0};
+
+
+void read_sumber(void)
+{
+	taskENTER_CRITICAL();
+	memcpy((char *)&sumber, (char *) ALMT_SUMBER, sizeof (sumber));
+	taskEXIT_CRITICAL();		
+}
+
+void set_awal_sumber(void)
+{
+	int i;
+	
+	for (i=0; i<JML_SUMBER; i++)
+	{
+		sprintf(sumber[i].nama, "-");
+		sumber[i].ID_sumber = i;
+		sumber[i].status = 0;	
+		
+		sumber[i].IP0 = 192;
+		sumber[i].IP1 = 168;
+		sumber[i].IP2 = 1;
+		sumber[i].IP3 = 255;
+		
+	}	
+	
+	/* testing
+	sumber[2].status = 2;
+	sumber[2].IP0 = 192;
+	sumber[2].IP1 = 168;
+	sumber[2].IP2 = 1;
+	sumber[2].IP3 = 251;
+	*/
 }

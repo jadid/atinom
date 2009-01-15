@@ -64,9 +64,13 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	vTaskDelay(100);
 	teks_h(14, 110, "Loading setting ...");
 	
-	set_awal_mesin();
-	set_awal_sumber();
-	set_awal_titik();
+	//set_awal_mesin();
+	//set_awal_sumber();
+	//set_awal_titik();
+	
+	read_sumber();
+	read_mesin();
+	read_titik();
 	
 	cls_layar();
 	vTaskDelay(500);
@@ -74,11 +78,10 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	vTaskDelay(100);
 	
 	teks_h(14, 20, "Data Mesin :");
-	for (i=0; i<5; i++)
+	for (i=0; i<10; i++)
 	{
-		teks_h(20, 30 + (i*9), mesin[i].nama);
-		sprintf(tek, "%d", mesin[i].ID_mesin);	
-		teks_h(100, 30 + (i*9), tek);
+		sprintf(tek, "%2d     %s", (i+1), mesin[i].nama);
+		teks_h(20, 30 + (i*9), tek);
 	}
 	cls_layar();
 	vTaskDelay(800);
@@ -88,19 +91,21 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	teks_h(14, 20, "Data Sumber Data :");
 	for (i=0; i<20; i++)
 	{
-		teks_h(20, 30 + (i*9), sumber[i].nama);	
+		sprintf(tek, "%2d   %s", (i+1), sumber[i].nama);
+		teks_h(20, 30 + (i*9), tek);
+		//teks_h(20, 30 + (i*9), sumber[i].nama);	
 		
 		// print out IP
 		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_h(100, 30 + (i*9), tek);
+		teks_h(120, 30 + (i*9), tek);
 		
 		// status
 		if (sumber[i].status == 0)
-			teks_h(200, 30 + (i*9), "Null");
+			teks_h(220, 30 + (i*9), "Tdk Aktif");
 		if (sumber[i].status == 1)
-			teks_h(200, 30 + (i*9), "Normal");
+			teks_h(220, 30 + (i*9), "Normal");
 		if (sumber[i].status == 2)
-			teks_h(200, 30 + (i*9), "TimeOut");
+			teks_h(220, 30 + (i*9), "TimeOut");
 		
 	}
 	vTaskDelay(800);
@@ -157,39 +162,6 @@ void init_task_tampilan(void)
 	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
 
-void set_awal_mesin(void)
-{
-	sprintf(mesin[0].nama, "Msn #1");
-	sprintf(mesin[1].nama, "Msn #2");
-	sprintf(mesin[2].nama, "Msn #3");
-	sprintf(mesin[3].nama, "Msn #4");
-	sprintf(mesin[4].nama, "Msn #5");
-	
-	mesin[0].ID_mesin = 1;
-	mesin[1].ID_mesin = 2;
-	mesin[2].ID_mesin = 3;
-	mesin[3].ID_mesin = 4;
-	mesin[4].ID_mesin = 5;		
-}
-
-void set_awal_sumber(void)
-{
-	int i;
-	
-	for (i=0; i<JML_SUMBER; i++)
-	{
-		sprintf(sumber[i].nama, "-");
-		sumber[i].ID_sumber = i;
-		sumber[i].status = 0;	
-	}	
-	
-	sumber[2].status = 2;
-	sumber[2].IP0 = 192;
-	sumber[2].IP1 = 168;
-	sumber[2].IP2 = 1;
-	sumber[2].IP3 = 251;
-	
-}
 
 void set_awal_titik(void)
 {

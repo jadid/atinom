@@ -6,7 +6,7 @@
 	*/
 
 #include "../monita/monita_uip.h"
-extern struct t_mesin mesin[];
+extern struct t_mesin mesin[JML_MESIN];
 
 							  
 void cek_mesin(int argc, char **argv)
@@ -56,6 +56,15 @@ void set_mesin(int argc, char **argv)
 	
 	if (argc < 4) 
 	{
+		if (argc > 1)
+		{
+			if (strcmp(argv[1], "default") == 0)
+			{
+				set_awal_mesin();
+				
+				return;
+			}		
+		}
 		printf(" argument kurang !\r\n");
 		return;	
 	}
@@ -86,3 +95,57 @@ void set_mesin(int argc, char **argv)
 
 static tinysh_cmd_t set_mesin_cmd={0,"set_mesin","nama","[args]",
                               set_mesin,0,0,0};
+
+
+void save_mesin(void)
+{
+	printf("Save struct mesin ke flash ..");
+	if(prepare_flash(SEKTOR_MESIN, SEKTOR_MESIN)) return;
+	printf("..");
+	
+	if(hapus_flash(SEKTOR_MESIN, SEKTOR_MESIN)) return;
+	printf("..");
+	
+	if(prepare_flash(SEKTOR_MESIN, SEKTOR_MESIN)) return;
+	printf("..");
+	
+	if(tulis_flash(ALMT_MESIN, (unsigned short *) &mesin, sizeof (mesin))) return;
+	printf(".. OK\r\n");
+	
+}
+
+static tinysh_cmd_t save_mesin_cmd={0,"save_mesin","--","[args]",
+                              save_mesin,0,0,0};
+
+
+void read_mesin(void)
+{
+	taskENTER_CRITICAL();
+	memcpy((char *)&mesin, (char *) ALMT_MESIN, sizeof (mesin));
+	taskEXIT_CRITICAL();		
+}
+
+void set_awal_mesin(void)
+{
+	sprintf(mesin[0].nama, "Msn #1");
+	sprintf(mesin[1].nama, "Msn #2");
+	sprintf(mesin[2].nama, "Msn #3");
+	sprintf(mesin[3].nama, "Msn #4");
+	sprintf(mesin[4].nama, "Msn #5");
+	sprintf(mesin[5].nama, "Msn #6");
+	sprintf(mesin[6].nama, "Msn #7");
+	sprintf(mesin[7].nama, "Msn #8");
+	sprintf(mesin[8].nama, "Msn #9");
+	sprintf(mesin[9].nama, "Msn #10");
+	
+	mesin[0].ID_mesin = 1;
+	mesin[1].ID_mesin = 2;
+	mesin[2].ID_mesin = 3;
+	mesin[3].ID_mesin = 4;
+	mesin[4].ID_mesin = 5;	
+	mesin[5].ID_mesin = 6;
+	mesin[6].ID_mesin = 7;
+	mesin[7].ID_mesin = 8;
+	mesin[8].ID_mesin = 9;
+	mesin[9].ID_mesin = 10;		
+}

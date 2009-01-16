@@ -1211,6 +1211,8 @@ union uip_conn_comb {
 	uip_tcp_appstate_telnetd telnetd;
 	uip_tcp_appstate_httpd   httpd;
 //	uip_tcp_appstate_t3   smtp;
+
+	uip_sambungan_state sku;
 };
 
 struct uip_conn {
@@ -1240,7 +1242,7 @@ struct uip_conn {
 			 segment sent. */
 
   /** The application state. */
-  union uip_conn_comb appstate;
+  union uip_conn_comb appstate2;
 };
 
 

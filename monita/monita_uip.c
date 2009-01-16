@@ -96,7 +96,7 @@ static void handle_connection(struct monita_state *s)
 
 void monita_appcall (void)
 {
-	struct monita_state *s = (struct monita_state *) &(uip_conn->appstate);
+	struct monita_state *s = (struct monita_state *) &(uip_conn->appstate2);
 
 	//printf("monita call !\n");
 
@@ -143,7 +143,7 @@ void sambungan_init(void)
 		//uip_ipaddr(&ip_modul[i], sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);	
 		uip_ipaddr(&ip_modul[i], sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, i+2);	
 		samb2[i].state = 0;
-		//samb2[i].nomer_samb = i;
+		samb2[i].nomer_samb = i;
 	}
 	
 	printf("sambungan ethernet init\n");
@@ -180,6 +180,8 @@ void sambungan_connect(void)
 	PSOCK_INIT(&samb.p, (char *) &samb.in_buf, sizeof(samb.in_buf));
 	*/
 	struct uip_conn *conn;
+	struct sambungan_state *samb3;
+	
 	int i;
 	
 	for (i=0; i<10; i++)
@@ -188,10 +190,8 @@ void sambungan_connect(void)
 		{
 			jum_kon = i;
 			printf("Init sumber %d : %10s : ", (i+1), sumber[i].nama);
-			printf("%d.%d.%d.%d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);  
+			printf("%d.%d.%d.%d\r\n", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);  
 			
-			//samb2[jum_kon].state = 0;
-			//uip_ipaddr(&ip_modul[jum_kon], 192,168,1,200+jum_kon);
 			uip_ipaddr(&ip_modul[i], sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP2);	
 			
 			conn = uip_connect(&ip_modul[jum_kon], HTONS(5002));
@@ -200,10 +200,14 @@ void sambungan_connect(void)
 				printf("ERR: Koneksi Penuh\r\n");	
 				return ;
 			}
-			printf("..%X..OK\r\n", conn);
+			printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
 	
 			samb2[jum_kon].state = 1;
 			//sumber[i].status = 9;		// sedang mencoba konek
+			//(uip_sambungan_state *) &conn->appstate2 =0;
+			//conn->appstate2->nomer_samb = i;
+			samb3 = (struct sambungan_state *) &conn->appstate2;
+			samb3->nomer_samb = i;
 			
 			PSOCK_INIT(&samb2[jum_kon].p, (char *) &samb2[jum_kon].in_buf, sizeof(samb2[jum_kon].in_buf));
 		}
@@ -264,21 +268,21 @@ static PT_THREAD(samb_thread(void))
 
 void samb_appcall (void)
 {
-	struct sambungan_state *s = (struct sambungan_state *) &(uip_conn->appstate);
+	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 	
 	printf("sambungan called\n");
 	if(uip_closed()) 
 	{
   		//printf("sambungan closed\n");
 		//samb.state = 0;
-  		s->state = 0;
+  		sb->state = 0;
 		return;
 	}
 	if(uip_aborted() || uip_timedout()) 
 	{
-  		printf("sambungan aborted / timeout\n");
+  		printf("sambungan %d : L=%d aborted / timeout\n", sb->nomer_samb, uip_conn->lport);
 		//samb.state = 0;
-  		s->state = 0;
+  		sb->state = 0;
 		return;
 	}
 	samb_thread();

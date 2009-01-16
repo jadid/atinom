@@ -582,4 +582,11 @@ typedef uip_ip4addr_t uip_ipaddr_t;
 #undef UIP_UDP_APPCALL
 #define UIP_UDP_APPCALL dispatch_udp_appcall
 
+
+
+#include "../../monita/monita_uip.h"
+
+
+//typedef struct httpd_state uip_tcp_appstate_httpd;
+
 #endif /* __UIPOPT_H__ */

@@ -88,14 +88,14 @@
  */
 
 #include <string.h>
-
+/*
 #define awal_uip_conns		0x7FE00000
 #define besar_uip_conns 	2048		// hanya dipakai 1080 ?
 #define awal_uip_buff		awal_uip_conns + besar_uip_conns
 #define besar_uip_buff		2048		// hanya dipakai 1508
 #define awal_uip_udp_conns	awal_uip_buff + besar_uip_buff
 #define besar_uip_udp_conns	512			// hanya dipakai 304
-
+*/
 //#define PAKE_RAM_ETH
 
 #include "uip.h"
@@ -219,7 +219,7 @@ struct uip_conn *uip_conn;   /* uip_conn always points to the current
 struct uip_conn uip_conns[UIP_CONNS]  __attribute__ ((section (".eth_test")));
 
 #else
-struct uip_conn *uip_conns;
+struct uip_conn *uip_connsee;
 #endif
 /* The uip_conns array holds all TCP
    connections. */

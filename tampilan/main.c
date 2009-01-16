@@ -28,6 +28,8 @@ xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
+extern char titik_siap;
+
 void dele(int dd)
 {
 	int g;
@@ -39,6 +41,7 @@ void dele(int dd)
 		dum = FIO0DIR;
 	}
 }
+
 
 /*-----------------------------------------------------------*/
 #define jalankan
@@ -52,6 +55,7 @@ int main( void )
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;
 	
+	titik_siap = 0;
 	init_port_lcd();
 	init_lcd();
 	
@@ -69,7 +73,7 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, 256 );	// 128 OK
+	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
 	//init_gpio();
 
 
@@ -103,13 +107,15 @@ void togle_led_utama(void)
 	}
 	else
 	{
+		titik_siap++;
 		//FIO1SET = (1 << 19);
 		FIO0CLR = LED_UTAMA;
 		//tes_low();
 		tog = 1;
 		//teks_h(20, 60, "ini langsung ke LCD");
 		//printf_lcd("ini %d", jum);
-		//sambungan_connect();
+		//if (titik_siap > 3)
+		//	sambungan_connect();
 	}
 }
 

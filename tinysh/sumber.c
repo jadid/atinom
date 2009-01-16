@@ -27,11 +27,13 @@ void cek_sumber(void)
 		// cek status
 		if (sumber[i].status == 0)
 			printf("Tidak Aktif\r\n");
-		if (sumber[i].status == 1)
-			printf("Normal\r\n");
-		if (sumber[i].status == 2)
+		else if (sumber[i].status == 1)
+			printf("Aktif / Normal\r\n");
+		else if (sumber[i].status == 2)
 			printf("TimeOut\r\n");
 		
+		else
+			printf("\r\n");
 	}
 	
 }							 
@@ -44,6 +46,7 @@ void set_sumber(int argc, char **argv)
 	unsigned char buf[24];
 	int sumb;
 	unsigned int ret_ip;
+	int stat;
 	
 	if (argc < 4) 
 	{
@@ -117,9 +120,31 @@ void set_sumber(int argc, char **argv)
 		}
 		else return;	
 	}
+	else if (strcmp(argv[1], "status") == 0)
+	{
+		sprintf(buf, "%s", argv[2]);	
+		sumb = cek_nomer_sumber(buf, 20);
+		if (sumb > 0)		
+		{
+			printf(" sumber = %d : ", sumb);
+			
+			// 0 tidak dipakai, 1 dipakai / diaktifkan , 2 nyambung & aktif, 3 timeout
+			sprintf(buf, "%s", argv[3]);	
+			stat = cek_nomer_sumber(buf, 1);
+			
+			if (stat >=0)
+			{
+				sumber[sumb-1].status = stat;
+				printf("%d.%d.%d.%d : ", sumber[sumb-1].IP0, sumber[sumb-1].IP1, sumber[sumb-1].IP2, sumber[sumb-1].IP3); 
+				if (stat == 0) printf("Tidak diaktifkan\r\n");
+				else if (stat == 1) printf("Diaktifkan\r\n");	
+			}
+		}
+		else return;	
+	}
 }							 
 
-static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama default","[args]",
+static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama status default","[args]",
                               set_sumber,0,0,0};
 
 int cek_nomer_sumber(char *arg, int maks)
@@ -134,7 +159,12 @@ int cek_nomer_sumber(char *arg, int maks)
 	{
 		return ss;	
 	}	
-	else if (ss == 0 || ss > maks)
+	//else if (ss == 0 || ss > maks)
+	else if (ss == 0)
+	{
+		return 0;	
+	}
+	else if (ss > maks)
 	{
 		printf("\r\n ERR: %d diluar range !\r\n", ss);
 		return -1;

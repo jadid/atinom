@@ -110,22 +110,45 @@ void monita_appcall (void)
 	handle_connection(s);
 }
 
+#ifdef BOARD_TAMPILAN
 ////*************************************** ethernet tampilan **************************************/
-static uip_ipaddr_t tujuan;
+//static uip_ipaddr_t tujuan;
 
-static uip_ipaddr_t modul[10];
+#define JML_MODUL	10
+static uip_ipaddr_t ip_modul[JML_MODUL] __attribute__ ((section (".usb_text")));
+extern struct t_sumber sumber[];
+
+//struct uip_conn *conn_modul[JML_MODUL] __attribute__ ((section (".eth_test")));
 
 
-static struct sambungan_state samb __attribute__ ((section (".eth_test")));
+//static 
+struct sambungan_state samb __attribute__ ((section (".eth_test")));
+
+struct sambungan_state samb2[20] __attribute__ ((section (".usb_text")));
+
+extern char titik_siap;
+
+int jum_kon;
 
 void sambungan_init(void)
 {
+	int i;
 	//set tujuan
 	samb.state = 0;
-	uip_ipaddr(&tujuan, 192,168,1,53);
+	//uip_ipaddr(&tujuan, 192,168,1,53);
 	//uip_connect(&tujuan, HTONS(5002));
+	
+	for (i=0; i<JML_MODUL; i++)
+	{
+		//uip_ipaddr(&ip_modul[i], sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);	
+		uip_ipaddr(&ip_modul[i], sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, i+2);	
+		samb2[i].state = 0;
+		//samb2[i].nomer_samb = i;
+	}
+	
 	printf("sambungan ethernet init\n");
-			
+	titik_siap = 2;
+	jum_kon = 0;		
 }
 
 /* sambungan konek dipanggil periodik
@@ -136,22 +159,84 @@ void sambungan_init(void)
 
 void sambungan_connect(void)
 {
+	/*
 	struct uip_conn *conn;
 	
 	samb.state = 0;
 	uip_ipaddr(&tujuan, 192,168,1,53);
 	
-	//printf("mulai konek ..%d..", HTONS(5002));
+	printf("mulai konek ..%d..", HTONS(5002));
 	conn = uip_connect(&tujuan, HTONS(5002));
 	if (conn == NULL)
 	{
-		printf("connection sudah NULL ..");	
+		printf("ERR: Koneksi Penuh\r\n");	
+		return ;
 	}
-	samb.state = 1;
+	printf("..%X..\r\n", conn);
 	
+	samb.state = 1;
 	//printf("setelah konek\n");
 	
 	PSOCK_INIT(&samb.p, (char *) &samb.in_buf, sizeof(samb.in_buf));
+	*/
+	struct uip_conn *conn;
+	int i;
+	
+	for (i=0; i<10; i++)
+	{
+		if (sumber[i].status == 1 && samb2[i].state == 0)	// harus diaktifkan
+		{
+			jum_kon = i;
+			printf("Init sumber %d : %10s : ", (i+1), sumber[i].nama);
+			printf("%d.%d.%d.%d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);  
+			
+			//samb2[jum_kon].state = 0;
+			//uip_ipaddr(&ip_modul[jum_kon], 192,168,1,200+jum_kon);
+			uip_ipaddr(&ip_modul[i], sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP2);	
+			
+			conn = uip_connect(&ip_modul[jum_kon], HTONS(5002));
+			if (conn == NULL)
+			{
+				printf("ERR: Koneksi Penuh\r\n");	
+				return ;
+			}
+			printf("..%X..OK\r\n", conn);
+	
+			samb2[jum_kon].state = 1;
+			//sumber[i].status = 9;		// sedang mencoba konek
+			
+			PSOCK_INIT(&samb2[jum_kon].p, (char *) &samb2[jum_kon].in_buf, sizeof(samb2[jum_kon].in_buf));
+		}
+		
+		//printf("mulai konek ..%d..", HTONS(5002));
+		
+		//jum_kon++;
+	}
+	
+	/*
+	struct uip_conn *conn;
+	int i;
+	printf("konek !\r\n");
+	
+	i = 1;
+	//for (i=0; i<5; i++)
+	{
+		samb.state = 0;
+		uip_ipaddr(&ip_modul[i], 192,168,1,200+i);
+		conn = uip_connect(&ip_modul[i], HTONS(5002));
+		
+		if (conn == NULL)
+		{
+			printf("connection %d sudah NULL ..", i);	
+			return ;
+		}
+		printf("%d : %X..\r\n", i, conn);
+		samb.state = 1;
+		PSOCK_INIT(&samb.p, (char *) &samb.in_buf, sizeof(samb.in_buf));
+		//PSOCK_INIT(&samb2[i].p, (char *) &samb2[i].in_buf, sizeof(samb2[i].in_buf));	
+	}
+	*/
+	
 }
 
 static PT_THREAD(samb_thread(void))
@@ -179,18 +264,23 @@ static PT_THREAD(samb_thread(void))
 
 void samb_appcall (void)
 {
+	struct sambungan_state *s = (struct sambungan_state *) &(uip_conn->appstate);
+	
 	printf("sambungan called\n");
 	if(uip_closed()) 
 	{
   		//printf("sambungan closed\n");
-		samb.state = 0;
-  		return;
+		//samb.state = 0;
+  		s->state = 0;
+		return;
 	}
 	if(uip_aborted() || uip_timedout()) 
 	{
   		printf("sambungan aborted / timeout\n");
-		samb.state = 0;
-  		return;
+		//samb.state = 0;
+  		s->state = 0;
+		return;
 	}
 	samb_thread();
 }
+#endif

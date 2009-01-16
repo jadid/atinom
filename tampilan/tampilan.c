@@ -34,6 +34,8 @@ void set_awal_mesin(void);
 void set_awal_sumber(void);
 void set_awal_titik(void);
 
+extern char titik_siap;
+
 unsigned char tek[64];	
 
 portTASK_FUNCTION( tampilan_task, pvParameters )
@@ -71,6 +73,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	read_sumber();
 	read_mesin();
 	read_titik();
+	titik_siap = 1;
 	
 	cls_layar();
 	vTaskDelay(500);

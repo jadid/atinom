@@ -29,6 +29,8 @@ extern struct t_mesin mesin[];
 extern struct t_titik titik[];
 extern struct t_sumber sumber[];
 
+extern struct sambungan_state samb;
+
 extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
@@ -293,6 +295,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);
 	printf("size struct Sumber = %d\r\n", sizeof (struct t_sumber) * JML_SUMBER);
 	printf("size struct Titik  = %d\r\n", sizeof (struct t_titik) * JML_MESIN * TIAP_MESIN);
+	printf("size struct sambungan = %d\r\n", sizeof (samb));
 	
   	tinysh_set_prompt("Babelan $ ");
 	/* 

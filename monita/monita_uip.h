@@ -49,6 +49,7 @@ struct monita_state {
 struct sambungan_state {
 	struct psock p;
 	char state;
+	//char nomer_samb;
 	struct t_xdata in_buf;
 	//char in_buf[256];	// harusnya 248 cukup
 	//char name[40];

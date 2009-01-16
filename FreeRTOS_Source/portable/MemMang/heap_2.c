@@ -257,9 +257,10 @@ xBlockLink *pxLink;
 /*-----------------------------------------------------------*/
 
 
-#define awal_stack	0x7FD02000	/* USB RAM 0x7FD01000 juga OK*/
+//#define awal_stack	0x7FD02000	/* USB RAM 0x7FD01000 juga OK*/
+#define awal_stack	0x7FD00400	/* USB RAM 0x7FD01000 juga OK*/
 //#define awal_stack 0x7FE00800
-#define maks_stack	0x2000			/* 8 KB */
+#define maks_stack	0x400			/* 1 KB */
 
 static unsigned int  stack_used = 0;
 void *pvPortMallocKU( size_t xWantedSize )

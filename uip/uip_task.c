@@ -25,11 +25,14 @@
 
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
+extern char titik_siap;
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
 	portBASE_TYPE xARPTimer;
 	uip_ipaddr_t xIPAddr;
+	int loop;
+	
 	static volatile portTickType xStartTime, xCurrentTime;
 
 	vTaskDelay(200);
@@ -67,17 +70,35 @@ static portTASK_FUNCTION( tunggu, pvParameters )
     monita_init();
 #endif
 
+	
 #ifdef BOARD_TAMPILAN
+	while(titik_siap == 0)
+	{
+		vTaskDelay(10);	
+	}
 	sambungan_init();
 #endif
 
 	//  Initialise the local timers
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
+	
+	// supaya cukup waktu buat siap2
+	loop = -1000;
 
 	for (;;)
 	{
 		vTaskDelay(2);
+		
+		#ifdef BOARD_TAMPILAN
+		loop++;
+		if (loop > 100) 
+		{
+			loop = 0;
+			sambungan_connect();	
+		}
+		#endif
+		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())
 		{

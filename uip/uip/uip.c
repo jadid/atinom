@@ -216,7 +216,8 @@ u8_t uip_flags;     /* The uip_flags variable is used for
 struct uip_conn *uip_conn;   /* uip_conn always points to the current
                                 connection. */
 #ifndef PAKE_RAM_ETH
-struct uip_conn uip_conns[UIP_CONNS]  __attribute__ ((section (".eth_test")));
+//struct uip_conn uip_conns[UIP_CONNS]  __attribute__ ((section (".eth_test")));
+struct uip_conn uip_conns[UIP_CONNS]  __attribute__ ((section (".usb_text")));
 
 #else
 struct uip_conn *uip_connsee;

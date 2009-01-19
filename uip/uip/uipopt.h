@@ -256,7 +256,7 @@
  *
  * \hideinitializer
  */
-#ifndef UIP_CONF_MAX_CONNECTIONS
+#ifndef UIP_CONF_MAX_CONNECTIONS  // lihat di uip-conf.h
 #define UIP_CONNS       10
 #else /* UIP_CONF_MAX_CONNECTIONS */
 #define UIP_CONNS UIP_CONF_MAX_CONNECTIONS

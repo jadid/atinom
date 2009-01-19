@@ -701,6 +701,7 @@ static void encMACwrite (u8_t data)
  *****************************************************************************/
 static void encMACwriteBulk (u8_t *buffer, u16_t length)
 {
+  portENTER_CRITICAL();
   ENC28J60_Select ();
 
   spiPut (WBM);
@@ -709,6 +710,7 @@ static void encMACwriteBulk (u8_t *buffer, u16_t length)
     spiPut (*buffer++);
 
   ENC28J60_Deselect ();
+  portEXIT_CRITICAL();
 }
 
 /******************************************************************************
@@ -747,6 +749,7 @@ static u8_t encMACread (void)
  *****************************************************************************/
 static void encMACreadBulk (u8_t *buffer, u16_t length)
 {
+  portENTER_CRITICAL();
   ENC28J60_Select ();
 
   spiPut (RBM);
@@ -755,5 +758,6 @@ static void encMACreadBulk (u8_t *buffer, u16_t length)
     *buffer++ = spiPut  (0x00);
 
   ENC28J60_Deselect ();
+  portEXIT_CRITICAL();
 }
 

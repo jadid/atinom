@@ -25,7 +25,7 @@
 
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
-extern char titik_siap;
+//extern char titik_siap;
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -72,10 +72,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 	
 #ifdef BOARD_TAMPILAN
-	while(titik_siap == 0)
-	{
-		vTaskDelay(10);	
-	}
 	sambungan_init();
 #endif
 
@@ -211,10 +207,10 @@ void dispatch_tcp_appcall (void)
 	  monita_appcall();
 
 	// gunakan rport untuk konek ke orang lain
-	if (uip_conn->rport == HTONS(5002))
+	if (uip_conn->rport == HTONS(PORT_MONITA))
 	  samb_appcall();
 	  
-	printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
+	//printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
 }
 
 void dispatch_udp_appcall (void)

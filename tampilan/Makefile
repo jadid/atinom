@@ -86,6 +86,7 @@ THUMB_SOURCE= \
 		LCD/lcd_320.c \
 		tampilan.c \
 		LCD/menu_monita.c \
+		LCD/menu_popup.c \
 		../spi/spi.c \
 		../uip/hardware/enc28j60.c	\
 		../uip/clock.c \

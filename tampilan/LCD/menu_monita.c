@@ -14,6 +14,7 @@
 extern struct t_sumber sumber[];
 extern struct t_mesin	mesin[];
 extern struct t_titik	titik[];
+extern struct t_status status[];
 
 unsigned short x;
 unsigned short y;	
@@ -40,13 +41,16 @@ unsigned short y;
 void menu_monita(void);
 void menu_pilih(unsigned char p, unsigned char mesin);
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
-void menu_charge(unsigned char mes);
+void menu_charge(unsigned int mes);
 void menu_pelumas(unsigned char mes);
 void menu_jacket(unsigned char mes);
 void menu_exhaust(unsigned char mes);
 void menu_generator(unsigned char mes);
+void menu_setting(unsigned int ttk);
 
 //char s[128];
+
+extern unsigned char tek[];
 
 void init_scroll(void)
 {
@@ -112,6 +116,8 @@ void menu_monita(void)
 	
 	// setting
 	teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+3, "Setting");
+	teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+3, "Sumber");
+	
 	//teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+8, "---");
 	
 	/*
@@ -169,6 +175,8 @@ void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsig
 /* p adalah group, misalnya charge air dll, mesin adalah unitnya) */
 void menu_pilih(unsigned char p, unsigned char mesin)
 {
+	unsigned int ttk;
+	
 	kotak_bolong(2, 40-menu_jarak_atas+(p*(menu_tinggi+menu_antara)), menu_kanan, 40+menu_tinggi+(p*(menu_tinggi+menu_antara)));
 	
 	//kontak mesin
@@ -189,17 +197,20 @@ void menu_pilih(unsigned char p, unsigned char mesin)
 	if (mesin == 4)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#5");
 	
-	mesin = mesin-1;
-	if (p == 0) menu_charge(mesin);	
+	//ttk = TIAP_MESIN * (mesin-1);
+	ttk = TIAP_MESIN * mesin;
+	
+	if (p == 0) menu_charge(ttk);	
 	else if (p == 1) menu_jacket(mesin);
 	else if (p == 2) menu_pelumas(mesin);
 	else if (p == 3) menu_exhaust(mesin);
 	else if (p == 4) menu_generator(mesin);
 	
-	else if (p == 6) menu_setting();
+	else if (p == 6) menu_setting(ttk);
+	else if (p == 7) menu_sumber(ttk);
 }
 
-void menu_charge(unsigned char mes)
+void menu_charge(unsigned int mes)
 {
 	//char s[128];
 	float f1;
@@ -223,6 +234,18 @@ void menu_charge(unsigned char mes)
 	sprintf(s, "Tr = %3.2f C", masing[mes].CA_T_R);
 	teks_arial(100, 120, s); 
 	*/
+	sprintf(tek, "Pl = %3.2f bar", titik[mes].data);
+	teks_arial(100, 50, tek); 
+	
+	sprintf(tek, "Tl = %3.2f C", titik[mes+2].data);
+	teks_arial(100, 70, tek); 
+
+	sprintf(tek, "Pr = %3.2f bar", titik[mes+1].data);
+	teks_arial(100, 100, tek); 
+	
+	sprintf(tek, "Tr = %3.2f C", titik[mes+3].data);
+	teks_arial(100, 120, tek); 
+	
 }
 
 void menu_jacket(unsigned char mes)
@@ -353,31 +376,97 @@ void menu_generator(unsigned char mes)
 	*/
 }
 
-void menu_setting(void)
+void menu_setting(unsigned int ttk)
 {
 	int i;
+	int y;
+	int tot;
 	//char bb[32];
-	extern unsigned char tek[];
+
 	
 	//teks_layar(85, 40, "Sumber Data");
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Sumber Data");
 	
-	
-	for (i=0; i<10; i++)
+	/*
+	for (i=0; i<JML_SUMBER; i++)
 	{
-		teks_layar(95, 50 + (i*9), sumber[i].nama);
+		sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
+		teks_layar(70, 30 + (i*9), tek);
 		
 		// print out IP
 		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_layar(80, 50 + (i*9), tek);
+		teks_layar(170, 30 + (i*9), tek);
 		
+		//
 		// status
 		if (sumber[i].status == 0)
-			teks_layar(205, 50 + (i*9), "Null");
+			teks_layar(270, 30 + (i*9), "Null");
 		if (sumber[i].status == 1)
-			teks_layar(205, 50 + (i*9), "Normal");
+			teks_layar(270, 30 + (i*9), "Normal");
 		if (sumber[i].status == 2)
-			teks_layar(205, 50 + (i*9), "TimeOut");	
-	}
+			teks_layar(270, 30 + (i*9), "TimeOut");
+		//
+		// jumlah reply 
+		sprintf(tek, "%d", status[i].reply);
+		teks_layar(270, 30 + (i*9), tek);
+			
+	}*/
 	
+	// printout sumber data berdasarkan nomer mesin
+	tot = 0;
+	
+	for (i=0; i<JML_SUMBER; i++)
+	{
+		for (y= ttk ; y< ((ttk+1)+TIAP_MESIN) ; y++)
+		{
+			if (titik[y].ID_sumber == (i+1))
+			{
+				sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
+				teks_layar(70, 27 + (tot*9), tek);
+		
+				// print out IP
+				sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+				teks_layar(170, 27 + (tot*9), tek);	
+				
+				// reply count
+				sprintf(tek, "%d", status[i].reply);
+				teks_layar(270, 27 + (tot*9), tek);
+				
+				tot++;
+				break;
+			}	
+		}
+	}
+}
+
+void menu_sumber(unsigned int ttk)
+{
+	int i;
+
+	//teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Sumber Data");
+	
+	
+	for (i=0; i<JML_SUMBER; i++)
+	{
+		sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
+		teks_layar(70, 27 + (i*9), tek);
+		
+		// print out IP
+		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+		teks_layar(170, 27 + (i*9), tek);
+		
+		/*
+		// status
+		if (sumber[i].status == 0)
+			teks_layar(270, 30 + (i*9), "Null");
+		if (sumber[i].status == 1)
+			teks_layar(270, 30 + (i*9), "Normal");
+		if (sumber[i].status == 2)
+			teks_layar(270, 30 + (i*9), "TimeOut");
+		*/
+		// jumlah reply 
+		sprintf(tek, "%d", status[i].reply);
+		teks_layar(270, 27 + (i*9), tek);
+			
+	}
 }

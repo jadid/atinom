@@ -17,8 +17,6 @@ extern struct t_mesin mesin[];
 extern struct t_titik titik[TIAP_MESIN * JML_MESIN];
 
 char *f_out(float ff);
-
-char titik_siap = 0;
 							  
 void cek_titik(unsigned char no_mes)
 {

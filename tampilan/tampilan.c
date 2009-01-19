@@ -34,7 +34,7 @@ void set_awal_mesin(void);
 void set_awal_sumber(void);
 void set_awal_titik(void);
 
-extern char titik_siap;
+//extern char titik_siap;
 
 unsigned char tek[64];	
 
@@ -44,6 +44,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	unsigned char key_index=0;
 	unsigned char mesin_index=0;
 	int i;
+	int loop;
 	
 	//teks_komik(14, 4, "Tampilan Monita");
 	// set PF14 & PF10 sebagai input interrupt keypad
@@ -73,7 +74,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	read_sumber();
 	read_mesin();
 	read_titik();
-	titik_siap = 1;
+	//titik_siap = 1;
 	
 	cls_layar();
 	vTaskDelay(500);
@@ -119,7 +120,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	menu_monita();
 	menu_pilih(key_index, mesin_index);
 	update_lcd();	
-	
+	loop = 0;
 		
 	for (;;)
 	{
@@ -135,7 +136,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			{
 				key_index--;
 				//if (key_index == 255) key_index = 4;
-				if (key_index == 255) key_index = 6;
+				//if (key_index == 255) key_index = 6;
+				if (key_index == 255) key_index = 7;
 				else if (key_index == 5) key_index = 4;		   
 			}
 			else if ( key_press == BAWAH )
@@ -143,7 +145,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				key_index++;	
 				//if (key_index > 4) key_index = 0;
 				if (key_index == 5) key_index =6;
-				else if (key_index > 6) key_index = 0;
+				//else if (key_index > 6) key_index = 0;
+				else if (key_index > 7) key_index = 0;
 			}
 			else if ( key_press == KANAN )
 			{
@@ -152,17 +155,30 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			}
 			menu_monita();
 			menu_pilih(key_index, mesin_index);
+			menu_OK(key_index, mesin_index);
 			update_lcd();	
-			
 		}
-		vTaskDelay(100);	
+		else if (loop > 5)
+		{
+			cls_layar();
+			menu_monita();
+			menu_pilih(key_index, mesin_index);
+			menu_OK(key_index, mesin_index);
+			update_lcd();
+			
+			loop = 0;	
+		}
+		vTaskDelay(100);
+		loop++;	
 	}
 	
 }
 
 void init_task_tampilan(void)
 {
-	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
+//	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
+	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 6), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
+
 }
 
 

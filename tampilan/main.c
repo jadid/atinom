@@ -28,8 +28,6 @@ xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
-extern char titik_siap;
-
 void dele(int dd)
 {
 	int g;
@@ -55,7 +53,6 @@ int main( void )
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;
 	
-	titik_siap = 0;
 	init_port_lcd();
 	init_lcd();
 	
@@ -107,7 +104,7 @@ void togle_led_utama(void)
 	}
 	else
 	{
-		titik_siap++;
+		//titik_siap++;
 		//FIO1SET = (1 << 19);
 		FIO0CLR = LED_UTAMA;
 		//tes_low();
@@ -169,6 +166,8 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 			lewat++;
 			if (lewat > 10) /* 1 detik */
 			{
+				//update_hard_lcd();
+				/*
 				teks_clear(10, 232, 15);
 				
 				detik = tick_ku / 1000;
@@ -192,12 +191,13 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 				detik = detik % 60;
 				sprintf(t, "%d:%d:%d  ", jam, menit, detik);
 				
-			//	sprintf(t, "%d", (detik % 60));
+				//	sprintf(t, "%d", (detik % 60));
 				teks_h_hard(10, 232, t);
 				
 				//printf("\nLCD %d", uxTaskGetStackHighWaterMark(NULL));
 				//
 				//printf("lewat > 100\n");
+				*/
 				
 				lewat = 0;	
 			}

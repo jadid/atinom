@@ -9,8 +9,16 @@
 #include "task.h"
 #include "../monita/monita_uip.h"
 
+#ifdef TAMPILAN_LPC
 #define PF10	BIT(15)		// PF1
 #define PF14	BIT(19)		// PF1
+#define FIO_KEYPAD FIO1PIN
+#endif
+
+#ifdef TAMPILAN_LPC_4
+#define PF14	BIT(0)		// P2
+#define FIO_KEYPAD FIO2PIN
+#endif
 
 #define PF11	BIT(16)
 #define PF12	BIT(17)
@@ -49,7 +57,15 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	
 	//teks_komik(14, 4, "Tampilan Monita");
 	// set PF14 & PF10 sebagai input interrupt keypad
+	#ifdef TAMPILAN_LPC
 	FIO1DIR = FIO1DIR  & ~(PF10 | PF14 | KEY_DAT);
+	#endif
+	
+	#ifdef TAMPILAN_LPC_4
+	FIO2DIR = FIO2DIR  & ~PF14;
+	FIO1DIR = FIO1DIR  & ~(KEY_DAT);
+	#endif
+	
 	
 	// kasih delay dulu, supaya skeduler jalan
 	vTaskDelay(100);
@@ -126,7 +142,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		
 	for (;;)
 	{
-		if ((FIO1PIN & PF14) == PF14)
+		//if ((FIO1PIN & PF14) == PF14)
+		if ((FIO_KEYPAD & PF14) == PF14)
 		{
 			cls_layar();
 			
@@ -187,46 +204,3 @@ void init_task_tampilan(void)
 
 }
 
-
-void set_awal_titik(void)
-{
-	int i;
-	
-	for (i=0; i<(TIAP_MESIN * JML_MESIN) ; i++)
-	{
-		//sprintf(titik[i].nama, "-");
-		//titik[i].ID_mesin = 0;
-		titik[i].ID_sumber = 0;
-		titik[i].kanal = 0;
-	}	
-	/*
-	sprintf(titik[0].nama,"CA_P_L");
-	sprintf(titik[1].nama,"CA_P_R");
-	sprintf(titik[2].nama,"CA_T_L");
-	sprintf(titik[3].nama,"CA_P_R");
-	
-	sprintf(titik[4].nama,"JW_P_in_1");
-	sprintf(titik[5].nama,"JW_P_in_2");
-	sprintf(titik[6].nama,"JW_P_ot_1");
-	sprintf(titik[7].nama,"JW_P_ot_2");
-	sprintf(titik[8].nama,"JW_T_in_1");
-	sprintf(titik[9].nama,"JW_T_in_2");
-	sprintf(titik[10].nama,"JW_T_ot_1");
-	sprintf(titik[11].nama,"JW_T_ot_2");
-	
-	sprintf(titik[12].nama,"LO_P_in_1");
-	sprintf(titik[13].nama,"LO_P_in_2");
-	sprintf(titik[14].nama,"LO_P_ot_1");
-	sprintf(titik[15].nama,"LO_P_ot_2");
-	sprintf(titik[16].nama,"LO_T_in_1");
-	sprintf(titik[17].nama,"LO_T_in_2");
-	sprintf(titik[18].nama,"LO_T_ot_1");
-	sprintf(titik[19].nama,"LO_T_ot_2");
-	
-	sprintf(titik[20].nama,"LO_P_in_1");
-	*/
-	
-	
-	
-	
-}

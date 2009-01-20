@@ -43,6 +43,8 @@
 #define _printf	printf2
 #define printf	printf2
 
+#define TAMPILAN_LPC_4
+
 //#define printf(c, ...) serial_puts(c)
 
 /*-----------------------------------------------------------

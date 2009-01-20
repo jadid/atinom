@@ -132,6 +132,22 @@ void set_titik(int argc, char **argv)
 	
 	if (argc < 4) 
 	{
+		if (argc > 1)
+		{
+			if (strcmp(argv[1], "help") == 0)
+			{
+				printf("  set_titik a b c\r\n");
+				printf("  : a nomer titik, b nomer sumber, c kanal\r\n");
+		
+				return;
+			} 
+			else if (strcmp(argv[1], "default") == 0)
+			{
+				set_awal_titik();
+				
+				return;
+			}	
+		}
 		printf(" ERR: argument kurang !\r\n");
 		return;	
 	}
@@ -189,4 +205,43 @@ void read_titik(void)
 	taskENTER_CRITICAL();
 	memcpy((char *)&titik, (char *) ALMT_TITIK, sizeof (titik));
 	taskEXIT_CRITICAL();		
+}
+
+
+void set_awal_titik(void)
+{
+	int i;
+	
+	for (i=0; i<(TIAP_MESIN * JML_MESIN) ; i++)
+	{
+		titik[i].ID_sumber = 0;
+		titik[i].kanal = 0;
+		titik[i].data = 0.00;
+	}	
+	/*
+	sprintf(titik[0].nama,"CA_P_L");
+	sprintf(titik[1].nama,"CA_P_R");
+	sprintf(titik[2].nama,"CA_T_L");
+	sprintf(titik[3].nama,"CA_P_R");
+	
+	sprintf(titik[4].nama,"JW_P_in_1");
+	sprintf(titik[5].nama,"JW_P_in_2");
+	sprintf(titik[6].nama,"JW_P_ot_1");
+	sprintf(titik[7].nama,"JW_P_ot_2");
+	sprintf(titik[8].nama,"JW_T_in_1");
+	sprintf(titik[9].nama,"JW_T_in_2");
+	sprintf(titik[10].nama,"JW_T_ot_1");
+	sprintf(titik[11].nama,"JW_T_ot_2");
+	
+	sprintf(titik[12].nama,"LO_P_in_1");
+	sprintf(titik[13].nama,"LO_P_in_2");
+	sprintf(titik[14].nama,"LO_P_ot_1");
+	sprintf(titik[15].nama,"LO_P_ot_2");
+	sprintf(titik[16].nama,"LO_T_in_1");
+	sprintf(titik[17].nama,"LO_T_in_2");
+	sprintf(titik[18].nama,"LO_T_ot_1");
+	sprintf(titik[19].nama,"LO_T_ot_2");
+	
+	sprintf(titik[20].nama,"LO_P_in_1");
+	*/	
 }

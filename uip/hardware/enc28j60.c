@@ -164,7 +164,9 @@ int enc28j60Init (void)
   ENC28J60_Reset ();
 
   // set INT_ENC sebagai input
-  FIO1DIR = FIO1DIR & ~(INT_ENC);
+  //FIO1DIR = FIO1DIR & ~(INT_ENC);
+  init_enc_port();
+  
   //
   //  Disable UART1 so we can use the RXD pin as EINT3
   //
@@ -431,7 +433,8 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 unsigned int cek_paket(void)
 {
 
-	if (FIO1PIN & INT_ENC)
+	//if (FIO1PIN & INT_ENC)
+	if (FIO_CEK_PAKET & INT_ENC)
 	{
 		return 0;
 	}

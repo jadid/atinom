@@ -13,7 +13,14 @@
 #include "semphr.h"
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
+
+#ifdef TAMPILAN_LPC
 #define LED_UTAMA	(1 << 26)			// GPIO026
+#endif
+
+#ifdef TAMPILAN_LPC_4
+#define LED_UTAMA	BIT(27)
+#endif
 
 xSemaphoreHandle lcd_sem;
 

@@ -17,12 +17,24 @@ extern xSemaphoreHandle lcd_sem;
 
 #define BACKLIT		BIT(20)	// PF15, P1.20
 
+#ifdef TAMPILAN_LPC
 #define WR		BIT(23)	// P0
 #define RD		BIT(22)	// P0
 #define AMS0	BIT(11) // P2
 #define A1		BIT(19)	// P0
 
 #define DAT8	(BIT(24) | BIT(25) | BIT(26) | BIT(27) | BIT(28) | BIT(29) | BIT(30) | BIT(31))	
+#endif
+
+/* Board Tampilan LPC 20 Jan 09 */
+#ifdef TAMPILAN_LPC_4
+#define WR		BIT(4)	// P1
+#define RD		BIT(1)	// P1
+#define AMS0	BIT(8)  // P1
+#define A1		BIT(0)	// P1
+
+#define DAT8	(BIT(24) | BIT(25) | BIT(26) | BIT(27) | BIT(28) | BIT(29) | BIT(30) | BIT(31))	
+#endif
 
 #define 	BESAR_LAYAR		9600
 #define 	JML_Q_LCD		5
@@ -69,6 +81,7 @@ void init_port_lcd(void)
 	FIO1DIR |= BACKLIT;
 	FIO1CLR |= BACKLIT;
 	
+	#ifdef TAMPILAN_LPC
 	// WR & RD
 	FIO0DIR |= (WR | RD | A1);
 	FIO0SET |= (WR | RD | A1);
@@ -76,12 +89,19 @@ void init_port_lcd(void)
 	// AMS0
 	FIO2DIR = AMS0;
 	FIO2SET = AMS0;
+	#endif
+	
+	#ifdef TAMPILAN_LPC_4
+	FIO1DIR |= (WR | RD | A1 | AMS0);
+	FIO1SET |= (WR | RD | A1 | AMS0);
+	#endif
 	
 	// data 8 bit
 	FIO1DIR |= DAT8;
 	
 }
 
+#ifdef TAMPILAN_LPC
 void tulis_param(unsigned char param)
 {
 	//AD
@@ -109,6 +129,38 @@ void tulis_command(unsigned char param)
 	// UN-WR & UN-CS
 	FIO0SET = WR | AMS0;	
 }
+#endif
+
+#ifdef TAMPILAN_LPC_4
+void tulis_param(unsigned char param)
+{
+	//AD
+	FIO1CLR = A1 | AMS0;
+	//CS
+	//FIO1CLR = AMS0;
+	//WR
+	FIO1CLR = WR;
+	//data
+	FIO1PIN3 = (unsigned char) param;
+	// UN-WR & UN-CS
+	FIO1SET = WR | AMS0;
+}
+
+void tulis_command(unsigned char param)
+{
+	//AD
+	FIO1SET = A1;
+	//CS
+	FIO1CLR = AMS0;
+	//WR
+	FIO1CLR = WR;
+	//data
+	FIO1PIN3 = (unsigned char) param;
+	// UN-WR & UN-CS
+	FIO1SET = WR | AMS0;	
+}
+#endif
+
 
 void init_lcd(void)
 {	   

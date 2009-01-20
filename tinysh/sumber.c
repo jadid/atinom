@@ -67,8 +67,7 @@ void set_sumber(int argc, char **argv)
 				set_awal_sumber();
 				
 				return;
-			}
-			
+			}	
 		}
 		printf(" ERR: argument kurang !\r\n");
 		printf(" coba set_sumber help \r\n");

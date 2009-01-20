@@ -638,3 +638,28 @@ void teks_clear(unsigned short x, unsigned short y, unsigned short pjg)
 	   	f = f+6;
    }
 }
+
+void hapus(unsigned short x, unsigned short y, unsigned short x2, unsigned short y2)
+{
+	//15 des 06, menghapus layar sesuai dengan koordinat
+	int i;
+	int j;
+	div_t hasil;
+	int offsetku;
+   
+   for (i=y; i<y2; i++)
+   {
+   	hasil = div(x,8);
+   	offsetku = hasil.quot + (i*40);
+   	for (j=x; j<x2;)
+   	{
+   		layar.buf[offsetku] = 0x00;
+   	   //layar[offsetku] = layar[offsetku] | (~(0xFF >> hasil.rem));
+   		//if (hasil.rem != 0)
+			//layar[offsetku+1]= layar[offsetku+1] ^ (font_h[i] << (8-hasil.rem));
+			
+   		offsetku++;
+   		j = j+8;
+   	}	
+   }	
+}

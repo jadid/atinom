@@ -45,6 +45,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	unsigned char mesin_index=0;
 	int i;
 	int loop;
+	unsigned char jum_OK;
 	
 	//teks_komik(14, 4, "Tampilan Monita");
 	// set PF14 & PF10 sebagai input interrupt keypad
@@ -121,6 +122,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	menu_pilih(key_index, mesin_index);
 	update_lcd();	
 	loop = 0;
+	jum_OK = 0;
 		
 	for (;;)
 	{
@@ -153,9 +155,13 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				mesin_index++;
 				if (mesin_index > 4) mesin_index = 0;
 			}
+			else if ( key_press == OK)
+			{
+				jum_OK++;	
+			}
 			menu_monita();
 			menu_pilih(key_index, mesin_index);
-			menu_OK(key_index, mesin_index);
+			menu_OK(key_index, mesin_index, jum_OK);
 			update_lcd();	
 		}
 		else if (loop > 5)
@@ -177,7 +183,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 void init_task_tampilan(void)
 {
 //	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
-	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 6), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
+	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 8), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 
 }
 

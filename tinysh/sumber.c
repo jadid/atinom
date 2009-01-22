@@ -218,6 +218,8 @@ void set_awal_sumber(void)
 		sumber[i].IP2 = 1;
 		sumber[i].IP3 = 255;
 		
+		// pointer data float
+		//sumber[i].df = &i;
 	}	
 	
 	/* testing

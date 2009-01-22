@@ -715,3 +715,14 @@ void hapus(unsigned short x, unsigned short y, unsigned short x2, unsigned short
    	}	
    }	
 }
+
+void msg_box(char *msg)
+{
+   unsigned short cl,kiri;
+   cl = strlen(msg);
+   kiri = (unsigned short)(320 - (cl*6))/2;
+   //bikin kotak ditengah
+   hapus(kiri-20+1, 79, kiri+20+(cl*6) -1, 111);
+   kotak3d(kiri-20, 81, kiri+20+(cl*6), 109);
+   teks_layar(kiri-4+4, 90, msg);
+}

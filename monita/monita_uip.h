@@ -41,6 +41,7 @@ struct t_xdata {
 	char buf[232];				//16 jan 08, disesuaikan dengan Client Utama
 };
 
+
 struct monita_state {
 	struct psock p;
 	char in_buf[10];
@@ -73,6 +74,7 @@ struct t_sumber {
 	char IP2;
 	char IP3;
 	char status;		// tidak aktif, timeout, dll	
+	//struct t_data_float *df;
 };
 
 struct t_titik {

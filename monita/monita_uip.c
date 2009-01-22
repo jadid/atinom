@@ -23,6 +23,8 @@ extern struct t2_konter konter;
 struct t_xdata xdata  __attribute__ ((section (".eth_test")));
 struct t_data_float data_float  __attribute__ ((section (".eth_test")));
 
+extern struct t_data_float s_data[JML_SUMBER];
+
 unsigned int loop_kirim;
 
 void monita_init(void)
@@ -214,16 +216,18 @@ static PT_THREAD(samb_thread(struct sambungan_state *sbg))
 	if (strncmp(sbg->in_buf.mon, "monita1", 7) == 0)
 	{
 		status[sbg->nomer_samb].reply++;
-		memcpy((char *) &data_float, sbg->in_buf.buf, sizeof (data_float));
+		//memcpy((char *) &data_float, sbg->in_buf.buf, sizeof (data_float));
+		memcpy((char *) &s_data[sbg->nomer_samb], sbg->in_buf.buf, sizeof (data_float));
 		
 		//cari titik pemilik data ini 
+		/*
 		for (i=0; i<(TIAP_MESIN * JML_MESIN); i++)
 		{
 			if (titik[i].ID_sumber == sbg->nomer_samb)
 			{
 				titik[i].data = data_float.data[titik[i].kanal];	
 			}	
-		}		
+		}*/		
 		
 		//printf("  data dari server !\n");	
 	}

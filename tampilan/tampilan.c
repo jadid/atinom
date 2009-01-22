@@ -8,33 +8,19 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "../monita/monita_uip.h"
+#include "tampilan.h"
 
-#ifdef TAMPILAN_LPC
-#define PF10	BIT(15)		// PF1
-#define PF14	BIT(19)		// PF1
-#define FIO_KEYPAD FIO1PIN
-#endif
-
-#ifdef TAMPILAN_LPC_4
-#define PF14	BIT(0)		// P2
-#define FIO_KEYPAD FIO2PIN
-#endif
-
-#define PF11	BIT(16)
-#define PF12	BIT(17)
-#define PF13	BIT(18)
-
-#define KEY_DAT	(PF11 | PF12 | PF13)
-
-#define ATAS		0
-#define BAWAH	131072
-#define KANAN	65536
-#define OK		196608
-#define CANCEL	262144
+/* 
+ * struct berikut harus ditaruh di ram utama supaya bisa baca
+ * tulis dari flash, entah kenapa kalau ditaruh di flash tidak bisa
+ * baca & tulis
+ */
 
 struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
 struct t_titik	titik[TIAP_MESIN * JML_MESIN];
+
+struct t_data_float s_data[JML_SUMBER] __attribute__ ((section (".eth_test")));
 
 extern xTaskHandle *hdl_tampilan;
 
@@ -54,6 +40,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	int i;
 	int loop;
 	unsigned char jum_OK;
+	char loop_key;
 	
 	//teks_komik(14, 4, "Tampilan Monita");
 	// set PF14 & PF10 sebagai input interrupt keypad
@@ -110,7 +97,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	vTaskDelay(100);
 	
 	teks_h(14, 20, "Data Sumber Data :");
-	for (i=0; i<20; i++)
+	for (i=0; i<JML_SUMBER; i++)
 	{
 		sprintf(tek, "%2d   %s", (i+1), sumber[i].nama);
 		teks_h(20, 30 + (i*9), tek);
@@ -127,6 +114,12 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			teks_h(220, 30 + (i*9), "Normal");
 		if (sumber[i].status == 2)
 			teks_h(220, 30 + (i*9), "TimeOut");
+			
+		// init data float
+		for(loop = 0; loop < 20; loop++)
+		{
+			s_data[i].data[loop] = 0.00;	
+		}
 		
 	}
 	vTaskDelay(800);
@@ -139,59 +132,76 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	update_lcd();	
 	loop = 0;
 	jum_OK = 0;
+	i = loop_key = 0;
 		
 	for (;;)
 	{
-		//if ((FIO1PIN & PF14) == PF14)
 		if ((FIO_KEYPAD & PF14) == PF14)
-		{
-			cls_layar();
+		{	
+			loop_key++;
 			
-			// cek tombol apa yang ditekan
-			key_press = (FIO1PIN & KEY_DAT);
-			printf("tombol ditekan = %d\n", key_press);	
+			if (loop_key > 5)
+			{
+				loop_key = 0;
 			
-			if (key_press == ATAS)
-			{
-				key_index--;
-				//if (key_index == 255) key_index = 4;
-				//if (key_index == 255) key_index = 6;
-				if (key_index == 255) key_index = 7;
-				else if (key_index == 5) key_index = 4;		   
-			}
-			else if ( key_press == BAWAH )
-			{
-				key_index++;	
-				//if (key_index > 4) key_index = 0;
-				if (key_index == 5) key_index =6;
-				//else if (key_index > 6) key_index = 0;
-				else if (key_index > 7) key_index = 0;
-			}
-			else if ( key_press == KANAN )
-			{
-				mesin_index++;
-				if (mesin_index > 4) mesin_index = 0;
-			}
-			else if ( key_press == OK)
-			{
-				jum_OK++;	
-			}
-			menu_monita();
-			menu_pilih(key_index, mesin_index);
-			menu_OK(key_index, mesin_index, jum_OK);
-			update_lcd();	
+				cls_layar();
+			
+				// cek tombol apa yang ditekan
+				key_press = (FIO1PIN & KEY_DAT);
+				printf("tombol ditekan = %d\n", key_press);	
+			
+				if (key_press == ATAS)
+				{
+					key_index--;
+					if (key_index == 255) key_index = 8;
+					else if (key_index == 5) key_index = 4;		   
+				}
+				else if ( key_press == BAWAH )
+				{
+					key_index++;	
+					if (key_index == 5) key_index =6;
+					else if (key_index > 8) key_index = 0;
+				}
+				else if ( key_press == KANAN )
+				{
+					mesin_index++;
+					if (mesin_index > 4) mesin_index = 0;
+				}
+				else if ( key_press == OK)
+				{
+					jum_OK++;	
+				}
+				else if ( key_press == CANCEL)
+				{
+					//jum_OK--;	
+				}
+				menu_OK(key_index, mesin_index, jum_OK);
+				jum_OK = 0;
+				
+				menu_monita(key_index);
+				menu_pilih(key_index, mesin_index);		
+				
+				update_lcd();
+				loop = 0;
+			}	
 		}
-		else if (loop > 5)
+		else
+		{
+			loop_key = 0;	
+		}
+		
+		if (loop > 50)
 		{
 			cls_layar();
-			menu_monita();
+			menu_monita(key_index);		
 			menu_pilih(key_index, mesin_index);
 			menu_OK(key_index, mesin_index);
 			update_lcd();
 			
 			loop = 0;	
 		}
-		vTaskDelay(100);
+		//vTaskDelay(100);
+		vTaskDelay(20);
 		loop++;	
 	}
 	

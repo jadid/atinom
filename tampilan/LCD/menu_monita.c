@@ -38,7 +38,7 @@ unsigned short y;
 #define mesin_top		8
 #define mesin_width	50
 
-void menu_monita(void);
+void menu_monita(unsigned char p);
 void menu_pilih(unsigned char p, unsigned char mesin);
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void menu_charge(unsigned int mes);
@@ -85,7 +85,7 @@ void tabel_data(void)
 	//line_ke(319, 196); line_ke(0, 196);
 }
 
-void menu_monita(void)
+void menu_monita(unsigned char p)
 {
 	//char s[32];
 	//sprintf(s,"%s", loc_data.nama);
@@ -115,8 +115,14 @@ void menu_monita(void)
 	teks_layar(menu_kiri, menu_top+4*(menu_tinggi+menu_antara)+8, "Load");
 	
 	// setting
-	teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+3, "Setting");
-	teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+3, "Sumber");
+	if (p == 6)
+		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+3, "Setting");
+	
+	else if (p == 7)
+		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+5, "Sumber");
+	
+	else if (p == 8)
+		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+7, "Lain2");
 	
 	//teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+8, "---");
 	
@@ -177,7 +183,10 @@ void menu_pilih(unsigned char p, unsigned char mesin)
 {
 	unsigned int ttk;
 	
-	kotak_bolong(2, 40-menu_jarak_atas+(p*(menu_tinggi+menu_antara)), menu_kanan, 40+menu_tinggi+(p*(menu_tinggi+menu_antara)));
+	if (p < 5)
+		kotak_bolong(2, 40-menu_jarak_atas+(p*(menu_tinggi+menu_antara)), menu_kanan, 40+menu_tinggi+(p*(menu_tinggi+menu_antara)));
+	else
+		kotak_bolong(2, 40-menu_jarak_atas+(6*(menu_tinggi+menu_antara))+(p-6)*2, menu_kanan, 40+menu_tinggi+(6*(menu_tinggi+menu_antara))+(p-6)*2);
 	
 	//kontak mesin
 	move_ke(menu_kanan, menu_besar_top);
@@ -442,18 +451,21 @@ void menu_setting(unsigned int ttk)
 void menu_sumber(unsigned int ttk)
 {
 	int i;
+	int jum_aktif=0;
 
 	//teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Sumber Data");
 	
-	
+	// tampilkan yang aktif saja !
 	for (i=0; i<JML_SUMBER; i++)
 	{
-		sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
-		teks_layar(70, 27 + (i*9), tek);
+		if (sumber[i].status == 1)
+		{
+			sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
+			teks_layar(72, 27 + (jum_aktif*9), tek);
 		
-		// print out IP
-		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_layar(170, 27 + (i*9), tek);
+			// print out IP
+			sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+			teks_layar(170, 27 + (jum_aktif*9), tek);
 		
 		/*
 		// status
@@ -464,9 +476,16 @@ void menu_sumber(unsigned int ttk)
 		if (sumber[i].status == 2)
 			teks_layar(270, 30 + (i*9), "TimeOut");
 		*/
-		// jumlah reply 
-		sprintf(tek, "%d", status[i].reply);
-		teks_layar(270, 27 + (i*9), tek);
+			// jumlah reply 
+			sprintf(tek, "%d", status[i].reply);
+			teks_layar(270, 27 + (jum_aktif*9), tek);
 			
+			jum_aktif++;
+		}	
+	}
+	
+	if (jum_aktif == 0)
+	{
+		msg_box("Tidak ada sumber data aktif !");	
 	}
 }

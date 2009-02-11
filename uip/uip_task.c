@@ -20,7 +20,7 @@
 #define uipMAX_BLOCK_TIME (RT_CLOCK_SECOND / 4)
 #define pucUIP_Buffer ((struct uip_eth_hdr *) &uip_buf [0])
 
-//#define PAKE_HTTP
+#define PAKE_HTTP
 //#define PAKE_TELNETD
 
 extern struct t_env env2;
@@ -206,10 +206,11 @@ void dispatch_tcp_appcall (void)
   	if (uip_conn->lport == HTONS(PORT_MONITA))
 	  monita_appcall();
 
+#ifdef BOARD_TAMPILAN
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
 	  samb_appcall();
-	  
+#endif	  
 	//printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
 }
 

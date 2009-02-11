@@ -61,9 +61,13 @@ void cek_stack(void)
 	printf("Sisa stack masing2 task %d\n", 123);
 	garis_bawah();
 	printf(" Shell : %d\n", uxTaskGetStackHighWaterMark(hdl_shell));
-	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	printf(" Led : %d\n", uxTaskGetStackHighWaterMark(hdl_led));
+	
+	#ifdef BOARD_TAMPILAN
 	printf(" Tampilan : %d\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	#endif
+	
 	printf(" Ether : %d\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	
 }							 
@@ -290,12 +294,14 @@ portTASK_FUNCTION(shell, pvParameters )
   	//xTaskCreate( bg_cmd_thread, "bg_cmd", 1000, NULL, 2, &xHandle);
 
   	vTaskDelay(450);
-	
+
+	#ifdef BOARD_TAMPILAN	
 	// cek ukuran struk
 	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);
 	printf("size struct Sumber = %d\r\n", sizeof (struct t_sumber) * JML_SUMBER);
 	printf("size struct Titik  = %d\r\n", sizeof (struct t_titik) * JML_MESIN * TIAP_MESIN);
 	printf("size struct sambungan = %d\r\n", sizeof (samb));
+	#endif
 	
   	tinysh_set_prompt("Babelan $ ");
 	/* 

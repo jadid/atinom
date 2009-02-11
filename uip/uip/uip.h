@@ -1209,7 +1209,7 @@ extern u16_t uip_urglen, uip_surglen;
 
 union uip_conn_comb {
 	//uip_tcp_appstate_telnetd telnetd;
-	//uip_tcp_appstate_httpd   httpd;
+	uip_tcp_appstate_httpd   httpd;
 //	uip_tcp_appstate_t3   smtp;
 
 	uip_sambungan_state sku;
@@ -1243,6 +1243,8 @@ struct uip_conn {
 
   /** The application state. */
   union uip_conn_comb appstate2;
+
+ 
 };
 
 

@@ -398,7 +398,7 @@ handle_connection(struct httpd_state *s)
 void
 httpd_appcall(void)
 {
-  struct httpd_state *s = (struct httpd_state *)&(uip_conn->appstate);
+  struct httpd_state *s = (struct httpd_state *)&(uip_conn->appstate2);
 
 	//serial_puts("http reques !");
 

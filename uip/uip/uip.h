@@ -1209,10 +1209,16 @@ extern u16_t uip_urglen, uip_surglen;
 
 union uip_conn_comb {
 	//uip_tcp_appstate_telnetd telnetd;
+	
+	#ifdef BOARD_KOMON
 	uip_tcp_appstate_httpd   httpd;
-//	uip_tcp_appstate_t3   smtp;
+	#endif
 
+	//	uip_tcp_appstate_t3   smtp;
+
+  	#ifdef BOARD_TAMPILAN
 	uip_sambungan_state sku;
+	#endif
 };
 
 struct uip_conn {
@@ -1242,8 +1248,8 @@ struct uip_conn {
 			 segment sent. */
 
   /** The application state. */
-  union uip_conn_comb appstate2;
 
+  union uip_conn_comb appstate2;
  
 };
 

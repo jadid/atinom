@@ -101,7 +101,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	{
 		sprintf(tek, "%2d   %s", (i+1), sumber[i].nama);
 		teks_h(20, 30 + (i*9), tek);
-		//teks_h(20, 30 + (i*9), sumber[i].nama);	
 		
 		// print out IP
 		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);

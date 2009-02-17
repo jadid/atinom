@@ -42,13 +42,14 @@ void menu_monita(unsigned char p);
 void menu_pilih(unsigned char p, unsigned char mesin);
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void menu_charge(unsigned int mes);
-void menu_pelumas(unsigned char mes);
-void menu_jacket(unsigned char mes);
-void menu_exhaust(unsigned char mes);
-void menu_generator(unsigned char mes);
+void menu_pelumas(unsigned int mes);
+void menu_jacket(unsigned int mes);
+void menu_exhaust(unsigned int mes);
+void menu_generator(unsigned int mes);
 void menu_setting(unsigned int ttk);
 
 //char s[128];
+unsigned char isi_sumber[20];	//sambungan yang aktif
 
 extern unsigned char tek[];
 
@@ -213,7 +214,7 @@ void menu_pilih(unsigned char p, unsigned char mesin)
 	else if (p == 1) menu_jacket(mesin);
 	else if (p == 2) menu_pelumas(mesin);
 	else if (p == 3) menu_exhaust(mesin);
-	else if (p == 4) menu_generator(mesin);
+	else if (p == 4) menu_generator(ttk);
 	
 	else if (p == 6) menu_setting(ttk);
 	else if (p == 7) menu_sumber(ttk);
@@ -257,7 +258,7 @@ void menu_charge(unsigned int mes)
 	
 }
 
-void menu_jacket(unsigned char mes)
+void menu_jacket(unsigned int mes)
 {
 	//char s[128];
 	float f1;
@@ -286,7 +287,7 @@ void menu_jacket(unsigned char mes)
 	*/
 }
 
-void menu_pelumas(unsigned char mes)
+void menu_pelumas(unsigned int mes)
 {
 	//char s[128];
 	float f1;
@@ -315,7 +316,7 @@ void menu_pelumas(unsigned char mes)
 	*/ 
 }
 
-void menu_exhaust(unsigned char mes)
+void menu_exhaust(unsigned int mes)
 {
 	//char s[128];
 	char i;
@@ -349,7 +350,7 @@ void menu_exhaust(unsigned char mes)
 	//teks_arial(100, 70, s); 
 }
 
-void menu_generator(unsigned char mes)
+void menu_generator(unsigned int mes)
 {
 	//char s[128];
 	float f1;
@@ -360,29 +361,30 @@ void menu_generator(unsigned char mes)
 	
 	//teks_arial(180, 22, "Charge Air"); /* posisi kanan atas */
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Generator");
-	/*
-	sprintf(s, "kW  = %3.2f", masing[mes].kw);
-	teks_arial(85, 50, s); 
+	
+	sprintf(tek, "kW  = %3.2f", titik[mes + OFFSET_KW].data);
+	teks_arial(85, 50, tek); 
 	
 	//sprintf(s, "n = %3.2f rpm", masing[mes].rpm);
-	sprintf(s, "kWh = %8.0f ", masing[mes].kwh);
-	teks_arial(85, 70, s); 
+	sprintf(tek, "kWh = %8.0f ", titik[mes + OFFSET_KWH].data);
+	teks_arial(85, 70, tek); 
 	
-	sprintf(s, "f   = %3.2f Hz", masing[mes].frek);
-	teks_arial(85, 90, s); 
+	sprintf(tek, "f   = %3.2f Hz", titik[mes + OFFSET_FREK].data);
+	teks_arial(85, 90, tek); 
 
-	sprintf(s, "pf  = %3.2f ", masing[mes].pf);
-	teks_arial(85, 110, s); 
+	//sprintf(s, "pf  = %3.2f ", masing[mes].pf);
+	//teks_arial(85, 110, s); 
 	
-	sprintf(s, "Amp = %3.2f ", masing[mes].amper);
-	teks_arial(85, 130, s);
+	sprintf(tek, "Amp = %3.2f ", titik[mes + OFFSET_AMP].data);
+	teks_arial(85, 130, tek);
 	
-	sprintf(s, "Volt= %3.2f ", masing[mes].volt);
-	teks_arial(85, 150, s);
+	sprintf(tek, "Volt= %3.2f ", titik[mes + OFFSET_VOLT].data);
+	teks_arial(85, 150, tek);
 
-	sprintf(s, "rpm = %3.2f ", masing[mes].rpm);
-	teks_arial(85, 170, s);
-	*/
+	sprintf(tek, "rpm = %3.2f ", titik[mes + OFFSET_GEN_RPM].data);
+	teks_arial(85, 170, tek);
+	
+	//titik[mes].data);
 }
 
 void menu_setting(unsigned int ttk)
@@ -479,6 +481,9 @@ void menu_sumber(unsigned int ttk)
 			// jumlah reply 
 			sprintf(tek, "%d", status[i].reply);
 			teks_layar(270, 27 + (jum_aktif*9), tek);
+			
+			/* nomer sumber yang aktif disimpan */
+			isi_sumber[jum_aktif] = i;
 			
 			jum_aktif++;
 		}	

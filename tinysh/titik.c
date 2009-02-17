@@ -143,6 +143,7 @@ void set_titik(int argc, char **argv)
 			} 
 			else if (strcmp(argv[1], "default") == 0)
 			{
+				printf("set titik dengan data default !\n");
 				set_awal_titik();
 				
 				return;
@@ -176,7 +177,7 @@ void set_titik(int argc, char **argv)
 	return;
 }							 
 
-static tinysh_cmd_t set_titik_cmd={0,"set_titik","titik sumber kanal","[args]",
+static tinysh_cmd_t set_titik_cmd={0,"set_titik","titik sumber kanal default","[args]",
                               set_titik,0,0,0};
 
 

@@ -7,7 +7,7 @@
 #include "uip.h"
 #include "uip_arp.h"
 
-//#include "../monita/monita_uip.h"
+#include "../monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
 
@@ -20,7 +20,9 @@
 #define uipMAX_BLOCK_TIME (RT_CLOCK_SECOND / 4)
 #define pucUIP_Buffer ((struct uip_eth_hdr *) &uip_buf [0])
 
+#ifdef BOARD_KOMON
 #define PAKE_HTTP
+#endif
 //#define PAKE_TELNETD
 
 extern struct t_env env2;
@@ -32,6 +34,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	portBASE_TYPE xARPTimer;
 	uip_ipaddr_t xIPAddr;
 	int loop;
+	int mul;
 	
 	static volatile portTickType xStartTime, xCurrentTime;
 
@@ -73,6 +76,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 #ifdef BOARD_TAMPILAN
 	sambungan_init();
+	mul = 0;
 #endif
 
 	//  Initialise the local timers
@@ -84,26 +88,35 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 	for (;;)
 	{
+		//taskYIELD();
 		vTaskDelay(2);
+		//vTaskYield();
 		
 		#ifdef BOARD_TAMPILAN
 		loop++;
-		if (loop > 100) 
+		if (loop > 40) 		// 50
 		{
 			loop = 0;
-			sambungan_connect();	
+			//printf(" ** ");
+			sambungan_connect(mul);	
+			
+			mul++;
+			if (mul > JML_MODUL) mul = 0;
 		}
 		#endif
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())
 		{
-		      /* Let the network device driver read an entire IP packet
+		      //printf("p");
+			  /* Let the network device driver read an entire IP packet
 		         into the uip_buf. If it returns > 0, there is a packet in the
 		         uip_buf buffer. */
 		      if ((uip_len = enc28j60Receive ()) > 0)
 		      {
-		    	  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
+		    	 // printf("L=%d\n", loop);
+				  
+				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
 		    	            uip_arp_ipin ();
 		    	            uip_input ();
@@ -154,7 +167,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		             uip_len is set to a value > 0. */
 		          if (uip_len > 0)
 		          {
-		            uip_arp_out ();
+		            //printf("S:%d", i);
+					uip_arp_out ();
 		            enc28j60Send ();
 		          }
 		        }
@@ -194,9 +208,13 @@ void start_ether(void)
 
 void dispatch_tcp_appcall (void)
 {
-	#ifdef PAKE_HTTP
+	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
+	
+	//printf(" *%d= ", sb->nomer_samb);
+	
+#ifdef PAKE_HTTP
 	if (uip_conn->lport == HTONS (80)) httpd_appcall ();
-	#endif
+#endif
 
 #ifdef PAKE_TELNETD
   if (uip_conn->lport == HTONS (23))
@@ -204,12 +222,22 @@ void dispatch_tcp_appcall (void)
 #endif
 
   	if (uip_conn->lport == HTONS(PORT_MONITA))
-	  monita_appcall();
-
+	{
+	  	//printf("1");
+		monita_appcall();
+	}
 #ifdef BOARD_TAMPILAN
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
-	  samb_appcall();
+	{
+	  	/*
+		if(uip_connected()) 
+		{
+				PSOCK_INIT((struct psock *) &sb->p, (char *) &sb->in_buf, sizeof (struct t_xdata));
+				printf("2A");
+		}*/
+		samb_appcall();
+	 }
 #endif	  
 	//printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
 }

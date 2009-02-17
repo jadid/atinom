@@ -79,12 +79,39 @@ static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
 							  
 
 #ifdef BOARD_KOMON
-char *uptime(void)
+//char *uptime(void)
+unsigned int uptime_ovflow=0;
+unsigned int tik_lama=0;
+
+void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn)
 {
-	float upt;
-	unsigned int i;
-	char buf[32];
+	unsigned int detik;
+	unsigned int tik;
 	
+	tik = xTaskGetTickCount();
+	if (tik < tik_lama)
+			uptime_ovflow++;
+	
+	tik_lama = tik;
+	
+	detik = ((uptime_ovflow * 0xFFFFFFFF) + tik)/1000;	// port tick HZ
+	
+	*sec = detik % 60;
+	*min = detik / 60;
+	if (*min > 60) 
+		*min = *min % 60;
+	
+	*jam = detik / 3600;
+	if (*jam > 24)
+		*jam = *jam % 24;
+	
+	*hari = detik / 86400;
+	if (*hari > 365)
+		*hari = *hari % 365;
+	
+	*thn = detik / (8640 * 365);
+	
+	/*
 	upt = (float) konter.ovflow * per_oflow;
 	i = T1TC;
 	upt = upt + (i * (float) per_tik);
@@ -104,6 +131,7 @@ char *uptime(void)
 		sprintf(buf, "%.3f menit\n", upt);
 		return buf;
 	}
+	*/
 	
 }
 

@@ -44,7 +44,7 @@ void cek_mesin(int argc, char **argv)
 	
 }							 
 
-static tinysh_cmd_t cek_mesin_cmd={0,"cek_mesin","-- nomer","[args]",
+static tinysh_cmd_t cek_mesin_cmd={0,"cek_mesin","-- nomer default","[args]",
                               cek_mesin,0,0,0};
 
 
@@ -60,6 +60,7 @@ void set_mesin(int argc, char **argv)
 		{
 			if (strcmp(argv[1], "default") == 0)
 			{
+				printf("set mesin dengan data default !\n");
 				set_awal_mesin();
 				
 				return;

@@ -80,6 +80,8 @@
 extern struct t2_konter konter;
 extern struct t_env env2;
 
+void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
+
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
 unsigned char head_buf[2048] __attribute__ ((section (".eth_test")));
@@ -92,6 +94,13 @@ unsigned short buat_file_index(void)
 	float fl;
 	float temp_rpm;
 	int besar;
+	
+	unsigned int sec;
+	unsigned int menit;
+	unsigned int jam;
+	unsigned int hari;
+	unsigned int tahun;
+	
 	
 	http_hit++;
 	
@@ -131,8 +140,37 @@ unsigned short buat_file_index(void)
 	strcat(tot_buf, "</table>\n");
 	sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
-	strcat(tot_buf, head_buf);
+	
+	/* data uptime */
+	uptime(&sec, &menit, &jam, &hari, &tahun);
+	//sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
+	strcat(tot_buf, "-- Up = ");
+	if (tahun !=0)
+	{
+		sprintf(head_buf, "%d thn ", tahun);
+		strcat(tot_buf, head_buf);	
+	}
+	if (hari !=0)
+	{
+		sprintf(head_buf, "%d hari ", hari);
+		strcat(tot_buf, head_buf);		
+	}
+	if (jam !=0)
+	{
+		sprintf(head_buf, "%d jam ", jam);
+		strcat(tot_buf, head_buf);		
+	}
+	if (menit !=0)
+	{
+		sprintf(head_buf, "%d mnt ", menit);
+		strcat(tot_buf, head_buf);		
+	}
+	
+	sprintf(head_buf, "%d dtk --</h5>\n", sec);
+	strcat(tot_buf, head_buf);		
+		
+	//sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
+	//strcat(tot_buf, head_buf);
 	
 	sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);

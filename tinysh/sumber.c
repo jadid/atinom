@@ -64,6 +64,7 @@ void set_sumber(int argc, char **argv)
 			} 
 			else if (strcmp(argv[1], "default") == 0)
 			{
+				printf("set sumber dengan data default !\n");
 				set_awal_sumber();
 				
 				return;

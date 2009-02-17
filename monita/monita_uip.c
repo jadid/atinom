@@ -115,7 +115,7 @@ void monita_appcall (void)
 #ifdef BOARD_TAMPILAN
 ////*************************************** ethernet tampilan **************************************/
 
-#define JML_MODUL	20
+
 
 extern struct t_sumber sumber[];
 extern struct t_titik titik[];
@@ -135,13 +135,15 @@ void sambungan_init(void)
 	printf("sambungan ethernet init\n");	
 }
 
-/* sambungan konek dipanggil periodik
+/* 
+ * sambungan konek dipanggil periodik oleh uip_task.c
  * sesuai dengan server / modul yang akan
  * diminta datanya, misalnya dipanggil dari 
  * task led
  */
 
-void sambungan_connect(void)
+//void sambungan_connect(void)
+void sambungan_connect(int no)
 {
 	struct uip_conn *conn;
 	struct sambungan_state *samb3;
@@ -149,12 +151,16 @@ void sambungan_connect(void)
 	
 	int i;
 	
-	for (i=0; i<JML_MODUL; i++)
+	i = no;
+	//for (i=0; i<JML_MODUL; i++)
+	//for (i = *no; i<JML_MODUL; i++)
 	{
 		if (sumber[i].status == 1 && status[i].stat == 0)	// harus diaktfikan lagi
 		{
+			#ifdef DEBUG
 			printf("Init sumber %d : %10s : ", (i+1), sumber[i].nama);
 			printf("%d.%d.%d.%d\r\n", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);  
+			#endif
 			
 			uip_ipaddr(ip_modul, sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);	
 			
@@ -170,13 +176,11 @@ void sambungan_connect(void)
 			samb3 = (struct sambungan_state *) &conn->appstate2;
 			samb3->nomer_samb = i;
 			samb3->state = 1;
-			
-			//PSOCK_INIT(PP, (char *) &samb3->in_buf, 20);
+			samb3->timer = 0;
+		
 			PSOCK_INIT((struct psock *) &samb3->p, (char *) &samb3->in_buf, sizeof (struct t_xdata));
-			//PSOCK_INIT(&samb2[jum_kon].p, (char *) &samb2[jum_kon].in_buf, sizeof(samb2[jum_kon].in_buf));
 			
-			//samb.state = 1;
-			//PSOCK_INIT(&samb.p, (char *) &samb.in_buf, sizeof (struct t_xdata));
+			return;
 		}
 	}
 }
@@ -195,47 +199,60 @@ static PT_THREAD(samb_thread(struct sambungan_state *sbg))
 	PSOCK_READBUF(&samb.p);
 	//printf("hasil %s\n", samb.in_buf.mon);
 	
-	
-	/*
 	if (strncmp(samb.in_buf, "monita1", 7) == 0)
 	{
-		printf("  data dari server !\n");	
-	}*/
+		//printf("  data dari server !\n");	
+		memcpy(s_data[samb->nomer_samb].data, samb->in_buf, sizeof s_data[0]);
+	}
 	
 	PSOCK_CLOSE(&samb.p);
 	PSOCK_END(&samb.p);	
 #endif
 	int i;
+	//printf("4");
 	
 	PSOCK_BEGIN(&sbg->p);
-	PSOCK_SEND_STR(&sbg->p, "sampurasun\n");
-	
+	//printf("5");
+	PSOCK_SEND_STR(&sbg->p, "sampurasun");
+	//printf("6");	
 	PSOCK_READBUF(&sbg->p);
+	//printf("7");
 	
 	portENTER_CRITICAL();	
 	if (strncmp(sbg->in_buf.mon, "monita1", 7) == 0)
 	{
 		status[sbg->nomer_samb].reply++;
 		//memcpy((char *) &data_float, sbg->in_buf.buf, sizeof (data_float));
-		memcpy((char *) &s_data[sbg->nomer_samb], sbg->in_buf.buf, sizeof (data_float));
+		memcpy((char *) &s_data[sbg->nomer_samb].data, sbg->in_buf.buf, sizeof (data_float));
+		
+		#ifdef DEBUG_DATA
+		printf(" %d:", sbg->nomer_samb);
+		for (i=0; i<10; i++)
+		{
+			printf("%3.3f ", s_data[sbg->nomer_samb].data[i]);	
+		}
+		printf("\n");
+		#endif
 		
 		//cari titik pemilik data ini 
-		/*
 		for (i=0; i<(TIAP_MESIN * JML_MESIN); i++)
 		{
-			if (titik[i].ID_sumber == sbg->nomer_samb)
+			if (titik[i].ID_sumber == (sbg->nomer_samb + 1))
 			{
-				titik[i].data = data_float.data[titik[i].kanal];	
+				titik[i].data = s_data[sbg->nomer_samb].data[titik[i].kanal -1];	
 			}	
-		}*/		
+		}		
 		
 		//printf("  data dari server !\n");	
 	}
 	portEXIT_CRITICAL();
+	//printf("8");
 	
 	PSOCK_CLOSE(&sbg->p);
+	
+	//printf("9");
 	PSOCK_END(&sbg->p);
-
+	//printf("Z");
 }
 
 void samb_appcall (void)
@@ -245,19 +262,50 @@ void samb_appcall (void)
 	//printf("sambungan called\n");
 	if(uip_closed()) 
 	{
-  		//printf("sambungan closed\n");
-  		sb->state = 0;
+  		#ifdef DEBUG
+		printf("sambungan closed : %d.%d.%d.%d\n", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+  		#endif
+		
+		sb->state = 0;
 		status[sb->nomer_samb].stat = 0;
 		return;
 	}
 	if(uip_aborted() || uip_timedout()) 
 	{
-  		printf("Sumber %d : L=%d aborted / timeout\n", (sb->nomer_samb+1), uip_conn->lport);
-  		sb->state = 0;
+  		#ifdef DEBUG
+		printf("Sumber %d : L=%d aborted / timeout\n", (sb->nomer_samb+1), uip_conn->lport);
+  		#endif
+		
+		sb->state = 0;
 		status[sb->nomer_samb].stat = 0;
 		status[sb->nomer_samb].reply = 0;
 		return;
 	}
+	//printf("3");
+	
+	if (uip_poll()) 
+	{
+		printf(" POOL %d.%d.%d.%d\n", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+		sb->timer++;
+		if (sb->timer > 10)
+		{
+			sb->timer = 0;	
+			sb->state = 0;
+			status[sb->nomer_samb].stat = 0;
+			status[sb->nomer_samb].reply = 0;
+		
+			printf("pool timeout");
+			uip_abort();
+			return;
+		}
+	}
+	//if (uip_acked()) printf("acked");
+	
 	samb_thread(sb);
 }
 #endif

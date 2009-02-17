@@ -48,6 +48,12 @@
 //
  *******************************************************************************/
 
+/*
+ * 16 feb 09
+ * organisasi memeory diperbaiki, RX ditaruh dibawah
+ * biar tidak sering paket hilang ??
+ */
+
 #include <stdio.h>
 #include <string.h>
 
@@ -64,17 +70,25 @@
 //
 #define MAXFRAMESIZE    1518
 #define RAMSIZE       0x2000
+/*
 #define TXSTART       0x0000
 #define TXEND         0x0fff
 #define RXSTART       0x1000
 #define RXEND         0x1fff
 #define RXSIZE        (RXSTOP - RXSTART + 1)
+*/
+#define TX_BUFFER_SIZE  2040 //4096
+#define TXSTART			(RAMSIZE - (TX_BUFFER_SIZE + 8ul))
+#define RXSTART			0x0000ul
+#define	RXEND			((TXSTART -2ul) | 0x0001ul)
+//#define RXSIZE			(RXSTOP-(RXSTART+1ul))
 
 //
 //  Chose one or the other
 //
-#undef  HALF_DUPLEX
-#define FULL_DUPLEX
+//#undef  HALF_DUPLEX
+//#define FULL_DUPLEX
+#define HALF_DUPLEX
 
 #ifdef HALF_DUPLEX
 #ifdef FULL_DUPLEX
@@ -109,7 +123,10 @@ extern struct t_env env2;
 //  Global variable
 //
 u16_t ethRxPointer = 0;
+
+#ifdef GUNA_SEMA
 xSemaphoreHandle xENC28J60Semaphore = NULL;
+#endif
 
 /******************************************************************************
  * Function:        void EthernetInit (void)
@@ -138,6 +155,7 @@ int enc28j60Init (void)
 	uip_setethaddr (mac);
   }
 
+#ifdef GUNA_SEMA
   //
   //  It'd probably be better if the EINT initialization code took a pointer to
   //  the semaphore, rather than just "knowing" about it, but it's hard to make
@@ -153,7 +171,7 @@ int enc28j60Init (void)
   }
 
   xSemaphoreTake (xENC28J60Semaphore, 0);
-
+#endif
   //
   //  Set up the reset line.  This isn't done in the SPI code, because it
   //  doesn't need to be aware of the ENC28J60 reset.  Do it first so we
@@ -215,7 +233,14 @@ int enc28j60Init (void)
   encWriteReg16 (ETXSTL, TXSTART);    // Configure the H/W with the TX base address
 
   encBankSelect (BANK1);
-  encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_BCEN);
+  //encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_BCEN);
+	// set filter
+	encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN);
+	encWriteReg(EPMM0, 0x3f);
+	encWriteReg(EPMM1, 0x30);
+	encWriteReg(EPMCSL, 0xf9);
+	encWriteReg(EPMCSH, 0xf7);
+
 
   encBankSelect (BANK2);
   encWriteReg (MACON2, 0);  // Remove all reset conditions
@@ -259,6 +284,8 @@ int enc28j60Init (void)
   //encWriteReg(EIE, EIE_INTIE | EIE_PKTIE | EIE_TXIE | EIE_TXERIE | EIE_RXERIE);
   encWriteReg(EIE, EIE_INTIE | EIE_PKTIE );
 
+	//encWriteReg(EIE, 0x00);
+	
   return 1;
 }
 
@@ -280,12 +307,17 @@ void enc28j60Send (void)
   u16_t length;
   u16_t value;
 
+	portENTER_CRITICAL();
+	
+	
   length = uip_len;           // Save length for later
 
   encBankSelect (BANK0);
   encWriteReg16 (EWRPTL, TXSTART);  // Configure the H/W with the TX Start and End addresses
-  encMACwrite (0x00);               // Write the per packet option byte we use the default values set in chip earlier
+  //encMACwrite (0x00);               // Write the per packet option byte we use the default values set in chip earlier
 
+	encMACwrite (0x0E); 
+	
   encMACwriteBulk (&uip_buf [0], 54);   // Send 40 + 14 = 54 bytes of header
 
 #ifdef ETHERNETDEBUG
@@ -306,20 +338,40 @@ void enc28j60Send (void)
   //
   //  Configure the H/W with the TX Start and End addresses
   //
-  encWriteReg16 (ETXSTL, TXSTART);  // Configure the H/W with the TX base address
-  encWriteReg16 (ETXNDL, (TXSTART + length));
-  value  = encReadEthReg (ETXNDL);
-  value += encReadEthReg (ETXNDH) << 8;
+  //encWriteReg16 (ETXSTL, TXSTART);  // Configure the H/W with the TX base address
+  encWriteReg16 (ETXNDL, (TXSTART + length + 1)); // 1 untuk kontrol byte
+  //value  = encReadEthReg (ETXNDL);
+  //value += encReadEthReg (ETXNDH) << 8;
 
   //
   //  Enable packet Transmission
   //
+  /*
   encBFCReg (EIR, EIR_TXIF);
   encBFSReg (ECON1, ECON1_TXRST);         // Errata for B5
   encBFCReg (ECON1, ECON1_TXRST);         // Errata for B5
   encBFCReg (EIR, EIR_TXERIF | EIR_TXIF); // Errata for B5
 
   encBFSReg (ECON1, ECON1_TXRTS);
+  */
+  
+  
+  unsigned int temp;
+  // dari gaya BF
+  temp = encReadEthReg (EIR);
+  
+  if((temp & EIR_TXERIF) == 1)
+  {
+  		encBFCReg (EIR, EIR_TXERIF); 
+		encBFSReg (ECON1, ECON1_TXRTS);
+		encBFSReg (ECON1, ECON1_TXRTS);
+  }
+  
+  encBFCReg (EIR, EIR_TXIF);
+  encBFSReg (ECON1, ECON1_TXRTS);
+  
+  portEXIT_CRITICAL();
+  
 }
 
 //
@@ -329,20 +381,35 @@ u16_t enc28j60Receive (void)
 {
   u16_t len = 0;
   u16_t u;
-
+  int jum_pak;
+  
+	portENTER_CRITICAL();
+	
 #ifndef USE_INTERRUPTS
   //
   //  Check if at least one packet has been received and is waiting
   //
-  if ((encReadEthReg (EIR) & EIR_PKTIF) == 0)
-    return 0;
+  	if ((encReadEthReg (EIR) & EIR_PKTIF) == 0)
+  	{
+    	portEXIT_CRITICAL();
+		return 0;
+	}
+	/*
+	encBankSelect (BANK1);
+	jum_pak = encReadEthReg (EPKTCNT);
+	printf("\njp=%d ", jum_pak);
+	*/
 #else
   //
   //  Sanity check that at least one full packet is present (spurious interrupts?)
   //
+  
   encBankSelect (BANK1);
+	jum_pak = encReadEthReg (EPKTCNT);
+	printf("jp=%d ", jum_pak);
 
-  if (!encReadEthReg (EPKTCNT))
+  //if (!encReadEthReg (EPKTCNT))
+  if (!jum_pak)
     return 0;
 #endif
 
@@ -355,14 +422,21 @@ u16_t enc28j60Receive (void)
   ethRxPointer = encMACread ();
   ethRxPointer += encMACread () << 8;
 
+	//printf("N=%X ", ethRxPointer);
+
   //
   //  Sanity check
   //
   if (ethRxPointer > RXEND)
   {
-    enc28j60Init ();
+    	ethRxPointer = 0;
+		printf("reset rx pointer!"); 
+		
+		portEXIT_CRITICAL();
+	//enc28j60Init ();
     return 0;
   }
+  
 
   len = encMACread ();
   len += encMACread () << 8;
@@ -381,6 +455,7 @@ u16_t enc28j60Receive (void)
     for (u = 0; u < len; u++)
       encMACread ();
 
+	portEXIT_CRITICAL();
     return 0;
   }
 
@@ -393,16 +468,19 @@ u16_t enc28j60Receive (void)
   //  Clean up for next packet.  Set the read pointer to the start of RX packet to free up space used by the current frame
   //
   encBankSelect (BANK0);
-  encWriteReg16 (ERXRDPTL, ethRxPointer);
+  encWriteReg16 (ERXRDPTL, ethRxPointer-1);		// errata
 
   //
   //  Decrement EPKTCNT
   //
   encBFSReg (ECON2, ECON2_PKTDEC);
 
+  //printf(":%d:", len);
   //
   //  Return the length - the 4 bytes of CRC (why?)
   //
+  
+  portEXIT_CRITICAL();
   return (len - 4);
 }
 
@@ -419,6 +497,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
   encWriteReg (EIE, EIE_INTIE | EIE_PKTIE);
 #endif
 
+#ifdef GUNA_SEMA
   if ((semStat = xSemaphoreTake (xENC28J60Semaphore, delay)) == pdPASS)
   {
 #ifdef USE_INTERRUPTS
@@ -426,27 +505,31 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 #endif
   }
 
+#endif
   return semStat;
 
 }
 
 unsigned int cek_paket(void)
 {
-
-	//if (FIO1PIN & INT_ENC)
+	
 	if (FIO_CEK_PAKET & INT_ENC)
 	{
 		return 0;
 	}
 	else
 		return 1;
+	
 
-
+	/*
+	 * 13 feb 09, bukan karena ini paket sering ilang 
+	*/
 	/*
 	encBankSelect (BANK1);
 	if (encReadEthReg (EPKTCNT)) return 1;
 	else return 0;
 	*/
+	
 }
 
 /******************************************************************************
@@ -704,7 +787,7 @@ static void encMACwrite (u8_t data)
  *****************************************************************************/
 static void encMACwriteBulk (u8_t *buffer, u16_t length)
 {
-  portENTER_CRITICAL();
+  //portENTER_CRITICAL();
   ENC28J60_Select ();
 
   spiPut (WBM);
@@ -713,7 +796,7 @@ static void encMACwriteBulk (u8_t *buffer, u16_t length)
     spiPut (*buffer++);
 
   ENC28J60_Deselect ();
-  portEXIT_CRITICAL();
+ // portEXIT_CRITICAL();
 }
 
 /******************************************************************************
@@ -752,7 +835,7 @@ static u8_t encMACread (void)
  *****************************************************************************/
 static void encMACreadBulk (u8_t *buffer, u16_t length)
 {
-  portENTER_CRITICAL();
+  //portENTER_CRITICAL();
   ENC28J60_Select ();
 
   spiPut (RBM);
@@ -761,6 +844,6 @@ static void encMACreadBulk (u8_t *buffer, u16_t length)
     *buffer++ = spiPut  (0x00);
 
   ENC28J60_Deselect ();
-  portEXIT_CRITICAL();
+  //portEXIT_CRITICAL();
 }
 

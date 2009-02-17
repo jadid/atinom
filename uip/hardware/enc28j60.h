@@ -166,7 +166,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay);
 #define EPMM6               0x0E            //
 #define EPMM7               0x0F            //
 #define EPMCSL              0x10            //
-#define EPMCSh              0x11            //
+#define EPMCSH              0x11            //
 //                          0x12            //
 //                          0x13            //
 #define EPMOL               0x14            //

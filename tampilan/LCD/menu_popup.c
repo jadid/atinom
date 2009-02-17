@@ -56,6 +56,7 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 	int i;
 	int jum_aktif=0;
 	int loop;
+	unsigned char terus;
 	
 	//menu_pilih(p, mesin);
 	if (p == 7 && jok == 1)
@@ -116,7 +117,7 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 				}
 				
 				menu_monita(7);
-				menu_pilih(7, mesin);
+				menu_pilih(7, mesin, 0);
 				//kotak(68, 25+(9*key_index), 300, 35+(9*key_index));
 				data_sumber(1, key_index);
 				update_lcd();
@@ -130,14 +131,74 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 				loop = 0;
 				cls_layar();
 				menu_monita(7);
-				menu_pilih(7, mesin);
+				menu_pilih(7, mesin, 0);
 				data_sumber(1, key_index);
 				update_lcd();	
 			}
 		}
 	}
-	//else if (p == 7 && jok == 1)
+	
+	/* menu titik */
+	else if (p == 8 && jok == 1)
 	{
+		key_index = 0;
+		terus = 0;
+		jum_aktif = 15;
 		
+		for (;;)
+		{
+			if ((FIO_KEYPAD & PF14) == PF14)
+			{
+				cls_layar();
+				// cek tombol apa yang ditekan
+				key_press = (FIO1PIN & KEY_DAT);
+				
+				if (key_press == ATAS)
+				{
+					if (terus < 15)
+						key_index--;
+					
+					terus--;
+					if (terus == 255)
+					{
+						terus = TIAP_MESIN-1;	
+						key_index = (jum_aktif-1);
+					}
+					
+					//if (key_index == 255) key_index = (jum_aktif-1);
+				}
+				else if ( key_press == BAWAH )
+				{
+					key_index++;	
+					terus++;
+					
+					if (terus > (TIAP_MESIN -1))
+					{
+						terus = 0;
+						key_index = 0;	
+					}
+					//if (key_index > (jum_aktif-1)) key_index = 0;
+					if (key_index > (jum_aktif-1)) key_index--;
+				}
+				else if ( key_press == OK)
+				{
+					//jum_OK++;	
+				}
+				else if ( key_press == CANCEL)
+				{
+					//jum_OK--;
+					return;	
+				}
+				
+				menu_monita(8);
+				menu_pilih(8, mesin, terus);
+				kotak(68, 36+(9*key_index), 300, 46+(9*key_index));
+				//kotak(68, 27+(9*key_index), 300, 37+(9*key_index));
+				//data_sumber(1, key_index);
+				update_lcd();
+				loop = 0;
+			}
+			vTaskDelay(100);
+		}	
 	}
 }

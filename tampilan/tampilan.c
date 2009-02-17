@@ -127,7 +127,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	mesin_index = 0;
 	cls_layar();
 	menu_monita();
-	menu_pilih(key_index, mesin_index);
+	menu_pilih(key_index, mesin_index, 0);
 	update_lcd();	
 	loop = 0;
 	jum_OK = 0;
@@ -178,7 +178,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				jum_OK = 0;
 				
 				menu_monita(key_index);
-				menu_pilih(key_index, mesin_index);		
+				menu_pilih(key_index, mesin_index, 0);		
 				
 				update_lcd();
 				loop = 0;
@@ -193,7 +193,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		{
 			cls_layar();
 			menu_monita(key_index);		
-			menu_pilih(key_index, mesin_index);
+			menu_pilih(key_index, mesin_index, 0);
 			menu_OK(key_index, mesin_index);
 			update_lcd();
 			

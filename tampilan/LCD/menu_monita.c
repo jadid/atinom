@@ -11,6 +11,64 @@
 #include <stdio.h>
 #include "../monita/monita_uip.h"
 
+char keter[100][25] __attribute__ ((section (".lokasi_font"))) = \
+	{	"Charge air P kiri", \
+		"Charge air P kanan", \
+		"Charge air T kiri", \
+		"Charge air T kanan", \
+		"JW inlet P 1", \
+		"JW inlet P 2", \
+		"JW outlet P 1", \
+		"JW outlet P 2", \
+		"JW inlet T 1", \
+		"JW inlet T 2", /* 10 */ \
+		"JW outlet T 1", \
+		"JW outlet T 2", \
+		"LO inlet P 1", \
+		"LO inlet P 2", \
+		"LO outlet P 1", \
+		"LO outlet P 2", \
+		"LO inlet T 1", \
+		"LO inlet T 2", \
+		"LO outlet T 1", \
+		"LO outlet T 2", /* 20 */ \
+		"Exhaust T #1", \
+		"Exhaust T #2", \
+		"Exhaust T #3", \
+		"Exhaust T #4", \
+		"Exhaust T #5", \
+		"Exhaust T #6", \
+		"Exhaust T #7", \
+		"Exhaust T #8", \
+		"Exhaust T #9", \
+		"Exhaust T #10", \
+		"Exhaust T #11", \
+		"Exhaust T #12", \
+		"Exhaust T #13", \
+		"Exhaust T #14", \
+		"Exhaust T #15", \
+		"Exhaust T #16", \
+		"Exhaust T #17", \
+		"Exhaust T #18", \
+		"Exhaust T #19", \
+		"Exhaust T #20", /* 40 */\
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"Engine RPM", \
+		"Turbo RPM 1", \
+		"Turbo RPM 2", \
+		"Fuel inlet counter", \
+		"Fuel outlet counter", /* 50 */\
+		"Power (kW)", \
+		"Energi (kWh)", \
+		"Voltage (V)", \
+		"Ampere (A)", \
+		"frekuensi", \
+		};
+
 extern struct t_sumber sumber[];
 extern struct t_mesin	mesin[];
 extern struct t_titik	titik[];
@@ -39,7 +97,7 @@ unsigned short y;
 #define mesin_width	50
 
 void menu_monita(unsigned char p);
-void menu_pilih(unsigned char p, unsigned char mesin);
+void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag);
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void menu_charge(unsigned int mes);
 void menu_pelumas(unsigned int mes);
@@ -47,6 +105,7 @@ void menu_jacket(unsigned int mes);
 void menu_exhaust(unsigned int mes);
 void menu_generator(unsigned int mes);
 void menu_setting(unsigned int ttk);
+void menu_titik(unsigned int ttk, unsigned char flag);
 
 //char s[128];
 unsigned char isi_sumber[20];	//sambungan yang aktif
@@ -123,7 +182,7 @@ void menu_monita(unsigned char p)
 		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+5, "Sumber");
 	
 	else if (p == 8)
-		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+7, "Lain2");
+		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+7, "Titik");
 	
 	//teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+8, "---");
 	
@@ -180,7 +239,8 @@ void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsig
 
 //void menu_pilih(unsigned char p)
 /* p adalah group, misalnya charge air dll, mesin adalah unitnya) */
-void menu_pilih(unsigned char p, unsigned char mesin)
+/* flag : jika diakses dari menu lebih dalam */
+void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 {
 	unsigned int ttk;
 	
@@ -218,6 +278,8 @@ void menu_pilih(unsigned char p, unsigned char mesin)
 	
 	else if (p == 6) menu_setting(ttk);
 	else if (p == 7) menu_sumber(ttk);
+	else if (p == 8) menu_titik(ttk, flag);
+	
 }
 
 void menu_charge(unsigned int mes)
@@ -244,16 +306,16 @@ void menu_charge(unsigned int mes)
 	sprintf(s, "Tr = %3.2f C", masing[mes].CA_T_R);
 	teks_arial(100, 120, s); 
 	*/
-	sprintf(tek, "Pl = %3.2f bar", titik[mes].data);
+	sprintf(tek, "Pl = %3.2f bar", titik[mes + OFFSET_CAP_L].data);
 	teks_arial(100, 50, tek); 
 	
-	sprintf(tek, "Tl = %3.2f C", titik[mes+2].data);
+	sprintf(tek, "Tl = %3.2f C", titik[mes + OFFSET_CAT_L].data);
 	teks_arial(100, 70, tek); 
 
-	sprintf(tek, "Pr = %3.2f bar", titik[mes+1].data);
+	sprintf(tek, "Pr = %3.2f bar", titik[mes + OFFSET_CAP_R].data);
 	teks_arial(100, 100, tek); 
 	
-	sprintf(tek, "Tr = %3.2f C", titik[mes+3].data);
+	sprintf(tek, "Tr = %3.2f C", titik[mes + OFFSET_CAT_R].data);
 	teks_arial(100, 120, tek); 
 	
 }
@@ -270,21 +332,21 @@ void menu_jacket(unsigned int mes)
 	//teks_arial(180, 22, "Charge Air"); /* posisi kanan atas */
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Jacket Water");
 	
-	/*
-	teks_layar(92, 41, "Inlet");
-	sprintf(s, "P = %3.2f bar", masing[mes].JW_P_in);
-	teks_arial(100, 50, s); 
 	
-	sprintf(s, "T = %3.2f C", masing[mes].JW_T_in);
-	teks_arial(100, 70, s); 
+	teks_layar(92, 41, "Inlet");
+	sprintf(tek, "P = %3.2f bar", titik[mes + OFFSET_JWP_IN1].data);
+	teks_arial(100, 50, tek); 
+	
+	sprintf(tek, "T = %3.2f C", titik[mes + OFFSET_JWT_IN1].data);
+	teks_arial(100, 70, tek); 
 	
 	teks_layar(92, 91, "Outlet");
-	sprintf(s, "P = %3.2f bar", masing[mes].JW_P_out);
-	teks_arial(100, 100, s); 
+	sprintf(tek, "P = %3.2f bar", titik[mes + OFFSET_JWP_OUT1].data);
+	teks_arial(100, 100, tek); 
 	
-	sprintf(s, "T = %3.2f C", masing[mes].JW_T_out);
-	teks_arial(100, 120, s); 
-	*/
+	sprintf(tek, "T = %3.2f C", titik[mes + OFFSET_JWT_OUT1].data);
+	teks_arial(100, 120, tek); 
+	
 }
 
 void menu_pelumas(unsigned int mes)
@@ -300,20 +362,20 @@ void menu_pelumas(unsigned int mes)
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Pelumas");
 	
 	teks_layar(92, 41, "Inlet");
-	/*
-	sprintf(s, "P = %3.2f bar", masing[mes].LO_P_in);
-	teks_arial(100, 50, s); 
 	
-	sprintf(s, "T = %3.2f C", masing[mes].LO_T_in);
-	teks_arial(100, 70, s); 
+	sprintf(tek, "P = %3.2f bar", titik[mes + OFFSET_LOP_IN1].data);
+	teks_arial(100, 50, tek); 
+	
+	sprintf(tek, "T = %3.2f C", titik[mes + OFFSET_LOT_IN1].data);
+	teks_arial(100, 70, tek); 
 
 	teks_layar(92, 91, "Outlet");
-	sprintf(s, "P = %3.2f bar", masing[mes].LO_P_out);
-	teks_arial(100, 100, s); 
+	sprintf(tek, "P = %3.2f bar", titik[OFFSET_LOP_OUT1].data);
+	teks_arial(100, 100, tek); 
 	
-	sprintf(s, "T = %3.2f C", masing[mes].LO_T_out);
-	teks_arial(100, 120, s);
-	*/ 
+	sprintf(tek, "T = %3.2f C", titik[mes + OFFSET_LOT_OUT1].data);
+	teks_arial(100, 120, tek);
+	 
 }
 
 void menu_exhaust(unsigned int mes)
@@ -329,23 +391,23 @@ void menu_exhaust(unsigned int mes)
 	//teks_arial(180, 22, "Charge Air"); /* posisi kanan atas */
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Exhaust");
 	
-	/*
+	
 	for (i=1; i<9; i++)
 	{
-		sprintf(s, "%d = %3.0f", i, masing[mes].exhaust[i]);
-		teks_arial(85, 4+(i*19), s); 
+		sprintf(tek, "%d = %3.0f", i, titik[mes + OFFSET_EXHT1 + i - 1].data);
+		teks_arial(85, 4+(i*19), tek); 
 	}
 	
 	for (i=9; i<17; i++)
 	{
 		if (i==9)
-	   sprintf(s, "%d  = %3.0f", i, masing[mes].exhaust[i]);
+	   sprintf(tek, "%d  = %3.0f", i, titik[mes + OFFSET_EXHT9].data);
 		else
-		sprintf(s, "%d = %3.0f", i, masing[mes].exhaust[i]);
+		sprintf(tek, "%d = %3.0f", i, titik[mes + OFFSET_EXHT1 + i - 1].data);
 		
-	   teks_arial(207, 4+((i-8)*19), s); 
+	   teks_arial(207, 4+((i-8)*19), tek); 
 	}
-	*/
+	
 	//sprintf(s, "T = %3.2f C", f2);
 	//teks_arial(100, 70, s); 
 }
@@ -366,7 +428,7 @@ void menu_generator(unsigned int mes)
 	teks_arial(85, 50, tek); 
 	
 	//sprintf(s, "n = %3.2f rpm", masing[mes].rpm);
-	sprintf(tek, "kWh = %8.0f ", titik[mes + OFFSET_KWH].data);
+	sprintf(tek, "kWh = %.0f ", titik[mes + OFFSET_KWH].data);
 	teks_arial(85, 70, tek); 
 	
 	sprintf(tek, "f   = %3.2f Hz", titik[mes + OFFSET_FREK].data);
@@ -493,4 +555,60 @@ void menu_sumber(unsigned int ttk)
 	{
 		msg_box("Tidak ada sumber data aktif !");	
 	}
+}
+
+void menu_titik(unsigned int ttk, unsigned char flag)
+{
+	int i;
+	int plus;
+	
+	/* informasi titik sesuai dengan mesin yang dipilih */
+	teks_layar(72, 27, "No.   Sbr  Knl  Keterangan");
+	/*
+	sprintf(tek, "%d  %d       %d     %s", ttk, titik[ttk].ID_sumber, titik[ttk].kanal, "CAP L");
+	teks_layar(72, 27 + 10, tek);
+	
+	sprintf(tek, "%d  %d       %d     %s", ttk, titik[ttk+1].ID_sumber, titik[ttk+1].kanal, "CAP R");
+	teks_layar(72, 27 + 20, tek);
+	*/
+	//if (flag == 0)
+	if (flag < 15)
+	{
+		for (i=0; i<15; i++)
+		{
+			sprintf(tek, "%3d    %2d   %d", ttk+i+1, titik[ttk+i].ID_sumber, titik[ttk+i].kanal);
+			teks_layar(72, 38 + (9 * i), tek);
+		}
+	
+		for (i=0; i<15; i++)
+		{
+			sprintf(tek, "%s", keter[i]);	
+			teks_layar(170, 38 + (9 * i), tek);
+		}
+	}
+	else
+	{
+		plus = flag - 14;
+		for (i=0; i<15; i++)
+		{
+			sprintf(tek, "%3d    %2d   %d", ttk+i+1+plus, titik[ttk+i+plus].ID_sumber, titik[ttk+i+plus].kanal);
+			teks_layar(72, 38 + (9 * i), tek);
+		}
+		
+		for (i=0; i<15; i++)
+		{
+			sprintf(tek, "%s", keter[i+plus]);	
+			teks_layar(170, 38 + (9 * i), tek);
+		}		
+	}
+	/*
+	sprintf(tek, "%s", KET_1);
+	teks_layar(170, 38, tek);
+	
+	sprintf(tek, "%s", KET_2);
+	teks_layar(170, 38 + (9 * 1), tek);
+	
+	sprintf(tek, "%s", KET_3);
+	teks_layar(170, 38 + (9 * 2), tek);
+	*/
 }

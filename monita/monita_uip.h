@@ -85,8 +85,6 @@
 #define OFFSET_VOLT		53	- 1
 #define OFFSET_AMP		54	- 1
 
-
-
 struct t_data_float {
 	float data[20];
 };

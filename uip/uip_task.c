@@ -1,4 +1,13 @@
-
+/********
+ * 
+ * 
+ * 
+ * 
+ * 18 feb 2009
+ * cek paket diperbaiki
+ * jika ada error langsung reset enc saja
+ * 
+ ******/
 
 #include <stdlib.h>
 #include "FreeRTOS.h"
@@ -11,23 +20,26 @@
 #include "../tinysh/enviro.h"
 
 
-#define 	PORT_MONITA 5001
-
 #define prio ( tskIDLE_PRIORITY + 3)	// paling tinggi dari yang lain
 
 #define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
 #define uipARP_FREQUENCY  (20)
 #define uipMAX_BLOCK_TIME (RT_CLOCK_SECOND / 4)
 #define pucUIP_Buffer ((struct uip_eth_hdr *) &uip_buf [0])
+#define RT_MENIT		(configTICK_RATE_HZ * 15)
 
 #ifdef BOARD_KOMON
 #define PAKE_HTTP
 #endif
 //#define PAKE_TELNETD
 
+
+unsigned int paket_per_menit=0;
+unsigned int paket_kita=0;
+	
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
-//extern char titik_siap;
+extern unsigned int loop_idle;
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -35,6 +47,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	uip_ipaddr_t xIPAddr;
 	int loop;
 	int mul;
+	unsigned int timer_menit=0;
+	unsigned int loop_menit=0;
+	
 	
 	static volatile portTickType xStartTime, xCurrentTime;
 
@@ -88,13 +103,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 	for (;;)
 	{
-		//taskYIELD();
-		vTaskDelay(2);
-		//vTaskYield();
+		vTaskDelay(1);
 		
 		#ifdef BOARD_TAMPILAN
 		loop++;
-		if (loop > 40) 		// 50
+		if (loop > 50) 		// 50, 40, 80
 		{
 			loop = 0;
 			//printf(" ** ");
@@ -104,18 +117,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			if (mul > JML_MODUL) mul = 0;
 		}
 		#endif
-		
+	
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())
 		{
-		      //printf("p");
+		      paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
 		         into the uip_buf. If it returns > 0, there is a packet in the
 		         uip_buf buffer. */
 		      if ((uip_len = enc28j60Receive ()) > 0)
-		      {
-		    	 // printf("L=%d\n", loop);
-				  
+		      {				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
 		    	            uip_arp_ipin ();
@@ -128,6 +139,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	            {
 		    	              uip_arp_out ();
 		    	              enc28j60Send ();
+							  paket_kita++;
 		    	            }
 		    	     }
 		    	     else if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_ARP))
@@ -196,7 +208,25 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		          xARPTimer = 0;
 		        }
 		      }
-		    }
+			  
+			  	if ((xCurrentTime - timer_menit) >= RT_MENIT)
+			  	{
+				  	extern unsigned int error_ENC;
+					
+					timer_menit = xCurrentTime;
+					loop_menit++;				
+					/*
+					printf("%d menit, paket = %d, kita=%d, idle=%d\n", loop_menit, paket_per_menit, paket_kita, loop_idle);
+					if (error_ENC != 0)
+					{
+						printf("ERR ENC = %X\n", error_ENC);	
+					}*/
+					
+					paket_per_menit = 0;
+					paket_kita = 0;
+					loop_idle = 0;
+				}
+		 }	// tanpa paket
 	}
 }
 
@@ -210,8 +240,6 @@ void dispatch_tcp_appcall (void)
 {
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 	
-	//printf(" *%d= ", sb->nomer_samb);
-	
 #ifdef PAKE_HTTP
 	if (uip_conn->lport == HTONS (80)) httpd_appcall ();
 #endif
@@ -221,25 +249,24 @@ void dispatch_tcp_appcall (void)
     telnetd_appcall ();
 #endif
 
+#ifdef BOARD_KOMON
   	if (uip_conn->lport == HTONS(PORT_MONITA))
 	{
-	  	//printf("1");
 		monita_appcall();
 	}
+#endif
+
 #ifdef BOARD_TAMPILAN
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
 	{
-	  	/*
-		if(uip_connected()) 
-		{
-				PSOCK_INIT((struct psock *) &sb->p, (char *) &sb->in_buf, sizeof (struct t_xdata));
-				printf("2A");
-		}*/
 		samb_appcall();
-	 }
+	}
+	else if (uip_conn->rport == HTONS(PORT_DAYTIME))
+	{
+		samb_appcall();
+	}
 #endif	  
-	//printf("dispatch call L=%d, R=%d\n", uip_conn->lport , uip_conn->rport);
 }
 
 void dispatch_udp_appcall (void)
@@ -253,4 +280,18 @@ void dispatch_udp_appcall (void)
   if (uip_udp_conn->rport == HTONS (DHCPC_SERVER_PORT))
     dhcpc_appcall ();
 #endif
+}
+
+
+
+/* 
+ * 18 feb 2009, idle hook
+ * dipakai untuk cek paket
+ * soalnya dalam loop 1 ms, masih sering paket hilang ?
+ * 
+ * 
+ * */
+void vApplicationIdleHook( void )
+{
+	loop_idle++;	
 }

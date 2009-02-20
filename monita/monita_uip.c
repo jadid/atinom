@@ -4,8 +4,15 @@
  *  Created on: Dec 10, 2008
  *      Author: jadid
  *
- *      server monita dengan protocol UIP
+ * server monita dengan UIP stack
  *
+ * 19 februari 2009
+ * minta daytime service ke server
+ * 
+ * 20 februari 2009
+ * model monita_appcall diperbaiki
+ * tidak usah pakai protothread ... banyak BAD TCP menurut wireshark
+ * 
  */
 
 
@@ -17,9 +24,6 @@
 #include "../GPIO/gpio.h"
 extern struct t2_konter konter;
 
-#define 	PORT_MONITA 5001
-
-
 struct t_xdata xdata  __attribute__ ((section (".eth_test")));
 struct t_data_float data_float  __attribute__ ((section (".eth_test")));
 
@@ -27,98 +31,100 @@ extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;
 
+#ifdef BOARD_KOMON
+
 void monita_init(void)
 {
 	loop_kirim = 0;
 	uip_listen(HTONS(PORT_MONITA));
 }
 
-static PT_THREAD(handle_input(struct monita_state *s))
+void monita_appcall(void)
 {
+	int l;
+	unsigned char buf[32];
 	float temp_rpm;
 	int i;
 	int t;
-
-	PSOCK_BEGIN(&s->p);
-	PSOCK_READBUF(&s->p);
-
-	if (strncmp(s->in_buf, "sampurasun", 10) == 0)
-	{
-		loop_kirim++;
-		//printf("dari monita \n");
-		
-		t=0;
-		for (i=0; i<10;i++)
-		{
-			data_float.data[t] = konter.t_konter[i].hit;
-			t++;
-			// cari frekuensi
-			temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-			// rpm
-			data_float.data[t] = temp_rpm * 60;
-			t++;
-		}
-
-		// debug
-		/*
-		printf("Req monita ke %d\n", loop_kirim);
-		for (i=0; i<10;)
-		{
-			printf("  hit = %4.2f ,", data_float.data[i]);
-			printf("rpm = %4.2f\n", data_float.data[i+1]);
-			i++;
-			i++;
-		}*/
-
-		xdata.nomer = loop_kirim;
-		//xdata.flag = 30;		//pulsa
-		xdata.flag = 10;
-		xdata.alamat = 1;		// stacking board nomer 1
-		strcpy(xdata.mon, "monita1");
-		memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
-
-		PSOCK_SEND(&s->p, (char *) &xdata, sizeof (xdata));
-	}
-	else
-	{
-		printf("unknown request !\n");
-	}
-	//printf("didapat %s", s->in_buf);
-	//PSOCK_SEND_STR(&s->p, "hello \n");
-	PSOCK_CLOSE(&s->p);
-	PSOCK_END(&s->p);
-}
-
-static void handle_connection(struct monita_state *s)
-{
-	//printf("dalam handle\n");
-	handle_input(s);
-	//printf("sesudah handle\n");
-}
-
-void monita_appcall (void)
-{
-	struct monita_state *s = (struct monita_state *) &(uip_conn->appstate2);
-
-	//printf("monita call !\n");
-
+	
+#ifdef DEBUG	
+	loop_kirim++;
+	printf("\n * %d:", loop_kirim);
 	if (uip_connected())
 	{
-		//printf("KONEKTED !\n");
-		PSOCK_INIT(&s->p, s->in_buf, sizeof (s->in_buf));
+		printf("konek\n");
 	}
-
-	//printf("before handle\n");
-	handle_connection(s);
+	if (uip_closed())
+	{
+		printf("close\n");
+	}
+	if (uip_aborted())
+	{
+		printf("abort\n");
+	}
+	if (uip_timedout())
+	{
+		printf("timeout\n");
+	}	
+	if(uip_acked()) 
+	{
+		printf("ack\n");
+	}
+	if (uip_poll())
+	{
+		printf("poll\n");	
+	}
+#endif
+	
+	if (uip_newdata())
+	{
+		l = uip_datalen();
+		//printf("newdata = %d,", l);
+		
+		if (l >= 10)
+		{
+			portENTER_CRITICAL();
+			memcpy(buf, (char *) uip_appdata, 10);
+			portEXIT_CRITICAL();
+			
+			if (strncmp(buf, "sampurasun", 10) == 0)
+			{
+				loop_kirim++;
+				//printf("data monita");	
+				t=0;
+				for (i=0; i<10;i++)
+				{
+					data_float.data[t] = konter.t_konter[i].hit;
+					t++;
+					// cari frekuensi
+					temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+					// rpm
+					data_float.data[t] = temp_rpm * 60;
+					t++;
+				}
+				
+				xdata.nomer = loop_kirim;
+				//xdata.flag = 30;		//pulsa
+				xdata.flag = 10;
+				xdata.alamat = 1;		// stacking board nomer 1
+				strcpy(xdata.mon, "monita1");
+				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
+				
+				//send data ke network
+				uip_send((char *) &xdata, sizeof (xdata));
+			}
+			//printf("\n");	
+		}	
+	}
 }
+#endif
 
 #ifdef BOARD_TAMPILAN
 ////*************************************** ethernet tampilan **************************************/
 
-
-
 extern struct t_sumber sumber[];
 extern struct t_titik titik[];
+extern unsigned char daytime[32];
 
 struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
 
@@ -142,81 +148,74 @@ void sambungan_init(void)
  * task led
  */
 
-//void sambungan_connect(void)
 void sambungan_connect(int no)
 {
 	struct uip_conn *conn;
 	struct sambungan_state *samb3;
 	uip_ipaddr_t ip_modul;
 	
-	int i;
-	
-	i = no;
-	//for (i=0; i<JML_MODUL; i++)
-	//for (i = *no; i<JML_MODUL; i++)
+	if (sumber[no].status == 1 && status[no].stat == 0)	// harus diaktfikan lagi
 	{
-		if (sumber[i].status == 1 && status[i].stat == 0)	// harus diaktfikan lagi
-		{
-			#ifdef DEBUG
-			printf("Init sumber %d : %10s : ", (i+1), sumber[i].nama);
-			printf("%d.%d.%d.%d\r\n", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);  
-			#endif
-			
-			uip_ipaddr(ip_modul, sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);	
-			
-			conn = uip_connect(ip_modul, HTONS(PORT_MONITA));
-			if (conn == NULL)
-			{
-				printf("ERR: Koneksi Penuh\r\n");	
-				return ;
-			}
-			//printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
-	
-			status[i].stat = 1;
-			samb3 = (struct sambungan_state *) &conn->appstate2;
-			samb3->nomer_samb = i;
-			samb3->state = 1;
-			samb3->timer = 0;
+		#ifdef DEBUG
+		printf("Init sumber %d : %10s : ", (no+1), sumber[no].nama);
+		printf("%d.%d.%d.%d\r\n", sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);
+		#endif
 		
-			PSOCK_INIT((struct psock *) &samb3->p, (char *) &samb3->in_buf, sizeof (struct t_xdata));
-			
-			return;
+		uip_ipaddr(ip_modul, sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);	
+		
+		conn = uip_connect(ip_modul, HTONS(PORT_MONITA));
+		if (conn == NULL)
+		{
+			printf("ERR: Koneksi Penuh\r\n");	
+			return ;
 		}
+		//printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
+
+		status[no].stat = 1;
+		samb3 = (struct sambungan_state *) &conn->appstate2;
+		samb3->nomer_samb = no;
+		samb3->state = 1;
+		samb3->timer = 0;
+	
+		PSOCK_INIT((struct psock *) &samb3->p, (char *) &samb3->in_buf, sizeof (struct t_xdata));	
+		return;
 	}
+	/* daytime server, harusnya hanya ada 1 server */
+	else if (sumber[no].status == 5 && status[no].stat == 0)	// harus diaktfikan lagi
+	{
+		#ifdef DEBUG
+		printf("Init daytime %d : %10s : ", (no+1), sumber[no].nama);
+		printf("%d.%d.%d.%d\r\n", sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);
+		#endif
+		uip_ipaddr(ip_modul, sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);	
+		
+		conn = uip_connect(ip_modul, HTONS(PORT_DAYTIME));
+		if (conn == NULL)
+		{
+			printf("ERR: Koneksi Penuh\r\n");	
+			return ;
+		}
+		//printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
+
+		status[no].stat = 1;
+		samb3 = (struct sambungan_state *) &conn->appstate2;
+		samb3->nomer_samb = no;
+		samb3->state = 1;
+		samb3->timer = 0;
+	
+		PSOCK_INIT((struct psock *) &samb3->p, (char *) &samb3->in_buf, 26);	
+		return;
+	}
+	return;
 }
 
-//static PT_THREAD(samb_thread(void))
 static PT_THREAD(samb_thread(struct sambungan_state *sbg))
 {
-#ifdef LAMA	
-	//printf("sambungan thread\n");	
-	PSOCK_BEGIN(&samb.p);
-	
-	//printf("  sampur ..");
-	PSOCK_SEND_STR(&samb.p, "sampurasun\n");
-	//printf(".. rasun\n");
-	
-	PSOCK_READBUF(&samb.p);
-	//printf("hasil %s\n", samb.in_buf.mon);
-	
-	if (strncmp(samb.in_buf, "monita1", 7) == 0)
-	{
-		//printf("  data dari server !\n");	
-		memcpy(s_data[samb->nomer_samb].data, samb->in_buf, sizeof s_data[0]);
-	}
-	
-	PSOCK_CLOSE(&samb.p);
-	PSOCK_END(&samb.p);	
-#endif
 	int i;
-	//printf("4");
 	
 	PSOCK_BEGIN(&sbg->p);
-	//printf("5");
-	PSOCK_SEND_STR(&sbg->p, "sampurasun");
-	//printf("6");	
+	PSOCK_SEND_STR(&sbg->p, "sampurasun");	
 	PSOCK_READBUF(&sbg->p);
-	//printf("7");
 	
 	portENTER_CRITICAL();	
 	if (strncmp(sbg->in_buf.mon, "monita1", 7) == 0)
@@ -242,24 +241,32 @@ static PT_THREAD(samb_thread(struct sambungan_state *sbg))
 				titik[i].data = s_data[sbg->nomer_samb].data[titik[i].kanal -1];	
 			}	
 		}		
-		
-		//printf("  data dari server !\n");	
 	}
-	portEXIT_CRITICAL();
-	//printf("8");
+	portEXIT_CRITICAL();	
 	
 	PSOCK_CLOSE(&sbg->p);
-	
-	//printf("9");
 	PSOCK_END(&sbg->p);
-	//printf("Z");
+}
+
+static PT_THREAD(daytime_thread(struct sambungan_state *sbg))
+{	
+	PSOCK_BEGIN(&sbg->p);
+	//PSOCK_READTO(&sbg->p, ISO_nl);
+	PSOCK_READBUF(&sbg->p);
+	
+	portENTER_CRITICAL();	
+	status[sbg->nomer_samb].reply++;
+	memcpy(daytime, (char *) &sbg->in_buf, 24);
+	portEXIT_CRITICAL();	
+	
+	PSOCK_CLOSE(&sbg->p);
+	PSOCK_END(&sbg->p);
 }
 
 void samb_appcall (void)
 {
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 	
-	//printf("sambungan called\n");
 	if(uip_closed()) 
 	{
   		#ifdef DEBUG
@@ -275,15 +282,16 @@ void samb_appcall (void)
 	if(uip_aborted() || uip_timedout()) 
 	{
   		#ifdef DEBUG
-		printf("Sumber %d : L=%d aborted / timeout\n", (sb->nomer_samb+1), uip_conn->lport);
-  		#endif
+  		printf(" Sumber %d :%d.%d.%d.%d aborted / timeout\n", (sb->nomer_samb+1), \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+		#endif
 		
 		sb->state = 0;
 		status[sb->nomer_samb].stat = 0;
 		status[sb->nomer_samb].reply = 0;
 		return;
 	}
-	//printf("3");
 	
 	if (uip_poll()) 
 	{
@@ -299,13 +307,17 @@ void samb_appcall (void)
 			status[sb->nomer_samb].stat = 0;
 			status[sb->nomer_samb].reply = 0;
 		
-			printf("pool timeout");
+			printf(" POOL timeout");
 			uip_abort();
 			return;
 		}
 	}
 	//if (uip_acked()) printf("acked");
-	
-	samb_thread(sb);
+	if (uip_conn->rport == HTONS(PORT_MONITA))
+		samb_thread(sb);
+	else if (uip_conn->rport == HTONS(PORT_DAYTIME))
+	{
+		daytime_thread(sb);
+	}
 }
 #endif

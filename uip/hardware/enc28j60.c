@@ -123,6 +123,7 @@ extern struct t_env env2;
 //  Global variable
 //
 u16_t ethRxPointer = 0;
+unsigned int error_ENC=0;
 
 #ifdef GUNA_SEMA
 xSemaphoreHandle xENC28J60Semaphore = NULL;
@@ -141,7 +142,8 @@ xSemaphoreHandle xENC28J60Semaphore = NULL;
 int enc28j60Init (void)
 {
   volatile portTickType xTicks;
-
+	
+	
   //
   //  If the current MAC address is 00:00:00:00:00:00, default to UIP_ETHADDR[0..5] values
   //
@@ -282,7 +284,8 @@ int enc28j60Init (void)
   // enable interrupt
   encBankSelect(BANK0);
   //encWriteReg(EIE, EIE_INTIE | EIE_PKTIE | EIE_TXIE | EIE_TXERIE | EIE_RXERIE);
-  encWriteReg(EIE, EIE_INTIE | EIE_PKTIE );
+  encWriteReg(EIE, EIE_INTIE | EIE_PKTIE | EIE_TXERIE | EIE_RXERIE | EIE_LINKIE);
+  //encWriteReg(EIE, EIE_INTIE | EIE_PKTIE );
 
 	//encWriteReg(EIE, 0x00);
 	
@@ -391,7 +394,11 @@ u16_t enc28j60Receive (void)
   //
   	if ((encReadEthReg (EIR) & EIR_PKTIF) == 0)
   	{
-    	portEXIT_CRITICAL();
+    	printf("INT %X ENC, re init()\n", encReadEthReg(EIR));
+		portEXIT_CRITICAL();
+		
+		// re init ENC
+		enc28j60Init();	
 		return 0;
 	}
 	/*

@@ -31,7 +31,8 @@ void cek_sumber(void)
 			printf("Aktif / Normal\r\n");
 		else if (sumber[i].status == 2)
 			printf("TimeOut\r\n");
-		
+		else if (sumber[i].status == 5)
+			printf("Aktif / Daytime server\r\n");
 		else
 			printf("\r\n");
 	}
@@ -128,9 +129,9 @@ void set_sumber(int argc, char **argv)
 		{
 			printf(" sumber = %d : ", sumb);
 			
-			// 0 tidak dipakai, 1 dipakai / diaktifkan , 2 nyambung & aktif, 3 timeout
+			// 0 tidak dipakai, 1 dipakai / diaktifkan , 5 daytime
 			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 1);
+			stat = cek_nomer_sumber(buf, 5);
 			
 			if (stat >=0)
 			{
@@ -138,6 +139,7 @@ void set_sumber(int argc, char **argv)
 				printf("%d.%d.%d.%d : ", sumber[sumb-1].IP0, sumber[sumb-1].IP1, sumber[sumb-1].IP2, sumber[sumb-1].IP3); 
 				if (stat == 0) printf("Tidak diaktifkan\r\n");
 				else if (stat == 1) printf("Diaktifkan\r\n");	
+				else if (stat == 5) printf("Daytime\r\n");	
 			}
 		}
 		else return;	

@@ -38,7 +38,7 @@
 
 //#define BOARD_TAMPILAN
 #define BOARD_KOMON
-#define VERSI	"1.3"
+#define VERSI_KOMON		"1.2"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2

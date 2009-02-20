@@ -132,7 +132,7 @@ static void setenv_fnt(int argc, char **argv)
   
 }
 
-static tinysh_cmd_t setenv_cmd={0,"setenv","set ip","[args]",
+static tinysh_cmd_t setenv_cmd={0,"setenv","ipaddr gateway nama kanal","[args]",
                               setenv_fnt,0,0,0};
 
 unsigned int baca_ip(char *ipne)

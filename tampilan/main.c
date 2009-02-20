@@ -24,6 +24,7 @@
 
 xSemaphoreHandle lcd_sem;
 
+unsigned int loop_idle=0;
 
 static char tog;
 static void sysInit(void);
@@ -216,6 +217,4 @@ void init_task_lcd(void)
 {
 	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", (configMINIMAL_STACK_SIZE * 2), NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
 }
-
-
 

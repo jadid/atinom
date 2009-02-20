@@ -31,6 +31,7 @@ void set_awal_titik(void);
 //extern char titik_siap;
 
 unsigned char tek[64];	
+unsigned char daytime[32];
 
 portTASK_FUNCTION( tampilan_task, pvParameters )
 {
@@ -113,7 +114,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			teks_h(220, 30 + (i*9), "Normal");
 		if (sumber[i].status == 2)
 			teks_h(220, 30 + (i*9), "TimeOut");
-			
+		if (sumber[i].status == 5)
+			teks_h(220, 30 + (i*9), "Daytime");	
 		// init data float
 		for(loop = 0; loop < 20; loop++)
 		{
@@ -147,19 +149,19 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			
 				// cek tombol apa yang ditekan
 				key_press = (FIO1PIN & KEY_DAT);
-				printf("tombol ditekan = %d\n", key_press);	
+				//printf("tombol ditekan = %d\n", key_press);	
 			
 				if (key_press == ATAS)
 				{
 					key_index--;
-					if (key_index == 255) key_index = 8;
+					if (key_index == 255) key_index = 9;
 					else if (key_index == 5) key_index = 4;		   
 				}
 				else if ( key_press == BAWAH )
 				{
 					key_index++;	
 					if (key_index == 5) key_index =6;
-					else if (key_index > 8) key_index = 0;
+					else if (key_index > 9) key_index = 0;
 				}
 				else if ( key_press == KANAN )
 				{

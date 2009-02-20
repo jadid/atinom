@@ -3,6 +3,10 @@
 	
 	entri dari boot.s adalah ke main
 	
+	20 feb 2009
+	buat buffer file index.html dilakukan di 
+	task led.
+	
 */
 
 
@@ -27,7 +31,7 @@
 #endif
 
 xSemaphoreHandle lcd_sem;
-
+unsigned int loop_idle=0;
 
 static char tog;
 static void sysInit(void);
@@ -133,15 +137,19 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	vTaskDelay(100);
 	FIO1SET |= BACKLIT;
 
+	vTaskDelay(2000);
+	
 	for (;;)
 	{
 		togle_led_utama();
-		vTaskDelay(2000);
+		buat_file_index();
+		vTaskDelay(1100);
 	}
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	//xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 8) , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
 

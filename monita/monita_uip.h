@@ -16,7 +16,7 @@
 #define JML_MESIN	10
 #define TIAP_MESIN	70
 #define JML_KANAL	20
-#define JML_MODUL	20
+#define JML_MODUL	JML_SUMBER
 
 
 #define SEKTOR_SUMBER	25
@@ -27,6 +27,10 @@
 
 #define SEKTOR_TITIK	21
 #define ALMT_TITIK		0x70000
+
+#define 	PORT_MONITA 	5001
+#define 	PORT_DAYTIME	13
+#define 	ISO_nl 			0x0a
 
 
 /* offset masing2 data pada array */
@@ -99,12 +103,14 @@ struct t_xdata {
 	char buf[232];				//16 jan 08, disesuaikan dengan Client Utama
 };
 
-
+/*
 struct monita_state {
 	struct psock p;
+	unsigned int timer;
 	char in_buf[10];
 	char name[40];
 };
+*/
 
 struct sambungan_state {
 	struct psock p;

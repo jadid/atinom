@@ -85,28 +85,35 @@ void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned in
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
 unsigned char head_buf[2048] __attribute__ ((section (".eth_test")));
-unsigned char tot_buf[4096] __attribute__ ((section (".eth_test")));
-unsigned int http_hit = 0;
+//unsigned char tot_buf[4096] __attribute__ ((section (".eth_test")));
+//unsigned char tot_buf_siap[4096] __attribute__ ((section (".eth_test")));
+//unsigned int http_hit = 0;
+unsigned char tot_buf[2048] __attribute__ ((section (".eth_test")));
+unsigned char tot_buf_siap[2048] __attribute__ ((section (".eth_test")));
 
-unsigned short buat_file_index(void)
+//unsigned short 
+void buat_file_index(void)
 {
+	int besar;
 	int i;
 	float fl;
 	float temp_rpm;
-	int besar;
 	
 	unsigned int sec;
 	unsigned int menit;
 	unsigned int jam;
 	unsigned int hari;
 	unsigned int tahun;
-	
-	
-	http_hit++;
+				
+	//http_hit++;
+	//portENTER_CRITICAL();
 	
 	sprintf(head_buf, "%s<meta http-equiv=""refresh"" content=""3"">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
 	sprintf(tot_buf, "%s", head_buf);
-	strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering</h4>\n");
+	strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering");
+	sprintf(head_buf, "<br>monita_rtos_%s</h4>\n", VERSI_KOMON);
+	strcat(tot_buf, head_buf);
+	
 	//strcat(tot_buf, "<h4>Modul Counter / Frekuensi / RPM</h4>\n");
 	strcat(tot_buf, "<p>Modul Counter / Frekuensi / RPM\n");
 	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
@@ -138,13 +145,12 @@ unsigned short buat_file_index(void)
 	}	
 	//strcat(tot_buf, "</table>\n<p>Test report kondisi adalah sabagaimana ...</p>\n");
 	strcat(tot_buf, "</table>\n");
-	sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
-	strcat(tot_buf, head_buf);
+	//sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
+	//strcat(tot_buf, head_buf);
 	
 	/* data uptime */
 	uptime(&sec, &menit, &jam, &hari, &tahun);
-	//sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
-	strcat(tot_buf, "-- Up = ");
+	strcat(tot_buf, "<h5>Uptime = ");
 	if (tahun !=0)
 	{
 		sprintf(head_buf, "%d thn ", tahun);
@@ -165,8 +171,8 @@ unsigned short buat_file_index(void)
 		sprintf(head_buf, "%d mnt ", menit);
 		strcat(tot_buf, head_buf);		
 	}
-	
-	sprintf(head_buf, "%d dtk --</h5>\n", sec);
+		
+	sprintf(head_buf, "%d dtk</h5>\n", sec);
 	strcat(tot_buf, head_buf);		
 		
 	//sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
@@ -181,11 +187,14 @@ unsigned short buat_file_index(void)
     sprintf(head_buf, "\n</body>\n</html>\n");
     strcat(tot_buf, head_buf);
 	
-	besar = strlen(tot_buf);
+	//besar = strlen(tot_buf);
 	//printf(tot_buf);
 	//printf(" HTTP pjg file = %d\n", besar);
 	
-	return besar;
+	//return besar;
+	
+	//portEXIT_CRITICAL();
+	return;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -328,8 +337,7 @@ PT_THREAD(send_headers(struct httpd_state *s, const char *statushdr))
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
-static
-PT_THREAD(handle_output(struct httpd_state *s))
+static PT_THREAD(handle_output(struct httpd_state *s))
 {
   char *ptr;
   unsigned short bsr;
@@ -349,9 +357,16 @@ PT_THREAD(handle_output(struct httpd_state *s))
   } 
   else 
   {
-    bsr = buat_file_index();
-	s->file.len = bsr;
-	s->file.data = tot_buf;
+    //bsr = buat_file_index();
+	//s->file.len = bsr;
+	//s->file.data = tot_buf;
+	
+	portENTER_CRITICAL();
+	strcpy(tot_buf_siap, tot_buf);
+	portEXIT_CRITICAL();
+	
+	s->file.len = strlen(tot_buf_siap);
+	s->file.data = tot_buf_siap;
 	
 	//printf(" HTTP request file %s", s->filename);
 

@@ -78,8 +78,7 @@ static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
 
 							  
 
-#ifdef BOARD_KOMON
-//char *uptime(void)
+
 unsigned int uptime_ovflow=0;
 unsigned int tik_lama=0;
 
@@ -102,39 +101,54 @@ void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned in
 		*min = *min % 60;
 	
 	*jam = detik / 3600;
-	if (*jam > 24)
+	if (*jam >= 24)
 		*jam = *jam % 24;
 	
 	*hari = detik / 86400;
-	if (*hari > 365)
+	if (*hari >= 365)
 		*hari = *hari % 365;
 	
 	*thn = detik / (8640 * 365);
 	
-	/*
-	upt = (float) konter.ovflow * per_oflow;
-	i = T1TC;
-	upt = upt + (i * (float) per_tik);
-	if (upt > 60)
-	{
-		upt = upt / 60;
-		if (upt > 24)
-		{
-			sprintf(buf,"%.3 hari", upt);
-			return buf;
-		}
-		sprintf(buf, "%.3f jam\n", upt);
-		return buf;
-	}
-	else
-	{
-		sprintf(buf, "%.3f menit\n", upt);
-		return buf;
-	}
-	*/
-	
 }
 
+static void cek_uptime(int argc, char **argv)
+{
+	unsigned int sec;
+	unsigned int menit;
+	unsigned int jam;
+	unsigned int hari;
+	unsigned int tahun;
+	
+	uptime(&sec, &menit, &jam, &hari, &tahun);
+	printf(" Up = ");
+	if (tahun !=0)
+	{
+		printf("%d thn ", tahun);	
+	}
+	if (hari !=0)
+	{
+		printf("%d hari ", hari);		
+	}
+	if (jam !=0)
+	{
+		printf("%d jam ", jam);		
+	}
+	if (menit !=0)
+	{
+		printf("%d mnt ", menit);		
+	}
+		
+	printf("%d dtk\n", sec);
+		
+	return ;
+}
+
+static tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",
+                              cek_uptime,0,0,0};
+
+
+#ifdef BOARD_KOMON
 static void cek_rpm(int argc, char **argv)
 {
 	unsigned int i;
@@ -254,11 +268,11 @@ portTASK_FUNCTION(shell, pvParameters )
   	xTaskHandle xHandle;
 
 #ifdef BOARD_KOMON
-  	printf("\nStarting Babelan Komon-Counter %s\r\n", VERSI);
+  	printf("\nStarting Babelan Komon-Counter %s\r\n", VERSI_KOMON);
 #endif
 
 #ifdef BOARD_TAMPILAN
-  	printf("\nStarting Babelan Tampilan %s\r\n", VERSI);
+  	printf("\nStarting Babelan Tampilan %s\r\n", VERSI_TAMPILAN);
 #endif
 
   	printf("Daun Biru Engineering, Des 2008\r\n");
@@ -277,6 +291,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&reset_cmd);
 	tinysh_add_command(&cek_stack_cmd);
 	tinysh_add_command(&defenv_cmd);
+	tinysh_add_command(&uptime_cmd);
+	
 	
 #ifdef BOARD_KOMON
 	tinysh_add_command(&cek_rpm_cmd);
@@ -331,7 +347,19 @@ portTASK_FUNCTION(shell, pvParameters )
 	printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
 	
+	#ifdef BOARD_BABELAN
   	tinysh_set_prompt("Babelan $ ");
+	#endif
+	
+	#ifdef BOARD_KOMON
+  	tinysh_set_prompt("Komon $ ");
+	#endif
+	
+	#ifdef BOARD_TAMPILAN
+  	tinysh_set_prompt("Tampilan $ ");
+	#endif
+	
+	
 	/* 
 	 * main loop shell
   	 */

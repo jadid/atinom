@@ -3,8 +3,13 @@
 	menampilkan info2 scrolling di LCD
 	
 	14 Nov 2007
-	
 	furkan jadid, daun biru enginering
+	
+	Jan 2009
+	Mulai diport ke FreeRTOS
+	
+	20 Feb 2009
+	diberi menu system 
 	
 	*/
 
@@ -73,6 +78,7 @@ extern struct t_sumber sumber[];
 extern struct t_mesin	mesin[];
 extern struct t_titik	titik[];
 extern struct t_status status[];
+extern unsigned char daytime[32];
 
 unsigned short x;
 unsigned short y;	
@@ -106,8 +112,8 @@ void menu_exhaust(unsigned int mes);
 void menu_generator(unsigned int mes);
 void menu_setting(unsigned int ttk);
 void menu_titik(unsigned int ttk, unsigned char flag);
+void menu_system(void);
 
-//char s[128];
 unsigned char isi_sumber[20];	//sambungan yang aktif
 
 extern unsigned char tek[];
@@ -140,9 +146,7 @@ void tabel_data(void)
 	teks_layar(50, 28, "Data");
 	//garis medatar
 	move_ke(1, 37); line_ke(318, 37); 
-   move_ke(45, 26); line_ke(45, 195);
-	//move_ke(0, 25); line_ke(319, 25);
-	//line_ke(319, 196); line_ke(0, 196);
+   	move_ke(45, 26); line_ke(45, 195);
 }
 
 void menu_monita(unsigned char p)
@@ -154,10 +158,10 @@ void menu_monita(unsigned char p)
    //teks_arial(230, 2, s);
    
    //waktu
-	//sprintf(s, "%s", temp_net.waktu);
+	sprintf(tek, "%s", daytime);
 	//teks_layar(menu_kanan+menu_kiri-4, 11, s);
-   //teks_layar(180, 232, s);
-   teks_layar(180, 232, "harusnya waktu");
+   teks_layar(175, 232, tek);
+   //teks_layar(180, 232, "harusnya waktu");
    
    teks_layar(menu_kiri, menu_top, "Charge");
 	teks_layar(menu_kiri, menu_top+8, "Air");
@@ -183,6 +187,9 @@ void menu_monita(unsigned char p)
 	
 	else if (p == 8)
 		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+7, "Titik");
+	
+	else if (p == 9)
+		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+8, "System");
 	
 	//teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+8, "---");
 	
@@ -216,16 +223,16 @@ void menu_monita(unsigned char p)
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2)
 {
 	move_ke(x1,y1);
-   line_ke(x1,y2);
-   line_ke(x2,y2);
-   move_ke(x2,y1);
-   line_ke(x1,y1);
+   	line_ke(x1,y2);
+   	line_ke(x2,y2);
+   	move_ke(x2,y1);
+   	line_ke(x1,y1);
    
-   //kotak besar
-   move_ke(x2, y1); line_ke(x2, menu_besar_top); 
-   //move_ke(x2, menu_besar_top);
-   move_ke(menu_besar_kanan, menu_besar_top); line_ke(menu_besar_kanan, menu_besar_tinggi);
-   line_ke(x2, menu_besar_tinggi); line_ke(x2, y2);
+   	//kotak besar
+   	move_ke(x2, y1); line_ke(x2, menu_besar_top); 
+   	//move_ke(x2, menu_besar_top);
+   	move_ke(menu_besar_kanan, menu_besar_top); line_ke(menu_besar_kanan, menu_besar_tinggi);
+   	line_ke(x2, menu_besar_tinggi); line_ke(x2, y2);
    
    //garis kesan 3d
    /*
@@ -279,6 +286,7 @@ void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 	else if (p == 6) menu_setting(ttk);
 	else if (p == 7) menu_sumber(ttk);
 	else if (p == 8) menu_titik(ttk, flag);
+	else if (p == 9) menu_system();
 	
 }
 
@@ -293,19 +301,7 @@ void menu_charge(unsigned int mes)
 	
 	//teks_arial(180, 22, "Charge Air"); /* posisi kanan atas */
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Charge Air");
-	/*
-	sprintf(s, "Pl = %3.2f bar", masing[mes].CA_P_L);
-	teks_arial(100, 50, s); 
-	
-	sprintf(s, "Tl = %3.2f C", masing[mes].CA_T_L);
-	teks_arial(100, 70, s); 
 
-	sprintf(s, "Pr = %3.2f bar", masing[mes].CA_P_R);
-	teks_arial(100, 100, s); 
-	
-	sprintf(s, "Tr = %3.2f C", masing[mes].CA_T_R);
-	teks_arial(100, 120, s); 
-	*/
 	sprintf(tek, "Pl = %3.2f bar", titik[mes + OFFSET_CAP_L].data);
 	teks_arial(100, 50, tek); 
 	
@@ -460,31 +456,6 @@ void menu_setting(unsigned int ttk)
 	//teks_layar(85, 40, "Sumber Data");
 	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Sumber Data");
 	
-	/*
-	for (i=0; i<JML_SUMBER; i++)
-	{
-		sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
-		teks_layar(70, 30 + (i*9), tek);
-		
-		// print out IP
-		sprintf(tek,"%d.%d.%d.%d", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
-		teks_layar(170, 30 + (i*9), tek);
-		
-		//
-		// status
-		if (sumber[i].status == 0)
-			teks_layar(270, 30 + (i*9), "Null");
-		if (sumber[i].status == 1)
-			teks_layar(270, 30 + (i*9), "Normal");
-		if (sumber[i].status == 2)
-			teks_layar(270, 30 + (i*9), "TimeOut");
-		//
-		// jumlah reply 
-		sprintf(tek, "%d", status[i].reply);
-		teks_layar(270, 30 + (i*9), tek);
-			
-	}*/
-	
 	// printout sumber data berdasarkan nomer mesin
 	tot = 0;
 	
@@ -522,7 +493,7 @@ void menu_sumber(unsigned int ttk)
 	// tampilkan yang aktif saja !
 	for (i=0; i<JML_SUMBER; i++)
 	{
-		if (sumber[i].status == 1)
+		if (sumber[i].status == 1 || sumber[i].status == 5)
 		{
 			sprintf(tek, "%2d %s", (i+1), sumber[i].nama);
 			teks_layar(72, 27 + (jum_aktif*9), tek);
@@ -564,14 +535,7 @@ void menu_titik(unsigned int ttk, unsigned char flag)
 	
 	/* informasi titik sesuai dengan mesin yang dipilih */
 	teks_layar(72, 27, "No.   Sbr  Knl  Keterangan");
-	/*
-	sprintf(tek, "%d  %d       %d     %s", ttk, titik[ttk].ID_sumber, titik[ttk].kanal, "CAP L");
-	teks_layar(72, 27 + 10, tek);
-	
-	sprintf(tek, "%d  %d       %d     %s", ttk, titik[ttk+1].ID_sumber, titik[ttk+1].kanal, "CAP R");
-	teks_layar(72, 27 + 20, tek);
-	*/
-	//if (flag == 0)
+
 	if (flag < 15)
 	{
 		for (i=0; i<15; i++)
@@ -601,14 +565,74 @@ void menu_titik(unsigned int ttk, unsigned char flag)
 			teks_layar(170, 38 + (9 * i), tek);
 		}		
 	}
-	/*
-	sprintf(tek, "%s", KET_1);
-	teks_layar(170, 38, tek);
+}
+
+extern xTaskHandle *hdl_shell;
+extern xTaskHandle *hdl_lcd;
+extern xTaskHandle *hdl_led;
+extern xTaskHandle *hdl_tampilan;
+extern xTaskHandle *hdl_ether;
+
+void menu_system(void)
+{
+	unsigned int sec;
+	unsigned int menit;
+	unsigned int jam;
+	unsigned int hari;
+	unsigned int tahun;
+	unsigned char up[64];
 	
-	sprintf(tek, "%s", KET_2);
-	teks_layar(170, 38 + (9 * 1), tek);
+	sprintf(tek, "Monita Tampilan %s", VERSI_TAMPILAN);
+	teks_layar(80, 35, tek);
+	teks_layar(80, 45, "CPU : LPC2368 60 MHz FreeRTOS 5.1.1");
+	teks_layar(80, 55, "daun biru Engineering, Des 2008");	
+	sprintf(tek, "ARM-GCC %s", __VERSION__);
+	teks_layar(80, 65, tek);
+	sprintf(tek, "CC : %s : %s", __DATE__, __TIME__);
+	teks_layar(80, 75, tek);
 	
-	sprintf(tek, "%s", KET_3);
-	teks_layar(170, 38 + (9 * 2), tek);
-	*/
+	
+	uptime(&sec, &menit, &jam, &hari, &tahun);
+	memset(up, 0, 64);
+	
+	sprintf(tek, "Up = ");
+	strcat(up, tek);
+	
+	if (tahun !=0)
+	{
+		sprintf(tek, "%d thn ", tahun);	
+		strcat(up, tek);
+	}
+	if (hari !=0)
+	{
+		sprintf(tek, "%d hari ", hari);	
+		strcat(up, tek);	
+	}
+	if (jam !=0)
+	{
+		sprintf(tek, "%d jam ", jam);
+		strcat(up, tek);		
+	}
+	if (menit !=0)
+	{
+		sprintf(tek, "%d mnt ", menit);	
+		strcat(up, tek);	
+	}
+		
+	sprintf(tek, "%d dtk", sec);
+	strcat(up, tek);	
+	
+	teks_layar(80, 85, up);
+	
+	teks_layar(80, 100, "Free Stack");
+	sprintf(tek, "Shell    : %d", uxTaskGetStackHighWaterMark(hdl_shell));
+	teks_layar(80, 110, tek); 
+	sprintf(tek, "Led      : %d", uxTaskGetStackHighWaterMark(hdl_led));
+	teks_layar(80, 120, tek);
+	sprintf(tek, "Tampilan : %d", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	teks_layar(80, 130, tek); 
+	sprintf(tek, "LCD      : %d", uxTaskGetStackHighWaterMark(hdl_lcd));
+	teks_layar(80, 140, tek);
+	sprintf(tek, "Ethernet : %d", uxTaskGetStackHighWaterMark(hdl_ether));
+	teks_layar(80, 150, tek);   
 }

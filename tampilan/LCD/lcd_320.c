@@ -394,12 +394,13 @@ void update_hard_lcd(void)
    		tulis_param(0x06);
    		
   		tulis_command(0x42);
-  	
-  		for (t=0; t<9600; t++)
+  		portEXIT_CRITICAL();
+  		
+		for (t=0; t<9600; t++)
   		{
   			tulis_param(layar.buf[t]);  		
   		}
-		portEXIT_CRITICAL();
+		//portEXIT_CRITICAL();
 	}
 	else
 	{

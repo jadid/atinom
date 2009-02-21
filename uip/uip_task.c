@@ -110,7 +110,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (loop > 50) 		// 50, 40, 80
 		{
 			loop = 0;
-			//printf(" ** ");
+			
+			//mul=8;
 			sambungan_connect(mul);	
 			
 			mul++;
@@ -264,7 +265,7 @@ void dispatch_tcp_appcall (void)
 	}
 	else if (uip_conn->rport == HTONS(PORT_DAYTIME))
 	{
-		samb_appcall();
+		daytime_appcall();
 	}
 #endif	  
 }

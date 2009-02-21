@@ -398,7 +398,7 @@ void uip_init(void)
 
 	  //uip_udp_conns = (struct uip_udp_conn *) awal_uip_udp_conns;
 	  //if (uip_udp_conns == NULL) printf("mem ETH (uip_udp) tidak bisa di claim !\n");
-
+	saos
 #endif
 
 	  for(c = 0; c < UIP_LISTENPORTS; ++c) {
@@ -406,6 +406,7 @@ void uip_init(void)
 	  }
 	  for(c = 0; c < UIP_CONNS; ++c) {
 		  uip_conns[c].tcpstateflags = UIP_CLOSED;
+		  uip_conns[c].nomer_sambung = 0;
 	  }
 #if UIP_ACTIVE_OPEN
 	  lastport = 1024;

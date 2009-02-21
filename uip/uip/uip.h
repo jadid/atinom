@@ -1248,7 +1248,7 @@ struct uip_conn {
 			 segment sent. */
 
   /** The application state. */
-
+  unsigned int nomer_sambung;	
   union uip_conn_comb appstate2;
  
 };
@@ -1265,6 +1265,7 @@ extern struct uip_conn *uip_conn;
 #ifndef PAKE_RAM_ETH
 extern struct uip_conn uip_conns[UIP_CONNS];
 #else
+sambel
 extern struct uip_conn *uip_conns;
 #endif
 /**

@@ -113,11 +113,13 @@ struct monita_state {
 */
 
 struct sambungan_state {
+	/*
 	struct psock p;
 	unsigned int state;
 	unsigned int nomer_samb;
 	unsigned int timer;
-	struct t_xdata in_buf;
+	*/
+	//struct t_xdata in_buf;
 	//char in_buf[256];	// harusnya 248 cukup
 	//char name[40];
 };
@@ -157,7 +159,11 @@ struct t_mesin {
 
 struct t_status {
 	unsigned int reply;
-	char stat;
+	unsigned int lport;
+	unsigned int timer;
+	unsigned int reply_lama;
+	unsigned int stat;
+	//char stat;
 };
 
 #endif /* MONITA_UIP_H_ */

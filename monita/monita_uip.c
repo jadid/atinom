@@ -244,7 +244,8 @@ void sambungan_connect(int no)
 			status[no].timer = 0;
 			status[no].reply_lama = 0;
 			
-			printf("rekonek sumber %d\n", no+1);	
+			printf("rekonek sumber %d :", no+1);
+			printf("%d.%d.%d.%d\r\n", sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);	
 		}
 	}
 	/* daytime server, harusnya hanya ada 1 server */

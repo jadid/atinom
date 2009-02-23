@@ -13,6 +13,9 @@
  * model monita_appcall diperbaiki
  * tidak usah pakai protothread ... banyak BAD TCP menurut wireshark
  * 
+ * 23 februari 2009
+ * diberikan paksa close jika data diterima kurang dari jumlah seharusnya
+ * 
  */
 
 
@@ -41,47 +44,52 @@ void monita_init(void)
 
 void monita_appcall(void)
 {
-	int l;
+	int len;
 	unsigned char buf[32];
 	float temp_rpm;
 	int i;
 	int t;
+	unsigned char ipne[32];
 	
-#ifdef DEBUG	
+#if 0	
+			sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
 	loop_kirim++;
 	printf("\n * %d:", loop_kirim);
 	if (uip_connected())
 	{
-		printf("konek\n");
+		printf("konek %s\n", ipne);
 	}
 	if (uip_closed())
 	{
-		printf("close\n");
+		printf("close %s\n", ipne);
 	}
 	if (uip_aborted())
 	{
-		printf("abort\n");
+		printf("abort %s\n", ipne);
 	}
 	if (uip_timedout())
 	{
-		printf("timeout\n");
+		printf("timeout %s\n", ipne);
 	}	
 	if(uip_acked()) 
 	{
-		printf("ack\n");
+		printf("ack %s\n", ipne);
 	}
 	if (uip_poll())
 	{
-		printf("poll\n");	
+		printf("poll %s\n", ipne);	
 	}
 #endif
 	
 	if (uip_newdata())
 	{
-		l = uip_datalen();
-		//printf("newdata = %d,", l);
+		len = uip_datalen();
+		//printf("newdata = %d %s\n", len, ipne);
 		
-		if (l >= 10)
+		if (len >= 10)
 		{
 			portENTER_CRITICAL();
 			memcpy(buf, (char *) uip_appdata, 10);
@@ -108,13 +116,35 @@ void monita_appcall(void)
 				xdata.flag = 10;
 				xdata.alamat = 1;		// stacking board nomer 1
 				strcpy(xdata.mon, "monita1");
+				
+				portENTER_CRITICAL();
 				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
+				portEXIT_CRITICAL();
 				
 				//send data ke network
 				uip_send((char *) &xdata, sizeof (xdata));
 			}
 			//printf("\n");	
+		}
+		else 
+		{
+			sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+			printf("Unknown request dari %s\n", ipne);
+			uip_close();	
 		}	
+	}
+	
+	if (uip_poll())
+	{
+		sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+		printf("Invalid pool %s\n", ipne);
+		uip_close();	
 	}
 }
 #endif
@@ -144,8 +174,7 @@ void sambungan_init(void)
 /* 
  * sambungan konek dipanggil periodik oleh uip_task.c
  * sesuai dengan server / modul yang akan
- * diminta datanya, misalnya dipanggil dari 
- * task led
+ * diminta datanya.
  * 
  * dipanggil setiap 50 ms (memutar), sehingga jika ada 20
  * client, setiap client akan dipanggil 1000 ms ( 1 detik ).
@@ -191,11 +220,11 @@ void sambungan_connect(int no)
 		/* 
 		 * kemungkinan tidak close, tidak dpt acknoledge dll, 
 		 * di increment reply_lama
-		 * jika sudah lebih dari 30 detik dipaksa untuk konek lagi
+		 * jika sudah lebih dari 60 detik dipaksa untuk konek lagi
 		 */	
 		
 		status[no].reply_lama++;
-		if (status[no].reply_lama > 30)
+		if (status[no].reply_lama > 60)
 		{
 			/* cari dulu koneksi yang lama
 			 * dan set menjadi belum konek */
@@ -240,17 +269,16 @@ void sambungan_connect(int no)
 		status[no].lport = conn->lport;
 		status[no].timer = 0;
 		status[no].reply_lama = 0;
-		/*
-		samb3 = (struct sambungan_state *) &conn->appstate2;
-		samb3->nomer_samb = no;
-		samb3->state = 1;
-		samb3->timer = 0;
-		*/
-		//PSOCK_INIT((struct psock *) &samb3->p, (char *) &samb3->in_buf, 26);	
+	
 		return;
 	}
 	return;
 }
+
+/* 
+ * sambungan_appcall yang akan dipanggil ketika uip 
+ * menemukan paket untuk port 5001
+ */
 
 void samb_appcall(void)
 {
@@ -288,6 +316,10 @@ void samb_appcall(void)
 		}
 		else
 		{
+			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
 			printf("force to close %s\n", ipne);
 			uip_close();
 			return;
@@ -318,6 +350,10 @@ void samb_appcall(void)
 		}
 		else
 		{
+			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
 			printf("invalid acknoledge %s\n", ipne);
 			uip_close();	
 		}
@@ -328,6 +364,10 @@ void samb_appcall(void)
 		status[nomer_sambung].timer++;
 		if (status[nomer_sambung].timer > 5)
 		{
+			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
 			printf("pool timeout %s\n", ipne);
 			uip_close();		
 		}			
@@ -370,6 +410,16 @@ void samb_appcall(void)
 			
 			uip_close();
 			return;
+		}
+		else if (len > 0)
+		{
+			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+	
+			printf("Invalid uip_newdata() %s, leng = %d\n", ipne, len);
+			uip_close();
+			return;	
 		}
 	}
 }

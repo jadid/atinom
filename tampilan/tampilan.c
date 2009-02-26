@@ -4,6 +4,8 @@
 	14 desember 2008
 	daun biru engineering
 	
+	26 februari 2009
+	diedit dari service desktop
 	*/
 #include "FreeRTOS.h"
 #include "task.h"

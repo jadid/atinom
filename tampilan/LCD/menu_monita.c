@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include "../monita/monita_uip.h"
+#include "../tinysh/enviro.h"
 
 char keter[100][25] __attribute__ ((section (".lokasi_font"))) = \
 	{	"Charge air P kiri", \
@@ -572,6 +573,7 @@ extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
+extern struct t_env env2;
 
 void menu_system(void)
 {
@@ -595,7 +597,7 @@ void menu_system(void)
 	uptime(&sec, &menit, &jam, &hari, &tahun);
 	memset(up, 0, 64);
 	
-	sprintf(tek, "Up = ");
+	sprintf(tek, "Up : ");
 	strcat(up, tek);
 	
 	if (tahun !=0)
@@ -635,4 +637,12 @@ void menu_system(void)
 	teks_layar(80, 140, tek);
 	sprintf(tek, "Ethernet : %d", uxTaskGetStackHighWaterMark(hdl_ether));
 	teks_layar(80, 150, tek);   
+	
+	/* informasi environtment, nama, ip, gateway dll */
+	sprintf(tek, "Nama     : %s", env2.nama_board);
+	teks_layar(80, 170, tek);   
+	sprintf(tek, "IP       : %d.%d.%d.%d", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+	teks_layar(80, 180, tek);   
+	sprintf(tek, "Gateway  : %d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
+	teks_layar(80, 190, tek);
 }

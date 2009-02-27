@@ -89,7 +89,7 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 		
 		for (;;)
 		{
-			if ((FIO_KEYPAD & PF14) == PF14)
+			if(cek_keypad())
 			{
 				cls_layar();
 				// cek tombol apa yang ditekan
@@ -147,7 +147,7 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 		
 		for (;;)
 		{
-			if ((FIO_KEYPAD & PF14) == PF14)
+			if(cek_keypad())
 			{
 				cls_layar();
 				// cek tombol apa yang ditekan

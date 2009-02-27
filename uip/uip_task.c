@@ -48,17 +48,17 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	int loop;
 	int mul;
 	unsigned int timer_menit=0;
-	unsigned int loop_menit=0;
-	
-	
+	unsigned int loop_menit=0;	
 	static volatile portTickType xStartTime, xCurrentTime;
 
 	vTaskDelay(200);
-	// baca environtment (dapat IP dll dulu)
+	
+	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
 	
 	printf("UIP : uip_init\n");
 	uip_init ();
+	
 	//uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
 	uip_ipaddr( xIPAddr, env2.IP0, env2.IP1, env2.IP2, env2.IP3 );
 	uip_sethostaddr( xIPAddr );
@@ -94,11 +94,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	mul = 0;
 #endif
 
-	//  Initialise the local timers
+	/*  Initialise the local timers */
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
 	
-	// supaya cukup waktu buat siap2
+	/* supaya cukup waktu buat siap2 */
 	loop = -1000;
 
 	for (;;)

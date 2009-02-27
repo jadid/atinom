@@ -49,36 +49,8 @@ void save_env(int argc, char **argv)
 
 int tulis_env(void)
 {
-	//struct t_env env;
 	int i;
 	
-	/*
-	sprintf(env.nama_board, "Tes konter");
-	env.IP0 = 192;
-	env.IP1 = 168;
-	env.IP2 = 1;
-	env.IP3 = 5;
-
-	for (i=0; i<20; i++)
-	{
-		env.kalib[i].m = 1234;		// 1.234
-		env.kalib[i].y = 1;			// 0.001
-	}
-	*/
-	/*
-	taskENTER_CRITICAL();
-	sh = malloc(sizeof (struct t_env));
-	taskEXIT_CRITICAL();
-	if (sh == 0)
-	{
-		printf("Memory alloc gagal !\n");
-		return 0;	
-	}
-
-	taskENTER_CRITICAL();
-	memcpy((char *) &sh, (char *) &env2, sizeof env2);
-	taskEXIT_CRITICAL();
-	*/	
 	env2.magic1 = 0xAA;
 	env2.magic2 = 0x77;
 
@@ -138,7 +110,6 @@ int tulis_env(void)
 		command[0] = 51;
 		command[1] = 0x007A000;	// tujuan flash (seuai dengan sektor flash)
 		command[2] = (unsigned short *) &env2;		// source ram
-		//command[2] = &sh;	
 		command[3] = uk;
 		command[4] = 60000;// PCLK = 60000 KHz
 
@@ -151,9 +122,6 @@ int tulis_env(void)
 			return;
 		}
 		printf(".. OK");
-		
-		//free(sh);
-	//tulis_env_flash(&env);
 }
 
 void tulis_env_flash(struct t_env *ev)
@@ -174,7 +142,7 @@ int baca_env(char tampil)
 	}
 	else
 	{
-		// pada saat awal start, pasti akses ini dulu
+		/* pada saat awal start, pasti akses ini dulu */
 		ev = (struct t_env *) 0x7A000;
 		memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}

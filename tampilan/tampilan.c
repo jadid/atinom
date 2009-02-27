@@ -6,8 +6,6 @@
 
 	27 februari 2009
 	di edit dari service desktop
-
-	COBA INI LAGI
 	
 	*/
 #include "FreeRTOS.h"
@@ -34,8 +32,6 @@ void set_awal_sumber(void);
 void set_awal_titik(void);
 int cek_keypad(void);
 
-//extern char titik_siap;
-
 unsigned char tek[64];	
 unsigned char daytime[32];
 
@@ -49,7 +45,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	unsigned char jum_OK;
 	char loop_key;
 	
-	//teks_komik(14, 4, "Tampilan Monita");
 	// set PF14 & PF10 sebagai input interrupt keypad
 	#ifdef TAMPILAN_LPC
 	FIO1DIR = FIO1DIR  & ~(PF10 | PF14 | KEY_DAT);
@@ -88,7 +83,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	read_sumber();
 	read_mesin();
 	read_titik();
-	//titik_siap = 1;
 	
 	cls_layar();
 	vTaskDelay(500);
@@ -146,7 +140,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		
 	for (;;)
 	{
-		//if ((FIO_KEYPAD & PF14) == PF14)
 		if (cek_keypad())
 		{	
 			loop_key++;

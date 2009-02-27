@@ -3,6 +3,9 @@
 	
 	entri dari boot.s adalah ke main
 	
+	27 Feb 2009
+	entah kenapa keypad nya sering ngacau
+	
 */
 
 
@@ -56,6 +59,10 @@ int main( void )
 {
 	sysInit();
 
+	/* reset semua port dulu */
+	FIO2DIR = 0xFFFFFFFF;
+	FIO2MASK = 0xFFFFFFFF; 
+
 	PCONP |= 0x80000000;	// USB power 
 
 	FIO0DIR = LED_UTAMA;
@@ -82,7 +89,7 @@ int main( void )
 	//init_gpio();
 
 
-#ifdef jalankan
+#if 1
 	init_led_utama();
 	init_task_lcd();
 	start_ether();
@@ -97,30 +104,17 @@ int main( void )
 #endif
 }
 
-//int jum=0;
-
 void togle_led_utama(void)
 {
-	//jum++;
 	if (tog)
 	{
-		//FIO1CLR = (1 << 19);
 		FIO0SET = LED_UTAMA;
-		//tes_high();
 		tog = 0;
-		//xSemaphoreGive( lcd_sem );
 	}
 	else
 	{
-		//titik_siap++;
-		//FIO1SET = (1 << 19);
 		FIO0CLR = LED_UTAMA;
-		//tes_low();
 		tog = 1;
-		//teks_h(20, 60, "ini langsung ke LCD");
-		//printf_lcd("ini %d", jum);
-		//if (titik_siap > 3)
-		//	sambungan_connect();
 	}
 }
 

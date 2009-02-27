@@ -32,6 +32,7 @@ extern xTaskHandle *hdl_tampilan;
 void set_awal_mesin(void);
 void set_awal_sumber(void);
 void set_awal_titik(void);
+int cek_keypad(void);
 
 //extern char titik_siap;
 
@@ -57,6 +58,9 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	#ifdef TAMPILAN_LPC_4
 	FIO2DIR = FIO2DIR  & ~PF14;
 	FIO1DIR = FIO1DIR  & ~(KEY_DAT);
+	
+	/* masking FIO2MASK dengan 0 supaya bisa dibaca */
+	FIO2MASK = FIO2MASK & ~(PF14);
 	#endif
 	
 	
@@ -142,7 +146,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		
 	for (;;)
 	{
-		if ((FIO_KEYPAD & PF14) == PF14)
+		//if ((FIO_KEYPAD & PF14) == PF14)
+		if (cek_keypad())
 		{	
 			loop_key++;
 			
@@ -220,3 +225,17 @@ void init_task_tampilan(void)
 
 }
 
+int cek_keypad(void)
+{
+	portENTER_CRITICAL();
+	if ((FIO_KEYPAD & PF14) == PF14)
+	{
+		portEXIT_CRITICAL();		
+		return 1;	
+	}
+	else
+	{
+		portEXIT_CRITICAL();	
+		return 0;	
+	}
+}

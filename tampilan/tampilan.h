@@ -15,7 +15,7 @@
 #endif
 
 #ifdef TAMPILAN_LPC_4
-#define PF14	BIT(0)		// P2
+#define PF14	BIT(0)			// P2, 0
 #define FIO_KEYPAD FIO2PIN
 #endif
 

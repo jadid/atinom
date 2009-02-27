@@ -37,7 +37,7 @@
 #include "lpc23xx.h"
 
 #define BOARD_TAMPILAN
-#define VERSI_TAMPILAN	"1.1"
+#define VERSI_TAMPILAN	"1.12"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2

@@ -52,6 +52,9 @@
  * 16 feb 09
  * organisasi memeory diperbaiki, RX ditaruh dibawah
  * biar tidak sering paket hilang ??
+ * 
+ * 27 feb 09
+ * init_enc_port diperbaiki
  */
 
 #include <stdio.h>

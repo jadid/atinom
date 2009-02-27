@@ -3,6 +3,9 @@
 	furkan jadid
 	14 desember 2008
 	daun biru engineering
+
+	27 februari 2009
+	di edit dari service desktop
 	
 	*/
 #include "FreeRTOS.h"

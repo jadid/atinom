@@ -5,6 +5,18 @@
 	
 	27 Feb 2009
 	entah kenapa keypad nya sering ngacau
+	OK .. keypad sudah mulai bener
+	
+	28 Feb 2009
+	dirapikan 
+	
+	set_titik diberikan tambahan alamat stack/board
+	
+	sementara sumber.alamat belum dipakai, nanti saat request 
+	dari sumber yang banyak alamatnya, sumber/modul/server nya yang
+	melakukan urutan pengiriman dari masing2 boardnya.
+	
+	keterangan masing2 titik langsung didapat dari struct keter 
 	
 */
 

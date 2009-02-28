@@ -60,25 +60,7 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 	
 	//menu_pilih(p, mesin);
 	if (p == 7 && jok == 1)
-	{
-		/*
-		//hapus(80, 25, 300, 180);	
-		//kotak3d(79,26, 301, 181);
-		if (p > pos_lama)
-		{
-			p = pos_lama;
-			pos_cur++;	
-		}
-		else if (p < pos_lama);
-		{
-			p = pos_lama;
-			pos_cur--;	
-		}
-		
-		// cursor paling atas dulu
-		kotak(68, 24+(9*pos_cur), 300, 35+(9*pos_cur));
-		*/
-		
+	{	
 		// cari jumlah sumber aktif
 		for (i=0; i<JML_SUMBER; i++)
 		{
@@ -192,8 +174,7 @@ void menu_OK(unsigned char p, unsigned char mesin, unsigned char jok)
 				
 				menu_monita(8);
 				menu_pilih(8, mesin, terus);
-				kotak(68, 36+(9*key_index), 300, 46+(9*key_index));
-				//kotak(68, 27+(9*key_index), 300, 37+(9*key_index));
+				kotak(68, 36+(9*key_index), 312, 46+(9*key_index));
 				//data_sumber(1, key_index);
 				update_lcd();
 				loop = 0;

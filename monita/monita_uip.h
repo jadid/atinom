@@ -135,20 +135,19 @@ sumber status :
 */
 struct t_sumber {
 	char nama[10];
-	char ID_sumber;
+	//char ID_sumber;
+	char alamat;		/* untuk alamat Power meter atau stack board (jika ada) */
 	char IP0;
 	char IP1;
 	char IP2;
 	char IP3;
 	char status;		// tidak aktif, timeout, dll	
-	//struct t_data_float *df;
 };
 
 struct t_titik {
-	//char nama[10];
-	//char ID_mesin;
 	char ID_sumber;			// sumber mulai dari 1, 1 untuk array sumber ke nol
 	char kanal;				// kanal mulai dari 1, bukan nol, kanal 1 untuk array ke nol
+	char alamat;			// alamat stack board
 	float data;
 };
 
@@ -163,7 +162,6 @@ struct t_status {
 	unsigned int timer;
 	unsigned int reply_lama;
 	unsigned int stat;
-	//char stat;
 };
 
 #endif /* MONITA_UIP_H_ */

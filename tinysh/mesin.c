@@ -44,7 +44,7 @@ void cek_mesin(int argc, char **argv)
 	
 }							 
 
-static tinysh_cmd_t cek_mesin_cmd={0,"cek_mesin","-- nomer default","[args]",
+static tinysh_cmd_t cek_mesin_cmd={0,"cek_mesin","menampilkan konfigurasi mesin","[] nomer",
                               cek_mesin,0,0,0};
 
 
@@ -115,7 +115,7 @@ void save_mesin(void)
 	
 }
 
-static tinysh_cmd_t save_mesin_cmd={0,"save_mesin","--","[args]",
+static tinysh_cmd_t save_mesin_cmd={0,"save_mesin","menyimpan konfigurasi mesin ke flash","[args]",
                               save_mesin,0,0,0};
 
 

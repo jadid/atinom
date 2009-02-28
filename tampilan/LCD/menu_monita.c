@@ -264,15 +264,15 @@ void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 	line_ke(mesin_kiri-5 + (mesin_width*(mesin+1)), menu_besar_top);
 	line_ke(menu_besar_kanan, menu_besar_top); 
 	
-	if (mesin == 0)
+	if (mesin == 0 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#1");
-	if (mesin == 1)
+	if (mesin == 1 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#2");
-	if (mesin == 2)
+	if (mesin == 2 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#3");
-	if (mesin == 3)
+	if (mesin == 3 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#4");
-	if (mesin == 4)
+	if (mesin == 4 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#5");
 	
 	//ttk = TIAP_MESIN * (mesin-1);
@@ -527,6 +527,8 @@ void menu_sumber(unsigned int ttk)
 	{
 		msg_box("Tidak ada sumber data aktif !");	
 	}
+	
+	teks_layar(68, 216, "Tekan OK untuk melihat raw data");
 }
 
 void menu_titik(unsigned int ttk, unsigned char flag)
@@ -535,20 +537,22 @@ void menu_titik(unsigned int ttk, unsigned char flag)
 	int plus;
 	
 	/* informasi titik sesuai dengan mesin yang dipilih */
-	teks_layar(72, 27, "No.   Sbr  Knl  Keterangan");
+	teks_layar(72, 27, "No.   Sbr  Knl  Almt Keterangan");
 
 	if (flag < 15)
 	{
 		for (i=0; i<15; i++)
 		{
-			sprintf(tek, "%3d    %2d   %d", ttk+i+1, titik[ttk+i].ID_sumber, titik[ttk+i].kanal);
+			sprintf(tek, "%3d    %2d   %2d   %d", ttk+i+1, titik[ttk+i].ID_sumber, \
+				titik[ttk+i].kanal, titik[ttk+i].alamat);
+			
 			teks_layar(72, 38 + (9 * i), tek);
 		}
 	
 		for (i=0; i<15; i++)
 		{
 			sprintf(tek, "%s", keter[i]);	
-			teks_layar(170, 38 + (9 * i), tek);
+			teks_layar(200, 38 + (9 * i), tek);
 		}
 	}
 	else
@@ -556,16 +560,20 @@ void menu_titik(unsigned int ttk, unsigned char flag)
 		plus = flag - 14;
 		for (i=0; i<15; i++)
 		{
-			sprintf(tek, "%3d    %2d   %d", ttk+i+1+plus, titik[ttk+i+plus].ID_sumber, titik[ttk+i+plus].kanal);
+			sprintf(tek, "%3d    %2d   %2d   %d", ttk+i+1+plus, titik[ttk+i+plus].ID_sumber, \
+				titik[ttk+i+plus].kanal, titik[ttk+i+plus].alamat);
+			
 			teks_layar(72, 38 + (9 * i), tek);
 		}
 		
 		for (i=0; i<15; i++)
 		{
 			sprintf(tek, "%s", keter[i+plus]);	
-			teks_layar(170, 38 + (9 * i), tek);
+			teks_layar(200, 38 + (9 * i), tek);
 		}		
 	}
+	
+	teks_layar(68, 216, "Tekan OK & panah untuk scroll ke bawah");
 }
 
 extern xTaskHandle *hdl_shell;

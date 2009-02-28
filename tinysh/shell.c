@@ -44,38 +44,54 @@ extern xTaskHandle *hdl_ether;
 #define per_tik		0.050 / (1000 * 1000 * 60)
 
 
-static tinysh_cmd_t save_env_cmd={0,"saveenv","menyimpan env","[args]",
+static tinysh_cmd_t save_env_cmd={0,"saveenv","menyimpan environment","[args]",
                               save_env,0,0,0};
 							  
-static tinysh_cmd_t printenv_cmd={0,"printenv","menampilkan env","[args]",
+static tinysh_cmd_t printenv_cmd={0,"printenv","menampilkan environment","[args]",
                               print_env,0,0,0};
 							  
 static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
                               reset_cpu,0,0,0};
 							  
-static tinysh_cmd_t defenv_cmd={0,"defenv","set default env","[args]",
+static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
                               getdef_env,0,0,0};
 							 
 void cek_stack(void)
 {
-	printf("Sisa stack masing2 task %d\n", 123);
+	printf("Sisa stack masing2 task (bytes)\r\n");
 	garis_bawah();
-	printf(" Shell : %d\n", uxTaskGetStackHighWaterMark(hdl_shell));
-	printf(" Led : %d\n", uxTaskGetStackHighWaterMark(hdl_led));
+	printf(" Shell    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
+	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
 	#ifdef BOARD_TAMPILAN
-	printf(" Tampilan : %d\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
-	printf(" LCD : %d\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
 	
-	printf(" Ether : %d\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	
 }							 
 
 static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
                               cek_stack,0,0,0};
 
+void cek_versi(void)
+{
+#ifdef BOARD_KOMON
+  	printf(" Babelan Komon-Counter %s\r\n", VERSI_KOMON);
+#endif
 
+#ifdef BOARD_TAMPILAN
+  	printf(" Babelan Tampilan %s\r\n", VERSI_TAMPILAN);
+#endif
+
+  	printf(" ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
+  	printf(" CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
+  	printf(" FreeRTOS 5.1.1\r\n");	
+}							 
+
+static tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]",
+                              cek_versi,0,0,0};
 							  
 
 
@@ -179,11 +195,7 @@ static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",
 
 #endif
 /*****************************************************************************/
-
-
-//extern void *tinysh_get_arg(void);
-
-//static 
+ 
 void display_args(int argc, char **argv)
 {
   int i;
@@ -292,7 +304,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_stack_cmd);
 	tinysh_add_command(&defenv_cmd);
 	tinysh_add_command(&uptime_cmd);
-	
+	tinysh_add_command(&version_cmd);
 	
 #ifdef BOARD_KOMON
 	tinysh_add_command(&cek_rpm_cmd);
@@ -344,7 +356,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);
 	printf("size struct Sumber = %d\r\n", sizeof (struct t_sumber) * JML_SUMBER);
 	printf("size struct Titik  = %d\r\n", sizeof (struct t_titik) * JML_MESIN * TIAP_MESIN);
-	printf("size struct sambungan = %d\r\n", sizeof (samb));
+	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
 	
 	#ifdef BOARD_BABELAN
@@ -374,7 +386,5 @@ portTASK_FUNCTION(shell, pvParameters )
 
 void init_shell(void)
 {
-
-	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), NULL, 1, ( xTaskHandle * ) &hdl_shell);
 	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 8), NULL, 1, ( xTaskHandle * ) &hdl_shell);
 }

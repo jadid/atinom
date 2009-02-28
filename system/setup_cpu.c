@@ -14,6 +14,7 @@
 #define PLLCFG_NSEL   		((PLL_DIV - 1) << 16UL) // PLL Divider
 #define CCLKCFG_CCLKSEL_VAL ((CCLK_DIV -1 ) << 0UL )
 #define CCLK_DIV           	(8)         			// PLL out -> CPU clock divider --> 480 / 8 = 60 MHz
+//#define CCLK_DIV           	(7)         			// PLL out -> CPU clock divider --> 480 / 7 = 69 MHz
 
 typedef unsigned int		uint32_t;
 #define MEMMAP_FLASH		1
@@ -87,10 +88,8 @@ static void lowInit(void)
 
 void sysInit(void)
 {
-	uint32_t i = 0;
-	volatile uint32_t *vect_addr, *vect_prio;
 
-	PINSEL0 = PINSEL0 | 0x50; // enable TX & RX
+	//PINSEL0 = PINSEL0 | 0x50; // enable TX & RX
 
 	lowInit();                            			// setup clocks and processor port pins
 
@@ -99,4 +98,29 @@ void sysInit(void)
 
 	SCS |= (1UL<<0); // set GPIOM in SCS for fast IO
 
+	/* paksa PINSEL untuk GPIO */
+	PINSEL0 = 0x00000000;
+	PINSEL1 = 0x00000000;
+	PINSEL2 = 0x00000000;
+	PINSEL3 = 0x00000000;
+	PINSEL4 = 0x00000000;
+	PINSEL5 = 0x00000000;
+	PINSEL6 = 0x00000000;
+	PINSEL7 = 0x00000000;
+	PINSEL8 = 0x00000000;
+	PINSEL9 = 0x00000000;
+	PINSEL10 = 0x00000000;
+	
+	/* paksa untuk enable pull up */
+	PINMODE0 = 0x00000000;
+	PINMODE1 = 0x00000000;
+	PINMODE2 = 0x00000000;
+	PINMODE3 = 0x00000000;
+	PINMODE4 = 0x00000000;
+	PINMODE5 = 0x00000000;
+	PINMODE6 = 0x00000000;
+	PINMODE7 = 0x00000000;
+	PINMODE8 = 0x00000000;
+	
+	PINSEL0 = PINSEL0 | 0x50; // enable TX & RX
 }

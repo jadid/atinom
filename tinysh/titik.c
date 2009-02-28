@@ -2,19 +2,21 @@
 	berkaitan dengan titik
 	12 jan 09
 	furkan jadid
-	daun biru engineering 
-	* 
+	daun biru engineering  
 	
 	setiap mesin dialokasikan 70 titik
 	sehingga jika ada 10 mesin, diperlukan 
 	sekitar 10 * 70 * 2 byte = 1400 byte untuk struknya
 	dan 10 * 70 * 4 byte (float) = 2800 byte untuk datanya
 	
-	*/
+*/
 
 #include "../monita/monita_uip.h"
 extern struct t_mesin mesin[];
 extern struct t_titik titik[TIAP_MESIN * JML_MESIN];
+
+/* keterangan masing2 titik lihat di menu_monita.c */
+extern char keter[100][25];
 
 char *f_out(float ff);
 							  
@@ -23,94 +25,108 @@ void cek_titik(unsigned char no_mes)
 	int i;
 	int pasnya;
 	
-	printf(" No. Sbr. Knl. Data     : Keterangan\r\n");
-	garis_bawah();
+	printf(" No. Sbr. Knl. Almt     Data : Keterangan\r\n");
+	
+	for (i=0; i<55; i++)
+		printf("-");
+	
+	printf("\r\n");
 	
 	pasnya = TIAP_MESIN * (no_mes - 1);
 	//titik[pasnya].data = 0.1234567;
 	//titik[pasnya+1].data = 12345.67;
+
+	for (i=0; i<60; i++)
+	{
+		printf("%3d. %3d. %3d. %3d. %9s: %s\r\n", pasnya+1, titik[pasnya].ID_sumber, \
+			titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya].data), \
+			keter[i]);
+		
+		pasnya++;	
+	}
+
+#if 0	
+	printf("%3d. %3d. %3d. %3d. %9s: Charge air pressure kiri\r\n", \ 			
+		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya++].data));
+	printf("%3d. %3d. %3d. %3d. %9s: Charge air pressure kanan\r\n", \			
+		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya++].data));
+	printf("%3d. %3d. %3d. %3d. %9s: Charge air temperature kiri\r\n", \
+		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya++].data));
+	printf("%3d. %3d. %3d. %3d. %9s: Charge air temperature kanan\r\n", \
+		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
 	
-	printf("%3d. %3d. %3d. %9s: Charge air pressure kiri\r\n", \ 			
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water inlet pressure 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Charge air pressure kanan\r\n", \			
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water inlet pressure 2\r\n", \		
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Charge air temperature kiri\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water outlet pressure 1\r\n", \	
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Charge air temperature kanan\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water outlet pressure 2\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	
-	printf("%3d. %3d. %3d. %9s: Jacket water inlet pressure 1\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water inlet temperature 1\r\n", \	
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water inlet pressure 2\r\n", \		
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water inlet temperature 2\r\n", 	\
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water outlet pressure 1\r\n", \	
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water outlet temperature 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water outlet pressure 2\r\n", \
-		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water inlet temperature 1\r\n", \	
-		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water inlet temperature 2\r\n", 	\
-		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water outlet temperature 1\r\n", \
-		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Jacket water outlet temperature 2\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Jacket water outlet temperature 2\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
 
-	printf("%3d. %3d. %3d. %9s: Lub oil inlet pressure 1\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil inlet pressure 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Lub oil inlet pressure 2\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil inlet pressure 2\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Lub oil outlet pressure 1\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil outlet pressure 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));	
-	printf("%3d. %3d. %3d. %9s: Lub oil outlet pressure 2\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil outlet pressure 2\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Lub oil inlet temperature 1\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil inlet temperature 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Lub oil inlet temperature 2\r\n", 	\
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil inlet temperature 2\r\n", 	\
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Lub oil outlet temperature 1\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil outlet temperature 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Lub oil outlet temperature 2\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Lub oil outlet temperature 2\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
 
 	for (i=0; i<20; i++)
 	{
-		printf("%3d. %3d. %3d. %9s: Exhaust temperature %d\r\n",  \
+		printf("%3d. %3d. %3d. %3d. %9s: Exhaust temperature %d\r\n",  \
 			pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data), (i+1));
 	}
 	
 	for(i=0; i<5; i++)
 	{
-		printf("%3d. %3d. %3d. %9s: --\r\n", \
+		printf("%3d. %3d. %3d. %3d. %9s: --\r\n", \
 			pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
 	}
 	
-	printf("%3d. %3d. %3d. %9s: Engine rpm \r\n" , 	\
+	printf("%3d. %3d. %3d. %3d. %9s: Engine rpm \r\n" , 	\
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Turbo rpm 1\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Turbo rpm 1\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Turbo rpm 2\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Turbo rpm 2\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Fuel inlet counter\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Fuel inlet counter\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Fuel outlet counter\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Fuel outlet counter\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Power (kW)\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Power (kW)\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Energi (kWh)\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Energi (kWh)\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Voltage (V)\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Voltage (V)\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));
-	printf("%3d. %3d. %3d. %9s: Ampere (A)\r\n", \
+	printf("%3d. %3d. %3d. %3d. %9s: Ampere (A)\r\n", \
 		pasnya+1, titik[pasnya].ID_sumber, titik[pasnya].kanal, f_out(titik[pasnya++].data));	
 		
 	printf("cek = %d\r\n", pasnya);
-	
+#endif	
 	
 	
 }							 
 
-static tinysh_cmd_t cek_titik_cmd={0,"cek_titik","--","[args]",
+static tinysh_cmd_t cek_titik_cmd={0,"cek_titik","menampilkan konfigurasi titik","[args]",
                               cek_titik,0,0,0};
 
 
@@ -129,6 +145,7 @@ void set_titik(int argc, char **argv)
 	int sumb;
 	int kanal;
 	int ttk;
+	int almt;
 	
 	if (argc < 4) 
 	{
@@ -136,9 +153,9 @@ void set_titik(int argc, char **argv)
 		{
 			if (strcmp(argv[1], "help") == 0)
 			{
-				printf("  set_titik a b c\r\n");
-				printf("  : a nomer titik, b nomer sumber, c kanal\r\n");
-		
+				printf("  set_titik a b c d\r\n");
+				printf("  : a nomer titik, b nomer sumber, c kanal, d alamat/stack board\r\n");
+				printf("    jika alamat kosong, default = 1\r\n");
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
@@ -171,13 +188,30 @@ void set_titik(int argc, char **argv)
 			{
 				titik[ttk - 1].ID_sumber = sumb;
 				titik[ttk - 1].kanal = kanal;
+			
+				/* argument ke 4 adalah alamat */
+				if (argc >= 5)
+				{
+					sprintf(buf, "%s", argv[4]);	
+					almt = cek_nomer_sumber(buf, 10);
+					
+					if (almt <= 0) almt = 1;
+				}
+				else
+					almt = 1;
+				
+				titik[ttk - 1].alamat = almt;
+				printf("Set titik %d, pada sumber %d, pada kanal %d, pada alamat %d\r\n", \
+				ttk, sumb, kanal, almt); 
 			}
+			else
+				printf(" ERR !\r\n");
 		} 
 	}
 	return;
 }							 
 
-static tinysh_cmd_t set_titik_cmd={0,"set_titik","titik sumber kanal default","[args]",
+static tinysh_cmd_t set_titik_cmd={0,"set_titik","set konfigurasi titik","(titik sumber kanal alamat) default",
                               set_titik,0,0,0};
 
 
@@ -198,7 +232,7 @@ void save_titik(void)
 }
 
 
-static tinysh_cmd_t save_titik_cmd={0,"save_titik","--","[args]",
+static tinysh_cmd_t save_titik_cmd={0,"save_titik","menyimpan konfigurasi titik ke flash","[args]",
                               save_titik,0,0,0};
 
 void read_titik(void)
@@ -217,32 +251,8 @@ void set_awal_titik(void)
 	{
 		titik[i].ID_sumber = 0;
 		titik[i].kanal = 0;
+		titik[i].alamat = 1;
 		titik[i].data = 0.00;
 	}	
-	/*
-	sprintf(titik[0].nama,"CA_P_L");
-	sprintf(titik[1].nama,"CA_P_R");
-	sprintf(titik[2].nama,"CA_T_L");
-	sprintf(titik[3].nama,"CA_P_R");
 	
-	sprintf(titik[4].nama,"JW_P_in_1");
-	sprintf(titik[5].nama,"JW_P_in_2");
-	sprintf(titik[6].nama,"JW_P_ot_1");
-	sprintf(titik[7].nama,"JW_P_ot_2");
-	sprintf(titik[8].nama,"JW_T_in_1");
-	sprintf(titik[9].nama,"JW_T_in_2");
-	sprintf(titik[10].nama,"JW_T_ot_1");
-	sprintf(titik[11].nama,"JW_T_ot_2");
-	
-	sprintf(titik[12].nama,"LO_P_in_1");
-	sprintf(titik[13].nama,"LO_P_in_2");
-	sprintf(titik[14].nama,"LO_P_ot_1");
-	sprintf(titik[15].nama,"LO_P_ot_2");
-	sprintf(titik[16].nama,"LO_T_in_1");
-	sprintf(titik[17].nama,"LO_T_in_2");
-	sprintf(titik[18].nama,"LO_T_ot_1");
-	sprintf(titik[19].nama,"LO_T_ot_2");
-	
-	sprintf(titik[20].nama,"LO_P_in_1");
-	*/	
 }

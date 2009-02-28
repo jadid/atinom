@@ -77,7 +77,6 @@ void tes_low(void)
 void init_port_lcd(void)
 {
 	//backlit
-	FIO1DIR = 0;
 	FIO1DIR |= BACKLIT;
 	FIO1CLR |= BACKLIT;
 	
@@ -86,18 +85,22 @@ void init_port_lcd(void)
 	FIO0DIR |= (WR | RD | A1);
 	FIO0SET |= (WR | RD | A1);
 	
+	sambel
 	// AMS0
 	FIO2DIR = AMS0;
 	FIO2SET = AMS0;
 	#endif
 	
 	#ifdef TAMPILAN_LPC_4
-	FIO1DIR |= (WR | RD | A1 | AMS0);
+	FIO1DIR  |=  (WR | RD | A1 | AMS0);
+	FIO1MASK &= ~(WR | RD | A1 | AMS0);
+	
 	FIO1SET |= (WR | RD | A1 | AMS0);
 	#endif
 	
 	// data 8 bit
 	FIO1DIR |= DAT8;
+	FIO1MASK &= ~DAT8;
 	
 }
 

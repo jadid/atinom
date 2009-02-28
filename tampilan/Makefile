@@ -82,7 +82,6 @@ THUMB_SOURCE= \
 		../tinysh/tinysh.c \
 		../tinysh/shell.c \
 		../tinysh/enviro.c \
-		../GPIO/gpio.c \
 		LCD/lcd_320.c \
 		tampilan.c \
 		LCD/menu_monita.c \
@@ -100,6 +99,7 @@ THUMB_SOURCE= \
 		../uip/uip/uiplib.c \
 		../uip/uip_task.c \
 		../monita/monita_uip.c \
+#		../GPIO/gpio.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \
 #		webserver/http-strings.c \
@@ -108,7 +108,7 @@ THUMB_SOURCE= \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../serial/serialISR.c \
-		../GPIO/gpio_ISR.c 
+#		../GPIO/gpio_ISR.c 
 		
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)

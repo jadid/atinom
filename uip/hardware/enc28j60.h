@@ -82,7 +82,8 @@
 #define FIO_CEK_PAKET 		FIO2PIN
 #define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
 							FIO1DIR = FIO1DIR | CS_ENC; \
-							FIO2MASK = FIO2MASK & ~(INT_ENC);
+							FIO2MASK = FIO2MASK & ~(INT_ENC); \
+							FIO1MASK = FIO1MASK & ~(CS_ENC);
 
 #endif
 

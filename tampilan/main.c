@@ -16,7 +16,12 @@
 	dari sumber yang banyak alamatnya, sumber/modul/server nya yang
 	melakukan urutan pengiriman dari masing2 boardnya.
 	
-	keterangan masing2 titik langsung didapat dari struct keter 
+	keterangan masing2 titik langsung didapat dari struct keter
+	
+	led depan diaktifkan
+	
+	huh .. pusing keypad gak beres2.
+	keypad pakai interrupt saja
 	
 */
 
@@ -35,6 +40,9 @@
 
 #ifdef TAMPILAN_LPC_4
 #define LED_UTAMA	BIT(27)
+
+/* led di keypad */
+#define LED_PICKUP	BIT(14)
 #endif
 
 xSemaphoreHandle lcd_sem;
@@ -72,17 +80,23 @@ int main( void )
 	sysInit();
 
 	/* reset semua port dulu */
-	FIO2DIR = 0xFFFFFFFF;
+	FIO2DIR  = 0xFFFFFFFF;
 	FIO2MASK = 0xFFFFFFFF; 
+	
+	FIO1DIR  = 0xFFFFFFFF;
+	FIO1MASK = 0xFFFFFFFF; 
 
 	PCONP |= 0x80000000;	// USB power 
 
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;
 	
+	FIO1DIR  = FIO1DIR | LED_PICKUP;
+	FIO1MASK = FIO1MASK & ~(LED_PICKUP);
+	
+	//init_gpio_keypad();
 	init_port_lcd();
 	init_lcd();
-	
 	
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -98,8 +112,6 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
-	//init_gpio();
-
 
 #if 1
 	init_led_utama();
@@ -121,11 +133,13 @@ void togle_led_utama(void)
 	if (tog)
 	{
 		FIO0SET = LED_UTAMA;
+		FIO1SET = LED_PICKUP;
 		tog = 0;
 	}
 	else
 	{
 		FIO0CLR = LED_UTAMA;
+		FIO1CLR = LED_PICKUP;
 		tog = 1;
 	}
 }

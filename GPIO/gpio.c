@@ -7,6 +7,7 @@
 
 #include "FreeRTOS.h"
 #include "gpio.h"
+#include "../tampilan/tampilan.h"
 
 
 
@@ -58,4 +59,30 @@ void init_gpio(void)
 	IO2_INT_EN_F = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
 
 	portEXIT_CRITICAL();
+}
+
+init_gpio_keypad(void)
+{
+#ifdef TAMPILAN_LPC_4
+	extern void ( gpio_ISR_Wrapper_keypad )( void );
+
+	portENTER_CRITICAL();
+	
+	//siapkan interrupt handler untuk GPIO
+	VICIntSelect    &= ~VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
+	VICIntEnClr      = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
+	VICVectAddr17 = ( portLONG )gpio_ISR_Wrapper_keypad;
+	VICVectPriority17 = 0x05;
+	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
+
+
+	// setup GPIO direction & interrupt
+	FIO2DIR = FIO2DIR  & ~PF14;
+	/* masking dengan 0 supaya bisa dibaca */
+	FIO2MASK = FIO2MASK & ~(PF14);	
+	
+	IO2_INT_EN_F = PF14;
+
+	portEXIT_CRITICAL();
+#endif
 }

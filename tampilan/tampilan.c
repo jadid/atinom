@@ -10,6 +10,8 @@
 	*/
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "semphr.h"
 #include "../monita/monita_uip.h"
 #include "tampilan.h"
 
@@ -35,6 +37,8 @@ int cek_keypad(void);
 unsigned char tek[64];	
 unsigned char daytime[32];
 
+xSemaphoreHandle keypad_sem;
+
 portTASK_FUNCTION( tampilan_task, pvParameters )
 {
 	unsigned int key_press;
@@ -52,10 +56,13 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	
 	#ifdef TAMPILAN_LPC_4
 	FIO2DIR = FIO2DIR  & ~PF14;
-	FIO1DIR = FIO1DIR  & ~(KEY_DAT);
 	
-	/* masking FIO2MASK dengan 0 supaya bisa dibaca */
-	FIO2MASK = FIO2MASK & ~(PF14);
+	/* masking dengan 0 supaya bisa dibaca */
+	FIO1DIR  = FIO1DIR  & ~(KEY_DAT);
+	FIO1MASK = FIO1MASK & ~(KEY_DAT);
+	
+	/* masking dengan 0 supaya bisa dibaca */
+	FIO2MASK = FIO2MASK & ~(PF14);	
 	#endif
 	
 	
@@ -137,14 +144,19 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	loop = 0;
 	jum_OK = 0;
 	i = loop_key = 0;
-		
+	/*
+	vSemaphoreCreateBinary( keypad_sem );
+    xSemaphoreTake( keypad_sem, 0 );		
+	*/
 	for (;;)
 	{
 		if (cek_keypad())
+		/* jika 1 detik tidak ada keypad, maka force untuk update lcd */
+		//if ( xSemaphoreTake( keypad_sem, 1000 ) == pdTRUE )
 		{	
 			loop_key++;
 			
-			if (loop_key > 5)
+			//if (loop_key > 1)
 			{
 				loop_key = 0;
 			
@@ -188,13 +200,13 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				update_lcd();
 				loop = 0;
 			}	
-		}
+		}	
 		else
 		{
 			loop_key = 0;	
 		}
 		
-		if (loop > 50)
+		if (loop > 10)
 		{
 			cls_layar();
 			menu_monita(key_index);		
@@ -204,8 +216,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			
 			loop = 0;	
 		}
-		//vTaskDelay(100);
-		vTaskDelay(20);
+		vTaskDelay(100);
+		//vTaskDelay(20);
 		loop++;	
 	}
 	

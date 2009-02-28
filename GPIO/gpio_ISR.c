@@ -11,9 +11,11 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
+#include "semphr.h"
 #include "gpio.h"
+#include "../tampilan/tampilan.h"
 
-
+extern xSemaphoreHandle keypad_sem;
 struct t2_konter konter;
 
 
@@ -23,6 +25,10 @@ void gpio_ISR_Handler( void );
 void timer1_ISR_Wrapper( void ) __attribute__ ((naked));
 void timer1_ISR_Handler( void );
 
+void gpio_ISR_Wrapper_keypad( void ) __attribute__ ((naked));
+void gpio_ISR_keypad_Handler( void );
+
+
 void set_konter(int st, unsigned int period);
 
 void gpio_ISR_Wrapper( void )
@@ -30,10 +36,22 @@ void gpio_ISR_Wrapper( void )
 	/* Save the context of the interrupted task. */
 	portSAVE_CONTEXT();
 
-	//togle_led_utama();
 	/* Call the handler.  This must be a separate function from the wrapper
 	to ensure the correct stack frame is set up. */
 	gpio_ISR_Handler();
+
+	/* Restore the context of whichever task is going to run next. */
+	portRESTORE_CONTEXT();
+}
+
+void gpio_ISR_Wrapper_keypad( void )
+{
+	/* Save the context of the interrupted task. */
+	portSAVE_CONTEXT();
+
+	/* Call the handler.  This must be a separate function from the wrapper
+	to ensure the correct stack frame is set up. */
+	gpio_ISR_keypad_Handler();
 
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
@@ -160,4 +178,20 @@ void set_konter(int st, unsigned int period)
 	}
 	konter.t_konter[st].hit++;
 	konter.t_konter[st].last_period = period;
+}
+
+void gpio_ISR_keypad_Handler( void )
+{
+	static portBASE_TYPE xHigherPriorityTaskWoken;
+	 
+	if (IO2_INT_STAT_F & PF14)
+	{
+		//xSemaphoreGive( keypad_sem );		
+		xSemaphoreGiveFromISR( keypad_sem, &xHigherPriorityTaskWoken );
+		
+		IO2_INT_CLR = PF14;
+	}
+	
+	/* Clear the ISR in the VIC. */
+	VICVectAddr = 0;	
 }

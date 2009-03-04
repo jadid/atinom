@@ -15,7 +15,10 @@
 #include "gpio.h"
 #include "../tampilan/tampilan.h"
 
+#ifdef BOARD_TAMPILAN
 extern xSemaphoreHandle keypad_sem;
+#endif
+
 struct t2_konter konter;
 
 
@@ -44,6 +47,7 @@ void gpio_ISR_Wrapper( void )
 	portRESTORE_CONTEXT();
 }
 
+#ifdef BOARD_TAMPILAN
 void gpio_ISR_Wrapper_keypad( void )
 {
 	/* Save the context of the interrupted task. */
@@ -56,6 +60,7 @@ void gpio_ISR_Wrapper_keypad( void )
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
 }
+#endif
 
 void timer1_ISR_Wrapper( void )
 {
@@ -180,6 +185,7 @@ void set_konter(int st, unsigned int period)
 	konter.t_konter[st].last_period = period;
 }
 
+#ifdef BOARD_TAMPILAN
 void gpio_ISR_keypad_Handler( void )
 {
 	static portBASE_TYPE xHigherPriorityTaskWoken;
@@ -195,3 +201,4 @@ void gpio_ISR_keypad_Handler( void )
 	/* Clear the ISR in the VIC. */
 	VICVectAddr = 0;	
 }
+#endif

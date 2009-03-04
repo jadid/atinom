@@ -146,7 +146,7 @@ clean :
 #	touch Makefile
 	
 tulis :
-	./lpc68 -hex konter_1.hex /dev/ttyUSB1 115200 14748
+	./lpc68 -hex konter_1.hex /dev/ttyUSB0 115200 14748
 	
 MSG_SIZE_BEFORE = Size before: 
 MSG_SIZE_AFTER = Size after:

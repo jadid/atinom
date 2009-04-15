@@ -105,12 +105,18 @@ void vPortYieldProcessor( void )
 
 	/* The cooperative scheduler requires a normal IRQ service routine to 
 	simply increment the system tick. */
-	void vNonPreemptiveTick( void ) __attribute__ ((interrupt ("IRQ")));
+	//void vNonPreemptiveTick( void ) __attribute__ ((interrupt ("IRQ")));
+	
+	void vNonPreemptiveTick( void ) __attribute__((naked));
 	void vNonPreemptiveTick( void )
 	{	
+		portSAVE_CONTEXT();	
+		
 		vTaskIncrementTick();
 		T0IR = 2;
 		VICVectAddr = portCLEAR_VIC_INTERRUPT;
+		
+		portRESTORE_CONTEXT();
 	}
 
 #else

@@ -19,6 +19,9 @@
 #include "../monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
+#ifdef BOARD_KOMON_A_RTD
+#define BOARD_KOMON
+#endif
 
 #define prio ( tskIDLE_PRIORITY + 3)	// paling tinggi dari yang lain
 
@@ -39,7 +42,7 @@ unsigned int paket_kita=0;
 	
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
-extern unsigned int loop_idle;
+
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -225,9 +228,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					
 					paket_per_menit = 0;
 					paket_kita = 0;
-					loop_idle = 0;
 				}
 		 }	// tanpa paket
+		 
+		 // cek data adc
+		 if (cek_adc_rdy() == 1)
+		 {
+		 
+		 }
 	}
 }
 
@@ -285,14 +293,3 @@ void dispatch_udp_appcall (void)
 
 
 
-/* 
- * 18 feb 2009, idle hook
- * dipakai untuk cek paket
- * soalnya dalam loop 1 ms, masih sering paket hilang ?
- * 
- * 
- * */
-void vApplicationIdleHook( void )
-{
-	loop_idle++;	
-}

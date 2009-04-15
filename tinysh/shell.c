@@ -136,6 +136,8 @@ static void cek_uptime(int argc, char **argv)
 	unsigned int hari;
 	unsigned int tahun;
 	
+	extern unsigned int tot_idle;
+	
 	uptime(&sec, &menit, &jam, &hari, &tahun);
 	printf(" Up = ");
 	if (tahun !=0)
@@ -155,7 +157,7 @@ static void cek_uptime(int argc, char **argv)
 		printf("%d mnt ", menit);		
 	}
 		
-	printf("%d dtk\n", sec);
+	printf("%d dtk : idle = %d\n", sec, tot_idle);
 		
 	return ;
 }
@@ -272,11 +274,9 @@ portTASK_FUNCTION( bg_cmd_thread, pvParameters )
 }
 #endif // contoh shell
 
-//int shell(int argc, char **argv)
 portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
-  	int again=1;
   	xTaskHandle xHandle;
 
 #ifdef BOARD_KOMON
@@ -287,12 +287,21 @@ portTASK_FUNCTION(shell, pvParameters )
   	printf("\nStarting Babelan Tampilan %s\r\n", VERSI_TAMPILAN);
 #endif
 
+#ifdef BOARD_KOMON_A_RTD
+  	printf("\nStarting Babelan Komon-A (RTD & 4-20mA) v%s\r\n", VERSI_KOMON);
+#endif
+
   	printf("Daun Biru Engineering, Des 2008\r\n");
   	printf("=========================================\r\n");
   	printf("ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
   	printf("CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\r\n");
 
+	if (configUSE_PREEMPTION == 0)
+		printf("NON Preemptive kernel digunakan !\r\n"); 
+	else
+		printf("Preemptive kernel digunakan !\r\n");
+	
 	/* 
 	 * add command
 	 */
@@ -371,16 +380,33 @@ portTASK_FUNCTION(shell, pvParameters )
   	tinysh_set_prompt("Tampilan $ ");
 	#endif
 	
+	#ifdef BOARD_KOMON_A_RTD
+	//spiInit();
+	/*
+	c = cek_adc_id();
+	c = c & 0xF0;
+	
+	if (c == 0x50)
+		printf("ADC AD7708 OK = 0x%X\r\n", c);
+	else
+		printf("ADC ERR 0x%X ... tidak terdeteksi !\r\n", c);
+	
+	tinysh_set_prompt("Komon_A $ ");
+	*/
+	kalibrasi_adc1();
+	tinysh_set_prompt("Komon_A $ ");
+	#endif
 	
 	/* 
 	 * main loop shell
   	 */
-  	while(again)
+  	
+  	while(1)
     {
-	  xSerialGetChar(1, &c, 0xFFFF );
-	  tinysh_char_in((unsigned char)c);
+	  if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+	  	tinysh_char_in((unsigned char)c);
     }
-  	printf("\nBye\n");
+  	
   	return;
 }
 

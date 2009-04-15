@@ -61,7 +61,10 @@ void spiInit (void)
   //    No interrupts
   //
   //SPI_SPCR = SPI_SPCR_MSTR | SPI_SPCR_CPHA1ST | SPI_SPCR_CPOLACTHIGH | SPI_SPCR_MSBF;
+  
   SPI_SPCR = MSTR;
+
+//SPI_SPCR = MSTR | CPOL;
 
   //
   //  Reading the status register clears it
@@ -81,8 +84,7 @@ U8 spiPut (U8 valueIn)
 {
   SPI_SPDR = valueIn;
 
-  while (!(SPI_SPSR & SPI_SPIF))
-    ;
+  while (!(SPI_SPSR & SPI_SPIF));
 
   return SPI_SPDR;
 }

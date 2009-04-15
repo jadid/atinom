@@ -119,11 +119,6 @@ static xQueueHandle xCharsForTx;
 static volatile portLONG *plTHREEmpty;
 
 /*-----------------------------------------------------------*/
-/*
-void serial_puts(char *ss)
-{
-	vSerialPutString(1, ss, 10);	
-}*/
 
 #include <stdarg.h>
 char printbuffer[128] __attribute__ ((section (".eth_test")));

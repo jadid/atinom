@@ -34,6 +34,11 @@ extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;
 
+#ifdef BOARD_KOMON_A_RTD
+#define BOARD_KOMON
+#endif
+
+
 #ifdef BOARD_KOMON
 
 void monita_init(void)

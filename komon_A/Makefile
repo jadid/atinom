@@ -100,6 +100,8 @@ THUMB_SOURCE= \
 		../webserver/httpd-fs.c \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
+		../system/idle_hook.c \
+		../adc/ad7708.c	\
 
 #		LCD/lcd_320.c \
 #		tampilan.c \
@@ -128,6 +130,7 @@ RTOSDemo.bin : RTOSDemo.hex
 	 
 RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
+	$(DISAMB) $(NAMA_FILE).elf -d > $(NAMA_FILE).S
 
 RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../system/boot.s Makefile 
 	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../system/boot.s $(LINKER_FLAGS) 
@@ -147,7 +150,7 @@ clean :
 #	touch Makefile
 	
 tulis :
-	./lpc68 -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
+	./lpc67 -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
 	
 MSG_SIZE_BEFORE = Size before: 
 MSG_SIZE_AFTER = Size after:

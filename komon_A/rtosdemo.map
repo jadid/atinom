@@ -91,25 +91,23 @@ Archive member included because of file (symbol)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_dvmd_tls.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_udivsi3.o) (__div0)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
-                              ../tinysh/shell.o (__addsf3)
+                              ../monita/monita_uip.o (__addsf3)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
-                              ../tinysh/shell.o (__mulsf3)
+                              ../monita/monita_uip.o (__mulsf3)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
-                              ../tinysh/shell.o (__divsf3)
-/home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
-                              ../tinysh/shell.o (__gtsf2)
+                              ../monita/monita_uip.o (__divsf3)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
-                              ../tinysh/shell.o (__floatsisf)
+                              ../monita/monita_uip.o (__floatsisf)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
-                              ../tinysh/shell.o (__extendsfdf2)
+                              ../tinysh/enviro.o (__extendsfdf2)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o) (__thenan_sf)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o) (__subdf3)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
-                              ../tinysh/shell.o (__muldf3)
+                              /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o) (__muldf3)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
-                              ../tinysh/shell.o (__divdf3)
+                              /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o) (__divdf3)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o) (__eqdf2)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
@@ -126,8 +124,6 @@ Archive member included because of file (symbol)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o) (__fixdfsi)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o) (__make_dp)
-/home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
-                              ../tinysh/shell.o (__truncdfsf2)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o) (__thenan_df)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
@@ -136,10 +132,6 @@ Archive member included because of file (symbol)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o) (__pack_f)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o) (__unpack_f)
-/home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
-                              /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o) (__fpcmp_parts_f)
-/home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
-                              /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o) (__make_fp)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
                               /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o) (__pack_d)
 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
@@ -151,9 +143,12 @@ Allocating common symbols
 Common symbol       size              file
 
 ulString            0x4               ../webserver/httpd-cgi.o
+kalibrated          0x4               ../adc/ad7708.o
 hdl_lcd             0x4               main.o
 uip_len             0x2               ../uip/uip/uip.o
+kanal_aktif         0x4               ../adc/ad7708.o
 pcStatus            0xc               ../webserver/httpd-cgi.o
+tot_idle            0x4               main.o
 uip_sappdata        0x4               ../uip/uip/uip.o
 uip_acc32           0x4               ../uip/uip/uip.o
 command             0x14              ../tinysh/enviro.o
@@ -170,6 +165,7 @@ iap_entry           0x4               ../tinysh/enviro.o
 uip_sntpaddr        0x4               ../uip/uip/uip.o
 lcd_sem             0x4               main.o
 result              0x8               ../tinysh/enviro.o
+idle_lama           0x4               main.o
 uip_listenports     0x14              ../uip/uip/uip.o
 uip_draddr          0x4               ../uip/uip/uip.o
 uip_netmask         0x4               ../uip/uip/uip.o
@@ -224,10 +220,12 @@ LOAD ../webserver/httpd.o
 LOAD ../webserver/httpd-fs.o
 LOAD ../webserver/http-strings.o
 LOAD ../webserver/httpd-cgi.o
+LOAD ../system/idle_hook.o
+LOAD ../adc/ad7708.o
 LOAD /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a
 LOAD /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a
 LOAD /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libm.a
-LOAD /tmp/cct0nZk5.o
+LOAD /tmp/ccPNenLY.o
 START GROUP
 LOAD /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a
 LOAD /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a
@@ -237,691 +235,715 @@ END GROUP
 
 startup         0x00000000       0x44
  *(.startup)
- .startup       0x00000000       0x44 /tmp/cct0nZk5.o
+ .startup       0x00000000       0x44 /tmp/ccPNenLY.o
 
-prog            0x00000044    0x104b8
+prog            0x00000044    0x1079c
  *(.text)
- .text          0x00000044      0x258 ../FreeRTOS_Source/portable/GCC/ARM7_LPC23xx/portISR.o
-                0x00000130                vPreemptiveTick
+ .text          0x00000044      0x254 ../FreeRTOS_Source/portable/GCC/ARM7_LPC23xx/portISR.o
                 0x000000ec                vPortExitCritical
-                0x000001f0                vPortYieldProcessor
+                0x000001ec                vPortYieldProcessor
                 0x00000090                vPortDisableInterruptsFromThumb
+                0x00000130                vNonPreemptiveTick
                 0x00000044                vPortISRStartFirstTask
                 0x000000a8                vPortEnableInterruptsFromThumb
                 0x000000c0                vPortEnterCritical
- .text          0x0000029c      0x210 ../serial/serialISR.o
-                0x00000438                vSerialISRCreateQueues
-                0x0000029c                vUART_ISR_Handler
-                0x00000398                vUART_ISR_Wrapper
- .text          0x000004ac      0x2ec ../GPIO/gpio_ISR.o
-                0x000005f4                gpio_ISR_Handler
-                0x000006f0                gpio_ISR_Wrapper
-                0x000004ac                timer1_ISR_Handler
-                0x00000580                set_konter
-                0x000004e0                timer1_ISR_Wrapper
- .text          0x00000798      0x108 main.o
-                0x000007b0                togle_led_utama
-                0x000007e4                init_led_utama
-                0x00000854                main
-                0x00000798                dele
- .text          0x000008a0      0x134 ../system/setup_cpu.o
-                0x000008a0                sysInit
- .text          0x000009d4       0x9c ../system/syscall.o
-                0x000009dc                _lseek_r
-                0x000009e0                _fstat_r
-                0x000009f0                _sbrk_r
-                0x00000a10                _read_r
-                0x000009ec                _isatty
-                0x000009d8                _close_r
-                0x000009d4                _write_r
- .text          0x00000a70       0x34 ../system/reset_cpu.o
-                0x00000a70                reset_cpu
- .text          0x00000aa4      0x1b0 ../serial/serial.o
-                0x00000c28                printf2
-                0x00000aa4                vSerialClose
-                0x00000b44                vSerialPutString
-                0x00000ac8                xSerialPutChar
-                0x00000aa8                xSerialGetChar
-                0x00000b70                xSerialPortInitMinimal
- .text          0x00000c54      0x4c8 ../FreeRTOS_Source/queue.o
-                0x00000f2c                xQueueGenericSendFromISR
-                0x000010b0                xQueueCreate
-                0x00000c74                vQueueDelete
-                0x00000f78                xQueueGenericSend
-                0x00000cd0                xQueueReceiveFromISR
-                0x00000c64                xQueueIsQueueFullFromISR
-                0x00000c8c                uxQueueMessagesWaiting
-                0x00000da0                xQueueGenericReceive
-                0x00000c54                uxQueueMessagesWaitingFromISR
-                0x00000c58                xQueueIsQueueEmptyFromISR
-                0x00001068                xQueueCreateMutex
- .text          0x0000111c      0x73c ../FreeRTOS_Source/tasks.o
-                0x00001680                vTaskEndScheduler
-                0x000015c4                vTaskPlaceOnEventList
-                0x000011f0                uxTaskGetStackHighWaterMark
-                0x000014a8                xTaskGetTickCount
-                0x000012c4                xTaskRemoveFromEventList
-                0x00001438                xTaskCheckForTimeOut
-                0x000015a8                vTaskSuspendAll
-                0x00001208                vTaskPriorityDisinherit
-                0x00001254                vTaskPriorityInherit
-                0x0000111c                vTaskSwitchContext
-                0x0000148c                uxTaskGetNumberOfTasks
-                0x00001340                vTaskIncrementTick
-                0x0000141c                xTaskGetCurrentTaskHandle
-                0x000011d0                usTaskCheckFreeStackSpace
-                0x000014c4                xTaskResumeAll
-                0x00001814                vTaskStartScheduler
-                0x000011b4                vTaskMissedYield
-                0x00001698                xTaskCreate
-                0x0000161c                vTaskDelay
-                0x0000119c                vTaskSetTimeOutState
- .text          0x00001858      0x114 ../FreeRTOS_Source/portable/GCC/ARM7_LPC23xx/port.o
-                0x00001900                xPortStartScheduler
-                0x000018fc                vPortEndScheduler
-                0x00001858                pxPortInitialiseStack
- .text          0x0000196c       0x9c ../FreeRTOS_Source/list.o
-                0x0000198c                vListInsertEnd
-                0x000019e8                vListRemove
-                0x00001984                vListInitialiseItem
-                0x0000196c                vListInitialise
-                0x000019a8                vListInsert
- .text          0x00001a08      0x124 ../FreeRTOS_Source/portable/MemMang/heap_2.o
-                0x00001a08                pvPortMallocKU
-                0x00001a48                vPortFree
-                0x00001a78                pvPortMalloc
- .text          0x00001b2c      0x928 ../tinysh/tinysh.o
-                0x00001dd0                tinysh_char_in
-                0x00001c30                tinysh_add_command
-                0x000023d8                tinysh_set_prompt
-                0x00001c68                tinysh_get_arg
-                0x00001c74                tinysh_atoxi
-                0x00001b44                strstart
- .text          0x00002454      0x8b8 ../tinysh/shell.o
-                0x00002bcc                hapus_flash
-                0x00002638                cek_versi
-                0x000026ec                garis_bawah
-                0x000026fc                shell
-                0x00002b70                cek_stack
-                0x00002454                char_to_bin
-                0x00002c14                prepare_flash
-                0x00002460                dec_to_bin
-                0x00002c54                tulis_flash
-                0x00002680                baca_ip
-                0x00002a48                uptime
-                0x000024e8                display_args
-                0x000024b8                init_shell
-                0x0000246c                baca_kanal
- .text          0x00002d0c      0x414 ../tinysh/enviro.o
-                0x00002d0c                tulis_env_flash
-                0x000030f8                save_env
-                0x00002e04                baca_env
-                0x00002d10                set_default_ip
-                0x00002de0                getdef_env
-                0x00002fb0                tulis_env
-                0x00002fa4                print_env
- .text          0x00003120       0xcc ../GPIO/gpio.o
-                0x00003124                init_gpio
-                0x00003120                init_gpio_keypad
- .text          0x000031ec       0x74 ../spi/spi.o
-                0x0000323c                spiPut
-                0x000031ec                spiInit
- .text          0x00003260      0x64c ../uip/hardware/enc28j60.o
-                0x0000353c                enc28j60Init
-                0x000034a4                enc28j60Send
-                0x00003260                enc28j60Deinit
-                0x00003270                enc28j60WaitForData
-                0x0000377c                enc28j60Receive
-                0x00003274                cek_paket
- .text          0x000038ac        0xc ../uip/clock.o
-                0x000038ac                clock_time
- .text          0x000038b8       0xb4 ../uip/lib/memb.o
-                0x000038b8                memb_alloc
-                0x000038fc                memb_free
-                0x00003948                memb_init
- .text          0x0000396c     0x10b8 ../uip/uip/uip.o
-                0x000039e0                uip_unlisten
-                0x00003c28                uip_process
-                0x00004958                uip_udp_new
-                0x00003a24                uip_listen
-                0x00003a78                uip_connect
-                0x00003b84                htonl
-                0x00003a68                htons
-                0x00003978                uip_init
-                0x0000396c                uip_setipid
-                0x00003ba4                uip_iszeroaddr
-                0x00003bc4                uip_send
- .text          0x00004a24      0x27c ../uip/uip/uip_arch.o
-                0x00004a24                uip_add32
-                0x00004c8c                uip_ipchksum
-                0x00004ba8                uip_tcpchksum
-                0x00004b34                uip_chksum
-                0x00004ae8                uip_udpchksum
- .text          0x00004ca0      0x4cc ../uip/uip/uip_arp.o
-                0x00004f40                uip_arp_out
-                0x00004dcc                uip_arp_arpin
-                0x000050c8                uip_arp_timer
-                0x00005130                uip_arp_init
-                0x00004ee8                uip_arp_ipin
- .text          0x0000516c       0x50 ../uip/uip/uip_timer.o
-                0x00005178                timer_expired
-                0x000051a8                timer_set
-                0x00005198                timer_restart
-                0x0000516c                timer_reset
- .text          0x000051bc      0x274 ../uip/uip/uip-fw.o
-                0x000051e8                uip_fw_output
-                0x000051bc                uip_fw_init
-                0x000052cc                uip_fw_periodic
-                0x000052c0                uip_fw_default
-                0x000052b0                uip_fw_register
-                0x000052ec                uip_fw_forward
- .text          0x00005430      0x3b0 ../uip/uip/psock.o
-                0x00005704                psock_generator_send
-                0x00005494                psock_newdata
-                0x00005484                psock_datalen
-                0x00005780                psock_send
-                0x000055c0                psock_readbuf
-                0x0000559c                psock_init
-                0x000054bc                psock_readto
- .text          0x000057e0       0x6c ../uip/uip/uiplib.o
-                0x000057e0                uiplib_ipaddrconv
- .text          0x0000584c      0x254 ../uip/uip_task.o
-                0x00005890                start_ether
-                0x0000584c                dispatch_udp_appcall
-                0x00005860                dispatch_tcp_appcall
-                0x00005850                vApplicationIdleHook
- .text          0x00005aa0      0x228 ../monita/monita_uip.o
-                0x00005aa0                monita_appcall
-                0x00005cac                monita_init
- .text          0x00005cc8      0xa10 ../webserver/httpd.o
-                0x000063d4                buat_file_index
-                0x00005cc8                httpd_init
-                0x00006304                httpd_appcall
- .text          0x000066d8       0x94 ../webserver/httpd-fs.o
-                0x000066e0                httpd_fs_init
-                0x000066d8                httpd_fs_open
-                0x000066f8                httpd_fs_count
- .text          0x0000676c      0x2e8 ../webserver/httpd-cgi.o
-                0x0000677c                httpd_cgi
- .text          0x00006a54       0x64 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
-                0x00006a54                memcpy
- .text          0x00006ab8       0x64 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
-                0x00006ab8                memset
- .text          0x00006b1c       0xbc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
-                0x00006b1c                snprintf
-                0x00006b80                _snprintf_r
- .text          0x00006bd8       0x84 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
-                0x00006c1c                _sprintf_r
-                0x00006bd8                sprintf
- .text          0x00006c5c       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
-                0x00006c5c                strcat
- .text          0x00006cb4       0x7c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strchr.o)
-                0x00006cb4                strchr
- .text          0x00006d30       0x68 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
-                0x00006d30                strcmp
- .text          0x00006d98       0x50 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
-                0x00006d98                strcpy
- .text          0x00006de8       0x50 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
-                0x00006de8                strlen
- .text          0x00006e38       0xb4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncmp.o)
-                0x00006e38                strncmp
- .text          0x00006eec       0x88 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
-                0x00006eec                strncpy
- .text          0x00006f74       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strrchr.o)
-                0x00006f74                strrchr
- .text          0x00006fa4     0x1a60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
-                0x00006fc4                _vfprintf_r
-                0x000089e4                vfprintf
- .text          0x00008a04       0x74 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vsprintf.o)
-                0x00008a38                vsprintf
-                0x00008a04                _vsprintf_r
- .text          0x00008a78       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
-                0x00008a78                _wcrtomb_r
-                0x00008aac                wcrtomb
- .text          0x00008acc      0x10c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
-                0x00008acc                _wcsrtombs_r
-                0x00008bb0                wcsrtombs
- .text          0x00008bd8      0x2b8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
-                0x00008bd8                _wctomb_r
- .text          0x00008e90       0xa0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
-                0x00008e90                __swsetup
- .text          0x00008f30      0xf28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
-                0x00009080                _dtoa_r
- .text          0x00009e58       0x90 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
-                0x00009e58                fflush
- .text          0x00009ee8      0x1c4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
-                0x00009f30                __sinit
-                0x00009fe8                __sfmoreglue
-                0x00009fd4                _cleanup
-                0x00009fc4                _cleanup_r
-                0x00009fac                __fp_lock_all
-                0x00009f20                __sfp_lock_acquire
-                0x0000a020                __sfp
-                0x00009f2c                __sinit_lock_release
-                0x00009f94                __fp_unlock_all
-                0x00009f24                __sfp_lock_release
-                0x00009f28                __sinit_lock_acquire
- .text          0x0000a0ac      0x268 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
-                0x0000a14c                _free_r
-                0x0000a0ac                _malloc_trim_r
- .text          0x0000a314      0x298 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
-                0x0000a314                __sfvwrite
- .text          0x0000a5ac       0xf0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
-                0x0000a624                _fwalk
-                0x0000a5ac                _fwalk_reent
- .text          0x0000a69c       0x88 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
-                0x0000a6c4                _setlocale_r
-                0x0000a69c                __locale_charset
-                0x0000a6a8                _localeconv_r
-                0x0000a708                setlocale
-                0x0000a6b0                localeconv
- .text          0x0000a724       0xdc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
-                0x0000a724                __smakebuf
- .text          0x0000a800      0x538 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
-                0x0000a800                _malloc_r
- .text          0x0000ad38       0xbc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
-                0x0000ad38                memchr
- .text          0x0000adf4       0x8c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
-                0x0000adf4                memmove
- .text          0x0000ae80        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
-                0x0000ae84                __malloc_unlock
-                0x0000ae80                __malloc_lock
- .text          0x0000ae88      0x8c0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
-                0x0000b100                _mprec_log10
-                0x0000aea0                _hi0bits
-                0x0000b140                _Balloc
-                0x0000b19c                _d2b
-                0x0000b418                _multiply
-                0x0000b0ac                _ratio
-                0x0000b6b8                _s2b
-                0x0000b568                _i2b
-                0x0000aee8                _lo0bits
-                0x0000af54                __mcmp
-                0x0000b61c                _pow5mult
-                0x0000af94                _ulp
-                0x0000afe4                _b2d
-                0x0000b580                _multadd
-                0x0000b284                __mdiff
-                0x0000b36c                _lshift
-                0x0000ae88                _Bfree
- .text          0x0000b748      0x3d8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
-                0x0000b748                _realloc_r
- .text          0x0000bb20       0x24 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
-                0x0000bb20                isinf
- .text          0x0000bb44       0x1c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
-                0x0000bb44                isnan
- .text          0x0000bb60       0xd8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
-                0x0000bb78                __sseek
-                0x0000bc00                __sread
-                0x0000bb60                __sclose
-                0x0000bbb8                __swrite
- .text          0x0000bc38      0x504 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
-                0x0000bc54                _getpid
-                0x0000bd48                initialise_monitor_handles
-                0x0000bc6c                isatty
-                0x0000bcd4                _fstat
-                0x0000c068                _open
-                0x0000bc9c                _sbrk
-                0x0000bc68                _raise
-                0x0000bdd0                _times
-                0x0000c07c                _stat
-                0x0000c0b8                _lseek
-                0x0000bc58                _link
-                0x0000be8c                _swiwrite
-                0x0000bc70                _rename
-                0x0000beb4                _swilseek
-                0x0000be54                _swiclose
-                0x0000bf68                _swiopen
-                0x0000bc60                _unlink
-                0x0000bff4                _write
-                0x0000be20                _kill
-                0x0000bdf4                _gettimeofday
-                0x0000c0f0                _read
-                0x0000be3c                _exit
-                0x0000bc84                _system
-                0x0000c0c8                _swiread
-                0x0000c058                _close
- .text          0x0000c13c       0x60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
-                0x0000c13c                _calloc_r
- .text          0x0000c19c        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
-                0x0000c19c                __errno
- .text          0x0000c1a8       0xbc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
-                0x0000c1a8                _fclose_r
-                0x0000c24c                fclose
- .text          0x0000c264       0x8c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_udivsi3.o)
-                0x0000c264                __udivsi3
-                0x0000c264                __aeabi_uidiv
-                0x0000c2e0                __aeabi_uidivmod
- .text          0x0000c2f0       0xa4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_divsi3.o)
-                0x0000c2f0                __aeabi_idiv
-                0x0000c2f0                __divsi3
-                0x0000c384                __aeabi_idivmod
- .text          0x0000c394       0xc8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_umodsi3.o)
-                0x0000c394                __umodsi3
- .text          0x0000c45c       0xd8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_modsi3.o)
-                0x0000c45c                __modsi3
- .text          0x0000c534        0x4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_dvmd_tls.o)
-                0x0000c534                __aeabi_ldiv0
-                0x0000c534                __div0
-                0x0000c534                __aeabi_idiv0
- .text          0x0000c538      0x234 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
-                0x0000c6fc                __subsf3
-                0x0000c738                __addsf3
- .text          0x0000c76c      0x174 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
-                0x0000c7a4                __mulsf3
- .text          0x0000c8e0      0x11c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
-                0x0000c918                __divsf3
- .text          0x0000c9fc       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
-                0x0000ca0c                __gtsf2
- .text          0x0000ca50       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
-                0x0000ca50                __floatsisf
- .text          0x0000cac0       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
-                0x0000cac0                __extendsfdf2
- .text          0x0000caf0      0x328 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
-                0x0000cde0                __adddf3
-                0x0000cda0                __subdf3
- .text          0x0000ce18      0x2ac /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
-                0x0000ce50                __muldf3
- .text          0x0000d0c4      0x1ac /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
-                0x0000d0fc                __divdf3
- .text          0x0000d270       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
-                0x0000d280                __eqdf2
- .text          0x0000d2c8       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
-                0x0000d2d8                __nedf2
- .text          0x0000d320       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
-                0x0000d330                __gtdf2
- .text          0x0000d378       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
-                0x0000d388                __gedf2
- .text          0x0000d3d0       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
-                0x0000d3e0                __ltdf2
- .text          0x0000d428       0x8c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
-                0x0000d428                __floatsidf
- .text          0x0000d4b4       0xb4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
-                0x0000d4e4                __fixdfsi
- .text          0x0000d568       0x28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
-                0x0000d568                __make_dp
- .text          0x0000d590       0x44 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
-                0x0000d590                __truncdfsf2
- .text          0x0000d5d4       0x84 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
-                0x0000d5d4                __muldi3
- .text          0x0000d658      0x130 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
-                0x0000d688                __pack_f
- .text          0x0000d788       0x80 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
-                0x0000d788                __unpack_f
- .text          0x0000d808       0xd8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
-                0x0000d838                __fpcmp_parts_f
- .text          0x0000d8e0       0x18 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
-                0x0000d8e0                __make_fp
- .text          0x0000d8f8      0x290 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
-                0x0000d928                __pack_d
- .text          0x0000db88       0xc4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
-                0x0000db88                __unpack_d
- .text          0x0000dc4c       0xf0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
-                0x0000dc7c                __fpcmp_parts_d
- .text          0x0000dd3c       0xb8 /tmp/cct0nZk5.o
-                0x0000dd3c                start
-                0x0000ddd8                endless_loop
+ .text          0x00000298      0x210 ../serial/serialISR.o
+                0x00000434                vSerialISRCreateQueues
+                0x00000298                vUART_ISR_Handler
+                0x00000394                vUART_ISR_Wrapper
+ .text          0x000004a8      0x2ec ../GPIO/gpio_ISR.o
+                0x000005f0                gpio_ISR_Handler
+                0x000006ec                gpio_ISR_Wrapper
+                0x000004a8                timer1_ISR_Handler
+                0x0000057c                set_konter
+                0x000004dc                timer1_ISR_Wrapper
+ .text          0x00000794      0x14c main.o
+                0x000007ac                togle_led_utama
+                0x000007fc                init_led_utama
+                0x0000085c                main
+                0x00000794                dele
+ .text          0x000008e0      0x134 ../system/setup_cpu.o
+                0x000008e0                sysInit
+ .text          0x00000a14       0x9c ../system/syscall.o
+                0x00000a1c                _lseek_r
+                0x00000a20                _fstat_r
+                0x00000a30                _sbrk_r
+                0x00000a50                _read_r
+                0x00000a2c                _isatty
+                0x00000a18                _close_r
+                0x00000a14                _write_r
+ .text          0x00000ab0       0x34 ../system/reset_cpu.o
+                0x00000ab0                reset_cpu
+ .text          0x00000ae4      0x1b0 ../serial/serial.o
+                0x00000c68                printf2
+                0x00000ae4                vSerialClose
+                0x00000b84                vSerialPutString
+                0x00000b08                xSerialPutChar
+                0x00000ae8                xSerialGetChar
+                0x00000bb0                xSerialPortInitMinimal
+ .text          0x00000c94      0x4c8 ../FreeRTOS_Source/queue.o
+                0x00000f6c                xQueueGenericSendFromISR
+                0x000010f0                xQueueCreate
+                0x00000cb4                vQueueDelete
+                0x00000fb8                xQueueGenericSend
+                0x00000d10                xQueueReceiveFromISR
+                0x00000ca4                xQueueIsQueueFullFromISR
+                0x00000ccc                uxQueueMessagesWaiting
+                0x00000de0                xQueueGenericReceive
+                0x00000c94                uxQueueMessagesWaitingFromISR
+                0x00000c98                xQueueIsQueueEmptyFromISR
+                0x000010a8                xQueueCreateMutex
+ .text          0x0000115c      0x734 ../FreeRTOS_Source/tasks.o
+                0x000016ac                vTaskEndScheduler
+                0x000015f0                vTaskPlaceOnEventList
+                0x00001220                uxTaskGetStackHighWaterMark
+                0x000014d8                xTaskGetTickCount
+                0x000012f4                xTaskRemoveFromEventList
+                0x00001468                xTaskCheckForTimeOut
+                0x000015d4                vTaskSuspendAll
+                0x00001238                vTaskPriorityDisinherit
+                0x00001284                vTaskPriorityInherit
+                0x0000115c                vTaskSwitchContext
+                0x000014bc                uxTaskGetNumberOfTasks
+                0x00001370                vTaskIncrementTick
+                0x0000144c                xTaskGetCurrentTaskHandle
+                0x00001200                usTaskCheckFreeStackSpace
+                0x000014f4                xTaskResumeAll
+                0x0000184c                vTaskStartScheduler
+                0x000011f4                vTaskMissedYield
+                0x000016d0                xTaskCreate
+                0x00001648                vTaskDelay
+                0x000011dc                vTaskSetTimeOutState
+ .text          0x00001890      0x114 ../FreeRTOS_Source/portable/GCC/ARM7_LPC23xx/port.o
+                0x00001938                xPortStartScheduler
+                0x00001934                vPortEndScheduler
+                0x00001890                pxPortInitialiseStack
+ .text          0x000019a4       0x9c ../FreeRTOS_Source/list.o
+                0x000019c4                vListInsertEnd
+                0x00001a20                vListRemove
+                0x000019bc                vListInitialiseItem
+                0x000019a4                vListInitialise
+                0x000019e0                vListInsert
+ .text          0x00001a40      0x124 ../FreeRTOS_Source/portable/MemMang/heap_2.o
+                0x00001a40                pvPortMallocKU
+                0x00001a80                vPortFree
+                0x00001ab0                pvPortMalloc
+ .text          0x00001b64      0x928 ../tinysh/tinysh.o
+                0x00001e08                tinysh_char_in
+                0x00001c68                tinysh_add_command
+                0x00002410                tinysh_set_prompt
+                0x00001ca0                tinysh_get_arg
+                0x00001cac                tinysh_atoxi
+                0x00001b7c                strstart
+ .text          0x0000248c      0x790 ../tinysh/shell.o
+                0x00002adc                hapus_flash
+                0x00002548                cek_versi
+                0x000025ec                garis_bawah
+                0x000025fc                shell
+                0x00002a80                cek_stack
+                0x0000248c                char_to_bin
+                0x00002b24                prepare_flash
+                0x00002498                dec_to_bin
+                0x00002b64                tulis_flash
+                0x00002580                baca_ip
+                0x00002950                uptime
+                0x00002520                display_args
+                0x000024f0                init_shell
+                0x000024a4                baca_kanal
+ .text          0x00002c1c      0x414 ../tinysh/enviro.o
+                0x00002c1c                tulis_env_flash
+                0x00003008                save_env
+                0x00002d14                baca_env
+                0x00002c20                set_default_ip
+                0x00002cf0                getdef_env
+                0x00002ec0                tulis_env
+                0x00002eb4                print_env
+ .text          0x00003030       0xfc ../GPIO/gpio.o
+                0x00003034                init_gpio_adc
+                0x00003064                init_gpio
+                0x00003030                init_gpio_keypad
+ .text          0x0000312c       0x74 ../spi/spi.o
+                0x0000317c                spiPut
+                0x0000312c                spiInit
+ .text          0x000031a0      0x640 ../uip/hardware/enc28j60.o
+                0x00003470                enc28j60Init
+                0x000033d8                enc28j60Send
+                0x000031a0                enc28j60Deinit
+                0x000031b0                enc28j60WaitForData
+                0x000036b0                enc28j60Receive
+                0x000031b4                cek_paket
+ .text          0x000037e0        0xc ../uip/clock.o
+                0x000037e0                clock_time
+ .text          0x000037ec       0xb4 ../uip/lib/memb.o
+                0x000037ec                memb_alloc
+                0x00003830                memb_free
+                0x0000387c                memb_init
+ .text          0x000038a0     0x10b4 ../uip/uip/uip.o
+                0x00003914                uip_unlisten
+                0x00003b5c                uip_process
+                0x00004888                uip_udp_new
+                0x00003958                uip_listen
+                0x000039ac                uip_connect
+                0x00003ab8                htonl
+                0x0000399c                htons
+                0x000038ac                uip_init
+                0x000038a0                uip_setipid
+                0x00003ad8                uip_iszeroaddr
+                0x00003af8                uip_send
+ .text          0x00004954      0x27c ../uip/uip/uip_arch.o
+                0x00004954                uip_add32
+                0x00004bbc                uip_ipchksum
+                0x00004ad8                uip_tcpchksum
+                0x00004a64                uip_chksum
+                0x00004a18                uip_udpchksum
+ .text          0x00004bd0      0x4cc ../uip/uip/uip_arp.o
+                0x00004e70                uip_arp_out
+                0x00004cfc                uip_arp_arpin
+                0x00004ff8                uip_arp_timer
+                0x00005060                uip_arp_init
+                0x00004e18                uip_arp_ipin
+ .text          0x0000509c       0x50 ../uip/uip/uip_timer.o
+                0x000050a8                timer_expired
+                0x000050d8                timer_set
+                0x000050c8                timer_restart
+                0x0000509c                timer_reset
+ .text          0x000050ec      0x274 ../uip/uip/uip-fw.o
+                0x00005118                uip_fw_output
+                0x000050ec                uip_fw_init
+                0x000051fc                uip_fw_periodic
+                0x000051f0                uip_fw_default
+                0x000051e0                uip_fw_register
+                0x0000521c                uip_fw_forward
+ .text          0x00005360      0x3b0 ../uip/uip/psock.o
+                0x00005634                psock_generator_send
+                0x000053c4                psock_newdata
+                0x000053b4                psock_datalen
+                0x000056b0                psock_send
+                0x000054f0                psock_readbuf
+                0x000054cc                psock_init
+                0x000053ec                psock_readto
+ .text          0x00005710       0x6c ../uip/uip/uiplib.o
+                0x00005710                uiplib_ipaddrconv
+ .text          0x0000577c      0x240 ../uip/uip_task.o
+                0x000057b0                start_ether
+                0x0000577c                dispatch_udp_appcall
+                0x00005780                dispatch_tcp_appcall
+ .text          0x000059bc      0x228 ../monita/monita_uip.o
+                0x000059bc                monita_appcall
+                0x00005bc8                monita_init
+ .text          0x00005be4      0xa10 ../webserver/httpd.o
+                0x000062f0                buat_file_index
+                0x00005be4                httpd_init
+                0x00006220                httpd_appcall
+ .text          0x000065f4       0x94 ../webserver/httpd-fs.o
+                0x000065fc                httpd_fs_init
+                0x000065f4                httpd_fs_open
+                0x00006614                httpd_fs_count
+ .text          0x00006688      0x2e4 ../webserver/httpd-cgi.o
+                0x00006698                httpd_cgi
+ .text          0x0000696c       0x10 ../system/idle_hook.o
+                0x0000696c                vApplicationIdleHook
+ .text          0x0000697c      0x524 ../adc/ad7708.o
+                0x00006d08                kalibrasi_adc1
+                0x000069b8                set_calibrated
+                0x00006c48                cek_adccon
+                0x00006c08                cek_mode
+                0x00006c88                cek_iocon
+                0x00006b48                cek_status
+                0x000069d4                uncs_ad7708
+                0x00006af8                baca_data
+                0x00006cc8                reset_adc
+                0x000069ec                set_mode
+                0x00006980                cek_adc_rdy
+                0x00006b88                cek_adc_id
+                0x00006a38                set_adccon
+                0x00006e64                stop_ad7708
+                0x00006ab8                set_iocon
+                0x0000697c                spi_rx
+                0x00006a78                set_filter
+                0x00006a2c                stop_adc
+                0x00006bc8                cek_filter
+                0x00006998                cs_ad7708
+ .text          0x00006ea0       0x64 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+                0x00006ea0                memcpy
+ .text          0x00006f04       0x64 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+                0x00006f04                memset
+ .text          0x00006f68       0xbc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
+                0x00006f68                snprintf
+                0x00006fcc                _snprintf_r
+ .text          0x00007024       0x84 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+                0x00007068                _sprintf_r
+                0x00007024                sprintf
+ .text          0x000070a8       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+                0x000070a8                strcat
+ .text          0x00007100       0x7c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strchr.o)
+                0x00007100                strchr
+ .text          0x0000717c       0x68 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+                0x0000717c                strcmp
+ .text          0x000071e4       0x50 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+                0x000071e4                strcpy
+ .text          0x00007234       0x50 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+                0x00007234                strlen
+ .text          0x00007284       0xb4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncmp.o)
+                0x00007284                strncmp
+ .text          0x00007338       0x88 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+                0x00007338                strncpy
+ .text          0x000073c0       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strrchr.o)
+                0x000073c0                strrchr
+ .text          0x000073f0     0x1a60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+                0x00007410                _vfprintf_r
+                0x00008e30                vfprintf
+ .text          0x00008e50       0x74 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vsprintf.o)
+                0x00008e84                vsprintf
+                0x00008e50                _vsprintf_r
+ .text          0x00008ec4       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+                0x00008ec4                _wcrtomb_r
+                0x00008ef8                wcrtomb
+ .text          0x00008f18      0x10c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+                0x00008f18                _wcsrtombs_r
+                0x00008ffc                wcsrtombs
+ .text          0x00009024      0x2b8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+                0x00009024                _wctomb_r
+ .text          0x000092dc       0xa0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+                0x000092dc                __swsetup
+ .text          0x0000937c      0xf28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+                0x000094cc                _dtoa_r
+ .text          0x0000a2a4       0x90 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+                0x0000a2a4                fflush
+ .text          0x0000a334      0x1c4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+                0x0000a37c                __sinit
+                0x0000a434                __sfmoreglue
+                0x0000a420                _cleanup
+                0x0000a410                _cleanup_r
+                0x0000a3f8                __fp_lock_all
+                0x0000a36c                __sfp_lock_acquire
+                0x0000a46c                __sfp
+                0x0000a378                __sinit_lock_release
+                0x0000a3e0                __fp_unlock_all
+                0x0000a370                __sfp_lock_release
+                0x0000a374                __sinit_lock_acquire
+ .text          0x0000a4f8      0x268 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+                0x0000a598                _free_r
+                0x0000a4f8                _malloc_trim_r
+ .text          0x0000a760      0x298 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+                0x0000a760                __sfvwrite
+ .text          0x0000a9f8       0xf0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+                0x0000aa70                _fwalk
+                0x0000a9f8                _fwalk_reent
+ .text          0x0000aae8       0x88 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x0000ab10                _setlocale_r
+                0x0000aae8                __locale_charset
+                0x0000aaf4                _localeconv_r
+                0x0000ab54                setlocale
+                0x0000aafc                localeconv
+ .text          0x0000ab70       0xdc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+                0x0000ab70                __smakebuf
+ .text          0x0000ac4c      0x538 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x0000ac4c                _malloc_r
+ .text          0x0000b184       0xbc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+                0x0000b184                memchr
+ .text          0x0000b240       0x8c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+                0x0000b240                memmove
+ .text          0x0000b2cc        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+                0x0000b2d0                __malloc_unlock
+                0x0000b2cc                __malloc_lock
+ .text          0x0000b2d4      0x8c0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+                0x0000b54c                _mprec_log10
+                0x0000b2ec                _hi0bits
+                0x0000b58c                _Balloc
+                0x0000b5e8                _d2b
+                0x0000b864                _multiply
+                0x0000b4f8                _ratio
+                0x0000bb04                _s2b
+                0x0000b9b4                _i2b
+                0x0000b334                _lo0bits
+                0x0000b3a0                __mcmp
+                0x0000ba68                _pow5mult
+                0x0000b3e0                _ulp
+                0x0000b430                _b2d
+                0x0000b9cc                _multadd
+                0x0000b6d0                __mdiff
+                0x0000b7b8                _lshift
+                0x0000b2d4                _Bfree
+ .text          0x0000bb94      0x3d8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+                0x0000bb94                _realloc_r
+ .text          0x0000bf6c       0x24 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+                0x0000bf6c                isinf
+ .text          0x0000bf90       0x1c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+                0x0000bf90                isnan
+ .text          0x0000bfac       0xd8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+                0x0000bfc4                __sseek
+                0x0000c04c                __sread
+                0x0000bfac                __sclose
+                0x0000c004                __swrite
+ .text          0x0000c084      0x504 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+                0x0000c0a0                _getpid
+                0x0000c194                initialise_monitor_handles
+                0x0000c0b8                isatty
+                0x0000c120                _fstat
+                0x0000c4b4                _open
+                0x0000c0e8                _sbrk
+                0x0000c0b4                _raise
+                0x0000c21c                _times
+                0x0000c4c8                _stat
+                0x0000c504                _lseek
+                0x0000c0a4                _link
+                0x0000c2d8                _swiwrite
+                0x0000c0bc                _rename
+                0x0000c300                _swilseek
+                0x0000c2a0                _swiclose
+                0x0000c3b4                _swiopen
+                0x0000c0ac                _unlink
+                0x0000c440                _write
+                0x0000c26c                _kill
+                0x0000c240                _gettimeofday
+                0x0000c53c                _read
+                0x0000c288                _exit
+                0x0000c0d0                _system
+                0x0000c514                _swiread
+                0x0000c4a4                _close
+ .text          0x0000c588       0x60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+                0x0000c588                _calloc_r
+ .text          0x0000c5e8        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+                0x0000c5e8                __errno
+ .text          0x0000c5f4       0xbc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+                0x0000c5f4                _fclose_r
+                0x0000c698                fclose
+ .text          0x0000c6b0       0x8c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_udivsi3.o)
+                0x0000c6b0                __udivsi3
+                0x0000c6b0                __aeabi_uidiv
+                0x0000c72c                __aeabi_uidivmod
+ .text          0x0000c73c       0xa4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_divsi3.o)
+                0x0000c73c                __aeabi_idiv
+                0x0000c73c                __divsi3
+                0x0000c7d0                __aeabi_idivmod
+ .text          0x0000c7e0       0xc8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_umodsi3.o)
+                0x0000c7e0                __umodsi3
+ .text          0x0000c8a8       0xd8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_modsi3.o)
+                0x0000c8a8                __modsi3
+ .text          0x0000c980        0x4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_dvmd_tls.o)
+                0x0000c980                __aeabi_ldiv0
+                0x0000c980                __div0
+                0x0000c980                __aeabi_idiv0
+ .text          0x0000c984      0x234 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
+                0x0000cb48                __subsf3
+                0x0000cb84                __addsf3
+ .text          0x0000cbb8      0x174 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
+                0x0000cbf0                __mulsf3
+ .text          0x0000cd2c      0x11c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
+                0x0000cd64                __divsf3
+ .text          0x0000ce48       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+                0x0000ce48                __floatsisf
+ .text          0x0000ceb8       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+                0x0000ceb8                __extendsfdf2
+ .text          0x0000cee8      0x328 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+                0x0000d1d8                __adddf3
+                0x0000d198                __subdf3
+ .text          0x0000d210      0x2ac /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+                0x0000d248                __muldf3
+ .text          0x0000d4bc      0x1ac /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+                0x0000d4f4                __divdf3
+ .text          0x0000d668       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+                0x0000d678                __eqdf2
+ .text          0x0000d6c0       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+                0x0000d6d0                __nedf2
+ .text          0x0000d718       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+                0x0000d728                __gtdf2
+ .text          0x0000d770       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+                0x0000d780                __gedf2
+ .text          0x0000d7c8       0x58 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+                0x0000d7d8                __ltdf2
+ .text          0x0000d820       0x8c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+                0x0000d820                __floatsidf
+ .text          0x0000d8ac       0xb4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+                0x0000d8dc                __fixdfsi
+ .text          0x0000d960       0x28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+                0x0000d960                __make_dp
+ .text          0x0000d988       0x84 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+                0x0000d988                __muldi3
+ .text          0x0000da0c      0x130 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+                0x0000da3c                __pack_f
+ .text          0x0000db3c       0x80 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+                0x0000db3c                __unpack_f
+ .text          0x0000dbbc      0x290 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+                0x0000dbec                __pack_d
+ .text          0x0000de4c       0xc4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+                0x0000de4c                __unpack_d
+ .text          0x0000df10       0xf0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+                0x0000df40                __fpcmp_parts_d
+ .text          0x0000e000       0xb8 /tmp/ccPNenLY.o
+                0x0000e000                start
+                0x0000e09c                endless_loop
  *(.rodata)
- .rodata        0x0000ddf4        0x4 ../tinysh/tinysh.o
- .rodata        0x0000ddf8       0x48 ../uip/uip/uip.o
- .rodata        0x0000de40        0x6 ../uip/uip/uip_arp.o
- *fill*         0x0000de46        0x2 00
- .rodata        0x0000de48     0x117c ../webserver/httpd-fs.o
-                0x0000de5c                file_index_html
-                0x0000de98                file_stats_shtml
-                0x0000de48                file_404_html
-                0x0000de84                file_io_shtml
-                0x0000deac                file_tcp_shtml
-                0x0000de70                file_index_shtml
- .rodata        0x0000efc4      0x24a ../webserver/http-strings.o
-                0x0000f1e4                http_shtml
-                0x0000efc4                http_http
-                0x0000efe0                http_10
-                0x0000f15e                http_content_type_png
-                0x0000f127                http_content_type_css
-                0x0000f036                http_referer
-                0x0000f093                http_header_404
-                0x0000efd1                http_301
-                0x0000f0ee                http_content_type_plain
-                0x0000f204                http_text
-                0x0000f10b                http_content_type_html
-                0x0000f001                http_texthtml
-                0x0000f016                http_host
-                0x0000f17a                http_content_type_gif
-                0x0000f01d                http_crnl
-                0x0000efdb                http_get
-                0x0000f00b                http_location
-                0x0000f1ff                http_jpg
-                0x0000f1f0                http_css
-                0x0000efe9                http_11
-                0x0000f142                http_content_type_text
-                0x0000efd6                http_302
-                0x0000eff2                http_content_type
-                0x0000f03f                http_header_200
-                0x0000f209                http_txt
-                0x0000f196                http_content_type_jpg
-                0x0000f1de                http_html
-                0x0000f020                http_index_html
-                0x0000f1f5                http_png
-                0x0000efcc                http_200
-                0x0000f02c                http_404_html
-                0x0000f1fa                http_gif
-                0x0000f1b3                http_content_type_binary
-                0x0000f1eb                http_htm
- *fill*         0x0000f20e        0x2 00
- .rodata        0x0000f210       0xa4 ../webserver/httpd-cgi.o
- .rodata        0x0000f2b4      0x184 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .rodata        0x0000f438       0x18 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .rodata        0x0000f450        0x4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
-                0x0000f450                _global_impure_ptr
- .rodata        0x0000f454       0x34 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .rodata        0x0000f488      0x124 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
-                0x0000f578                __mprec_tinytens
-                0x0000f488                __mprec_tens
-                0x0000f550                __mprec_bigtens
- .rodata        0x0000f5ac       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
-                0x0000f5ac                __thenan_sf
- .rodata        0x0000f5bc       0x14 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
-                0x0000f5bc                __thenan_df
+ .rodata        0x0000e0b8        0x4 ../tinysh/tinysh.o
+ .rodata        0x0000e0bc       0x48 ../uip/uip/uip.o
+ .rodata        0x0000e104        0x6 ../uip/uip/uip_arp.o
+ *fill*         0x0000e10a        0x2 00
+ .rodata        0x0000e10c     0x117c ../webserver/httpd-fs.o
+                0x0000e120                file_index_html
+                0x0000e15c                file_stats_shtml
+                0x0000e10c                file_404_html
+                0x0000e148                file_io_shtml
+                0x0000e170                file_tcp_shtml
+                0x0000e134                file_index_shtml
+ .rodata        0x0000f288      0x24a ../webserver/http-strings.o
+                0x0000f4a8                http_shtml
+                0x0000f288                http_http
+                0x0000f2a4                http_10
+                0x0000f422                http_content_type_png
+                0x0000f3eb                http_content_type_css
+                0x0000f2fa                http_referer
+                0x0000f357                http_header_404
+                0x0000f295                http_301
+                0x0000f3b2                http_content_type_plain
+                0x0000f4c8                http_text
+                0x0000f3cf                http_content_type_html
+                0x0000f2c5                http_texthtml
+                0x0000f2da                http_host
+                0x0000f43e                http_content_type_gif
+                0x0000f2e1                http_crnl
+                0x0000f29f                http_get
+                0x0000f2cf                http_location
+                0x0000f4c3                http_jpg
+                0x0000f4b4                http_css
+                0x0000f2ad                http_11
+                0x0000f406                http_content_type_text
+                0x0000f29a                http_302
+                0x0000f2b6                http_content_type
+                0x0000f303                http_header_200
+                0x0000f4cd                http_txt
+                0x0000f45a                http_content_type_jpg
+                0x0000f4a2                http_html
+                0x0000f2e4                http_index_html
+                0x0000f4b9                http_png
+                0x0000f290                http_200
+                0x0000f2f0                http_404_html
+                0x0000f4be                http_gif
+                0x0000f477                http_content_type_binary
+                0x0000f4af                http_htm
+ *fill*         0x0000f4d2        0x2 00
+ .rodata        0x0000f4d4       0xa4 ../webserver/httpd-cgi.o
+ .rodata        0x0000f578      0x184 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .rodata        0x0000f6fc       0x18 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .rodata        0x0000f714        0x4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+                0x0000f714                _global_impure_ptr
+ .rodata        0x0000f718       0x34 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .rodata        0x0000f74c      0x124 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+                0x0000f83c                __mprec_tinytens
+                0x0000f74c                __mprec_tens
+                0x0000f814                __mprec_bigtens
+ .rodata        0x0000f870       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+                0x0000f870                __thenan_sf
+ .rodata        0x0000f880       0x14 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
+                0x0000f880                __thenan_df
  *(.rodata*)
  .rodata.str1.4
-                0x0000f5d0        0x5 main.o
+                0x0000f894        0x5 main.o
                                   0x8 (size before relaxing)
- *fill*         0x0000f5d5        0x3 00
+ *fill*         0x0000f899        0x3 00
  .rodata.str1.4
-                0x0000f5d8       0x13 ../system/reset_cpu.o
+                0x0000f89c       0x13 ../system/reset_cpu.o
                                  0x14 (size before relaxing)
- *fill*         0x0000f5eb        0x1 00
+ *fill*         0x0000f8af        0x1 00
  .rodata.str1.4
-                0x0000f5ec        0x5 ../FreeRTOS_Source/tasks.o
+                0x0000f8b0        0x5 ../FreeRTOS_Source/tasks.o
                                   0x8 (size before relaxing)
- *fill*         0x0000f5f1        0x3 00
+ *fill*         0x0000f8b5        0x3 00
  .rodata.str1.4
-                0x0000f5f4      0x161 ../tinysh/tinysh.o
+                0x0000f8b8      0x161 ../tinysh/tinysh.o
                                 0x170 (size before relaxing)
- *fill*         0x0000f755        0x3 00
+ *fill*         0x0000fa19        0x3 00
  .rodata.str1.4
-                0x0000f758      0x55c ../tinysh/shell.o
-                                0x574 (size before relaxing)
+                0x0000fa1c      0x4f7 ../tinysh/shell.o
+                                0x514 (size before relaxing)
+ *fill*         0x0000ff13        0x1 00
  .rodata.str1.4
-                0x0000fcb4      0x1c3 ../tinysh/enviro.o
+                0x0000ff14      0x1c3 ../tinysh/enviro.o
                                 0x210 (size before relaxing)
- *fill*         0x0000fe77        0x1 00
+ *fill*         0x000100d7        0x1 00
  .rodata.str1.4
-                0x0000fe78       0x52 ../uip/hardware/enc28j60.o
+                0x000100d8       0x52 ../uip/hardware/enc28j60.o
                                  0x54 (size before relaxing)
- *fill*         0x0000feca        0x2 00
+ *fill*         0x0001012a        0x2 00
  .rodata.str1.4
-                0x0000fecc       0x6e ../uip/uip_task.o
+                0x0001012c       0x6e ../uip/uip_task.o
                                  0x70 (size before relaxing)
- *fill*         0x0000ff3a        0x2 00
+ *fill*         0x0001019a        0x2 00
  .rodata.str1.4
-                0x0000ff3c       0x51 ../monita/monita_uip.o
+                0x0001019c       0x51 ../monita/monita_uip.o
                                  0x54 (size before relaxing)
- *fill*         0x0000ff8d        0x3 00
+ *fill*         0x000101ed        0x3 00
  .rodata.str1.4
-                0x0000ff90      0x2b2 ../webserver/httpd.o
+                0x000101f0      0x2b2 ../webserver/httpd.o
                                 0x2f0 (size before relaxing)
- *fill*         0x00010242        0x2 00
+ *fill*         0x000104a2        0x2 00
  .rodata.str1.4
-                0x00010244      0x1a7 ../webserver/httpd-cgi.o
+                0x000104a4      0x1a7 ../webserver/httpd-cgi.o
                                 0x1a8 (size before relaxing)
- *fill*         0x000103eb        0x1 00
+ *fill*         0x0001064b        0x1 00
  .rodata.str1.4
-                0x000103ec       0x5b /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+                0x0001064c       0x86 ../adc/ad7708.o
+                                 0x88 (size before relaxing)
+ *fill*         0x000106d2        0x2 00
+ .rodata.str1.4
+                0x000106d4       0x5b /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
                                  0x64 (size before relaxing)
- *fill*         0x00010447        0x1 00
+ *fill*         0x0001072f        0x1 00
  .rodata.str1.4
-                0x00010448       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+                0x00010730       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
                                  0x20 (size before relaxing)
- *fill*         0x00010466        0x2 00
+ *fill*         0x0001074e        0x2 00
  .rodata.str1.4
-                0x00010468       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+                0x00010750       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
                                  0x14 (size before relaxing)
  .rodata.str1.4
-                0x00010478        0x2 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+                0x00010760        0x0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
                                   0x4 (size before relaxing)
- *fill*         0x0001047a        0x2 00
  .rodata.str1.4
-                0x0001047c        0xb /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x00010760        0xb /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
                                  0x18 (size before relaxing)
- *fill*         0x00010487        0x1 00
+ *fill*         0x0001076b        0x1 00
  .rodata.str1.4
-                0x00010488        0x4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+                0x0001076c        0x4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
  *(.glue_7)
- .glue_7        0x0001048c       0x48 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
-                0x000104c8                __main_from_arm
-                0x000104b0                __xQueueGenericSendFromISR_from_arm
-                0x000104bc                __xQueueCreate_from_arm
-                0x0001048c                __vTaskIncrementTick_from_arm
-                0x000104a4                __xQueueReceiveFromISR_from_arm
-                0x00010498                __vTaskSwitchContext_from_arm
+ .glue_7        0x00010770       0x48 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+                0x000107ac                __main_from_arm
+                0x00010794                __xQueueGenericSendFromISR_from_arm
+                0x000107a0                __xQueueCreate_from_arm
+                0x00010770                __vTaskIncrementTick_from_arm
+                0x00010788                __xQueueReceiveFromISR_from_arm
+                0x0001077c                __vTaskSwitchContext_from_arm
  *(.glue_7t)
- .glue_7t       0x000104d4       0x28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
-                0x000104d8                __vPortEnterCritical_change_to_arm
-                0x000104e4                __vSerialISRCreateQueues_from_thumb
-                0x000104e8                __vSerialISRCreateQueues_change_to_arm
-                0x000104e0                __vPortExitCritical_change_to_arm
-                0x000104f4                __vPortISRStartFirstTask_from_thumb
-                0x000104ec                __vPortDisableInterruptsFromThumb_from_thumb
-                0x000104dc                __vPortExitCritical_from_thumb
-                0x000104d4                __vPortEnterCritical_from_thumb
-                0x000104f8                __vPortISRStartFirstTask_change_to_arm
-                0x000104f0                __vPortDisableInterruptsFromThumb_change_to_arm
+ .glue_7t       0x000107b8       0x28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+                0x000107bc                __vPortEnterCritical_change_to_arm
+                0x000107c8                __vSerialISRCreateQueues_from_thumb
+                0x000107cc                __vSerialISRCreateQueues_change_to_arm
+                0x000107c4                __vPortExitCritical_change_to_arm
+                0x000107d8                __vPortISRStartFirstTask_from_thumb
+                0x000107d0                __vPortDisableInterruptsFromThumb_from_thumb
+                0x000107c0                __vPortExitCritical_from_thumb
+                0x000107b8                __vPortEnterCritical_from_thumb
+                0x000107dc                __vPortISRStartFirstTask_change_to_arm
+                0x000107d4                __vPortDisableInterruptsFromThumb_change_to_arm
  *(.lokasi_font)
-                0x000104fc                __end_of_text__ = .
-                0x000104fc                __exidx_start = .
+                0x000107e0                __end_of_text__ = .
+                0x000107e0                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x000104fc                __exidx_end = .
+                0x000107e0                __exidx_end = .
 
-.data           0x40000000      0x998 load address 0x000104fc
+.data           0x40000000      0x978 load address 0x000107e0
                 0x40000000                __data_beg__ = .
-                0x000104fc                __data_beg_src__ = __end_of_text__
+                0x000107e0                __data_beg_src__ = __end_of_text__
  *(.data)
  .data          0x40000000        0x4 ../FreeRTOS_Source/portable/GCC/ARM7_LPC23xx/portISR.o
                 0x40000000                ulCriticalNesting
  .data          0x40000004       0x38 ../tinysh/tinysh.o
- .data          0x4000003c      0x120 ../tinysh/shell.o
- .data          0x4000015c       0x18 ../webserver/httpd-cgi.o
- .data          0x40000174      0x404 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
-                0x40000174                _impure_ptr
- .data          0x40000578       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
-                0x40000578                __mb_cur_max
-                0x4000057c                __lc_ctype
- .data          0x40000588      0x410 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
-                0x40000994                __malloc_sbrk_base
-                0x40000588                __malloc_av_
-                0x40000990                __malloc_trim_threshold
-                0x40000998                __data_end__ = .
+ .data          0x4000003c      0x100 ../tinysh/shell.o
+ .data          0x4000013c       0x18 ../webserver/httpd-cgi.o
+ .data          0x40000154      0x404 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+                0x40000154                _impure_ptr
+ .data          0x40000558       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x40000558                __mb_cur_max
+                0x4000055c                __lc_ctype
+ .data          0x40000568      0x410 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x40000974                __malloc_sbrk_base
+                0x40000568                __malloc_av_
+                0x40000970                __malloc_trim_threshold
+                0x40000978                __data_end__ = .
 
-.bss            0x40000998     0x54dc
-                0x40000998                __bss_beg__ = .
+.bss            0x40000978     0x54ec
+                0x40000978                __bss_beg__ = .
  *(.bss)
- .bss           0x40000998        0xc ../serial/serialISR.o
- .bss           0x400009a4        0x8 main.o
-                0x400009a4                loop_idle
- .bss           0x400009ac        0x4 ../system/syscall.o
- .bss           0x400009b0        0xc ../serial/serial.o
- .bss           0x400009bc       0xc0 ../FreeRTOS_Source/tasks.o
-                0x400009c0                pxCurrentTCB
-                0x400009bc                tick_ku
- .bss           0x40000a7c     0x481c ../FreeRTOS_Source/portable/MemMang/heap_2.o
- .bss           0x40005298      0x31c ../tinysh/tinysh.o
- .bss           0x400055b4        0x8 ../tinysh/shell.o
-                0x400055b8                tik_lama
-                0x400055b4                uptime_ovflow
- .bss           0x400055bc        0x8 ../uip/hardware/enc28j60.o
-                0x400055c0                error_ENC
-                0x400055bc                ethRxPointer
- .bss           0x400055c4       0x18 ../uip/uip/uip.o
-                0x400055c8                uip_ethaddr
-                0x400055c4                uip_timeoffset
- .bss           0x400055dc       0x60 ../uip/uip/uip_arp.o
- .bss           0x4000563c       0x28 ../uip/uip/uip-fw.o
- .bss           0x40005664       0x10 ../uip/uip_task.o
-                0x40005664                paket_per_menit
-                0x40005668                paket_kita
- .bss           0x40005674        0xc ../webserver/httpd-fs.o
- .bss           0x40005680       0x24 ../webserver/httpd-cgi.o
-                0x40005680                lRefreshCount
- .bss           0x400056a4        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
-                0x400056a4                __nlocale_changed
-                0x400056a8                __mlocale_changed
-                0x400056ac                _PathLocale
- .bss           0x400056b0       0x34 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
-                0x400056b0                __malloc_top_pad
-                0x400056b4                __malloc_max_sbrked_mem
-                0x400056bc                __malloc_current_mallinfo
-                0x400056b8                __malloc_max_total_mem
- .bss           0x400056e4       0xb0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- COMMON         0x40005794       0x80 ../GPIO/gpio_ISR.o
-                0x40005794                konter
- COMMON         0x40005814       0x18 main.o
-                0x40005814                hdl_lcd
-                0x40005818                hdl_ether
-                0x4000581c                hdl_tampilan
-                0x40005820                hdl_shell
-                0x40005824                lcd_sem
-                0x40005828                hdl_led
- COMMON         0x4000582c      0x5f0 ../tinysh/enviro.o
-                0x4000582c                command
-                0x40005840                iap_entry
-                0x40005844                result
-                0x4000584c                env2
- COMMON         0x40005e1c       0x42 ../uip/uip/uip.o
-                0x40005e1c                uip_len
-                0x40005e20                uip_sappdata
-                0x40005e24                uip_acc32
-                0x40005e28                uip_flags
-                0x40005e2c                uip_udp_conn
-                0x40005e30                uip_appdata
-                0x40005e34                uip_conn
-                0x40005e38                uip_sntpaddr
-                0x40005e3c                uip_listenports
-                0x40005e50                uip_draddr
-                0x40005e54                uip_netmask
-                0x40005e58                uip_hostaddr
-                0x40005e5c                uip_slen
- *fill*         0x40005e5e        0x2 00
- COMMON         0x40005e60        0x4 ../monita/monita_uip.o
-                0x40005e60                loop_kirim
- COMMON         0x40005e64       0x10 ../webserver/httpd-cgi.o
-                0x40005e64                ulString
-                0x40005e68                pcStatus
-                0x40005e74                . = ALIGN (0x4)
-                0x40005e74                _bss_end__ = .
-                0x40005e74                __bss_end__ = .
-                0x40005e74                __end__ = .
+ .bss           0x40000978        0xc ../serial/serialISR.o
+ .bss           0x40000984        0x8 main.o
+                0x40000984                loop_idle
+ .bss           0x4000098c        0x4 ../system/syscall.o
+ .bss           0x40000990        0xc ../serial/serial.o
+ .bss           0x4000099c       0xc0 ../FreeRTOS_Source/tasks.o
+                0x400009a0                pxCurrentTCB
+                0x4000099c                tick_ku
+ .bss           0x40000a5c     0x481c ../FreeRTOS_Source/portable/MemMang/heap_2.o
+ .bss           0x40005278      0x31c ../tinysh/tinysh.o
+ .bss           0x40005594        0x8 ../tinysh/shell.o
+                0x40005598                tik_lama
+                0x40005594                uptime_ovflow
+ .bss           0x4000559c        0x8 ../uip/hardware/enc28j60.o
+                0x400055a0                error_ENC
+                0x4000559c                ethRxPointer
+ .bss           0x400055a4       0x18 ../uip/uip/uip.o
+                0x400055a8                uip_ethaddr
+                0x400055a4                uip_timeoffset
+ .bss           0x400055bc       0x60 ../uip/uip/uip_arp.o
+ .bss           0x4000561c       0x28 ../uip/uip/uip-fw.o
+ .bss           0x40005644       0x10 ../uip/uip_task.o
+                0x40005644                paket_per_menit
+                0x40005648                paket_kita
+ .bss           0x40005654        0xc ../webserver/httpd-fs.o
+ .bss           0x40005660       0x24 ../webserver/httpd-cgi.o
+                0x40005660                lRefreshCount
+ .bss           0x40005684        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x40005684                __nlocale_changed
+                0x40005688                __mlocale_changed
+                0x4000568c                _PathLocale
+ .bss           0x40005690       0x34 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x40005690                __malloc_top_pad
+                0x40005694                __malloc_max_sbrked_mem
+                0x4000569c                __malloc_current_mallinfo
+                0x40005698                __malloc_max_total_mem
+ .bss           0x400056c4       0xb0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ COMMON         0x40005774       0x80 ../GPIO/gpio_ISR.o
+                0x40005774                konter
+ COMMON         0x400057f4       0x20 main.o
+                0x400057f4                hdl_lcd
+                0x400057f8                tot_idle
+                0x400057fc                hdl_ether
+                0x40005800                hdl_tampilan
+                0x40005804                hdl_shell
+                0x40005808                lcd_sem
+                0x4000580c                idle_lama
+                0x40005810                hdl_led
+ COMMON         0x40005814      0x5f0 ../tinysh/enviro.o
+                0x40005814                command
+                0x40005828                iap_entry
+                0x4000582c                result
+                0x40005834                env2
+ COMMON         0x40005e04       0x42 ../uip/uip/uip.o
+                0x40005e04                uip_len
+                0x40005e08                uip_sappdata
+                0x40005e0c                uip_acc32
+                0x40005e10                uip_flags
+                0x40005e14                uip_udp_conn
+                0x40005e18                uip_appdata
+                0x40005e1c                uip_conn
+                0x40005e20                uip_sntpaddr
+                0x40005e24                uip_listenports
+                0x40005e38                uip_draddr
+                0x40005e3c                uip_netmask
+                0x40005e40                uip_hostaddr
+                0x40005e44                uip_slen
+ *fill*         0x40005e46        0x2 00
+ COMMON         0x40005e48        0x4 ../monita/monita_uip.o
+                0x40005e48                loop_kirim
+ COMMON         0x40005e4c       0x10 ../webserver/httpd-cgi.o
+                0x40005e4c                ulString
+                0x40005e50                pcStatus
+ COMMON         0x40005e5c        0x8 ../adc/ad7708.o
+                0x40005e5c                kalibrated
+                0x40005e60                kanal_aktif
+                0x40005e64                . = ALIGN (0x4)
+                0x40005e64                _bss_end__ = .
+                0x40005e64                __bss_end__ = .
+                0x40005e64                __end__ = .
 
-.usbram         0x7fd00400     0x1130
+.usbram         0x7fd00400      0x280
                 0x7fd00400                __usbram_beg__ = .
  *(.usb_text)
- .usb_text      0x7fd00400     0x1130 ../uip/uip/uip.o
+ .usb_text      0x7fd00400      0x280 ../uip/uip/uip.o
                 0x7fd00400                uip_conns
  *(.dmaram)
-                0x7fd01530                __usbram_end__ = .
+                0x7fd00680                __usbram_end__ = .
 
 .ethram         0x7fe00000     0x20dc
                 0x7fe00000                __ethram_beg__ = .
@@ -946,7 +968,7 @@ prog            0x00000044    0x104b8
                 0x7fe020dc                PROVIDE (end, .)
 OUTPUT(komon_A.elf elf32-littlearm)
 
-.comment        0x00000000      0x72c
+.comment        0x00000000      0x708
  .comment       0x00000000       0x12 ../FreeRTOS_Source/portable/GCC/ARM7_LPC23xx/portISR.o
  .comment       0x00000012       0x12 ../serial/serialISR.o
  .comment       0x00000024       0x12 ../GPIO/gpio_ISR.o
@@ -981,76 +1003,74 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .comment       0x0000022e       0x12 ../webserver/httpd-fs.o
  .comment       0x00000240       0x12 ../webserver/http-strings.o
  .comment       0x00000252       0x12 ../webserver/httpd-cgi.o
- .comment       0x00000264       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .comment       0x00000276       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .comment       0x00000288       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
- .comment       0x0000029a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
- .comment       0x000002ac       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
- .comment       0x000002be       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strchr.o)
- .comment       0x000002d0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
- .comment       0x000002e2       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
- .comment       0x000002f4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
- .comment       0x00000306       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncmp.o)
- .comment       0x00000318       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
- .comment       0x0000032a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strrchr.o)
- .comment       0x0000033c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .comment       0x0000034e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vsprintf.o)
- .comment       0x00000360       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
- .comment       0x00000372       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
- .comment       0x00000384       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
- .comment       0x00000396       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
- .comment       0x000003a8       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .comment       0x000003ba       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
- .comment       0x000003cc       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
- .comment       0x000003de       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
- .comment       0x000003f0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
- .comment       0x00000402       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
- .comment       0x00000414       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
- .comment       0x00000426       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .comment       0x00000438       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
- .comment       0x0000044a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
- .comment       0x0000045c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
- .comment       0x0000046e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
- .comment       0x00000480       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
- .comment       0x00000492       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
- .comment       0x000004a4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
- .comment       0x000004b6       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
- .comment       0x000004c8       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
- .comment       0x000004da       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
- .comment       0x000004ec       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- .comment       0x000004fe       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
- .comment       0x00000510       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
- .comment       0x00000522       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
- .comment       0x00000534       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
- .comment       0x00000546       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
- .comment       0x00000558       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
- .comment       0x0000056a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
- .comment       0x0000057c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
- .comment       0x0000058e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
- .comment       0x000005a0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
- .comment       0x000005b2       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
- .comment       0x000005c4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
- .comment       0x000005d6       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
- .comment       0x000005e8       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
- .comment       0x000005fa       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
- .comment       0x0000060c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
- .comment       0x0000061e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
- .comment       0x00000630       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
- .comment       0x00000642       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
- .comment       0x00000654       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
- .comment       0x00000666       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
- .comment       0x00000678       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
+ .comment       0x00000264       0x12 ../system/idle_hook.o
+ .comment       0x00000276       0x12 ../adc/ad7708.o
+ .comment       0x00000288       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .comment       0x0000029a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .comment       0x000002ac       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
+ .comment       0x000002be       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+ .comment       0x000002d0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+ .comment       0x000002e2       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strchr.o)
+ .comment       0x000002f4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+ .comment       0x00000306       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+ .comment       0x00000318       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+ .comment       0x0000032a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncmp.o)
+ .comment       0x0000033c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+ .comment       0x0000034e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(strrchr.o)
+ .comment       0x00000360       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .comment       0x00000372       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(vsprintf.o)
+ .comment       0x00000384       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+ .comment       0x00000396       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+ .comment       0x000003a8       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+ .comment       0x000003ba       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+ .comment       0x000003cc       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .comment       0x000003de       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+ .comment       0x000003f0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+ .comment       0x00000402       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+ .comment       0x00000414       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+ .comment       0x00000426       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+ .comment       0x00000438       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+ .comment       0x0000044a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .comment       0x0000045c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+ .comment       0x0000046e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+ .comment       0x00000480       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+ .comment       0x00000492       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+ .comment       0x000004a4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+ .comment       0x000004b6       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+ .comment       0x000004c8       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+ .comment       0x000004da       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+ .comment       0x000004ec       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+ .comment       0x000004fe       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+ .comment       0x00000510       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ .comment       0x00000522       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+ .comment       0x00000534       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+ .comment       0x00000546       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+ .comment       0x00000558       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
+ .comment       0x0000056a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
+ .comment       0x0000057c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
+ .comment       0x0000058e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .comment       0x000005a0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .comment       0x000005b2       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+ .comment       0x000005c4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .comment       0x000005d6       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .comment       0x000005e8       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .comment       0x000005fa       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .comment       0x0000060c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .comment       0x0000061e       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .comment       0x00000630       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .comment       0x00000642       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .comment       0x00000654       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .comment       0x00000666       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .comment       0x00000678       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
  .comment       0x0000068a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
  .comment       0x0000069c       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
  .comment       0x000006ae       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
  .comment       0x000006c0       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
- .comment       0x000006d2       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .comment       0x000006e4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .comment       0x000006f6       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .comment       0x00000708       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .comment       0x0000071a       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .comment       0x000006d2       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .comment       0x000006e4       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .comment       0x000006f6       0x12 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_abbrev   0x00000000     0x5d22
+.debug_abbrev   0x00000000     0x5883
  .debug_abbrev  0x00000000       0x99 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_abbrev  0x00000099       0x9a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
  .debug_abbrev  0x00000133      0x1a2 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
@@ -1099,33 +1119,29 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_abbrev  0x00003863      0x1a8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
  .debug_abbrev  0x00003a0b      0x1e7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
  .debug_abbrev  0x00003bf2      0x1d9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
- .debug_abbrev  0x00003dcb      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
- .debug_abbrev  0x00003f22       0xf1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
- .debug_abbrev  0x00004013      0x128 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
- .debug_abbrev  0x0000413b       0xba /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
- .debug_abbrev  0x000041f5      0x1a8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
- .debug_abbrev  0x0000439d      0x1e7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
- .debug_abbrev  0x00004584      0x1d9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
- .debug_abbrev  0x0000475d      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
- .debug_abbrev  0x000048b4      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
- .debug_abbrev  0x00004a0b      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
- .debug_abbrev  0x00004b62      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
- .debug_abbrev  0x00004cb9      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
- .debug_abbrev  0x00004e10       0xf1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
- .debug_abbrev  0x00004f01      0x166 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
- .debug_abbrev  0x00005067      0x10f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
- .debug_abbrev  0x00005176      0x137 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
- .debug_abbrev  0x000052ad       0xba /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
- .debug_abbrev  0x00005367       0xec /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
- .debug_abbrev  0x00005453      0x17a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
- .debug_abbrev  0x000055cd      0x158 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
- .debug_abbrev  0x00005725      0x111 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_abbrev  0x00005836      0x100 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_abbrev  0x00005936      0x192 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_abbrev  0x00005ac8      0x149 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_abbrev  0x00005c11      0x111 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .debug_abbrev  0x00003dcb       0xf1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .debug_abbrev  0x00003ebc      0x128 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .debug_abbrev  0x00003fe4       0xba /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+ .debug_abbrev  0x0000409e      0x1a8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .debug_abbrev  0x00004246      0x1e7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .debug_abbrev  0x0000442d      0x1d9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .debug_abbrev  0x00004606      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .debug_abbrev  0x0000475d      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .debug_abbrev  0x000048b4      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .debug_abbrev  0x00004a0b      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .debug_abbrev  0x00004b62      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .debug_abbrev  0x00004cb9       0xf1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .debug_abbrev  0x00004daa      0x166 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .debug_abbrev  0x00004f10      0x10f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+ .debug_abbrev  0x0000501f       0xba /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
+ .debug_abbrev  0x000050d9       0xec /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+ .debug_abbrev  0x000051c5      0x17a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+ .debug_abbrev  0x0000533f      0x158 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+ .debug_abbrev  0x00005497      0x192 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .debug_abbrev  0x00005629      0x149 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .debug_abbrev  0x00005772      0x111 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_info     0x00000000    0x1869d
+.debug_info     0x00000000    0x17db0
  .debug_info    0x00000000      0x10e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_info    0x0000010e      0x112 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
  .debug_info    0x00000220      0xa22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
@@ -1174,33 +1190,29 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_info    0x00013ba1      0x46f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
  .debug_info    0x00014010      0x3bf /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
  .debug_info    0x000143cf      0x3a0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
- .debug_info    0x0001476f      0x29d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
- .debug_info    0x00014a0c      0x1bd /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
- .debug_info    0x00014bc9      0x245 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
- .debug_info    0x00014e0e      0x164 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
- .debug_info    0x00014f72      0x47d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
- .debug_info    0x000153ef      0x473 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
- .debug_info    0x00015862      0x3ad /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
- .debug_info    0x00015c0f      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
- .debug_info    0x00015eb9      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
- .debug_info    0x00016163      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
- .debug_info    0x0001640d      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
- .debug_info    0x000166b7      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
- .debug_info    0x00016961      0x1bd /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
- .debug_info    0x00016b1e      0x2de /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
- .debug_info    0x00016dfc      0x1d6 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
- .debug_info    0x00016fd2      0x261 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
- .debug_info    0x00017233      0x164 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
- .debug_info    0x00017397      0x207 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
- .debug_info    0x0001759e      0x301 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
- .debug_info    0x0001789f      0x25a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
- .debug_info    0x00017af9      0x218 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_info    0x00017d11      0x1d7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_info    0x00017ee8      0x323 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_info    0x0001820b      0x27a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_info    0x00018485      0x218 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .debug_info    0x0001476f      0x1bd /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .debug_info    0x0001492c      0x245 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .debug_info    0x00014b71      0x164 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+ .debug_info    0x00014cd5      0x47d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .debug_info    0x00015152      0x473 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .debug_info    0x000155c5      0x3ad /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .debug_info    0x00015972      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .debug_info    0x00015c1c      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .debug_info    0x00015ec6      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .debug_info    0x00016170      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .debug_info    0x0001641a      0x2aa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .debug_info    0x000166c4      0x1bd /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .debug_info    0x00016881      0x2de /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .debug_info    0x00016b5f      0x1d6 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+ .debug_info    0x00016d35      0x164 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
+ .debug_info    0x00016e99      0x207 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+ .debug_info    0x000170a0      0x301 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+ .debug_info    0x000173a1      0x25a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+ .debug_info    0x000175fb      0x323 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .debug_info    0x0001791e      0x27a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .debug_info    0x00017b98      0x218 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_line     0x00000000     0x4fb8
+.debug_line     0x00000000     0x4dc9
  .debug_line    0x00000000       0xc9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_line    0x000000c9       0xd5 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
  .debug_line    0x0000019e      0x1a7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
@@ -1249,33 +1261,29 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_line    0x00003f84      0x100 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
  .debug_line    0x00004084       0xd4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
  .debug_line    0x00004158       0xba /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
- .debug_line    0x00004212       0x74 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
- .debug_line    0x00004286       0x7e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
- .debug_line    0x00004304       0x68 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
- .debug_line    0x0000436c       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
- .debug_line    0x000043c0      0x10a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
- .debug_line    0x000044ca       0xe5 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
- .debug_line    0x000045af       0xca /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
- .debug_line    0x00004679       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
- .debug_line    0x000046ee       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
- .debug_line    0x00004763       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
- .debug_line    0x000047d8       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
- .debug_line    0x0000484d       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
- .debug_line    0x000048c2       0x7e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
- .debug_line    0x00004940       0x88 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
- .debug_line    0x000049c8       0x6d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
- .debug_line    0x00004a35       0x6d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
- .debug_line    0x00004aa2       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
- .debug_line    0x00004af6       0x67 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
- .debug_line    0x00004b5d       0xb3 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
- .debug_line    0x00004c10       0x8f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
- .debug_line    0x00004c9f       0xa3 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_line    0x00004d42       0x6b /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_line    0x00004dad       0xcc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_line    0x00004e79       0x99 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_line    0x00004f12       0xa6 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .debug_line    0x00004212       0x7e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .debug_line    0x00004290       0x68 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .debug_line    0x000042f8       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+ .debug_line    0x0000434c      0x10a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .debug_line    0x00004456       0xe5 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .debug_line    0x0000453b       0xca /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .debug_line    0x00004605       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .debug_line    0x0000467a       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .debug_line    0x000046ef       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .debug_line    0x00004764       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .debug_line    0x000047d9       0x75 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .debug_line    0x0000484e       0x7e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .debug_line    0x000048cc       0x88 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .debug_line    0x00004954       0x6d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+ .debug_line    0x000049c1       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
+ .debug_line    0x00004a15       0x67 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+ .debug_line    0x00004a7c       0xb3 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+ .debug_line    0x00004b2f       0x8f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+ .debug_line    0x00004bbe       0xcc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .debug_line    0x00004c8a       0x99 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .debug_line    0x00004d23       0xa6 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_frame    0x00000000     0x178c
+.debug_frame    0x00000000     0x16a0
  .debug_frame   0x00000000       0x28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_frame   0x00000028       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
  .debug_frame   0x00000054       0x50 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
@@ -1322,31 +1330,27 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_frame   0x00000f98       0xb0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
  .debug_frame   0x00001048       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
  .debug_frame   0x000010b8       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
- .debug_frame   0x00001128       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
- .debug_frame   0x00001164       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
- .debug_frame   0x00001190       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
- .debug_frame   0x000011bc       0xb4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
- .debug_frame   0x00001270       0x74 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
- .debug_frame   0x000012e4       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
- .debug_frame   0x00001354       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
- .debug_frame   0x00001390       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
- .debug_frame   0x000013cc       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
- .debug_frame   0x00001408       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
- .debug_frame   0x00001444       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
- .debug_frame   0x00001480       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
- .debug_frame   0x000014ac       0x60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
- .debug_frame   0x0000150c       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
- .debug_frame   0x0000153c       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
- .debug_frame   0x00001568       0x38 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
- .debug_frame   0x000015a0       0x5c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
- .debug_frame   0x000015fc       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
- .debug_frame   0x0000161c       0x5c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_frame   0x00001678       0x28 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_frame   0x000016a0       0x60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_frame   0x00001700       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_frame   0x00001730       0x5c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .debug_frame   0x00001128       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .debug_frame   0x00001154       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .debug_frame   0x00001180       0xb4 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .debug_frame   0x00001234       0x74 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .debug_frame   0x000012a8       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .debug_frame   0x00001318       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .debug_frame   0x00001354       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .debug_frame   0x00001390       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .debug_frame   0x000013cc       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .debug_frame   0x00001408       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .debug_frame   0x00001444       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .debug_frame   0x00001470       0x60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .debug_frame   0x000014d0       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+ .debug_frame   0x00001500       0x38 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+ .debug_frame   0x00001538       0x5c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+ .debug_frame   0x00001594       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+ .debug_frame   0x000015b4       0x60 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .debug_frame   0x00001614       0x30 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .debug_frame   0x00001644       0x5c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_loc      0x00000000     0xb5ab
+.debug_loc      0x00000000     0xb3ba
  .debug_loc     0x00000000      0x151 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_loc     0x00000151      0x15f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
  .debug_loc     0x000002b0      0x1b2 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(snprintf.o)
@@ -1387,32 +1391,28 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_loc     0x00009b66      0x33f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_sf.o)
  .debug_loc     0x00009ea5      0x132 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_sf.o)
  .debug_loc     0x00009fd7      0x157 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
- .debug_loc     0x0000a12e       0x64 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
- .debug_loc     0x0000a192       0x49 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
- .debug_loc     0x0000a1db       0x3e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
- .debug_loc     0x0000a219      0x42a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
- .debug_loc     0x0000a643      0x250 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
- .debug_loc     0x0000a893      0x191 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
- .debug_loc     0x0000aa24       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
- .debug_loc     0x0000aa93       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
- .debug_loc     0x0000ab02       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
- .debug_loc     0x0000ab71       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
- .debug_loc     0x0000abe0       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
- .debug_loc     0x0000ac4f       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
- .debug_loc     0x0000aca3       0xd1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
- .debug_loc     0x0000ad74       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
- .debug_loc     0x0000ade4       0x56 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
- .debug_loc     0x0000ae3a      0x161 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
- .debug_loc     0x0000af9b      0x130 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
- .debug_loc     0x0000b0cb       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
- .debug_loc     0x0000b107       0xc0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_loc     0x0000b1c7       0x77 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_loc     0x0000b23e      0x1f7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_loc     0x0000b435       0xab /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_loc     0x0000b4e0       0xcb /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .debug_loc     0x0000a12e       0x49 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .debug_loc     0x0000a177       0x3e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .debug_loc     0x0000a1b5      0x42a /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .debug_loc     0x0000a5df      0x250 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .debug_loc     0x0000a82f      0x191 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .debug_loc     0x0000a9c0       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .debug_loc     0x0000aa2f       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .debug_loc     0x0000aa9e       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .debug_loc     0x0000ab0d       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .debug_loc     0x0000ab7c       0x6f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .debug_loc     0x0000abeb       0x54 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .debug_loc     0x0000ac3f       0xd1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .debug_loc     0x0000ad10       0x70 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+ .debug_loc     0x0000ad80      0x161 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+ .debug_loc     0x0000aee1      0x130 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+ .debug_loc     0x0000b011       0x3c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+ .debug_loc     0x0000b04d      0x1f7 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .debug_loc     0x0000b244       0xab /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .debug_loc     0x0000b2ef       0xcb /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
 .debug_pubnames
-                0x00000000      0xd83
+                0x00000000      0xcfc
  .debug_pubnames
                 0x00000000       0x1d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_pubnames
@@ -1500,57 +1500,49 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_pubnames
                 0x00000a2c       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
  .debug_pubnames
-                0x00000a4b       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
+                0x00000a4b       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
  .debug_pubnames
-                0x00000a69       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+                0x00000a6d       0x24 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
  .debug_pubnames
-                0x00000a8b       0x24 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+                0x00000a91       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
  .debug_pubnames
-                0x00000aaf       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+                0x00000ab3       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
  .debug_pubnames
-                0x00000ad1       0x2c /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+                0x00000adf       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
  .debug_pubnames
-                0x00000afd       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+                0x00000afe       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
  .debug_pubnames
-                0x00000b1c       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+                0x00000b1d       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
  .debug_pubnames
-                0x00000b3b       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+                0x00000b3b       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
  .debug_pubnames
-                0x00000b59       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+                0x00000b59       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
  .debug_pubnames
-                0x00000b77       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+                0x00000b77       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
  .debug_pubnames
-                0x00000b95       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+                0x00000b95       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
  .debug_pubnames
-                0x00000bb3       0x1e /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+                0x00000bb3       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
  .debug_pubnames
-                0x00000bd1       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+                0x00000bd5       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
  .debug_pubnames
-                0x00000bf3       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+                0x00000bf5       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
  .debug_pubnames
-                0x00000c13       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+                0x00000c15       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
  .debug_pubnames
-                0x00000c33       0x23 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
+                0x00000c37       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
  .debug_pubnames
-                0x00000c56       0x22 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
+                0x00000c56       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
  .debug_pubnames
-                0x00000c78       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+                0x00000c75       0x21 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
  .debug_pubnames
-                0x00000c97       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+                0x00000c96       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
  .debug_pubnames
-                0x00000cb6       0x21 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+                0x00000cb5       0x21 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
  .debug_pubnames
-                0x00000cd7       0x26 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_pubnames
-                0x00000cfd       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_pubnames
-                0x00000d1d       0x1f /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_pubnames
-                0x00000d3c       0x21 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_pubnames
-                0x00000d5d       0x26 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+                0x00000cd6       0x26 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_aranges  0x00000000      0x8c0
+.debug_aranges  0x00000000      0x840
  .debug_aranges
                 0x00000000       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_aranges
@@ -1646,53 +1638,45 @@ OUTPUT(komon_A.elf elf32-littlearm)
  .debug_aranges
                 0x000005c0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
  .debug_aranges
-                0x000005e0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
+                0x000005e0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
  .debug_aranges
-                0x00000600       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+                0x00000600       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
  .debug_aranges
-                0x00000620       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+                0x00000620       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
  .debug_aranges
-                0x00000640       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+                0x00000640       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
  .debug_aranges
-                0x00000660       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+                0x00000660       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
  .debug_aranges
-                0x00000680       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+                0x00000680       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
  .debug_aranges
-                0x000006a0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+                0x000006a0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
  .debug_aranges
-                0x000006c0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+                0x000006c0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
  .debug_aranges
-                0x000006e0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+                0x000006e0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
  .debug_aranges
-                0x00000700       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+                0x00000700       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
  .debug_aranges
-                0x00000720       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+                0x00000720       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
  .debug_aranges
-                0x00000740       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+                0x00000740       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
  .debug_aranges
-                0x00000760       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+                0x00000760       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
  .debug_aranges
-                0x00000780       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+                0x00000780       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
  .debug_aranges
-                0x000007a0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
+                0x000007a0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
  .debug_aranges
-                0x000007c0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+                0x000007c0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
  .debug_aranges
-                0x000007e0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+                0x000007e0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
  .debug_aranges
-                0x00000800       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+                0x00000800       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
  .debug_aranges
-                0x00000820       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
- .debug_aranges
-                0x00000840       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
- .debug_aranges
-                0x00000860       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
- .debug_aranges
-                0x00000880       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
- .debug_aranges
-                0x000008a0       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+                0x00000820       0x20 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
 
-.debug_str      0x00000000     0x20b9
+.debug_str      0x00000000     0x2083
  .debug_str     0x00000000       0xdd /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
                                  0xfd (size before relaxing)
  .debug_str     0x000000dd       0xb1 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
@@ -1779,55 +1763,47 @@ OUTPUT(komon_A.elf elf32-littlearm)
                                 0x1d7 (size before relaxing)
  .debug_str     0x00001eb1       0x35 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_sf.o)
                                 0x1e2 (size before relaxing)
- .debug_str     0x00001ee6        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_sf.o)
-                                0x1af (size before relaxing)
- .debug_str     0x00001eee        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
+ .debug_str     0x00001ee6        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_sf.o)
                                 0x183 (size before relaxing)
- .debug_str     0x00001efa       0x15 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
+ .debug_str     0x00001ef2       0x15 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_sf_to_df.o)
                                 0x1a9 (size before relaxing)
- .debug_str     0x00001f0f        0x0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
+ .debug_str     0x00001f07        0x0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_sf.o)
                                 0x15a (size before relaxing)
- .debug_str     0x00001f0f       0x2d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
+ .debug_str     0x00001f07       0x2d /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_addsub_df.o)
                                 0x220 (size before relaxing)
- .debug_str     0x00001f3c       0x33 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
+ .debug_str     0x00001f34       0x33 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_mul_df.o)
                                 0x1f8 (size before relaxing)
- .debug_str     0x00001f6f        0x9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
+ .debug_str     0x00001f67        0x9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_div_df.o)
                                 0x1e8 (size before relaxing)
- .debug_str     0x00001f78        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
+ .debug_str     0x00001f70        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_eq_df.o)
                                 0x1b5 (size before relaxing)
- .debug_str     0x00001f80        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
+ .debug_str     0x00001f78        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ne_df.o)
                                 0x1b5 (size before relaxing)
- .debug_str     0x00001f88        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
+ .debug_str     0x00001f80        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_gt_df.o)
                                 0x1b5 (size before relaxing)
- .debug_str     0x00001f90        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
+ .debug_str     0x00001f88        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_ge_df.o)
                                 0x1b5 (size before relaxing)
- .debug_str     0x00001f98        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
+ .debug_str     0x00001f90        0x8 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_lt_df.o)
                                 0x1b5 (size before relaxing)
- .debug_str     0x00001fa0        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
+ .debug_str     0x00001f98        0xc /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_si_to_df.o)
                                 0x183 (size before relaxing)
- .debug_str     0x00001fac        0xa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
+ .debug_str     0x00001fa4        0xa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_si.o)
                                 0x1be (size before relaxing)
- .debug_str     0x00001fb6        0xa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
+ .debug_str     0x00001fae        0xa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_df.o)
                                 0x170 (size before relaxing)
- .debug_str     0x00001fc0       0x14 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_df_to_sf.o)
-                                0x1b5 (size before relaxing)
- .debug_str     0x00001fd4        0x0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
+ .debug_str     0x00001fb8        0x0 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_thenan_df.o)
                                 0x15a (size before relaxing)
- .debug_str     0x00001fd4       0x84 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
+ .debug_str     0x00001fb8       0x84 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_muldi3.o)
                                 0x168 (size before relaxing)
- .debug_str     0x00002058       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
+ .debug_str     0x0000203c       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_sf.o)
                                 0x1b7 (size before relaxing)
- .debug_str     0x00002068        0xb /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
+ .debug_str     0x0000204c        0xb /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_sf.o)
                                 0x199 (size before relaxing)
- .debug_str     0x00002073       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_sf.o)
-                                0x17d (size before relaxing)
- .debug_str     0x00002083        0xa /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_make_sf.o)
-                                0x170 (size before relaxing)
- .debug_str     0x0000208d        0x9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
+ .debug_str     0x00002057        0x9 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_pack_df.o)
                                 0x1bd (size before relaxing)
- .debug_str     0x00002096       0x13 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
+ .debug_str     0x00002060       0x13 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_unpack_df.o)
                                 0x1a7 (size before relaxing)
- .debug_str     0x000020a9       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
+ .debug_str     0x00002073       0x10 /home/acer-b/Mrogram/atinom/TOOLCHAIN/bin/../lib/gcc/arm-elf/4.1.0/thumb/interwork/libgcc.a(_fpcmp_parts_df.o)
                                 0x17d (size before relaxing)
 
 .debug_ranges   0x00000000      0x6e8

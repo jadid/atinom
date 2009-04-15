@@ -9,7 +9,9 @@
 #include "gpio.h"
 #include "../tampilan/tampilan.h"
 
-
+#ifdef BOARD_KOMON_A_RTD
+#include "../adc/ad7708.h"
+#endif
 
 #define INTERRUPT_GPIO	0x20000 // EINT3
 
@@ -61,7 +63,7 @@ void init_gpio(void)
 	portEXIT_CRITICAL();
 }
 
-init_gpio_keypad(void)
+void init_gpio_keypad(void)
 {
 #ifdef TAMPILAN_LPC_4
 	extern void ( gpio_ISR_Wrapper_keypad )( void );
@@ -86,3 +88,26 @@ init_gpio_keypad(void)
 	portEXIT_CRITICAL();
 #endif
 }
+
+#ifdef BOARD_KOMON_A_RTD
+void init_gpio_adc(void)
+{
+	portENTER_CRITICAL();
+	
+	/* GPIO CS diset output */
+	FIO1DIR = FIO1DIR | port_cs_ad7708;
+	
+	uncs_ad7708();
+	
+	/* 	
+		port RDY sebagai input 
+		sayang ini pada port1, sehingga tidak bisa mode 
+		interrupt.
+		
+		coba nanti perbaiki boardnya
+	*/
+	FIO1DIR = FIO1DIR & ~port_rdy_ad7708;	
+		
+	portEXIT_CRITICAL();
+}
+#endif

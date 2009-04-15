@@ -17,6 +17,7 @@
 
 #ifdef BOARD_KOMON_A_RTD
 #include "../adc/command_adc.c"
+#include "set_kanal.c"
 #endif
 
 #include "enviro.h"
@@ -342,6 +343,7 @@ portTASK_FUNCTION(shell, pvParameters )
 
 #ifdef BOARD_KOMON_A_RTD
 	tinysh_add_command(&cek_adc_cmd);
+	tinysh_add_command(&set_kanal_cmd);
 #endif
 
 	/* add sub commands

@@ -50,6 +50,7 @@ struct t_adc {
 	unsigned int cur_kanal;
 	unsigned int count;
 	unsigned short data[20];
+	float flt_data[20];
 };
 
 

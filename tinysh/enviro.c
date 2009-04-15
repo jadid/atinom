@@ -180,9 +180,9 @@ int baca_env(char tampil)
 				
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) m = %3.3f, y=%3.3f", i+1, env2.kalib[i].m, env2.kalib[i].y);
+					printf("  (%2d) m = %3.3f, y= %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
 					i++;
-					printf("  (%2d) m = %3.3f, y=%3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].y);
+					printf("  (%2d) m = %3.3f, y= %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
 				}
 				
 				printf(" Keterangan kanal :\r\n");
@@ -232,7 +232,7 @@ void set_default_ip(void)
 	for (i=0; i<20; i++)
 	{
 		env2.kalib[i].m = 1.00;
-		env2.kalib[i].y = 0.00;
+		env2.kalib[i].C = 0.00;
 		sprintf(env2.kalib[i].ket, "--");
 	} 
 

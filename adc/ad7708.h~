@@ -41,10 +41,16 @@
 //#define range_adc		14				// 0 - 1.28 volt	
 //#define range_adc		13				// 0 - 640 mV	
 
+#if (range_adc == 15)
+#define faktor_pengali	2.5
+#endif
+
+
 struct t_adc {
 	unsigned int cur_kanal;
 	unsigned int count;
 	unsigned short data[20];
+	float fdata[20];
 };
 
 

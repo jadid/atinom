@@ -19,7 +19,7 @@ void status_adc(void)
 	for (i=0; i<10; i++)
 	{
 		f = st_adc.data[i] * faktor_pengali / 0xffff;
-		printf("%2d : %6d : %1.4f V\r\n", i, st_adc.data[i], f);
+		printf("%2d : %6d : %1.4f V\r\n", (i+1), st_adc.data[i], f);
 	}	
 }							 
 

@@ -233,23 +233,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				}
 		 }	// tanpa paket
 		 
-		 // cek data adc
-		 #if 0
-		 if (cek_adc_rdy() == 1)
-		 {
-		 	st_adc.count++;
-		 	st_adc.data[ st_adc.cur_kanal ] = baca_data();
-		 	
-		 	st_adc.cur_kanal++;
-		 	if (st_adc.cur_kanal == 10)
-		 	{
-		 		/* satu round 10 kanal sudah selesai */
-		 		st_adc.cur_kanal = 0;
-		 	}
-		 }
-		 #endif
-		 
+		 #ifdef BOARD_KOMON_A_RTD
 		 proses_data_adc();
+		 #endif
 	}
 }
 

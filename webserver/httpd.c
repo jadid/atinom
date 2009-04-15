@@ -115,18 +115,29 @@ void buat_file_index(void)
 	strcat(tot_buf, head_buf);
 	
 	//strcat(tot_buf, "<h4>Modul Counter / Frekuensi / RPM</h4>\n");
+#ifdef BOARD_KOMON_A_RTD	
+	strcat(tot_buf, "<p>Modul Komon-A (RTD & Pressure 4-20 mA)\n");
+#else
 	strcat(tot_buf, "<p>Modul Counter / Frekuensi / RPM\n");
+#endif
+
 	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
 	strcat(tot_buf, head_buf);
 			
 	strcat(tot_buf, "<table border>\n");
 	strcat(tot_buf, "<col width = ""120px"" />\n");
 	strcat(tot_buf, "<col width = ""140px"" />\n");
-	strcat(tot_buf, "<col width = ""140px"" />\n");
+	strcat(tot_buf, "<col width = ""170px"" />\n");
 	strcat(tot_buf, "<col width = ""400px"" />\n");
 	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
+#ifdef BOARD_KOMON_A_RTD	
+	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
+	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
+#else
 	strcat(tot_buf, "<th>Puls (Count)</th>\n");
 	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
+#endif
+
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 	
 	for (i=0; i< 10; i++)

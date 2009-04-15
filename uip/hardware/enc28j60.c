@@ -522,15 +522,12 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 
 unsigned int cek_paket(void)
 {
-	//portENTER_CRITICAL();
 	if (FIO_CEK_PAKET & INT_ENC)
 	{
-		//portEXIT_CRITICAL();
 		return 0;
 	}
 	else
 	{
-		//portEXIT_CRITICAL();
 		return 1;
 	}
 

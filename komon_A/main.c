@@ -118,6 +118,9 @@ void togle_led_utama(void)
 	{
 		FIO0CLR = LED_UTAMA;
 		tog = 1;
+		
+		/* tiap detik buat file index */
+		buat_file_index();
 	}
 }
 
@@ -132,7 +135,6 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	for (;;)
 	{
 		togle_led_utama();
-		buat_file_index();
 		vTaskDelay(500);
 	}
 }

@@ -11,14 +11,7 @@
 #include "FreeRTOS.h"
 #include "ad7708.h"
 
-//#define rate_7708 	25			// 55 data per detik
-#define rate_7708		71			// 20 data per detik
-//#define rate_7708		69
 
-
-#define range_adc		15				// 0 - 2.5 volt
-//#define range_adc		14				// 0 - 1.28 volt	
-//#define range_adc		13				// 0 - 640 mV	
 
 static unsigned int kalibrated;
 

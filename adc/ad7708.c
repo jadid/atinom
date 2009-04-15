@@ -83,6 +83,7 @@ inline void cs_ad7708(void)
 inline void uncs_ad7708(void)
 {
 	FIO1SET = port_cs_ad7708;
+	SPI_SPCR = MSTR;			// ENC biar gak problem
 	portEXIT_CRITICAL();
 }
 

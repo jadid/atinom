@@ -32,10 +32,24 @@
 #define reg_iocon				0x07
 #define reg_id					0x0F
 
+//#define rate_7708 	25			// 55 data per detik
+#define rate_7708		71			// 20 data per detik
+//#define rate_7708		69
+
+
+#define range_adc		15				// 0 - 2.5 volt
+//#define range_adc		14				// 0 - 1.28 volt	
+//#define range_adc		13				// 0 - 640 mV	
+
+#if (range_adc == 15)
+#define faktor_pengali	2.5
+#endif
+
+
 struct t_adc {
 	unsigned int cur_kanal;
 	unsigned int count;
-	unsigned short buf[20];
+	unsigned short data[20];
 };
 
 
@@ -56,5 +70,7 @@ unsigned char cek_adc_id(void);
 void stop_adc(void);
 void reset_adc(void);
 unsigned char set_calibrated(unsigned char c);
+
+inline unsigned int cek_adc_rdy(void);
 
 //static unsigned short baca_data(void);

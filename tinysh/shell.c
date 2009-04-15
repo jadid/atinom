@@ -15,6 +15,10 @@
 #include "titik.c"
 #endif
 
+#ifdef BOARD_KOMON_A_RTD
+#include "../adc/command_adc.c"
+#endif
+
 #include "enviro.h"
 
 #include "../GPIO/gpio.h"
@@ -83,6 +87,10 @@ void cek_versi(void)
 
 #ifdef BOARD_TAMPILAN
   	printf(" Babelan Tampilan %s\r\n", VERSI_TAMPILAN);
+#endif
+
+#ifdef BOARD_KOMON_A_RTD
+  	printf(" Babelan Komon-A (RTD & 4-20mA) v%s\r\n", VERSI_KOMON);
 #endif
 
   	printf(" ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
@@ -332,6 +340,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&save_titik_cmd);
 #endif
 
+#ifdef BOARD_KOMON_A_RTD
+	tinysh_add_command(&cek_adc_cmd);
+#endif
+
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);
@@ -394,6 +406,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_set_prompt("Komon_A $ ");
 	*/
 	kalibrasi_adc1();
+	vTaskDelay(100);
+	start_adc_1();
 	tinysh_set_prompt("Komon_A $ ");
 	#endif
 	

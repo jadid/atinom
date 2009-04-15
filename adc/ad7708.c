@@ -11,10 +11,9 @@
 #include "FreeRTOS.h"
 #include "ad7708.h"
 
-#define rate_7708		71			// 20 data per detik
 
-unsigned int kanal_aktif;
-unsigned int kalibrated;
+
+static unsigned int kalibrated;
 
 struct t_adc st_adc;
 
@@ -22,7 +21,8 @@ struct t_adc st_adc;
 
 inline void cs_ad7708(void);
 inline void uncs_ad7708(void);
-/*
+
+#if 0
 void init_spi_ad7708(void)	
 {
 	unsigned int sclk;
@@ -43,7 +43,7 @@ void init_spi_ad7708(void)
    *pSPI_CTL = (SPE + MSTR + CPHA + CPOL + 0x01); 	//start saat read tdbr
    ssync();
 }
-*/
+#endif
 
 #if BLACKFIN
 inline void cs_ad7708(void)
@@ -242,8 +242,14 @@ void reset_adc(void)
 {
 	int i;
 	cs_ad7708();	
-	for (i=0; i<6; i++) kirim_word(0xFF);
+	for (i=0; i<6; i++) 
+		kirim_word(0xFF);
+	
 	uncs_ad7708();
+	
+	memset( &st_adc, 0, sizeof (st_adc));
+	
+	st_adc.cur_kanal = 0;
 }
 
 unsigned char cek_adc_id(void)
@@ -261,10 +267,69 @@ unsigned char cek_adc_id(void)
 	
 	return r;
 }
+void start_adc_1(int fdx)
+{
+	int i;
+	unsigned char temp_char;
+	unsigned char kanal_aktif;
+	st_adc.cur_kanal = 0;
+	
+	printf("Starting ADC collecting data !\r\n");
+	//reset_data_adc(fdx);
+	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_adc);
+		
+	set_adccon(temp_char);
+	set_mode((unsigned char) (3 + 16));			//continuous sampling + CHCON
+		
+	//cek filter
+	printf(" FILTER ADC = %d ;", (unsigned char) cek_filter());
+	printf(" ADCCON = %d ;", (unsigned char) cek_adccon());
+	printf(" MODE = %d\r\n",(unsigned char)  cek_mode());
+	
+	//usleep(100);
+}
+
 inline unsigned int cek_adc_rdy(void)
 {
 	/* jika low, maka ada data baru */
 	
-	if (FIO1DIR & port_rdy_ad7708) return 0;
-	else return 1;
+	//if (FIO1DIR & port_rdy_ad7708) return 0;
+	//else return 1;
+	
+	if (kalibrated == 1)
+	{
+		if ((cek_status() & 0x80) == 0x80) return 1;
+		else return 0;
+	}
+	else
+		return 0;
+}
+
+void proses_data_adc(void)
+{
+	unsigned char temp;
+	
+	if (cek_adc_rdy() == 1)
+	{
+		st_adc.count++;
+		st_adc.data[ st_adc.cur_kanal ] = baca_data();
+		 	
+		st_adc.cur_kanal++;
+		if (st_adc.cur_kanal == 10)
+		{
+		 	/* satu round 10 kanal sudah selesai */
+		 	st_adc.cur_kanal = 0;
+		}
+		
+		if (st_adc.cur_kanal == 8)
+		temp = (unsigned char) ((14 << 4) + range_adc);
+		
+		else if (st_adc.cur_kanal == 9)
+		temp = (unsigned char) ((15 << 4) + range_adc);
+		
+		else
+		temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_adc);
+		
+		set_adccon(temp);
+	}
 }

@@ -40,7 +40,6 @@ char kalibrasi_adc1(int fdy)
 	
 	vTaskDelay(10);
 	set_iocon(0x00);
-	kanal_aktif = 0;
 	er = 0;
 	ada_adc_1 = false;
 
@@ -109,7 +108,7 @@ char kalibrasi_adc1(int fdy)
 	   	
 	   	printf(" ADC iocon %d", cek_iocon());
 		printf("; adccon %d", cek_adccon());
-		printf("; mode %d", cek_mode());
+		printf("; mode %d\r\n", cek_mode());
 	
 		set_iocon(0x00);
 		

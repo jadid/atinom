@@ -382,6 +382,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
 	
+	#if 0
 	#ifdef BOARD_BABELAN
   	tinysh_set_prompt("Babelan $ ");
 	#endif
@@ -393,25 +394,17 @@ portTASK_FUNCTION(shell, pvParameters )
 	#ifdef BOARD_TAMPILAN
   	tinysh_set_prompt("Tampilan $ ");
 	#endif
+	#endif
+	
 	
 	#ifdef BOARD_KOMON_A_RTD
-	//spiInit();
-	/*
-	c = cek_adc_id();
-	c = c & 0xF0;
-	
-	if (c == 0x50)
-		printf("ADC AD7708 OK = 0x%X\r\n", c);
-	else
-		printf("ADC ERR 0x%X ... tidak terdeteksi !\r\n", c);
-	
-	tinysh_set_prompt("Komon_A $ ");
-	*/
 	kalibrasi_adc1();
 	vTaskDelay(100);
 	start_adc_1();
-	tinysh_set_prompt("Komon_A $ ");
+	//tinysh_set_prompt("Komon_A $ ");
 	#endif
+	
+	tinysh_set_prompt(PROMPT);
 	
 	/* 
 	 * main loop shell

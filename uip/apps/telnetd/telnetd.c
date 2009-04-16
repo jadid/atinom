@@ -46,6 +46,12 @@
 
 #include <string.h>
 
+#define MIN(x,y) ((x)<(y)?(x):(y))
+#define MAX(x,y)((x)>(y)?(x):(y))
+
+#define CFG_CONSOLE_UART0
+
+#if 0
 #if defined CFG_CONSOLE_USB
 #include "../../usbser/usbser.h"
 #elif defined CFG_CONSOLE_UART0
@@ -57,6 +63,10 @@
 #endif
 
 #include "../../../main.h"
+#endif
+
+//#define PROMPT "Komon_A > "
+
 #include "../../uip/uip.h"
 #include "../../lib/memb.h"
 #include "telnetd.h"
@@ -204,7 +214,7 @@ static int telnetdOpen (void)
   uip_unlisten (HTONS (23));
 
   telnetdBufferInit (&telnetdBuf);
-  telnetdState = (telnetdState_t *) &(uip_conn->appstate);
+  telnetdState = (telnetdState_t *) &(uip_conn->appstate2);
   telnetdState->state = TELNETDSTATE_NORMAL;
   telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
 
@@ -235,10 +245,16 @@ static void telnetdClose (void)
 //
 static void telnetdNewRxChar (u8_t c)
 {
+  //printf(" RxChar %X\r\n", c);
+  //tinysh_char_in((unsigned char) c);
+  
   if (!c || (c == ISO_cr) || !consoleQueue)
     return;
 
   xQueueSend (consoleQueue, &c, portMAX_DELAY);
+  //tinysh_char_in((unsigned char) c);
+  //printf("%c", c);
+  
 }
 
 //
@@ -249,8 +265,14 @@ static void telnetdNewTxData (void)
 {
   portCHAR c;
 
+	/* secara reguler dipanggil */
+	
   while (telnetdBufferHasSpace (&telnetdBuf) && (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE))
     telnetdBufferAppend (&telnetdBuf, (char *) &c, sizeof (c));
+  
+  //c = 'k';
+  
+  //telnetdBufferAppend (&telnetdBuf, (char *) &c, sizeof (c));
 }
 
 //
@@ -399,14 +421,17 @@ void telnetdDisconnect (void)
 //
 int telnetd_init (void)
 {
-  if (!telnetdQueueTx)
-    if (!(telnetdQueueTx = xQueueCreate (256, (unsigned portBASE_TYPE) sizeof (signed portCHAR))))
-      return 0;
-
+  	#if 1
+  	if (!telnetdQueueTx)
+    	if (!(telnetdQueueTx = xQueueCreate (256, (unsigned portBASE_TYPE) sizeof (signed portCHAR))))
+      		return 0;
+	#endif
+	
   uip_listen (HTONS (23));
   telnetdBufferInit (&telnetdBuf);
   telnetdState = NULL;
 
+#if 1
 #if defined CFG_CONSOLE_USB
   usbserGetRxQueue (&consoleQueue);
 #elif defined CFG_CONSOLE_UART0
@@ -416,36 +441,61 @@ int telnetd_init (void)
 #else
 #error "Eeek!  No console devices defined!"
 #endif
+#endif
 
   return 1;
 }
 
+static int ping=0;
 //
 //
 //
 void telnetd_appcall (void)
 {
-  if (uip_connected ()) 
-    if (!telnetdOpen ())
-      return;
+  	//ping++;
+  	if (uip_connected ())
+  	{ 
+    	//printf(" %d konekted\n", ping);
+    	if (!telnetdOpen ()) 
+     	{
+     		//printf(" %d !Open\n", ping);
+     		return;
+     	}
+  	}
 
-  if (telnetdState && (telnetdState->state == TELNETDSTATE_CLOSE))
-    uip_close ();
+  	if (telnetdState && (telnetdState->state == TELNETDSTATE_CLOSE))
+  	{
+    	//printf(" %d Close\n", ping);
+    	uip_close ();
+    }
 
-  if (uip_closed () || uip_aborted () || uip_timedout ())
-    telnetdClose ();
-
-  if (uip_acked ())
-    telnetdAcked ();
-
-  if (uip_newdata ())
-    telnetdNewRxData ();
-
-  if (uip_rexmit () || uip_newdata () || uip_acked () || uip_connected ())
-    telnetdSendData ();
-  else if (uip_poll ())  
-  {
-    telnetdNewTxData ();
-    telnetdSendData ();
-  }
+  	if (uip_closed () || uip_aborted () || uip_timedout ())
+ 	{
+    	//printf(" %d telnet close\n", ping);
+    	telnetdClose ();
+	}
+	
+  	if (uip_acked ())
+  	{
+    	//printf(" %d telnet ack\n", ping);
+    	telnetdAcked ();
+	}
+	
+  	if (uip_newdata ())
+  	{
+    	//printf(" %d new data\n", ping);
+    	telnetdNewRxData ();
+	}
+	
+  	if (uip_rexmit () || uip_newdata () || uip_acked () || uip_connected ())
+  	{
+    	//printf(" %d Send data\n", ping);
+    	telnetdSendData ();
+  	}
+  	else if (uip_poll ())  
+  	{
+    	//printf(" %d Poll\n", ping);
+    	telnetdNewTxData ();
+    	telnetdSendData ();
+  	}
 }

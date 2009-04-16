@@ -36,6 +36,8 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
+#define PAKE_TELNETD
+
 //#define BOARD_TAMPILAN
 //#define BOARD_KOMON
 #define BOARD_KOMON_A_RTD
@@ -47,6 +49,8 @@
 #define printf	printf2
 
 //#define TAMPILAN_LPC_4
+
+#define PROMPT "Komon_A $ "
 
 //#define printf(c, ...) serial_puts(c)
 

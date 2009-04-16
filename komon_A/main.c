@@ -21,7 +21,7 @@
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
-#define CEK_BLINK
+//#define CEK_BLINK
 
 #ifdef BOARD_KOMON_A_RTD
 #define LED_UTAMA	BIT(26)

@@ -102,6 +102,7 @@ THUMB_SOURCE= \
 		../webserver/httpd-cgi.c \
 		../system/idle_hook.c \
 		../adc/ad7708.c	\
+		../uip/apps/telnetd/telnetd.c	\
 
 #		LCD/lcd_320.c \
 #		tampilan.c \

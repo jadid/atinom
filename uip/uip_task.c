@@ -19,6 +19,10 @@
 #include "../monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
+#ifdef PAKE_TELNETD
+#include "apps/telnet2/telnetd.h"
+#endif
+
 #ifdef BOARD_KOMON_A_RTD
 #define BOARD_KOMON
 #include "../adc/ad7708.h"

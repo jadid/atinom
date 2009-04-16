@@ -45,6 +45,10 @@
 
 #define TAMPILAN_LPC_4
 
+#define VERSI_KOMON		"1.2"
+#define PROMPT 		"Tampilan $ "
+#define NAMA_BOARD	"Babelan Tampilan"
+
 //#define printf(c, ...) serial_puts(c)
 
 /*-----------------------------------------------------------

@@ -32,6 +32,8 @@
 
 xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
+unsigned int idle_lama;
+unsigned int tot_idle;
 
 static char tog;
 static void sysInit(void);

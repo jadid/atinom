@@ -100,6 +100,8 @@ THUMB_SOURCE= \
 		../webserver/httpd-fs.c \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
+		../system/idle_hook.c \
+		../uip/apps/telnetd/telnetd.c	\
 
 #		LCD/lcd_320.c \
 #		tampilan.c \

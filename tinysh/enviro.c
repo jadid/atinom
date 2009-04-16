@@ -28,6 +28,7 @@ void print_env(int argc, char **argv)
 	baca_env(1);
 }
 
+#if 0
 void getdef_env(int argc, char **argv)
 {
 	printf(" Set Default Environtment \r\n");
@@ -35,7 +36,7 @@ void getdef_env(int argc, char **argv)
 	set_default_ip();
 	printf(" OK\n");
 }
-
+#endif
 
 void save_env(int argc, char **argv)
 {
@@ -229,6 +230,15 @@ void set_default_ip(void)
 	env2.GW3 = 13;
 	printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
 
+	set_dafault_kalib();
+
+	sprintf(env2.nama_board, "Gantilah namanya !");
+}
+
+void set_dafault_kalib(void)
+{
+	int i;
+	
 	for (i=0; i<20; i++)
 	{
 		env2.kalib[i].m = 1.00;
@@ -236,5 +246,4 @@ void set_default_ip(void)
 		sprintf(env2.kalib[i].ket, "--");
 	} 
 
-	sprintf(env2.nama_board, "Gantilah namanya !");
 }

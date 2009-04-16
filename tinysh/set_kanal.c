@@ -48,7 +48,7 @@ void set_kanal(int argc, char **argv)
 			else if (strcmp(argv[1], "default") == 0)
 			{
 				printf("set kanal dengan data default !\n");
-				//set_awal_sumber();
+				set_dafault_kalib();
 				
 				return;
 			}	
@@ -104,5 +104,5 @@ void set_kanal(int argc, char **argv)
 	}
 }
 
-static tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help ipaddr nama status alamat default",
+static tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help",
                               set_kanal,0,0,0};	

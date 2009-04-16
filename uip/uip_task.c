@@ -218,8 +218,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		          uip_arp_timer ();
 		          xARPTimer = 0;
 		        }
-		        
-		        //printf(" uip pool\r\n");
 		      }
 			  
 			  	if ((xCurrentTime - timer_menit) >= RT_MENIT)

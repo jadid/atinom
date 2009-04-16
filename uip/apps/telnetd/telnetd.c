@@ -51,6 +51,12 @@
 
 #define CFG_CONSOLE_UART0
 
+#define HELLO_1 "Monita Online Monitoring System \n"
+#define HELLO_2 "Modul "
+#define HELLO_3	"Welcome ...\n \n \n"
+
+#define LOG_PASS "Passwd : "
+
 #if 0
 #if defined CFG_CONSOLE_USB
 #include "../../usbser/usbser.h"
@@ -100,6 +106,9 @@ static telnetdState_t *telnetdState = NULL;
 static telnetdBuf_t telnetdBuf;
 static xQueueHandle telnetdQueueTx;
 static xQueueHandle consoleQueue = NULL;
+
+static unsigned int poll_no_komand = 0;
+static unsigned int passwd_benar = 0;
 
 //
 //  Useful for debugging, as it disables printing to the telnet client
@@ -210,13 +219,28 @@ static void telnetdSendData (void)
 //
 static int telnetdOpen (void)
 {
+  char tt[64];
+  
+  poll_no_komand = 0;
+  passwd_benar = 0;
+  
   uip_unlisten (HTONS (23));
 
   telnetdBufferInit (&telnetdBuf);
   telnetdState = (telnetdState_t *) &(uip_conn->appstate2);
   telnetdState->state = TELNETDSTATE_NORMAL;
-  telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
-
+  
+  telnetdBufferAppend (&telnetdBuf, HELLO_1, strlen (HELLO_1));
+  telnetdBufferAppend (&telnetdBuf, HELLO_2, strlen (HELLO_2));
+  
+  sprintf(tt, "%s v%s \n", NAMA_BOARD, VERSI_KOMON);
+  telnetdBufferAppend (&telnetdBuf, tt, strlen (tt));
+  
+  telnetdBufferAppend (&telnetdBuf, HELLO_3, strlen (HELLO_3));
+  
+  //telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
+	telnetdBufferAppend (&telnetdBuf, LOG_PASS, strlen (LOG_PASS));	
+	
   return 1;
 }
 
@@ -229,12 +253,30 @@ static void telnetdClose (void)
 {
   portCHAR c;
 
-  while (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE)
-    ;
+  while (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE);
 
   telnetdState = NULL;
 
   uip_listen (HTONS (23));
+}
+
+// fungsi sederhana untuk cek passwd
+static int  jum=0;
+static char pas[32];
+
+void cek_passwd(char *cc)
+{
+	if (strncmp(cc, "diesel", 6) == 0)
+	{
+		passwd_benar = 1;
+		telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
+	}
+	else
+	{
+		//printf("SALAH !\r\n");
+		telnetdBufferAppend (&telnetdBuf, LOG_PASS, strlen (LOG_PASS));
+	}
+	jum = 0;
 }
 
 //
@@ -242,13 +284,34 @@ static void telnetdClose (void)
 //  because telnet always sends CR/LF, and we only care about LF.  Post the
 //  received character into the monitor queue.
 //
+
 static void telnetdNewRxChar (u8_t c)
 { 
-  if (!c || (c == ISO_cr) || !consoleQueue)
-    return;
+  	if (!c || (c == ISO_cr) || !consoleQueue)
+    	return;
 
-  xQueueSend (consoleQueue, &c, portMAX_DELAY);
-  
+	poll_no_komand = 0;
+	
+	if ( passwd_benar == 1)
+  		xQueueSend (consoleQueue, &c, portMAX_DELAY);
+  	else
+  	{
+  		pas[jum] = c;
+  		jum++;
+  		
+  		if (jum > 32) 
+  		{
+  			jum = 0;
+  			printf("kepanjangan !\r\n");
+  		}
+  		
+  		if (c == ISO_nl)
+  		{
+  			
+  			//printf("enter ditekan !\r\n");
+  			cek_passwd(pas);
+  		}	
+  	}
 }
 
 //
@@ -257,16 +320,21 @@ static void telnetdNewRxChar (u8_t c)
 //
 static void telnetdNewTxData (void)
 {
-  portCHAR c;
-
-	/* secara reguler dipanggil */
+  	portCHAR c;
+	/* secara reguler dipanggil sekitar 100 ms */
 	
-  while (telnetdBufferHasSpace (&telnetdBuf) && (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE))
+	poll_no_komand++;
+	if (poll_no_komand > 1800)
+	{
+		printf(" Tidak ada aktifitas dalam 3 menit\r\n");
+		
+		telnetdDisconnect();
+		poll_no_komand = 0;
+	}
+	
+  	while (telnetdBufferHasSpace (&telnetdBuf) && (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE))
     telnetdBufferAppend (&telnetdBuf, (char *) &c, sizeof (c));
   
-  //c = 'k';
-  
-  //telnetdBufferAppend (&telnetdBuf, (char *) &c, sizeof (c));
 }
 
 //

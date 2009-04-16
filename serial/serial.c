@@ -305,7 +305,6 @@ void vSerialClose( xComPortHandle xPort )
 
 void uart0GetRxQueue (xQueueHandle *qh)
 {
-  	//*qh = xRX0Queue;
   	*qh = xRxedChars;
 }
 

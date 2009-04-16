@@ -23,5 +23,5 @@ void status_adc(void)
 	}	
 }							 
 
-static tinysh_cmd_t cek_adc_cmd={0,"status_adc","data kounter/rpm","[args]",
+static tinysh_cmd_t cek_adc_cmd={0,"status_adc","konversi adc & voltnya","[args]",
                               status_adc,0,0,0};

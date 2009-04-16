@@ -65,7 +65,6 @@
 #include "../../../main.h"
 #endif
 
-//#define PROMPT "Komon_A > "
 
 #include "../../uip/uip.h"
 #include "../../lib/memb.h"
@@ -244,16 +243,11 @@ static void telnetdClose (void)
 //  received character into the monitor queue.
 //
 static void telnetdNewRxChar (u8_t c)
-{
-  //printf(" RxChar %X\r\n", c);
-  //tinysh_char_in((unsigned char) c);
-  
+{ 
   if (!c || (c == ISO_cr) || !consoleQueue)
     return;
 
   xQueueSend (consoleQueue, &c, portMAX_DELAY);
-  //tinysh_char_in((unsigned char) c);
-  //printf("%c", c);
   
 }
 

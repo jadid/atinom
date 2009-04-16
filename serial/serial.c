@@ -290,7 +290,7 @@ signed portBASE_TYPE xReturn;
 		}
 	}
 	//portEXIT_CRITICAL();
-
+	
 	return xReturn;
 }
 /*-----------------------------------------------------------*/

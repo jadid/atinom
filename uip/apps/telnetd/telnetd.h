@@ -1,8 +1,8 @@
 //
-//  $Id: telnetd.h 248 2008-10-31 00:51:01Z jcw $
-//  $Revision: 248 $
+//  $Id: telnetd.h 345 2008-11-11 03:05:06Z jcw $
+//  $Revision: 345 $
 //  $Author: jcw $
-//  $Date: 2008-10-30 20:51:01 -0400 (Thu, 30 Oct 2008) $
+//  $Date: 2008-11-10 22:05:06 -0500 (Mon, 10 Nov 2008) $
 //  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/uip/apps/telnetd/telnetd.h $
 //
 
@@ -37,7 +37,7 @@
  *
  * This file is part of the uIP TCP/IP stack
  *
- * $Id: telnetd.h 248 2008-10-31 00:51:01Z jcw $
+ * $Id: telnetd.h 345 2008-11-11 03:05:06Z jcw $
  *
  */
 #ifndef __TELNETD_H__
@@ -79,6 +79,7 @@ typedef struct telnetdState_s
 {
   u16_t numsent;
   telnetdState_e state;
+  //struct uip_conn *conn;
 }
 telnetdState_t;
 

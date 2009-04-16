@@ -382,26 +382,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
 	
-	#if 0
-	#ifdef BOARD_BABELAN
-  	tinysh_set_prompt("Babelan $ ");
-	#endif
-	
-	#ifdef BOARD_KOMON
-  	tinysh_set_prompt("Komon $ ");
-	#endif
-	
-	#ifdef BOARD_TAMPILAN
-  	tinysh_set_prompt("Tampilan $ ");
-	#endif
-	#endif
-	
-	
 	#ifdef BOARD_KOMON_A_RTD
 	kalibrasi_adc1();
 	vTaskDelay(100);
 	start_adc_1();
-	//tinysh_set_prompt("Komon_A $ ");
 	#endif
 	
 	tinysh_set_prompt(PROMPT);

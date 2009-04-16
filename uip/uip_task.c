@@ -20,7 +20,7 @@
 #include "../tinysh/enviro.h"
 
 #ifdef PAKE_TELNETD
-#include "apps/telnet2/telnetd.h"
+#include "apps/telnetd/telnetd.h"
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
@@ -31,7 +31,8 @@ extern struct t_adc st_adc;
 
 #define prio ( tskIDLE_PRIORITY + 3)	// paling tinggi dari yang lain
 
-#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
+//#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
+#define RT_CLOCK_SECOND   ( configTICK_RATE_HZ / 10 )
 #define uipARP_FREQUENCY  (20)
 #define uipMAX_BLOCK_TIME (RT_CLOCK_SECOND / 4)
 #define pucUIP_Buffer ((struct uip_eth_hdr *) &uip_buf [0])
@@ -217,6 +218,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		          uip_arp_timer ();
 		          xARPTimer = 0;
 		        }
+		        
+		        //printf(" uip pool\r\n");
 		      }
 			  
 			  	if ((xCurrentTime - timer_menit) >= RT_MENIT)

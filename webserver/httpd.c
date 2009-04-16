@@ -109,13 +109,17 @@ void buat_file_index(void)
 	strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering");
 	sprintf(head_buf, "<br>monita_rtos_%s</h4>\n", VERSI_KOMON);
 	strcat(tot_buf, head_buf);
-	
+
+	sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
+	strcat(tot_buf, head_buf);
+/*	
 #ifdef BOARD_KOMON_A_RTD	
-	strcat(tot_buf, "<p>Modul Komon-A (RTD & Pressure 4-20 mA)\n");
+	
+	//strcat(tot_buf, "<p>Modul Komon-A (RTD & Pressure 4-20 mA)\n");
 #else
 	strcat(tot_buf, "<p>Modul Counter / Frekuensi / RPM\n");
 #endif
-
+*/
 	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
 	strcat(tot_buf, head_buf);
 			

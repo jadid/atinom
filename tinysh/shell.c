@@ -295,7 +295,7 @@ portTASK_FUNCTION(shell, pvParameters )
   	int c;
   	xTaskHandle xHandle;
 
-  	printf("\nStarting %s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
+  	printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
 
   	printf("Daun Biru Engineering, Des 2008\r\n");
   	printf("=========================================\r\n");

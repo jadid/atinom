@@ -255,19 +255,18 @@ void dispatch_tcp_appcall (void)
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 	
 #ifdef PAKE_HTTP
-	if (uip_conn->lport == HTONS (80)) httpd_appcall ();
+	if (uip_conn->lport == HTONS (80)) 
+		httpd_appcall ();
 #endif
 
 #ifdef PAKE_TELNETD
-  if (uip_conn->lport == HTONS (23))
-    telnetd_appcall ();
+  	if (uip_conn->lport == HTONS (23))
+    	telnetd_appcall ();
 #endif
 
 #ifdef BOARD_KOMON
   	if (uip_conn->lport == HTONS(PORT_MONITA))
-	{
 		monita_appcall();
-	}
 #endif
 
 #ifdef BOARD_TAMPILAN

@@ -51,7 +51,7 @@
 //#define TAMPILAN_LPC_4
 
 #define PROMPT 		"Komon_A $ "
-#define NAMA_BOARD	"Babelan Komon-A (RTD & 4-20mA)"
+#define NAMA_BOARD	"Babelan Komon-A (RTD & Pressure 4-20mA)"
 
 //#define printf(c, ...) serial_puts(c)
 

@@ -46,6 +46,18 @@
 
 #include <string.h>
 
+#define MIN(x,y) ((x)<(y)?(x):(y))
+#define MAX(x,y)((x)>(y)?(x):(y))
+
+#define CFG_CONSOLE_UART0
+
+#define HELLO_1 "Monita Online Monitoring System \n"
+#define HELLO_2 "Modul "
+#define HELLO_3	"Welcome ...\n \n \n"
+
+#define LOG_PASS "Passwd : "
+
+#if 0
 #if defined CFG_CONSOLE_USB
 #include "../../usbser/usbser.h"
 #elif defined CFG_CONSOLE_UART0
@@ -57,6 +69,9 @@
 #endif
 
 #include "../../../main.h"
+#endif
+
+
 #include "../../uip/uip.h"
 #include "../../lib/memb.h"
 #include "telnetd.h"
@@ -91,6 +106,9 @@ static telnetdState_t *telnetdState = NULL;
 static telnetdBuf_t telnetdBuf;
 static xQueueHandle telnetdQueueTx;
 static xQueueHandle consoleQueue = NULL;
+
+static unsigned int poll_no_komand = 0;
+static unsigned int passwd_benar = 0;
 
 //
 //  Useful for debugging, as it disables printing to the telnet client
@@ -201,13 +219,28 @@ static void telnetdSendData (void)
 //
 static int telnetdOpen (void)
 {
+  char tt[64];
+  
+  poll_no_komand = 0;
+  passwd_benar = 0;
+  
   uip_unlisten (HTONS (23));
 
   telnetdBufferInit (&telnetdBuf);
-  telnetdState = (telnetdState_t *) &(uip_conn->appstate);
+  telnetdState = (telnetdState_t *) &(uip_conn->appstate2);
   telnetdState->state = TELNETDSTATE_NORMAL;
-  telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
-
+  
+  telnetdBufferAppend (&telnetdBuf, HELLO_1, strlen (HELLO_1));
+  telnetdBufferAppend (&telnetdBuf, HELLO_2, strlen (HELLO_2));
+  
+  sprintf(tt, "%s v%s \n", NAMA_BOARD, VERSI_KOMON);
+  telnetdBufferAppend (&telnetdBuf, tt, strlen (tt));
+  
+  telnetdBufferAppend (&telnetdBuf, HELLO_3, strlen (HELLO_3));
+  
+  //telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
+	telnetdBufferAppend (&telnetdBuf, LOG_PASS, strlen (LOG_PASS));	
+	
   return 1;
 }
 
@@ -220,12 +253,30 @@ static void telnetdClose (void)
 {
   portCHAR c;
 
-  while (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE)
-    ;
+  while (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE);
 
   telnetdState = NULL;
 
   uip_listen (HTONS (23));
+}
+
+// fungsi sederhana untuk cek passwd
+static int  jum=0;
+static char pas[32];
+
+void cek_passwd(char *cc)
+{
+	if (strncmp(cc, "diesel", 6) == 0)
+	{
+		passwd_benar = 1;
+		telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));
+	}
+	else
+	{
+		//printf("SALAH !\r\n");
+		telnetdBufferAppend (&telnetdBuf, LOG_PASS, strlen (LOG_PASS));
+	}
+	jum = 0;
 }
 
 //
@@ -233,12 +284,34 @@ static void telnetdClose (void)
 //  because telnet always sends CR/LF, and we only care about LF.  Post the
 //  received character into the monitor queue.
 //
-static void telnetdNewRxChar (u8_t c)
-{
-  if (!c || (c == ISO_cr) || !consoleQueue)
-    return;
 
-  xQueueSend (consoleQueue, &c, portMAX_DELAY);
+static void telnetdNewRxChar (u8_t c)
+{ 
+  	if (!c || (c == ISO_cr) || !consoleQueue)
+    	return;
+
+	poll_no_komand = 0;
+	
+	if ( passwd_benar == 1)
+  		xQueueSend (consoleQueue, &c, portMAX_DELAY);
+  	else
+  	{
+  		pas[jum] = c;
+  		jum++;
+  		
+  		if (jum > 32) 
+  		{
+  			jum = 0;
+  			printf("kepanjangan !\r\n");
+  		}
+  		
+  		if (c == ISO_nl)
+  		{
+  			
+  			//printf("enter ditekan !\r\n");
+  			cek_passwd(pas);
+  		}	
+  	}
 }
 
 //
@@ -247,10 +320,21 @@ static void telnetdNewRxChar (u8_t c)
 //
 static void telnetdNewTxData (void)
 {
-  portCHAR c;
-
-  while (telnetdBufferHasSpace (&telnetdBuf) && (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE))
+  	portCHAR c;
+	/* secara reguler dipanggil sekitar 100 ms */
+	
+	poll_no_komand++;
+	if (poll_no_komand > 1800)
+	{
+		printf(" Tidak ada aktifitas dalam 3 menit\r\n");
+		
+		telnetdDisconnect();
+		poll_no_komand = 0;
+	}
+	
+  	while (telnetdBufferHasSpace (&telnetdBuf) && (xQueueReceive (telnetdQueueTx, &c, 0) == pdTRUE))
     telnetdBufferAppend (&telnetdBuf, (char *) &c, sizeof (c));
+  
 }
 
 //
@@ -399,14 +483,17 @@ void telnetdDisconnect (void)
 //
 int telnetd_init (void)
 {
-  if (!telnetdQueueTx)
-    if (!(telnetdQueueTx = xQueueCreate (256, (unsigned portBASE_TYPE) sizeof (signed portCHAR))))
-      return 0;
-
+  	#if 1
+  	if (!telnetdQueueTx)
+    	if (!(telnetdQueueTx = xQueueCreate (256, (unsigned portBASE_TYPE) sizeof (signed portCHAR))))
+      		return 0;
+	#endif
+	
   uip_listen (HTONS (23));
   telnetdBufferInit (&telnetdBuf);
   telnetdState = NULL;
 
+#if 1
 #if defined CFG_CONSOLE_USB
   usbserGetRxQueue (&consoleQueue);
 #elif defined CFG_CONSOLE_UART0
@@ -416,36 +503,61 @@ int telnetd_init (void)
 #else
 #error "Eeek!  No console devices defined!"
 #endif
+#endif
 
   return 1;
 }
 
+static int ping=0;
 //
 //
 //
 void telnetd_appcall (void)
 {
-  if (uip_connected ()) 
-    if (!telnetdOpen ())
-      return;
+  	//ping++;
+  	if (uip_connected ())
+  	{ 
+    	//printf(" %d konekted\n", ping);
+    	if (!telnetdOpen ()) 
+     	{
+     		//printf(" %d !Open\n", ping);
+     		return;
+     	}
+  	}
 
-  if (telnetdState && (telnetdState->state == TELNETDSTATE_CLOSE))
-    uip_close ();
+  	if (telnetdState && (telnetdState->state == TELNETDSTATE_CLOSE))
+  	{
+    	//printf(" %d Close\n", ping);
+    	uip_close ();
+    }
 
-  if (uip_closed () || uip_aborted () || uip_timedout ())
-    telnetdClose ();
-
-  if (uip_acked ())
-    telnetdAcked ();
-
-  if (uip_newdata ())
-    telnetdNewRxData ();
-
-  if (uip_rexmit () || uip_newdata () || uip_acked () || uip_connected ())
-    telnetdSendData ();
-  else if (uip_poll ())  
-  {
-    telnetdNewTxData ();
-    telnetdSendData ();
-  }
+  	if (uip_closed () || uip_aborted () || uip_timedout ())
+ 	{
+    	//printf(" %d telnet close\n", ping);
+    	telnetdClose ();
+	}
+	
+  	if (uip_acked ())
+  	{
+    	//printf(" %d telnet ack\n", ping);
+    	telnetdAcked ();
+	}
+	
+  	if (uip_newdata ())
+  	{
+    	//printf(" %d new data\n", ping);
+    	telnetdNewRxData ();
+	}
+	
+  	if (uip_rexmit () || uip_newdata () || uip_acked () || uip_connected ())
+  	{
+    	//printf(" %d Send data\n", ping);
+    	telnetdSendData ();
+  	}
+  	else if (uip_poll ())  
+  	{
+    	//printf(" %d Poll\n", ping);
+    	telnetdNewTxData ();
+    	telnetdSendData ();
+  	}
 }

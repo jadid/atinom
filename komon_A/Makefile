@@ -43,7 +43,7 @@ OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
 
-NAMA_FILE=konter_1
+NAMA_FILE=komon_A
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
@@ -101,6 +101,7 @@ THUMB_SOURCE= \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
 		../system/idle_hook.c \
+		../adc/ad7708.c	\
 		../uip/apps/telnetd/telnetd.c	\
 
 #		LCD/lcd_320.c \
@@ -130,6 +131,7 @@ RTOSDemo.bin : RTOSDemo.hex
 	 
 RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
+	$(DISAMB) $(NAMA_FILE).elf -d > $(NAMA_FILE).S
 
 RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../system/boot.s Makefile 
 	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../system/boot.s $(LINKER_FLAGS) 
@@ -145,10 +147,11 @@ clean :
 	rm $(ARM_OBJS)
 	rm $(NAMA_FILE).elf
 	rm $(NAMA_FILE).hex
+	rm $(NAMA_FILE).bin
 #	touch Makefile
 	
 tulis :
-	./lpc68 -hex konter_1.hex /dev/ttyUSB0 115200 14748
+	./lpc67 -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
 	
 MSG_SIZE_BEFORE = Size before: 
 MSG_SIZE_AFTER = Size after:

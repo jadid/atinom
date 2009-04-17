@@ -34,6 +34,15 @@ extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;
 
+#ifdef BOARD_KOMON_A_RTD
+
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+
+#define BOARD_KOMON
+#endif
+
+
 #ifdef BOARD_KOMON
 
 void monita_init(void)
@@ -99,6 +108,14 @@ void monita_appcall(void)
 			{
 				loop_kirim++;
 				//printf("data monita");	
+				
+				#ifdef BOARD_KOMON_A_RTD
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = st_adc.flt_data[i];
+				}			
+				
+				#else
 				t=0;
 				for (i=0; i<10;i++)
 				{
@@ -110,6 +127,7 @@ void monita_appcall(void)
 					data_float.data[t] = temp_rpm * 60;
 					t++;
 				}
+				#endif
 				
 				xdata.nomer = loop_kirim;
 				//xdata.flag = 30;		//pulsa

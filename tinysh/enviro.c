@@ -28,6 +28,7 @@ void print_env(int argc, char **argv)
 	baca_env(1);
 }
 
+#if 0
 void getdef_env(int argc, char **argv)
 {
 	printf(" Set Default Environtment \r\n");
@@ -35,7 +36,7 @@ void getdef_env(int argc, char **argv)
 	set_default_ip();
 	printf(" OK\n");
 }
-
+#endif
 
 void save_env(int argc, char **argv)
 {
@@ -180,9 +181,9 @@ int baca_env(char tampil)
 				
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) m = %3.3f, y=%3.3f", i+1, env2.kalib[i].m, env2.kalib[i].y);
+					printf("  (%2d) m = %3.3f, y= %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
 					i++;
-					printf("  (%2d) m = %3.3f, y=%3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].y);
+					printf("  (%2d) m = %3.3f, y= %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
 				}
 				
 				printf(" Keterangan kanal :\r\n");
@@ -229,12 +230,20 @@ void set_default_ip(void)
 	env2.GW3 = 13;
 	printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
 
+	set_dafault_kalib();
+
+	sprintf(env2.nama_board, "Gantilah namanya !");
+}
+
+void set_dafault_kalib(void)
+{
+	int i;
+	
 	for (i=0; i<20; i++)
 	{
 		env2.kalib[i].m = 1.00;
-		env2.kalib[i].y = 0.00;
+		env2.kalib[i].C = 0.00;
 		sprintf(env2.kalib[i].ket, "--");
 	} 
 
-	sprintf(env2.nama_board, "Gantilah namanya !");
 }

@@ -36,18 +36,22 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-#define BOARD_TAMPILAN
-#define VERSI_TAMPILAN	"1.12"
+#define PAKE_TELNETD
+
+//#define BOARD_TAMPILAN
+//#define BOARD_KOMON
+#define BOARD_KOMON_A_RTD
+#define VERSI_KOMON		"1.3"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 #define _printf	printf2
 #define printf	printf2
 
-#define TAMPILAN_LPC_4
+//#define TAMPILAN_LPC_4
 
-#define VERSI_KOMON		"1.2"
-#define PROMPT 		"Tampilan $ "
-#define NAMA_BOARD	"Babelan Tampilan"
+#define PROMPT 		"Komon_A $ "
+#define NAMA_BOARD	"Babelan Komon-A (RTD & Pressure 4-20mA)"
 
 //#define printf(c, ...) serial_puts(c)
 
@@ -73,8 +77,8 @@
 	#error Please uncomment one of the two configPINSEL2_VALUE definitions above, depending on the revision of the LPC2000 device being used.
 #endif
 
-#define configUSE_PREEMPTION		1
-#define configUSE_IDLE_HOOK         0
+#define configUSE_PREEMPTION		0
+#define configUSE_IDLE_HOOK         1
 #define configUSE_TICK_HOOK         0
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */
 #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 60000000 )

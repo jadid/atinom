@@ -85,13 +85,12 @@ void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned in
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
 unsigned char head_buf[2048] __attribute__ ((section (".eth_test")));
-//unsigned char tot_buf[4096] __attribute__ ((section (".eth_test")));
-//unsigned char tot_buf_siap[4096] __attribute__ ((section (".eth_test")));
-//unsigned int http_hit = 0;
 unsigned char tot_buf[2048] __attribute__ ((section (".eth_test")));
 unsigned char tot_buf_siap[2048] __attribute__ ((section (".eth_test")));
 
-//unsigned short 
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+
 void buat_file_index(void)
 {
 	int besar;
@@ -104,36 +103,65 @@ void buat_file_index(void)
 	unsigned int jam;
 	unsigned int hari;
 	unsigned int tahun;
-				
-	//http_hit++;
-	//portENTER_CRITICAL();
-	
+					
 	sprintf(head_buf, "%s<meta http-equiv=""refresh"" content=""3"">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
 	sprintf(tot_buf, "%s", head_buf);
 	strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering");
 	sprintf(head_buf, "<br>monita_rtos_%s</h4>\n", VERSI_KOMON);
 	strcat(tot_buf, head_buf);
+
+	sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
+	strcat(tot_buf, head_buf);
+/*	
+#ifdef BOARD_KOMON_A_RTD	
 	
-	//strcat(tot_buf, "<h4>Modul Counter / Frekuensi / RPM</h4>\n");
+	//strcat(tot_buf, "<p>Modul Komon-A (RTD & Pressure 4-20 mA)\n");
+#else
 	strcat(tot_buf, "<p>Modul Counter / Frekuensi / RPM\n");
+#endif
+*/
 	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
 	strcat(tot_buf, head_buf);
 			
 	strcat(tot_buf, "<table border>\n");
 	strcat(tot_buf, "<col width = ""120px"" />\n");
 	strcat(tot_buf, "<col width = ""140px"" />\n");
-	strcat(tot_buf, "<col width = ""140px"" />\n");
+	strcat(tot_buf, "<col width = ""170px"" />\n");
 	strcat(tot_buf, "<col width = ""400px"" />\n");
 	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
+#ifdef BOARD_KOMON_A_RTD	
+	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
+	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
+#else
 	strcat(tot_buf, "<th>Puls (Count)</th>\n");
 	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
+#endif
+
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-	
+
+#ifdef BOARD_KOMON_A_RTD
 	for (i=0; i< 10; i++)
 	{		
-		// cari frekuensi
+		/*  tegangan */
+		
+		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
+		
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
+		strcat(tot_buf, head_buf);
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);	
+		strcat(tot_buf, head_buf);
+				
+	}
+#else	
+	for (i=0; i< 10; i++)
+	{		
+		/*  cari frekuensi */
 		temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-		// rpm
+		/* rpm */
 		fl = temp_rpm * 60;
 							
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), konter.t_konter[i].hit);
@@ -142,7 +170,9 @@ void buat_file_index(void)
 		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);	
 		strcat(tot_buf, head_buf);
 				
-	}	
+	}
+#endif
+	
 	//strcat(tot_buf, "</table>\n<p>Test report kondisi adalah sabagaimana ...</p>\n");
 	strcat(tot_buf, "</table>\n");
 	//sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
@@ -174,9 +204,6 @@ void buat_file_index(void)
 		
 	sprintf(head_buf, "%d dtk</h5>\n", sec);
 	strcat(tot_buf, head_buf);		
-		
-	//sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
-	//strcat(tot_buf, head_buf);
 	
 	sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);
@@ -187,13 +214,6 @@ void buat_file_index(void)
     sprintf(head_buf, "\n</body>\n</html>\n");
     strcat(tot_buf, head_buf);
 	
-	//besar = strlen(tot_buf);
-	//printf(tot_buf);
-	//printf(" HTTP pjg file = %d\n", besar);
-	
-	//return besar;
-	
-	//portEXIT_CRITICAL();
 	return;
 }
 

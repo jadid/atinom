@@ -15,6 +15,11 @@
 #include "titik.c"
 #endif
 
+#ifdef BOARD_KOMON_A_RTD
+#include "../adc/command_adc.c"
+#include "set_kanal.c"
+#endif
+
 #include "enviro.h"
 
 #include "../GPIO/gpio.h"
@@ -44,17 +49,17 @@ extern xTaskHandle *hdl_ether;
 #define per_tik		0.050 / (1000 * 1000 * 60)
 
 
-static tinysh_cmd_t save_env_cmd={0,"saveenv","menyimpan environment","[args]",
+static tinysh_cmd_t save_env_cmd={0,"save_env","menyimpan environment","[args]",
                               save_env,0,0,0};
 							  
-static tinysh_cmd_t printenv_cmd={0,"printenv","menampilkan environment","[args]",
+static tinysh_cmd_t printenv_cmd={0,"cek_env","menampilkan environment","[args]",
                               print_env,0,0,0};
 							  
 static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
                               reset_cpu,0,0,0};
 							  
-static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
-                              getdef_env,0,0,0};
+//static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
+//                              getdef_env,0,0,0};
 							 
 void cek_stack(void)
 {
@@ -77,14 +82,8 @@ static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
 
 void cek_versi(void)
 {
-#ifdef BOARD_KOMON
-  	printf(" Babelan Komon-Counter %s\r\n", VERSI_KOMON);
-#endif
-
-#ifdef BOARD_TAMPILAN
-  	printf(" Babelan Tampilan %s\r\n", VERSI_TAMPILAN);
-#endif
-
+	printf("\n %s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
+	
   	printf(" ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
   	printf(" CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\r\n");	
@@ -93,8 +92,6 @@ void cek_versi(void)
 static tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]",
                               cek_versi,0,0,0};
 							  
-
-
 unsigned int uptime_ovflow=0;
 unsigned int tik_lama=0;
 
@@ -136,6 +133,8 @@ static void cek_uptime(int argc, char **argv)
 	unsigned int hari;
 	unsigned int tahun;
 	
+	extern unsigned int tot_idle;
+	
 	uptime(&sec, &menit, &jam, &hari, &tahun);
 	printf(" Up = ");
 	if (tahun !=0)
@@ -155,7 +154,7 @@ static void cek_uptime(int argc, char **argv)
 		printf("%d mnt ", menit);		
 	}
 		
-	printf("%d dtk\n", sec);
+	printf("%d dtk : idle = %d\n", sec, tot_idle);
 		
 	return ;
 }
@@ -272,20 +271,31 @@ portTASK_FUNCTION( bg_cmd_thread, pvParameters )
 }
 #endif // contoh shell
 
-//int shell(int argc, char **argv)
+#ifdef PAKE_TELNETD
+static void matikan_telnet(int argc, char **argv)
+{
+	printf("Quit telnet !\r\n");
+	telnetdDisconnect();
+}
+
+static tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
+                              matikan_telnet,0,0,0};
+
+/* 	
+	dummy command untuk semacam password telnet
+	jadi, perintah pertama saat telnet adalah harus komand password
+	misalnya komand pertama harus "diesel", maka akan bisa akses
+	jika tidak 
+	*/	
+
+#endif
+
 portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
-  	int again=1;
   	xTaskHandle xHandle;
 
-#ifdef BOARD_KOMON
-  	printf("\nStarting Babelan Komon-Counter %s\r\n", VERSI_KOMON);
-#endif
-
-#ifdef BOARD_TAMPILAN
-  	printf("\nStarting Babelan Tampilan %s\r\n", VERSI_TAMPILAN);
-#endif
+  	printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
 
   	printf("Daun Biru Engineering, Des 2008\r\n");
   	printf("=========================================\r\n");
@@ -293,6 +303,11 @@ portTASK_FUNCTION(shell, pvParameters )
   	printf("CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\r\n");
 
+	if (configUSE_PREEMPTION == 0)
+		printf("NON Preemptive kernel digunakan !\r\n"); 
+	else
+		printf("Preemptive kernel digunakan !\r\n");
+	
 	/* 
 	 * add command
 	 */
@@ -302,7 +317,6 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&save_env_cmd);
 	tinysh_add_command(&reset_cmd);
 	tinysh_add_command(&cek_stack_cmd);
-	tinysh_add_command(&defenv_cmd);
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
@@ -323,6 +337,14 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&save_titik_cmd);
 #endif
 
+#ifdef BOARD_KOMON_A_RTD
+	tinysh_add_command(&cek_adc_cmd);
+	tinysh_add_command(&set_kanal_cmd);
+#endif
+
+#ifdef PAKE_TELNETD
+	tinysh_add_command(&matikan_telnet_cmd);
+#endif
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);
@@ -359,28 +381,24 @@ portTASK_FUNCTION(shell, pvParameters )
 	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
 	
-	#ifdef BOARD_BABELAN
-  	tinysh_set_prompt("Babelan $ ");
+	#ifdef BOARD_KOMON_A_RTD
+	kalibrasi_adc1();
+	vTaskDelay(100);
+	start_adc_1();
 	#endif
 	
-	#ifdef BOARD_KOMON
-  	tinysh_set_prompt("Komon $ ");
-	#endif
-	
-	#ifdef BOARD_TAMPILAN
-  	tinysh_set_prompt("Tampilan $ ");
-	#endif
-	
+	tinysh_set_prompt(PROMPT);
 	
 	/* 
 	 * main loop shell
   	 */
-  	while(again)
+  	
+  	while(1)
     {
-	  xSerialGetChar(1, &c, 0xFFFF );
-	  tinysh_char_in((unsigned char)c);
+	  if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+	  	tinysh_char_in((unsigned char)c);
     }
-  	printf("\nBye\n");
+  	
   	return;
 }
 

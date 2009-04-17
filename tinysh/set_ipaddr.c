@@ -29,9 +29,39 @@ unsigned char char_to_bin(unsigned char x)
 
 static void setenv_fnt(int argc, char **argv)
 {
-  	if (argc < 2) 
+  	if (argc < 3)	 
 	{
-		printf(" argument kurang !\r\n");
+		if (argc > 1)
+		{
+			if (strcmp(argv[1], "help") == 0)
+			{
+				printf(" setting environment utama untuk board / modul\r\n");
+				printf(" argument : help, default, ipaddr, gateway, nama\r\n");
+				printf(" help : printout keterangan ini\r\n");
+				printf(" default : load default environment setting dari daun biru\r\n");
+				printf(" \r\n");
+				printf(" ipaddr : memberikan alamat IP\r\n");
+				printf("   misalnya $ set_env ipaddr 192.168.1.124\r\n");
+				printf(" \r\n");
+				printf(" gateway : memberikan alamat IP gateway\r\n");
+				printf("   misalnya $ set_env gateway 192.168.1.13\r\n");
+				printf(" \r\n");
+				printf(" nama : memberikan nama pada board\r\n");
+				printf("   misalnya $ set_env nama BOARD_RTD_MAK_#3\r\n");
+				 
+				return;
+			} 
+			else if (strcmp(argv[1], "default") == 0)
+			{
+				printf("set environment dengan data default !\n");
+				set_default_ip();
+				
+				return;
+			}	
+		}
+		printf(" ERR: argument kurang !\r\n");
+		printf(" coba set_env help \r\n");
+		
 		return;	
 	}
 	
@@ -125,15 +155,15 @@ static void setenv_fnt(int argc, char **argv)
 			printf(" format kanal salah !\r\n");
 		
 	}
-	else
-		printf(" perintah setenv %s belum ada !\r\n", argv[1]); 
+	
 		
 	return;
   
 }
 
-static tinysh_cmd_t setenv_cmd={0,"setenv","ipaddr gateway nama kanal","[args]",
-                              setenv_fnt,0,0,0};
+//static tinysh_cmd_t setenv_cmd={0,"set_env","ipaddr gateway nama kanal default help","[args]",
+static tinysh_cmd_t setenv_cmd={0,"set_env","setting environment utama", \
+	"ipaddr gateway nama kanal default help", setenv_fnt,0,0,0};
 
 unsigned int baca_ip(char *ipne)
 {

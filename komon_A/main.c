@@ -9,7 +9,8 @@
 	
 	15 april 2009
 	coba porting untuk Komon_A (RTD & 4-20 mA)
-	
+
+	EDIT dari SERVICE	
 */
 
 

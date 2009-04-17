@@ -42,6 +42,7 @@ CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
+PENULIS= ../Penulis/./lpc_dbe
 
 NAMA_FILE=konter_1
 
@@ -148,7 +149,7 @@ clean :
 #	touch Makefile
 	
 tulis :
-	./lpc68 -hex konter_1.hex /dev/ttyUSB0 115200 14748
+	$(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
 	
 MSG_SIZE_BEFORE = Size before: 
 MSG_SIZE_AFTER = Size after:

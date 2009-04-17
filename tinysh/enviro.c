@@ -181,9 +181,9 @@ int baca_env(char tampil)
 				
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) m = %3.3f, y= %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
+					printf("  (%2d) m = %3.3f, C= %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
 					i++;
-					printf("  (%2d) m = %3.3f, y= %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
+					printf("  (%2d) m = %3.3f, C= %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
 				}
 				
 				printf(" Keterangan kanal :\r\n");

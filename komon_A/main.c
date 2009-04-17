@@ -84,7 +84,7 @@ int main( void )
 
 	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
 
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
 
@@ -113,6 +113,11 @@ void togle_led_utama(void)
 		/* kalkulasi idle loop */
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
+		
+		#ifdef BOARD_KOMON_KONTER
+		/* tiap detik cek apakah rpm mati */
+		cek_gpio_lama();
+		#endif
 	}
 	else
 	{
@@ -121,6 +126,7 @@ void togle_led_utama(void)
 		
 		/* tiap detik buat file index */
 		buat_file_index();
+		
 	}
 }
 

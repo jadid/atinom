@@ -112,14 +112,7 @@ void buat_file_index(void)
 
 	sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
 	strcat(tot_buf, head_buf);
-/*	
-#ifdef BOARD_KOMON_A_RTD	
-	
-	//strcat(tot_buf, "<p>Modul Komon-A (RTD & Pressure 4-20 mA)\n");
-#else
-	strcat(tot_buf, "<p>Modul Counter / Frekuensi / RPM\n");
-#endif
-*/
+
 	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
 	strcat(tot_buf, head_buf);
 			
@@ -132,7 +125,9 @@ void buat_file_index(void)
 #ifdef BOARD_KOMON_A_RTD	
 	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
 	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
-#else
+#endif
+
+#ifdef BOARD_KOMON_KONTER
 	strcat(tot_buf, "<th>Puls (Count)</th>\n");
 	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
 #endif
@@ -156,14 +151,23 @@ void buat_file_index(void)
 		strcat(tot_buf, head_buf);
 				
 	}
-#else	
+#endif
+
+#ifdef BOARD_KOMON_KONTER	
 	for (i=0; i< 10; i++)
 	{		
-		/*  cari frekuensi */
-		temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-		/* rpm */
-		fl = temp_rpm * 60;
-							
+		if (konter.t_konter[i].beda)
+		{
+			/*  cari frekuensi */
+			temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+			/* rpm */
+			fl = temp_rpm * 60;
+		}
+		else
+		{
+			temp_rpm = 0;
+			fl = 0;
+		}					
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), konter.t_konter[i].hit);
 		strcat(tot_buf, head_buf);
 		

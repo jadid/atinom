@@ -114,17 +114,26 @@ void monita_appcall(void)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
 				}			
+				#endif
 				
-				#else
+				
+				#ifdef BOARD_KOMON_KONTER
 				t=0;
 				for (i=0; i<10;i++)
 				{
 					data_float.data[t] = konter.t_konter[i].hit;
 					t++;
-					// cari frekuensi
-					temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-					// rpm
-					data_float.data[t] = temp_rpm * 60;
+					
+					if (konter.t_konter[i].beda)
+					{
+						// cari frekuensi
+						temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+						// rpm
+						data_float.data[t] = temp_rpm * 60;
+					}
+					else
+						data_float.data[t] = 0;
+					
 					t++;
 				}
 				#endif

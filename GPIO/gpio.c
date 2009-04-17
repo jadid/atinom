@@ -15,11 +15,32 @@
 
 #define INTERRUPT_GPIO	0x20000 // EINT3
 
+#ifdef BOARD_KOMON_KONTER
+extern struct t2_konter konter;
+static void reset_konter(void)
+{
+	int i;
+	
+	konter.global_hit = 0;
+	konter.ovflow = 0;
+	
+	for (i=0; i<JUM_GPIO; i++)
+	{
+		konter.t_konter[i].last_period = 0;
+		konter.t_konter[i].beda = 0;
+		konter.t_konter[i].hit = 0;
+		konter.t_konter[i].hit_lama = 0;
+	}
+
+}
+
 
 void init_gpio(void)
 {
 	extern void ( gpio_ISR_Wrapper )( void );
 	extern void ( timer1_ISR_Wrapper )( void );
+
+	reset_konter();
 
 	portENTER_CRITICAL();
 
@@ -62,6 +83,24 @@ void init_gpio(void)
 
 	portEXIT_CRITICAL();
 }
+
+void cek_gpio_lama(void)
+{
+	int i;
+	
+	//portENTER_CRITICAL();
+	for (i=0; i<JUM_GPIO; i++)
+	{
+		if (konter.t_konter[i].hit_lama == konter.t_konter[i].hit)
+		{
+			konter.t_konter[i].beda = 0;
+		}
+		
+		konter.t_konter[i].hit_lama = konter.t_konter[i].hit; 
+	}
+	//portEXIT_CRITICAL();
+}
+#endif
 
 void init_gpio_keypad(void)
 {

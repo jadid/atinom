@@ -103,54 +103,48 @@ int main( void )
 #endif
 }
 
-//int jum=0;
-
 void togle_led_utama(void)
 {
-	//jum++;
 	if (tog)
 	{
-		//FIO1CLR = (1 << 19);
 		FIO0SET = LED_UTAMA;
-		//tes_high();
 		tog = 0;
-		//xSemaphoreGive( lcd_sem );
+		
+		/* kalkulasi idle loop */
+		tot_idle = loop_idle - idle_lama;
+		idle_lama = loop_idle;
+		
+		#ifdef BOARD_KOMON_KONTER
+		/* tiap detik cek apakah rpm mati */
+		//cek_gpio_lama();
+		#endif
 	}
 	else
 	{
-		//titik_siap++;
-		//FIO1SET = (1 << 19);
 		FIO0CLR = LED_UTAMA;
-		//tes_low();
 		tog = 1;
-		//teks_h(20, 60, "ini langsung ke LCD");
-		//printf_lcd("ini %d", jum);
-		//if (titik_siap > 3)
-		//	sambungan_connect();
+		
+		/* tiap detik buat file index */
+		buat_file_index();
 	}
 }
-
-#define BACKLIT		BIT(20)	// PF15, P1.20
 
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
 	tog = 0;
-	
-	vTaskDelay(100);
-	FIO1SET |= BACKLIT;
+	loop_idle = 0;
+	idle_lama = 0;
 
 	vTaskDelay(2000);
 	
 	for (;;)
 	{
 		togle_led_utama();
-		buat_file_index();
-		vTaskDelay(1100);
+		vTaskDelay(500);
 	}
 }
 void init_led_utama(void)
 {
-	//xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 8) , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 

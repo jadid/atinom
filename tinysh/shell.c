@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <errno.h>
+#include <float.h>
+#include <math.h>
 
 #include "tinysh.h"
 #include "FreeRTOS.h"
@@ -163,30 +165,41 @@ static tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",
                               cek_uptime,0,0,0};
 
 
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
+unsigned int is_angka(float a)
+{
+	return (a == a);
+}
+
 static void cek_rpm(int argc, char **argv)
 {
 	unsigned int i;
-	float uptime;
+	float temp_f;
+	float temp_rpm;
 
 	printf("Global hit = %d\n", konter.global_hit);
 	printf("Ov flow = %d\n", konter.ovflow);
 
 	for (i=0; i<10; i++)
-	{
-		printf(" %2d : beda = %12d ns, hit = %d\n", (i+1), konter.t_konter[i].beda, konter.t_konter[i].hit);
+	{	
+		if (konter.t_konter[i].beda)
+		{
+			// cari frekuensi
+			temp_f = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+		
+			// rpm
+			temp_rpm = temp_f * 60;
+		}
+		else
+		{
+			temp_f = 0;
+			temp_rpm = 0;
+		}	
+		
+		printf(" %2d : F = %4.2f Hz, rpm = %4.2f, hit = %d\n", (i+1), \
+			temp_f, temp_rpm, konter.t_konter[i].hit);
 
 	}
-	uptime = (float) konter.ovflow * per_oflow;
-	i = T1TC;
-	uptime = uptime + (i * (float) per_tik);
-	if (uptime > 60)
-	{
-		uptime = uptime / 60;
-		printf("Uptime = %.3f jam\n", uptime);
-	}
-	else
-		printf("Uptime = %.3f menit\n", uptime);
 }
 
 static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",
@@ -320,7 +333,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
 	tinysh_add_command(&cek_rpm_cmd);
 #endif
 

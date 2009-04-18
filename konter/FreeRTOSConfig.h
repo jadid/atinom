@@ -41,7 +41,7 @@
 #define BOARD_KOMON_KONTER
 #define VERSI_KOMON		"1.2"
 
-#define DEBUG_KONTER	1
+#define DEBUG_KONTER	0
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2

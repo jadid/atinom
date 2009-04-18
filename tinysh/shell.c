@@ -30,7 +30,6 @@
 #include <stdlib.h>
 
 void reset_cpu(void);
-extern struct t2_konter konter;
 
 extern struct t_mesin mesin[];
 extern struct t_titik titik[];
@@ -166,6 +165,10 @@ static tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",
 
 
 #ifdef BOARD_KOMON_KONTER
+extern unsigned int data_putaran[];
+extern unsigned int data_hit[];	
+extern struct t2_konter konter;
+				
 unsigned int is_angka(float a)
 {
 	return (a == a);
@@ -182,11 +185,10 @@ static void cek_rpm(int argc, char **argv)
 
 	for (i=0; i<10; i++)
 	{	
-		if (konter.t_konter[i].beda)
+		if (data_putaran[i])
 		{
 			// cari frekuensi
-			temp_f = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-		
+			temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 			// rpm
 			temp_rpm = temp_f * 60;
 		}

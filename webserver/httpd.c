@@ -162,8 +162,6 @@ void buat_file_index(void)
 		if (data_putaran[i])
 		{
 			/*  cari frekuensi */
-			//temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-			
 			temp_rpm = 1000000000.00 / data_putaran[i]; // data_rpm msh dlm nS
 			/* rpm */
 			fl = temp_rpm * 60;
@@ -173,7 +171,6 @@ void buat_file_index(void)
 			temp_rpm = 0;
 			fl = 0;
 		}					
-		//sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), konter.t_konter[i].hit);
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), data_hit[i]);
 		strcat(tot_buf, head_buf);
 		

@@ -100,6 +100,9 @@ THUMB_SOURCE= \
 		../uip/uip/uiplib.c \
 		../uip/uip_task.c \
 		../monita/monita_uip.c \
+		../system/idle_hook.c \
+		../uip/apps/telnetd/telnetd.c	\
+		
 #		../GPIO/gpio.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \

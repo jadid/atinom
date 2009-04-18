@@ -17,12 +17,24 @@
 
 #ifdef BOARD_KOMON_KONTER
 extern struct t2_konter konter;
+
+static unsigned int giliran;
+
+/* 	
+	dibuatkan variable terpisah supaya tidak balapan
+	dengan interupt 
+*/
+
+unsigned int 	data_putaran[JUM_GPIO];
+unsigned int 	data_hit[JUM_GPIO];
+
 static void reset_konter(void)
 {
 	int i;
 	
 	konter.global_hit = 0;
 	konter.ovflow = 0;
+	giliran = 0;
 	
 	for (i=0; i<JUM_GPIO; i++)
 	{
@@ -79,15 +91,39 @@ void init_gpio(void)
 
 	// setup GPIO direction & interrupt
 	FIO2DIR = FIO2DIR & ~(kont_10 | kont_9 | kont_8 | kont_7 | kont_6);
+	
+	// enable falling edge interrupt
 	IO2_INT_EN_F = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
 
 	portEXIT_CRITICAL();
 }
 
-void cek_gpio_lama(void)
-{
-	int i;
+void hitung_rpm(void)
+{	
+	portENTER_CRITICAL();
+	if (konter.t_konter[giliran].hit_lama == konter.t_konter[giliran].hit)
+	{
+		//konter.t_konter[giliran].beda = 0;		
+		data_putaran[giliran] = 0;
+		data_hit[giliran] = konter.t_konter[giliran].hit;
+	}
+	else
+	{
+		/* didapatkan frekuensi (HZ) putaran */
+		//temp_rpm = konter.t_konter[i].beda; // beda msh dlm nS
+		
+		/* rpm */
+		data_putaran[giliran] = konter.t_konter[giliran].beda;
+		data_hit[giliran] = konter.t_konter[giliran].hit;
+	}
+		
+	konter.t_konter[giliran].hit_lama = konter.t_konter[giliran].hit; 
+	portEXIT_CRITICAL();
 	
+	giliran++;
+	if (giliran == JUM_GPIO) giliran = 0;
+	
+	#if 0
 	//portENTER_CRITICAL();
 	for (i=0; i<JUM_GPIO; i++)
 	{
@@ -99,6 +135,8 @@ void cek_gpio_lama(void)
 		konter.t_konter[i].hit_lama = konter.t_konter[i].hit; 
 	}
 	//portEXIT_CRITICAL();
+	#endif
+	
 }
 #endif
 

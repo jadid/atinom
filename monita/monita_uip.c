@@ -27,8 +27,8 @@
 #include "../GPIO/gpio.h"
 extern struct t2_konter konter;
 
-struct t_xdata xdata  __attribute__ ((section (".eth_test")));
-struct t_data_float data_float  __attribute__ ((section (".eth_test")));
+struct t_xdata 			xdata  		__attribute__ ((section (".eth_test")));
+struct t_data_float 	data_float  __attribute__ ((section (".eth_test")));
 
 extern struct t_data_float s_data[JML_SUMBER];
 
@@ -512,4 +512,4 @@ void daytime_appcall(void)
 	}
 }
 
-#endif
+#endif // TAMPILAN

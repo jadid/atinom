@@ -22,7 +22,7 @@ typedef struct {
 	unsigned int beda;			// kali 10
 	unsigned int hit;
 	unsigned int hit_lama;		// untuk mengetahui mati atau enggak
-}ts_konter;
+} ts_konter;
 
 struct t2_konter{
 	unsigned int global_hit;

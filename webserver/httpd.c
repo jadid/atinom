@@ -77,7 +77,7 @@
 
 #include "../GPIO/gpio.h"
 #include "../tinysh/enviro.h"
-extern struct t2_konter konter;
+//extern struct t2_konter konter;
 extern struct t_env env2;
 
 void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
@@ -154,12 +154,17 @@ void buat_file_index(void)
 #endif
 
 #ifdef BOARD_KOMON_KONTER	
+	extern unsigned int data_putaran[];
+	extern unsigned int data_hit[];
+	
 	for (i=0; i< 10; i++)
 	{		
-		if (konter.t_konter[i].beda)
+		if (data_putaran[i])
 		{
 			/*  cari frekuensi */
-			temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+			//temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+			
+			temp_rpm = 1000000000.00 / data_putaran[i]; // data_rpm msh dlm nS
 			/* rpm */
 			fl = temp_rpm * 60;
 		}
@@ -168,7 +173,8 @@ void buat_file_index(void)
 			temp_rpm = 0;
 			fl = 0;
 		}					
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), konter.t_konter[i].hit);
+		//sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), konter.t_konter[i].hit);
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), data_hit[i]);
 		strcat(tot_buf, head_buf);
 		
 		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);	

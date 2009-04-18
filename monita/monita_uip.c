@@ -24,11 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../GPIO/gpio.h"
-extern struct t2_konter konter;
-
-struct t_xdata xdata  __attribute__ ((section (".eth_test")));
-struct t_data_float data_float  __attribute__ ((section (".eth_test")));
+struct t_xdata 			xdata  		__attribute__ ((section (".eth_test")));
+struct t_data_float 	data_float  __attribute__ ((section (".eth_test")));
 
 extern struct t_data_float s_data[JML_SUMBER];
 
@@ -118,16 +115,19 @@ void monita_appcall(void)
 				
 				
 				#ifdef BOARD_KOMON_KONTER
+				extern unsigned int data_putaran[];
+				extern unsigned int data_hit[];				
+				
 				t=0;
 				for (i=0; i<10;i++)
 				{
-					data_float.data[t] = konter.t_konter[i].hit;
+					data_float.data[t] = data_hit[i];
 					t++;
 					
-					if (konter.t_konter[i].beda)
+					if (data_putaran[i])
 					{
 						// cari frekuensi
-						temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
+						temp_rpm = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 						// rpm
 						data_float.data[t] = temp_rpm * 60;
 					}
@@ -512,4 +512,4 @@ void daytime_appcall(void)
 	}
 }
 
-#endif
+#endif // TAMPILAN

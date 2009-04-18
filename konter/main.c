@@ -30,6 +30,10 @@
 #define LED_UTAMA	BIT(27)
 #endif
 
+#ifdef DEBUG_KONTER
+#define LED_DEBUG	BIT(19)		// P1.19
+#endif
+
 xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -45,6 +49,7 @@ xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
+#if (DEBUG_KONTER == 1)
 void dele(int dd)
 {
 	int g;
@@ -57,6 +62,22 @@ void dele(int dd)
 	}
 }
 
+static unsigned int led_konter; 
+
+void togle_led_konter(void)
+{
+	if (led_konter)
+	{
+		led_konter = 0;
+		FIO1SET = LED_DEBUG;
+	}
+	else
+	{
+		led_konter = 1;
+		FIO1CLR = LED_DEBUG;
+	}
+}
+#endif
 
 /*-----------------------------------------------------------*/
 #define jalankan
@@ -70,6 +91,13 @@ int main( void )
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;	
 	
+	#if ( DEBUG_KONTER == 1) 
+	FIO1DIR = FIO0DIR | LED_DEBUG;
+	FIO1SET = LED_DEBUG;
+	#endif
+	
+	FIO2DIR = 0x0;
+	//FIO2DIR = 0xFFFFFFFF;
 	
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -86,7 +114,7 @@ int main( void )
 
 	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
 
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
 
@@ -131,6 +159,8 @@ void togle_led_utama(void)
 
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
+	unsigned int muter=0;
+	
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
@@ -139,8 +169,29 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	
 	for (;;)
 	{
-		togle_led_utama();
-		vTaskDelay(500);
+		//togle_led_utama();
+		//vTaskDelay(500);
+		
+		/* 
+			setiap 100 ms, cek apakah rpm masih jalan,
+			dicek satu per satu, supaya tidak balapan 
+			(race condition)
+			
+			kemudian setiap 500 jalankan togle led
+			seperti biasa
+			
+			*/
+		
+		hitung_rpm();
+		
+		muter++;		
+		if (muter > 5)
+		{
+			togle_led_utama();
+			muter = 0;
+		}	
+		
+		vTaskDelay(100);
 	}
 }
 void init_led_utama(void)

@@ -43,6 +43,7 @@
 #define _printf	printf2
 #define printf	printf2
 
+#define PAKE_TELNETD
 #define TAMPILAN_LPC_4
 
 #define PAKE_TELNETD

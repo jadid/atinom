@@ -45,6 +45,7 @@
 
 #define TAMPILAN_LPC_4
 
+#define PAKE_TELNETD
 #define VERSI_KOMON		"1.2"
 #define PROMPT 		"Tampilan $ "
 #define NAMA_BOARD	"Babelan Tampilan"
@@ -73,7 +74,7 @@
 	#error Please uncomment one of the two configPINSEL2_VALUE definitions above, depending on the revision of the LPC2000 device being used.
 #endif
 
-#define configUSE_PREEMPTION		1
+#define configUSE_PREEMPTION		0
 #define configUSE_IDLE_HOOK         0
 #define configUSE_TICK_HOOK         0
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */

@@ -142,10 +142,6 @@ void togle_led_utama(void)
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
 		
-		#ifdef BOARD_KOMON_KONTER
-		/* tiap detik cek apakah rpm mati */
-		//cek_gpio_lama();
-		#endif
 	}
 	else
 	{
@@ -168,10 +164,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	vTaskDelay(2000);
 	
 	for (;;)
-	{
-		//togle_led_utama();
-		//vTaskDelay(500);
-		
+	{		
 		/* 
 			setiap 100 ms, cek apakah rpm masih jalan,
 			dicek satu per satu, supaya tidak balapan 

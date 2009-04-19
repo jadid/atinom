@@ -46,7 +46,6 @@
 #endif
 
 xSemaphoreHandle lcd_sem;
-
 unsigned int loop_idle=0;
 unsigned int idle_lama;
 unsigned int tot_idle;
@@ -137,6 +136,10 @@ void togle_led_utama(void)
 		FIO0SET = LED_UTAMA;
 		FIO1SET = LED_PICKUP;
 		tog = 0;
+		
+		/* kalkulasi idle loop */
+		tot_idle = loop_idle - idle_lama;
+		idle_lama = loop_idle;
 	}
 	else
 	{
@@ -151,6 +154,8 @@ void togle_led_utama(void)
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
 	tog = 0;
+	loop_idle = 0;
+	idle_lama = 0;
 	
 	vTaskDelay(100);
 	FIO1SET |= BACKLIT;
@@ -158,7 +163,8 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	for (;;)
 	{
 		togle_led_utama();
-		vTaskDelay(2000);
+		//vTaskDelay(2000);
+		vTaskDelay(500);
 	}
 }
 void init_led_utama(void)

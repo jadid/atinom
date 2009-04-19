@@ -18,7 +18,7 @@ int baca_kanal(char *c);
 
 void garis_bawah(void)
 {
-	printf("---------------------------------\r\n");	
+	printf("-----------------------------------------------------\r\n");	
 }
 
 
@@ -35,25 +35,26 @@ static void setenv_fnt(int argc, char **argv)
 		{
 			if (strcmp(argv[1], "help") == 0)
 			{
-				printf(" setting environment utama untuk board / modul\r\n");
+				printf(" Setting environment utama untuk board / modul\r\n");
+				garis_bawah();
 				printf(" argument : help, default, ipaddr, gateway, nama\r\n");
-				printf(" help : printout keterangan ini\r\n");
-				printf(" default : load default environment setting dari daun biru\r\n");
+				printf("   help   : printout keterangan ini\r\n");
+				printf("   default : load default environment setting dari daun biru\r\n");
 				printf(" \r\n");
-				printf(" ipaddr : memberikan alamat IP\r\n");
-				printf("   misalnya $ set_env ipaddr 192.168.1.124\r\n");
+				printf("   ipaddr : memberikan alamat IP\r\n");
+				printf("     misalnya $ set_env ipaddr 192.168.1.124\r\n");
 				printf(" \r\n");
-				printf(" gateway : memberikan alamat IP gateway\r\n");
-				printf("   misalnya $ set_env gateway 192.168.1.13\r\n");
+				printf("   gateway : memberikan alamat IP gateway\r\n");
+				printf("     misalnya $ set_env gateway 192.168.1.13\r\n");
 				printf(" \r\n");
-				printf(" nama : memberikan nama pada board\r\n");
-				printf("   misalnya $ set_env nama BOARD_RTD_MAK_#3\r\n");
+				printf("   nama : memberikan nama pada board\r\n");
+				printf("     misalnya $ set_env nama BOARD_RTD_MAK_#3\r\n");
 				 
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
 			{
-				printf("set environment dengan data default !\n");
+				printf(" set environment dengan data default !\n");
 				set_default_ip();
 				
 				return;
@@ -161,7 +162,6 @@ static void setenv_fnt(int argc, char **argv)
   
 }
 
-//static tinysh_cmd_t setenv_cmd={0,"set_env","ipaddr gateway nama kanal default help","[args]",
 static tinysh_cmd_t setenv_cmd={0,"set_env","setting environment utama", \
 	"ipaddr gateway nama kanal default help", setenv_fnt,0,0,0};
 

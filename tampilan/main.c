@@ -149,9 +149,7 @@ void togle_led_utama(void)
 		tog = 1;
 		
 		/* tiap detik buat file index */
-		//waktu_buat_file++;
-		//if (waktu_buat_file > 10)
-		  buat_file_index();
+		  //buat_file_index();
 	}
 }
 
@@ -176,7 +174,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 void init_led_utama(void)
 {
 	//xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 6) , \
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 4) , \
 		NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 

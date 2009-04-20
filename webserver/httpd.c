@@ -81,8 +81,6 @@ extern struct t_env env2;
 
 void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
 
-#define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
-
 //#define BESAR_BUF_HTTP	2048
 #define BESAR_BUF_HTTP	8192
 
@@ -93,7 +91,7 @@ extern struct t_titik titik[];
 extern struct t_sumber sumber[];
 extern char keter[100][25];
 
-unsigned char head_buf[256] 		__attribute__ ((section (".eth_test")));
+unsigned char head_buf[1024] 		__attribute__ ((section (".eth_test")));
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 //unsigned char tot_buf_siap[BESAR_BUF_HTTP] 	__attribute__ ((section (".eth_test")));
 #else
@@ -105,186 +103,7 @@ unsigned char tot_buf_siap[BESAR_BUF_HTTP] 	__attribute__ ((section (".eth_test"
 #include "../adc/ad7708.h"
 extern struct t_adc st_adc;
 
-void buat_file_index(void)
-{
-	int besar;
-	int i;
-	float fl;
-	float temp_rpm;
-	
-	unsigned int sec;
-	unsigned int menit;
-	unsigned int jam;
-	unsigned int hari;
-	unsigned int tahun;
-					
-	sprintf(head_buf, "%s<meta http-equiv=""refresh"" content=""3"">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
-	sprintf(tot_buf, "%s", head_buf);
-	strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering");
-	sprintf(head_buf, "<br>monita_rtos_%s</h4>\n", VERSI_KOMON);
-	strcat(tot_buf, head_buf);
-
-	sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
-	strcat(tot_buf, head_buf);
-
-	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
-	strcat(tot_buf, head_buf);
-#ifdef BOARD_TAMPILAN
-	strcat(tot_buf, "<table border>\n");
-	strcat(tot_buf, "<col width = ""100px"" />\n");		// titik
-	strcat(tot_buf, "<col width = ""200px"" />\n");		// nilai
-	strcat(tot_buf, "<col width = ""500px"" />\n");		// keterangan
-	/*
-	strcat(tot_buf, "<col width = ""120px"" />\n");		// sumber
-	strcat(tot_buf, "<col width = ""200px"" />\n");		// IP sumber
-	strcat(tot_buf, "<col width = ""120px"" />\n");		// Kanal
-	strcat(tot_buf, "<col width = ""120px"" />\n");		// Modul / board
-	*/
-	
-	strcat(tot_buf, "<tr>\n<th>Titik</th>\n");
-	strcat(tot_buf, "<th>Nilai</th>\n");
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-	/*
-	strcat(tot_buf, "<th>Sumber</th>\n");
-	strcat(tot_buf, "<th>IP</th>\n");
-	strcat(tot_buf, "<th>Modul</th>\n");
-	strcat(tot_buf, "<th>Kanal</th>\n</tr>\n");
-	*/
-	
-	for (i=0; i<70; i++)
-	{
-		// titik & nilai
-		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%1.4f</td>\n", (i+1), titik[i].data);
-		strcat(tot_buf, head_buf);
-		// keterangan	
-		sprintf(head_buf, "<td>%s</td>\n", keter[i]);	
-		strcat(tot_buf, head_buf);
-		
-		#if 0
-		// sumber & IP
-		sprintf(head_buf, "<td>%d</td>\n<td>%d.%d.%d.%d</td>\n", titik[i].ID_sumber, \
-			sumber[ titik[i].ID_sumber ].IP0, sumber[ titik[i].ID_sumber ].IP1, \
-			sumber[ titik[i].ID_sumber ].IP2, sumber[ titik[i].ID_sumber ].IP3); 
-		strcat(tot_buf, head_buf);
-		
-		// modul & kanal
-		sprintf(head_buf, "<td>%d</td>\n<td>%d</td>\n</tr>\n", titik[i].alamat, titik[i].kanal); 
-		strcat(tot_buf, head_buf);
-		#endif
-	}
-		
-#else	// konter & RTD			
-	strcat(tot_buf, "<table border>\n");
-	strcat(tot_buf, "<col width = ""120px"" />\n");
-	strcat(tot_buf, "<col width = ""140px"" />\n");
-	strcat(tot_buf, "<col width = ""170px"" />\n");
-	strcat(tot_buf, "<col width = ""400px"" />\n");
-	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
-#endif
-
-#ifdef BOARD_KOMON_A_RTD	
-	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
-	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-#endif
-
-#ifdef BOARD_KOMON_KONTER
-	strcat(tot_buf, "<th>Puls (Count)</th>\n");
-	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-#endif
-
-	
-#ifdef BOARD_KOMON_A_RTD
-	for (i=0; i< 10; i++)
-	{		
-		/*  tegangan */
-		
-		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
-		
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
-		strcat(tot_buf, head_buf);
-		
-		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
-		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);	
-		strcat(tot_buf, head_buf);
-				
-	}
-#endif
-
-#ifdef BOARD_KOMON_KONTER	
-	extern unsigned int data_putaran[];
-	extern unsigned int data_hit[];
-	
-	for (i=0; i< 10; i++)
-	{		
-		if (data_putaran[i])
-		{
-			/*  cari frekuensi */
-			temp_rpm = 1000000000.00 / data_putaran[i]; // data_rpm msh dlm nS
-			/* rpm */
-			fl = temp_rpm * 60;
-		}
-		else
-		{
-			temp_rpm = 0;
-			fl = 0;
-		}					
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), data_hit[i]);
-		strcat(tot_buf, head_buf);
-		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);	
-		strcat(tot_buf, head_buf);
-				
-	}
-#endif
-	
-	//strcat(tot_buf, "</table>\n<p>Test report kondisi adalah sabagaimana ...</p>\n");
-	strcat(tot_buf, "</table>\n");
-	//sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
-	//strcat(tot_buf, head_buf);
-	
-	/* data uptime */
-	uptime(&sec, &menit, &jam, &hari, &tahun);
-	strcat(tot_buf, "<h5>Uptime = ");
-	if (tahun !=0)
-	{
-		sprintf(head_buf, "%d thn ", tahun);
-		strcat(tot_buf, head_buf);	
-	}
-	if (hari !=0)
-	{
-		sprintf(head_buf, "%d hari ", hari);
-		strcat(tot_buf, head_buf);		
-	}
-	if (jam !=0)
-	{
-		sprintf(head_buf, "%d jam ", jam);
-		strcat(tot_buf, head_buf);		
-	}
-	if (menit !=0)
-	{
-		sprintf(head_buf, "%d mnt ", menit);
-		strcat(tot_buf, head_buf);		
-	}
-		
-	sprintf(head_buf, "%d dtk</h5>\n", sec);
-	strcat(tot_buf, head_buf);		
-	
-	sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
-	strcat(tot_buf, head_buf);
-	strcat(tot_buf, "<br>NXP LPC2368, 60 MHz, FreeRTOS 5.1.1</h5>\n");
-	
-	
-	// close html
-    sprintf(head_buf, "\n</body>\n</html>\n");
-    strcat(tot_buf, head_buf);
-	
-	printf("pjg = %d\r\n", strlen(tot_buf));
-	return;
-}
+#include "buat_file.c"
 
 /*---------------------------------------------------------------------------*/
 static unsigned short
@@ -436,7 +255,7 @@ static PT_THREAD(handle_output(struct httpd_state *s))
 
   if(!httpd_fs_open(s->filename, &s->file)) 
   {
-    //printf(" HTTP file %s tidak ada ?\n", s->filename);
+    printf(" HTTP file %s tidak ada ?\n", s->filename);
 	httpd_fs_open(http_404_html, &s->file);
     strcpy(s->filename, http_404_html);
     PT_WAIT_THREAD(&s->outputpt,
@@ -450,19 +269,37 @@ static PT_THREAD(handle_output(struct httpd_state *s))
     //bsr = buat_file_index();
 	//s->file.len = bsr;
 	//s->file.data = tot_buf;
+	
+	if (strncmp(s->filename, "/index", 6) == 0)
+	{
+		printf(" Buat file index\r\n");
+		buat_file_index();
 #ifdef BOARD_TAMPILAN
-	s->file.len = strlen(tot_buf);
-	s->file.data = tot_buf;
+		s->file.len = strlen(tot_buf);
+		s->file.data = tot_buf;
 #else	
-	portENTER_CRITICAL();
-	strcpy(tot_buf_siap, tot_buf);
-	portEXIT_CRITICAL();
+		portENTER_CRITICAL();
+		strcpy(tot_buf_siap, tot_buf);
+		portEXIT_CRITICAL();
 	
-	s->file.len = strlen(tot_buf_siap);
-	s->file.data = tot_buf_siap;
+		s->file.len = strlen(tot_buf_siap);
+		s->file.data = tot_buf_siap;
 #endif
-	
-	//printf(" HTTP request file %s", s->filename);
+	}
+	else if (strncmp(s->filename, "/setting", 8) == 0)
+	{
+		printf(" Buat file setting\r\n");
+		
+		buat_file_setting();
+		s->file.len = strlen(tot_buf);
+		s->file.data = tot_buf;
+	}
+	else if (strncmp(s->filename, "/status", 7) == 0)
+	{
+		printf(" Buat file status\r\n");
+	}
+	else
+		printf(" HTTP request file %s", s->filename);
 
 	PT_WAIT_THREAD(&s->outputpt,
 		   send_headers(s,

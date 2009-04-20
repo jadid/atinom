@@ -248,7 +248,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 void start_ether(void)
 {
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 6), \
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 8), \
 		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 

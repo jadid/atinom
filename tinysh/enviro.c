@@ -13,7 +13,6 @@
 #include "task.h"
 
 // kalau ditaruh di ethram, nulisnya jadi error
-//struct t_env env2  __attribute__ ((section (".eth_test")));
 struct t_env env2;
 
 unsigned int command[5]; 	// For Command Table

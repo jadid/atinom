@@ -47,9 +47,9 @@
 #define TAMPILAN_LPC_4
 
 #define PAKE_TELNETD
-#define VERSI_KOMON		"1.2"
+#define VERSI_KOMON		"1.3"
 #define PROMPT 		"Tampilan $ "
-#define NAMA_BOARD	"Babelan Tampilan"
+#define NAMA_BOARD	"Tampilan"
 
 //#define printf(c, ...) serial_puts(c)
 
@@ -83,10 +83,7 @@
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-//#define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 208 )
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )		// batasanya 11 x
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 6 * 1024 ) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 30 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

@@ -12,7 +12,6 @@
 #ifndef __font_kecil
 	#define __font_kecil
 
-//unsigned char font57[] __attribute__ ((section (".eth_test"))) = {
 unsigned char font57[] __attribute__ ((section (".lokasi_font")))  = {
 0x00, 0x00, 0x00, 0x00, 0x00,// (space)
 0x00, 0x00, 0x5F, 0x00, 0x00,// !

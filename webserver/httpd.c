@@ -77,16 +77,30 @@
 
 #include "../GPIO/gpio.h"
 #include "../tinysh/enviro.h"
-//extern struct t2_konter konter;
 extern struct t_env env2;
 
 void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
-unsigned char head_buf[2048] __attribute__ ((section (".eth_test")));
-unsigned char tot_buf[2048] __attribute__ ((section (".eth_test")));
-unsigned char tot_buf_siap[2048] __attribute__ ((section (".eth_test")));
+//#define BESAR_BUF_HTTP	2048
+#define BESAR_BUF_HTTP	8192
+
+#ifdef BOARD_TAMPILAN
+#include "../monita/monita_uip.h"
+extern struct t_mesin mesin[];
+extern struct t_titik titik[];
+extern struct t_sumber sumber[];
+extern char keter[100][25];
+
+unsigned char head_buf[256] 		__attribute__ ((section (".eth_test")));
+unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+//unsigned char tot_buf_siap[BESAR_BUF_HTTP] 	__attribute__ ((section (".eth_test")));
+#else
+unsigned char head_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".eth_test")));
+unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".eth_test")));
+unsigned char tot_buf_siap[BESAR_BUF_HTTP] 	__attribute__ ((section (".eth_test")));
+#endif
 
 #include "../adc/ad7708.h"
 extern struct t_adc st_adc;
@@ -115,25 +129,72 @@ void buat_file_index(void)
 
 	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
 	strcat(tot_buf, head_buf);
-			
+#ifdef BOARD_TAMPILAN
+	strcat(tot_buf, "<table border>\n");
+	strcat(tot_buf, "<col width = ""100px"" />\n");		// titik
+	strcat(tot_buf, "<col width = ""200px"" />\n");		// nilai
+	strcat(tot_buf, "<col width = ""500px"" />\n");		// keterangan
+	/*
+	strcat(tot_buf, "<col width = ""120px"" />\n");		// sumber
+	strcat(tot_buf, "<col width = ""200px"" />\n");		// IP sumber
+	strcat(tot_buf, "<col width = ""120px"" />\n");		// Kanal
+	strcat(tot_buf, "<col width = ""120px"" />\n");		// Modul / board
+	*/
+	
+	strcat(tot_buf, "<tr>\n<th>Titik</th>\n");
+	strcat(tot_buf, "<th>Nilai</th>\n");
+	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
+	/*
+	strcat(tot_buf, "<th>Sumber</th>\n");
+	strcat(tot_buf, "<th>IP</th>\n");
+	strcat(tot_buf, "<th>Modul</th>\n");
+	strcat(tot_buf, "<th>Kanal</th>\n</tr>\n");
+	*/
+	
+	for (i=0; i<70; i++)
+	{
+		// titik & nilai
+		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%1.4f</td>\n", (i+1), titik[i].data);
+		strcat(tot_buf, head_buf);
+		// keterangan	
+		sprintf(head_buf, "<td>%s</td>\n", keter[i]);	
+		strcat(tot_buf, head_buf);
+		
+		#if 0
+		// sumber & IP
+		sprintf(head_buf, "<td>%d</td>\n<td>%d.%d.%d.%d</td>\n", titik[i].ID_sumber, \
+			sumber[ titik[i].ID_sumber ].IP0, sumber[ titik[i].ID_sumber ].IP1, \
+			sumber[ titik[i].ID_sumber ].IP2, sumber[ titik[i].ID_sumber ].IP3); 
+		strcat(tot_buf, head_buf);
+		
+		// modul & kanal
+		sprintf(head_buf, "<td>%d</td>\n<td>%d</td>\n</tr>\n", titik[i].alamat, titik[i].kanal); 
+		strcat(tot_buf, head_buf);
+		#endif
+	}
+		
+#else	// konter & RTD			
 	strcat(tot_buf, "<table border>\n");
 	strcat(tot_buf, "<col width = ""120px"" />\n");
 	strcat(tot_buf, "<col width = ""140px"" />\n");
 	strcat(tot_buf, "<col width = ""170px"" />\n");
 	strcat(tot_buf, "<col width = ""400px"" />\n");
 	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
+#endif
+
 #ifdef BOARD_KOMON_A_RTD	
 	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
 	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
+	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
 #ifdef BOARD_KOMON_KONTER
 	strcat(tot_buf, "<th>Puls (Count)</th>\n");
 	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
+	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-
+	
 #ifdef BOARD_KOMON_A_RTD
 	for (i=0; i< 10; i++)
 	{		
@@ -221,6 +282,7 @@ void buat_file_index(void)
     sprintf(head_buf, "\n</body>\n</html>\n");
     strcat(tot_buf, head_buf);
 	
+	printf("pjg = %d\r\n", strlen(tot_buf));
 	return;
 }
 
@@ -229,7 +291,8 @@ static unsigned short
 generate_part_of_file(void *state)
 {
 	struct httpd_state *s = (struct httpd_state *)state;
-
+	
+	//printf("gen file\r\n");
   	if(s->file.len > uip_mss()) {
     	s->len = uip_mss();
   	} else {
@@ -387,13 +450,17 @@ static PT_THREAD(handle_output(struct httpd_state *s))
     //bsr = buat_file_index();
 	//s->file.len = bsr;
 	//s->file.data = tot_buf;
-	
+#ifdef BOARD_TAMPILAN
+	s->file.len = strlen(tot_buf);
+	s->file.data = tot_buf;
+#else	
 	portENTER_CRITICAL();
 	strcpy(tot_buf_siap, tot_buf);
 	portEXIT_CRITICAL();
 	
 	s->file.len = strlen(tot_buf_siap);
 	s->file.data = tot_buf_siap;
+#endif
 	
 	//printf(" HTTP request file %s", s->filename);
 

@@ -39,9 +39,6 @@ extern xSemaphoreHandle lcd_sem;
 #define 	BESAR_LAYAR		9600
 #define 	JML_Q_LCD		5
 
-//unsigned char layar[BESAR_LAYAR] __attribute__ ((section (".eth_test")));
-//unsigned char layar_flag; // jika ingin direct nulis ke LCD, misalnya fungsi teks_h
-
 struct t_layar {
 	unsigned char buf[BESAR_LAYAR];
 	unsigned char flag;		

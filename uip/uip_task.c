@@ -29,8 +29,6 @@
 extern struct t_adc st_adc;
 #endif
 
-#define prio ( tskIDLE_PRIORITY + 3)	// paling tinggi dari yang lain
-
 //#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
 #define RT_CLOCK_SECOND   ( configTICK_RATE_HZ / 10 )
 #define uipARP_FREQUENCY  (20)
@@ -41,7 +39,10 @@ extern struct t_adc st_adc;
 #ifdef BOARD_KOMON
 #define PAKE_HTTP
 #endif
-//#define PAKE_TELNETD
+
+#ifdef BOARD_TAMPILAN
+#define PAKE_HTTP
+#endif
 
 
 unsigned int paket_per_menit=0;
@@ -247,7 +248,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 void start_ether(void)
 {
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", 1024, NULL, prio, ( xTaskHandle * ) &hdl_ether );
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 6), \
+		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 
 void dispatch_tcp_appcall (void)

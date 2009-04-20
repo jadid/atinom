@@ -112,7 +112,7 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
+	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE );	// 256 OK
 
 #if 1
 	init_led_utama();
@@ -128,6 +128,7 @@ int main( void )
 	return 0;
 #endif
 }
+unsigned int waktu_buat_file=0;
 
 void togle_led_utama(void)
 {
@@ -146,6 +147,11 @@ void togle_led_utama(void)
 		FIO0CLR = LED_UTAMA;
 		FIO1CLR = LED_PICKUP;
 		tog = 1;
+		
+		/* tiap detik buat file index */
+		//waktu_buat_file++;
+		//if (waktu_buat_file > 10)
+		  buat_file_index();
 	}
 }
 
@@ -169,7 +175,9 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	//xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 6) , \
+		NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
 
@@ -179,6 +187,8 @@ void init_led_utama(void)
 portTASK_FUNCTION( LCD_task, pvParameters )
 {
 	int lewat=0;
+	
+	#if 0
 	char t[46];
 	unsigned int hari=0;
 	unsigned int jam=0;
@@ -186,6 +196,7 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 	unsigned int detik=0;
 	
 	extern unsigned long tick_ku;
+	#endif
 	
 	vSemaphoreCreateBinary( lcd_sem );
     xSemaphoreTake( lcd_sem, 0 );
@@ -243,6 +254,7 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 
 void init_task_lcd(void)
 {
-	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", (configMINIMAL_STACK_SIZE * 2), NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
+	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", (configMINIMAL_STACK_SIZE * 1), \
+		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
 }
 

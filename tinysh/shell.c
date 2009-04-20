@@ -419,5 +419,6 @@ portTASK_FUNCTION(shell, pvParameters )
 
 void init_shell(void)
 {
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 8), NULL, 1, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), \
+		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }

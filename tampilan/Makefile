@@ -102,6 +102,10 @@ THUMB_SOURCE= \
 		../monita/monita_uip.c \
 		../system/idle_hook.c \
 		../uip/apps/telnetd/telnetd.c	\
+		../webserver/httpd.c \
+		../webserver/httpd-fs.c \
+		../webserver/http-strings.c \
+		../webserver/httpd-cgi.c \
 		
 #		../GPIO/gpio.c \
 #		webserver/httpd.c \

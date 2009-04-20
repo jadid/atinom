@@ -183,7 +183,8 @@ extern struct t_sumber sumber[];
 extern struct t_titik titik[];
 extern unsigned char daytime[32];
 
-struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
+//struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
+struct t_status status[JML_MODUL] __attribute__ ((section (".eth_test")));
 struct t_xdata in_buf __attribute__ ((section (".eth_test")));
 
 void sambungan_init(void)

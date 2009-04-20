@@ -25,7 +25,7 @@ struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
 struct t_titik	titik[TIAP_MESIN * JML_MESIN];
 
-struct t_data_float s_data[JML_SUMBER] __attribute__ ((section (".eth_test")));
+struct t_data_float s_data[JML_SUMBER]; /* __attribute__ ((section (".eth_test"))); */
 
 extern xTaskHandle *hdl_tampilan;
 
@@ -225,9 +225,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 
 void init_task_tampilan(void)
 {
-//	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
-	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 8), NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
-
+	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 6), \
+		NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
 
 int cek_keypad(void)

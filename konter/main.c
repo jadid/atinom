@@ -189,7 +189,8 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 8) , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 8) , NULL, \
+		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
 

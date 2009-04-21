@@ -7,18 +7,70 @@
 	
 	*/
 
+extern xTaskHandle *hdl_shell;
+extern xTaskHandle *hdl_lcd;
+extern xTaskHandle *hdl_led;
+extern xTaskHandle *hdl_tampilan;
+extern xTaskHandle *hdl_ether;
+extern struct t_env env2;
+
+static unsigned int nomer_mesin=0;
+
+#ifdef BOARD_KOMON_A_RTD
+#define BOARD_KOMON_WEB
+#endif
+
+#ifdef BOARD_KOMON_KONTER
+#define BOARD_KOMON_WEB
+#endif
+
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
+#ifdef BOARD_TAMPILAN
 #define LINK_ATAS "<table border=""0"" align=""left"">\n \
   <tbody align=""center"">\n \
 	<tr>\n \
       <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
       <td bgcolor=""lightGray"" width=""200""><a href=""setting.html"">Setting</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""status.html"">Status</a></td>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""sumber.html"">Sumber Data</a></td>\n \
       <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
     </tr>\n \
   </tbody>\n \
 </table>\n"
+
+#define LINK_BAWAH "<table border=""0"" align=""left"">\n \
+  <tbody align=""center"">\n \
+	<tr>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+    </tr>\n \
+  </tbody>\n \
+</table>\n"
+#endif
+
+#ifdef BOARD_KOMON_WEB
+#define LINK_ATAS "<table border=""0"" align=""left"">\n \
+  <tbody align=""center"">\n \
+	<tr>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""setting.html"">Setting</a></td>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
+    </tr>\n \
+  </tbody>\n \
+</table>\n"
+
+#define LINK_BAWAH "<table border=""0"" align=""left"">\n \
+  <tbody align=""center"">\n \
+	<tr>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+    </tr>\n \
+  </tbody>\n \
+</table>\n"
+#endif
 
 void buat_head(unsigned int flag)
 {
@@ -41,7 +93,7 @@ void buat_head(unsigned int flag)
 	//sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
 	//strcat(tot_buf, head_buf);
 
-	sprintf(head_buf, "<p>Nama Modul : %s</p>\n", env2.nama_board);
+	sprintf(head_buf, "<h4><p>Nama Modul : %s\n", env2.nama_board);
 	strcat(tot_buf, head_buf);
 }
 
@@ -55,7 +107,7 @@ void buat_bottom(void)
 	
 	/* data uptime */
 	uptime(&sec, &menit, &jam, &hari, &tahun);
-	strcat(tot_buf, "<h5>Uptime = ");
+	strcat(tot_buf, "<h4>Uptime = ");
 	if (tahun !=0)
 	{
 		sprintf(head_buf, "%d thn ", tahun);
@@ -77,12 +129,16 @@ void buat_bottom(void)
 		strcat(tot_buf, head_buf);		
 	}
 		
-	sprintf(head_buf, "%d dtk</h5>\n", sec);
+	sprintf(head_buf, "%d dtk</h4>\n", sec);
 	strcat(tot_buf, head_buf);		
 	
-	sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
+	sprintf(head_buf, "%s<br>", LINK_BAWAH);
 	strcat(tot_buf, head_buf);
-	strcat(tot_buf, "<br>NXP LPC2368, 60 MHz, FreeRTOS 5.1.1</h5>\n");
+	
+	/* sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__); */
+	sprintf(head_buf,"<h4>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
+	strcat(tot_buf, head_buf);
+	strcat(tot_buf, "<br>NXP LPC2368, 60 MHz, FreeRTOS 5.1.1</h4>\n");
 	
 	
 	// close html
@@ -93,39 +149,39 @@ void buat_bottom(void)
 
 void buat_file_index(void)
 {
-	int besar;
+	/* 
+		data masing2 mesin secara bergiliran ditampilkan
+		setiap refresh index.html		
+	*/
+		
 	int i;
+	unsigned int cek_mesin;
 	float fl;
 	float temp_rpm;
 
 	buat_head(1);
 						
 #ifdef BOARD_TAMPILAN
+	nomer_mesin++;
+	if (nomer_mesin == 5) nomer_mesin = 0;
+	
+	cek_mesin = TIAP_MESIN * nomer_mesin;
+	sprintf(head_buf, "<br>Mesin %d : %s </h4>", (nomer_mesin + 1), mesin[nomer_mesin].nama);
+	strcat(tot_buf, head_buf);
+	
 	strcat(tot_buf, "<table border>\n");
 	strcat(tot_buf, "<col width = ""100px"" />\n");		// titik
 	strcat(tot_buf, "<col width = ""200px"" />\n");		// nilai
-	strcat(tot_buf, "<col width = ""500px"" />\n");		// keterangan
-	/*
-	strcat(tot_buf, "<col width = ""120px"" />\n");		// sumber
-	strcat(tot_buf, "<col width = ""200px"" />\n");		// IP sumber
-	strcat(tot_buf, "<col width = ""120px"" />\n");		// Kanal
-	strcat(tot_buf, "<col width = ""120px"" />\n");		// Modul / board
-	*/
+	strcat(tot_buf, "<col width = ""500px"" />\n");		// keterangan	
 	
 	strcat(tot_buf, "<tr>\n<th>Titik</th>\n");
 	strcat(tot_buf, "<th>Nilai</th>\n");
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-	/*
-	strcat(tot_buf, "<th>Sumber</th>\n");
-	strcat(tot_buf, "<th>IP</th>\n");
-	strcat(tot_buf, "<th>Modul</th>\n");
-	strcat(tot_buf, "<th>Kanal</th>\n</tr>\n");
-	*/
 	
 	for (i=0; i<70; i++)
 	{
 		// titik & nilai
-		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%1.4f</td>\n", (i+1), titik[i].data);
+		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%1.4f</td>\n", (i+1+cek_mesin), titik[i + cek_mesin].data);
 		strcat(tot_buf, head_buf);
 		// keterangan	
 		sprintf(head_buf, "<td>%s</td>\n", keter[i]);	
@@ -143,8 +199,10 @@ void buat_file_index(void)
 		strcat(tot_buf, head_buf);
 		#endif
 	}
-		
-#else	// konter & RTD			
+#endif
+
+#ifdef BOARD_KOMON_WEB	
+	strcat(tot_buf, "</h4>");				
 	strcat(tot_buf, "<table border>\n");
 	strcat(tot_buf, "<col width = ""120px"" />\n");
 	strcat(tot_buf, "<col width = ""140px"" />\n");
@@ -212,24 +270,30 @@ void buat_file_index(void)
 	}
 #endif
 	
-	//strcat(tot_buf, "</table>\n<p>Test report kondisi adalah sabagaimana ...</p>\n");
 	strcat(tot_buf, "</table>\n");
-	//sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
-	//strcat(tot_buf, head_buf);
 	
 	buat_bottom();
 	
-	printf("pjg index = %d\r\n", strlen(tot_buf));
+	//printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
 
 void buat_file_setting(void)
 {
 	int i;
+	unsigned int cek_mesin;
+	
 	buat_head(0);
 	
 	#ifdef BOARD_TAMPILAN
-	strcat(tot_buf, "\n<table border=0 bgcolor=""lightGray"">\n");
+	nomer_mesin++;
+	if (nomer_mesin == 5) nomer_mesin = 0;
+	
+	cek_mesin = TIAP_MESIN * nomer_mesin;
+	sprintf(head_buf, "<br>Mesin %d : %s </h4>\n", (nomer_mesin + 1), mesin[nomer_mesin].nama);
+	strcat(tot_buf, head_buf);
+	
+	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
 	
 	strcat(tot_buf, "<col width = ""100px"">\n");		// titik
 	strcat(tot_buf, "<col width = ""120px"">\n");		// sumber
@@ -259,32 +323,187 @@ void buat_file_setting(void)
 	for (i=0; i<70; i++)
 	{
 		// titik & sumber
-		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%d</td>\n", (i+1), titik[i].ID_sumber);
+		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%d</td>\n", (i+1+cek_mesin), titik[i+cek_mesin].ID_sumber);
 		strcat(tot_buf, head_buf);
+		
 		// IP sumber & kanal	
-		sprintf(head_buf, "<td>%d.%d.%d.%d</td>\n<td>%d</td>\n", sumber[ titik[i].ID_sumber ].IP0, sumber[ titik[i].ID_sumber ].IP1, \
-			sumber[ titik[i].ID_sumber ].IP2, sumber[ titik[i].ID_sumber ].IP3, titik[i].kanal ); 
+		sprintf(head_buf, "<td>%d.%d.%d.%d</td>\n<td>%d</td>\n", sumber[ titik[i+cek_mesin].ID_sumber ].IP0, \
+			sumber[ titik[i+cek_mesin ].ID_sumber ].IP1, \
+			sumber[ titik[i+cek_mesin ].ID_sumber ].IP2, \
+			sumber[ titik[i+cek_mesin ].ID_sumber ].IP3, \
+			titik[i+cek_mesin ].kanal ); 
 			
 		strcat(tot_buf, head_buf);
 		
 		// Modul & status
-		sprintf(head_buf, "<td>%d</td>\n<td>%d</td>\n</tr>\n", sumber[ titik[i].ID_sumber ].alamat, sumber[ titik[i].ID_sumber ].status);
+		sprintf(head_buf, "<td>%d</td>\n<td>%d</td>\n</tr>\n", sumber[ titik[i+cek_mesin ].ID_sumber ].alamat, \
+		sumber[ titik[i+cek_mesin ].ID_sumber ].status);
 		strcat(tot_buf, head_buf);
 		
 	}
-	#endif
 	strcat(tot_buf, "</tbody>\n</table>\n");
+	#endif
+	
+	#ifdef BOARD_KOMON_WEB
+	strcat(tot_buf, "<br>Faktor kalibrasi (y = mx + C)</h4>\n");
+	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
+	
+	strcat(tot_buf, "<col width = ""100px"">\n");		// Kanal
+	strcat(tot_buf, "<col width = ""200px"">\n");		// m
+	strcat(tot_buf, "<col width = ""200px"">\n");		// C
+
+	
+	strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
+	strcat(tot_buf, "<th>m</th>\n");
+	strcat(tot_buf, "<th>C</th>\n");
+
+	for (i=0; i<10; i++)
+	{
+		// Kanal, m & C
+		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%f</td>\n<td>%f</td>\n</tr>\n", \
+			i+1, env2.kalib[i].m, env2.kalib[i].C);
+		strcat(tot_buf, head_buf);
+	}
+	strcat(tot_buf, "</tbody>\n</table>\n");
+	#endif
 	
 	buat_bottom();
 	
-	printf("pjg setting = %d\r\n", strlen(tot_buf));
+	//printf("pjg setting = %d\r\n", strlen(tot_buf));
 }
 
-void buat_file_status(void)
+void buat_file_about(void)
+{
+	/* 
+		menampilkan informasi :
+		Operating system Kernel
+		versi
+		build time
+		stack posisi stack
+		uptime
+		idle loop
+		
+		*/
+	
+	int i;
+	extern unsigned int tot_idle;
+	
+	buat_head(0);
+	
+	strcat(tot_buf, "<h4>Operating System FreeRTOS 5.1.1");
+	sprintf(head_buf, "<br>Modul %s versi %s", NAMA_BOARD, VERSI_KOMON);
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "<br>Prosesor NXP LPC 2368 %d MHz", configCPU_CLOCK_HZ /1000000);
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "<br>Build dengan ARM-GCC %s %s %s",__VERSION__, __DATE__, __TIME__);
+	strcat(tot_buf, head_buf);
+	if (configUSE_PREEMPTION == 0)
+		strcat(tot_buf, "<br>Disabled Preemptive kernel"); 
+	else
+		strcat(tot_buf, "<br>Enabled Preemptive kernel");
+	sprintf(head_buf, "<br>Idle loop check = %d perdetik", tot_idle);
+	strcat(tot_buf, head_buf);
+	
+	strcat(tot_buf, "<br><br>Task & Free stack (bytes) :");
+	sprintf(head_buf, "<br>&nbsp;&nbsp; Shell    : %d", uxTaskGetStackHighWaterMark(hdl_shell));
+	strcat(tot_buf, head_buf);
+	
+	sprintf(head_buf, "<br>&nbsp;&nbsp; Led      : %d", uxTaskGetStackHighWaterMark(hdl_led));
+	strcat(tot_buf, head_buf);
+	
+	#ifdef BOARD_TAMPILAN
+	sprintf(head_buf, "<br>&nbsp;&nbsp; Tampilan : %d", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "<br>&nbsp;&nbsp; LCD      : %d", uxTaskGetStackHighWaterMark(hdl_lcd));
+	strcat(tot_buf, head_buf);
+	#endif
+	
+	sprintf(head_buf, "<br>&nbsp;&nbsp; Ethernet : %d", uxTaskGetStackHighWaterMark(hdl_ether));
+	strcat(tot_buf, head_buf);
+	
+	/* informasi environtment, nama, ip, gateway dll */
+	strcat(tot_buf, "<br><br>Informasi Modul :");
+	sprintf(head_buf, "<br>&nbsp;&nbsp;Nama     : %s", env2.nama_board);
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "<br>&nbsp;&nbsp;IP       : %d.%d.%d.%d", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+	strcat(tot_buf, head_buf);   
+	sprintf(head_buf, "<br>&nbsp;&nbsp;Gateway  : %d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
+	strcat(tot_buf, head_buf);
+	
+	strcat(tot_buf, "<br><br>Dibuat oleh :");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; Daun Biru Engineering");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; jl Pelitur Raya 21 Kayu Putih");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; Jakarta 13210");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; (021) 4892155, fax (021) 47881750");
+		
+	strcat(tot_buf,"</h4>");
+	buat_bottom();
+	//printf("pjg status = %d\r\n", strlen(tot_buf));
+}
+
+void buat_file_sumber(void)
 {
 	int i;
 	buat_head(0);
 	
+	#ifdef BOARD_TAMPILAN
+	strcat(tot_buf, "<br>Informasi Setting Sumber Data</h4>\n");
+	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
+	
+	strcat(tot_buf, "<col width = ""100px"">\n");		// No
+	strcat(tot_buf, "<col width = ""200px"">\n");		// nama
+	strcat(tot_buf, "<col width = ""200px"">\n");		// IP
+	strcat(tot_buf, "<col width = ""120px"">\n");		// Modul
+	strcat(tot_buf, "<col width = ""300px"">\n");		// Status
+
+	
+	strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+	strcat(tot_buf, "<tr>\n<th>No</th>\n");
+	strcat(tot_buf, "<th>Nama</th>\n");
+	strcat(tot_buf, "<th>IP</th>\n");
+	strcat(tot_buf, "<th>Modul</th>\n");
+	strcat(tot_buf, "<th>Status</th>\n");
+	
+	for (i=0; i<20; i++)
+	{
+		// Nomer & Nama
+		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%s</td>\n", (i+1), sumber[i].nama);
+		strcat(tot_buf, head_buf);
+		
+		// IP sumber & LINK kepadanya	
+		sprintf(head_buf, "<td><a href=\"http://%d.%d.%d.%d/index.html\">", sumber[i].IP0, \
+			sumber[i].IP1, \
+			sumber[i].IP2, \
+			sumber[i].IP3 ); 		
+		strcat(tot_buf, head_buf);
+		
+		sprintf(head_buf, "%d.%d.%d.%d</td>\n", sumber[i].IP0, \
+			sumber[i].IP1, \
+			sumber[i].IP2, \
+			sumber[i].IP3 ); 
+		strcat(tot_buf, head_buf);
+		
+		// Modul & status
+		sprintf(head_buf, "<td>%d</td>\n", sumber[ i ].alamat);		
+		strcat(tot_buf, head_buf);
+		
+		if (sumber[ i ].status == 0)
+			strcat(tot_buf, "<td>Tidak aktif</td>\n</tr>\n");
+		else if (sumber[ i ].status == 1)
+			strcat(tot_buf, "<td>Normal</td>\n</tr>\n");
+		else if (sumber[ i ].status == 2)
+			strcat(tot_buf, "<td>Time out</td>\n</tr>\n");
+		else if (sumber[ i ].status == 5)
+			strcat(tot_buf, "<td>Aktif/daytime</td>\n</tr>\n");
+		
+	}
+	
+	strcat(tot_buf, "</tbody>\n</table>\n");
+	#endif
+	strcat(tot_buf,"</h4>");
 	buat_bottom();
-	printf("pjg status = %d\r\n", strlen(tot_buf));
+	
+	printf("pjg sumber = %d\r\n", strlen(tot_buf));	
 }
+

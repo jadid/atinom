@@ -7,8 +7,9 @@
 	buat buffer file index.html dilakukan di 
 	task led.
 	
+	21 April 2009
+	Clean up untuk release stable versi 1.4
 */
-
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -86,7 +87,8 @@ int main( void )
 {
 	sysInit();
 
-	PCONP |= 0x80000000;	// USB power 
+	/* USB Power dinyalakan supaya memory USB bisa dipakai */
+	PCONP |= 0x80000000; 
 
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;	
@@ -97,7 +99,6 @@ int main( void )
 	#endif
 	
 	FIO2DIR = 0x0;
-	//FIO2DIR = 0xFFFFFFFF;
 	
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -112,7 +113,7 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
+	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
 
 #ifdef BOARD_KOMON_KONTER
 	init_gpio();
@@ -147,9 +148,6 @@ void togle_led_utama(void)
 	{
 		FIO0CLR = LED_UTAMA;
 		tog = 1;
-		
-		/* tiap detik buat file index */
-		buat_file_index();
 	}
 }
 
@@ -189,7 +187,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 8) , NULL, \
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
 		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 

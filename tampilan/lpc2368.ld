@@ -3,7 +3,6 @@ MEMORY
 	flash	: ORIGIN = 0x00000000, LENGTH = 500K
 	/* ram	: ORIGIN = 0x40000000, LENGTH = 32K */
 	ram	: ORIGIN = 0x40000000, LENGTH = (32K - 32) 
-	/* usbram   : ORIGIN = 0x7FD00400, LENGTH = 7196 */		/* dibagi dengan stack uart */
 	usbram   : ORIGIN = 0x7FD00000, LENGTH = 8K
 	ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K
 	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K

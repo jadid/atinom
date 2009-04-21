@@ -23,6 +23,8 @@
 	huh .. pusing keypad gak beres2.
 	keypad pakai interrupt saja
 	
+	21 April 2009
+	Clean up untuk release stable versi 1.4
 */
 
 
@@ -43,6 +45,8 @@
 
 /* led di keypad */
 #define LED_PICKUP	BIT(14)
+
+#define BACKLIT		BIT(20)	// PF15, P1.20
 #endif
 
 xSemaphoreHandle lcd_sem;
@@ -87,15 +91,15 @@ int main( void )
 	FIO1DIR  = 0xFFFFFFFF;
 	FIO1MASK = 0xFFFFFFFF; 
 
-	PCONP |= 0x80000000;	// USB power 
+	/* USB Power dinyalakan supaya memory USB bisa dipakai */
+	PCONP |= 0x80000000;
 
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;
 	
-	FIO1DIR  = FIO1DIR | LED_PICKUP;
-	FIO1MASK = FIO1MASK & ~(LED_PICKUP);
+	FIO1DIR  = FIO1DIR | LED_PICKUP | BACKLIT;
+	FIO1MASK = FIO1MASK & ~(LED_PICKUP | BACKLIT);
 	
-	//init_gpio_keypad();
 	init_port_lcd();
 	init_lcd();
 	
@@ -112,7 +116,7 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE );	// 256 OK
+	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE );
 
 #if 1
 	init_led_utama();
@@ -147,13 +151,8 @@ void togle_led_utama(void)
 		FIO0CLR = LED_UTAMA;
 		FIO1CLR = LED_PICKUP;
 		tog = 1;
-		
-		/* tiap detik buat file index */
-		  //buat_file_index();
 	}
 }
-
-#define BACKLIT		BIT(20)	// PF15, P1.20
 
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
@@ -162,19 +161,17 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	idle_lama = 0;
 	
 	vTaskDelay(100);
-	FIO1SET |= BACKLIT;
+	FIO1SET = BACKLIT;
 
 	for (;;)
 	{
 		togle_led_utama();
-		//vTaskDelay(2000);
 		vTaskDelay(500);
 	}
 }
 void init_led_utama(void)
 {
-	//xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 4) , \
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , \
 		NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
@@ -184,69 +181,16 @@ void init_led_utama(void)
 
 portTASK_FUNCTION( LCD_task, pvParameters )
 {
-	int lewat=0;
-	
-	#if 0
-	char t[46];
-	unsigned int hari=0;
-	unsigned int jam=0;
-	unsigned int menit=0;
-	unsigned int detik=0;
-	
-	extern unsigned long tick_ku;
-	#endif
-	
 	vSemaphoreCreateBinary( lcd_sem );
     xSemaphoreTake( lcd_sem, 0 );
 	
-	for(;;) {
+	for(;;) 
+	{
 		if ( xSemaphoreTake( lcd_sem, 100 ) == pdTRUE )
 		{
 			//printf("*LCD_task*\n");
 			update_hard_lcd();
-			lewat = 0;
-		}
-		else
-		{
-			lewat++;
-			if (lewat > 10) /* 1 detik */
-			{
-				//update_hard_lcd();
-				/*
-				teks_clear(10, 232, 15);
-				
-				detik = tick_ku / 1000;
-				if (detik > 60)
-				{
-					menit = detik / 60;
-					if (menit > 60)
-					{
-						jam = menit / 24;
-						
-						if (jam > 24)
-						{
-							hari = jam / 24;	
-						}	
-					}	
-				}
-				
-				//sprintf(t, "%d", tick_ku);
-				//sprintf(t, "%d:%d:%d", jam, (menit % 60), (detik % 60));
-				menit = menit % 60;
-				detik = detik % 60;
-				sprintf(t, "%d:%d:%d  ", jam, menit, detik);
-				
-				//	sprintf(t, "%d", (detik % 60));
-				teks_h_hard(10, 232, t);
-				
-				//printf("\nLCD %d", uxTaskGetStackHighWaterMark(NULL));
-				//
-				//printf("lewat > 100\n");
-				*/
-				
-				lewat = 0;	
-			}
-		}
+		}	
 	}
 }
 

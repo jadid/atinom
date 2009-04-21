@@ -592,7 +592,7 @@ void menu_system(void)
 	unsigned int tahun;
 	unsigned char up[64];
 	
-	sprintf(tek, "Monita Tampilan %s", VERSI_TAMPILAN);
+	sprintf(tek, "Monita %s v %s", NAMA_BOARD, VERSI_KOMON);
 	teks_layar(80, 35, tek);
 	teks_layar(80, 45, "CPU : LPC2368 60 MHz FreeRTOS 5.1.1");
 	teks_layar(80, 55, "daun biru Engineering, Des 2008");	

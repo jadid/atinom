@@ -81,7 +81,6 @@ extern struct t_env env2;
 
 void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
 
-//#define BESAR_BUF_HTTP	2048
 #define BESAR_BUF_HTTP	8192
 
 #ifdef BOARD_TAMPILAN
@@ -91,13 +90,11 @@ extern struct t_titik titik[];
 extern struct t_sumber sumber[];
 extern char keter[100][25];
 
-unsigned char head_buf[1024] 		__attribute__ ((section (".eth_test")));
+unsigned char head_buf[1024] 				__attribute__ ((section (".eth_test")));
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
-//unsigned char tot_buf_siap[BESAR_BUF_HTTP] 	__attribute__ ((section (".eth_test")));
 #else
-unsigned char head_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".eth_test")));
-unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".eth_test")));
-unsigned char tot_buf_siap[BESAR_BUF_HTTP] 	__attribute__ ((section (".eth_test")));
+unsigned char head_buf[1024] 				__attribute__ ((section (".eth_test")));
+unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 #endif
 
 #include "../adc/ad7708.h"
@@ -265,41 +262,50 @@ static PT_THREAD(handle_output(struct httpd_state *s))
 		   send_file(s));
   } 
   else 
-  {
-    //bsr = buat_file_index();
-	//s->file.len = bsr;
-	//s->file.data = tot_buf;
-	
-	if (strncmp(s->filename, "/index", 6) == 0)
+  {	
+	if (strncmp(s->filename, "/setting", 8) == 0)
 	{
-		printf(" Buat file index\r\n");
-		buat_file_index();
-#ifdef BOARD_TAMPILAN
-		s->file.len = strlen(tot_buf);
-		s->file.data = tot_buf;
-#else	
-		portENTER_CRITICAL();
-		strcpy(tot_buf_siap, tot_buf);
-		portEXIT_CRITICAL();
-	
-		s->file.len = strlen(tot_buf_siap);
-		s->file.data = tot_buf_siap;
-#endif
-	}
-	else if (strncmp(s->filename, "/setting", 8) == 0)
-	{
-		printf(" Buat file setting\r\n");
+		//printf(" Buat file setting\r\n");
 		
 		buat_file_setting();
+		
 		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
 		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
 	}
-	else if (strncmp(s->filename, "/status", 7) == 0)
+	else if (strncmp(s->filename, "/about", 6) == 0)
 	{
-		printf(" Buat file status\r\n");
+		//printf(" Buat file about\r\n");
+		buat_file_about();
+		s->file.len = strlen(tot_buf);
+	
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/sumber", 7) == 0)
+	{
+		buat_file_sumber();
+		s->file.len = strlen(tot_buf);
+	
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
 	}
 	else
-		printf(" HTTP request file %s", s->filename);
+	/* (strncmp(s->filename, "/index", 6) == 0) */
+	{
+		//printf(" Buat file index\r\n");
+		buat_file_index();
+
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
 
 	PT_WAIT_THREAD(&s->outputpt,
 		   send_headers(s,

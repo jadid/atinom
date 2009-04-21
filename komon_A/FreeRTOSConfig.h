@@ -38,22 +38,16 @@
 
 #define PAKE_TELNETD
 
-//#define BOARD_TAMPILAN
-//#define BOARD_KOMON
 #define BOARD_KOMON_A_RTD
-#define VERSI_KOMON		"1.3"
+#define VERSI_KOMON		"1.4"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
 #define _printf	printf2
 #define printf	printf2
 
-//#define TAMPILAN_LPC_4
-
 #define PROMPT 		"Komon_A $ "
 #define NAMA_BOARD	"Babelan Komon-A (RTD & Pressure 4-20mA)"
-
-//#define printf(c, ...) serial_puts(c)
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -85,10 +79,7 @@
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-//#define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 208 )
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )		// batasanya 11 x
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 6 * 1024 ) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 30 * configMINIMAL_STACK_SIZE * 4) )
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

@@ -37,7 +37,6 @@
 #include "lpc23xx.h"
 
 #define BOARD_TAMPILAN
-#define VERSI_TAMPILAN	"1.12"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2
@@ -47,11 +46,9 @@
 #define TAMPILAN_LPC_4
 
 #define PAKE_TELNETD
-#define VERSI_KOMON		"1.3"
+#define VERSI_KOMON		"1.4"
 #define PROMPT 		"Tampilan $ "
 #define NAMA_BOARD	"Tampilan"
-
-//#define printf(c, ...) serial_puts(c)
 
 /*-----------------------------------------------------------
  * Application specific definitions.

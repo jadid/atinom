@@ -1,3 +1,14 @@
 Sak jane karo Iman ora oleh gawe readme ...
 
 tes ...
+
+21 April 2009
+========================
+Release versi 1.4, diharapkan sudah stabil
+
+Beberapa perubahan :
+Tampilan sudah bisa di telnet.
+Tampilan juga ada web server.
+Alokasi memory dirapikan, shg lebih banyak yang dpt diselamatkan.
+Model tampilan web server diperbaiki, ada menu2 tambahan.
+Ada link langsung ke sumber data dari sumber tampilan

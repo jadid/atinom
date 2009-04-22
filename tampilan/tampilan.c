@@ -24,6 +24,7 @@
 struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
 struct t_titik	titik[TIAP_MESIN * JML_MESIN];
+struct t_data_hitung data_hitung[JML_MESIN];
 
 struct t_data_float s_data[JML_SUMBER]; /* __attribute__ ((section (".eth_test"))); */
 
@@ -48,6 +49,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	int loop;
 	unsigned char jum_OK;
 	char loop_key;
+	int loop_per_menit=0;
 	
 	// set PF14 & PF10 sebagai input interrupt keypad
 	#ifdef TAMPILAN_LPC
@@ -170,13 +172,14 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				{
 					key_index--;
 					if (key_index == 255) key_index = 9;
-					else if (key_index == 5) key_index = 4;		   
+					//else if (key_index == 5) key_index = 4;		   
 				}
 				else if ( key_press == BAWAH )
 				{
 					key_index++;	
-					if (key_index == 5) key_index =6;
-					else if (key_index > 9) key_index = 0;
+					//if (key_index == 5) key_index =6;
+					//else 
+					if (key_index > 9) key_index = 0;
 				}
 				else if ( key_press == KANAN )
 				{
@@ -208,16 +211,24 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		
 		if (loop > 10)
 		{
+			/* force untuk update layar */
 			cls_layar();
 			menu_monita(key_index);		
 			menu_pilih(key_index, mesin_index, 0);
 			menu_OK(key_index, mesin_index);
 			update_lcd();
 			
-			loop = 0;	
+			loop = 0;
+			
+			loop_per_menit++;
+			if (loop_per_menit > 60)
+			{
+				//printf("hitung \r\n");
+				loop_per_menit = 0;
+				hitung_data_hitung();
+			}	
 		}
 		vTaskDelay(100);
-		//vTaskDelay(20);
 		loop++;	
 	}
 	
@@ -225,7 +236,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 
 void init_task_tampilan(void)
 {
-	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 6), \
+	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 7), \
 		NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
 
@@ -241,5 +252,47 @@ int cek_keypad(void)
 	{
 		portEXIT_CRITICAL();	
 		return 0;	
+	}
+}
+
+/* 
+	menghitung konsumsi bahan bakar per menit,
+	fungsi ini akan dipanggil 1 kali per detik jika sedang dipilih
+	jadi akan dipanggil 60 kali per 1 menit.
+	
+	jika sudah dipanggil 60 kali, maka didapatkan konsumsi
+	per menitnya
+	
+	hitung juga kwh.
+	sfc dapat dihitung dari data permenit juga.
+*/
+	
+void hitung_data_hitung(void)
+{
+	int i;
+	unsigned int pas_mesin;
+	float selisih_in_out;
+	
+	for (i=0; i<JML_MESIN; i++)
+	{
+		pas_mesin = TIAP_MESIN * i;
+		
+		data_hitung[i].bb_in = titik[pas_mesin + OFFSET_BB_IN].data - data_hitung[i].bb_in_lama;
+		data_hitung[i].bb_in_lama = titik[pas_mesin + OFFSET_BB_IN].data;
+		
+		data_hitung[i].bb_out = titik[pas_mesin + OFFSET_BB_OUT].data - data_hitung[i].bb_out_lama;
+		data_hitung[i].bb_out_lama = titik[pas_mesin + OFFSET_BB_OUT].data; 
+		
+		data_hitung[i].kwh = titik[pas_mesin + OFFSET_KWH].data - data_hitung[i].kwh_lama;
+		data_hitung[i].kwh_lama = titik[pas_mesin + OFFSET_KWH].data; 
+		
+		selisih_in_out = data_hitung[i].bb_in - data_hitung[i].bb_out;
+		
+		if (selisih_in_out > 0 && data_hitung[i].kwh > 0)
+		{
+			data_hitung[i].sfc = selisih_in_out / data_hitung[i].kwh;
+		}
+		else
+			data_hitung[i].sfc = 0;
 	}
 }

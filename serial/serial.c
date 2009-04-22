@@ -121,7 +121,7 @@ static volatile portLONG *plTHREEmpty;
 /*-----------------------------------------------------------*/
 
 #include <stdarg.h>
-char printbuffer[128];
+char printbuffer[256];
    
 int printf2 (const char *fmt, ...)
 {

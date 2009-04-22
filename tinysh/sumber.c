@@ -284,7 +284,7 @@ void set_awal_sumber(void)
 		sumber[i].IP0 = 192;
 		sumber[i].IP1 = 168;
 		sumber[i].IP2 = 1;
-		sumber[i].IP3 = 255;
+		sumber[i].IP3 = 254;
 	}	
 	
 	/* testing

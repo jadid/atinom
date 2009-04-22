@@ -84,6 +84,9 @@
 #define OFFSET_FREK		45	- 1
 #define OFFSET_GEN_RPM	46	- 1
 
+#define OFFSET_BB_IN	49	- 1
+#define OFFSET_BB_OUT	50	- 1
+
 #define OFFSET_KW		51	- 1
 #define OFFSET_KWH		52	- 1
 #define OFFSET_VOLT		53	- 1
@@ -162,6 +165,25 @@ struct t_status {
 	unsigned int timer;
 	unsigned int reply_lama;
 	unsigned int stat;
+};
+
+/* 
+	untuk mendapatkan data2 yang perlu di kalkulasi 
+	misalnya :
+	BB in per menit.
+	kWh per menit, sehingga bisa didapat SFC yang dihitung
+	per menit
+	
+*/
+
+struct t_data_hitung {
+	float bb_in;
+	float bb_in_lama;
+	float bb_out;
+	float bb_out_lama;
+	float kwh;
+	float kwh_lama;
+	float sfc;
 };
 
 #endif /* MONITA_UIP_H_ */

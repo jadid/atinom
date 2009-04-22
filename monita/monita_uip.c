@@ -259,7 +259,7 @@ void sambungan_connect(int no)
 			printf("PAKSA ");
 			for(i = 0; i < UIP_CONNS; i++) 
 			{
-		  		if (uip_conns[i].nomer_sambung == no)
+		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_MONITA))
 				{
 					uip_conns[i].tcpstateflags = UIP_CLOSED;
 		  			uip_conns[i].nomer_sambung = 0;

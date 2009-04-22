@@ -13,6 +13,7 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 extern struct t_env env2;
+extern struct t_adc st_adc;
 
 static unsigned int nomer_mesin=0;
 
@@ -186,7 +187,12 @@ void buat_file_index(void)
 		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%1.4f</td>\n", (i+1+cek_mesin), titik[i + cek_mesin].data);
 		strcat(tot_buf, head_buf);
 		// keterangan	
-		sprintf(head_buf, "<td>%s</td>\n", keter[i]);	
+		
+		if (keter[i] == "")
+			sprintf(head_buf, "<td>--</td>\n");	
+		else
+			sprintf(head_buf, "<td>%s</td>\n", keter[i]);	
+		
 		strcat(tot_buf, head_buf);
 		
 		#if 0
@@ -239,7 +245,7 @@ void buat_file_index(void)
 		/* satuan yang diinginkan */
 		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
 		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);	
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
 		strcat(tot_buf, head_buf);
 				
 	}
@@ -264,9 +270,9 @@ void buat_file_index(void)
 			fl = 0;
 		}					
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), data_hit[i]);
-		strcat(tot_buf, head_buf);
+		strcat(tot_buf, head_buf);	
 		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);	
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);		
 		strcat(tot_buf, head_buf);
 				
 	}
@@ -276,7 +282,7 @@ void buat_file_index(void)
 	
 	buat_bottom();
 	
-	printf("pjg index = %d\r\n", strlen(tot_buf));
+	//printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
 
@@ -354,8 +360,8 @@ void buat_file_setting(unsigned int flag)
 		strcat(tot_buf, head_buf);
 		
 		// Modul & status
-		sprintf(head_buf, "<td>%d</td>\n<td>%d</td>\n</tr>\n", sumber[ titik[i+cek_mesin ].ID_sumber ].alamat, \
-		sumber[ titik[i+cek_mesin ].ID_sumber ].status);
+		sprintf(head_buf, "<td>%d</td>\n<td>%d</td>\n</tr>\n", sumber[ titik[i+cek_mesin ].ID_sumber - 1].alamat, \
+		sumber[ titik[i+cek_mesin ].ID_sumber - 1].status);
 		strcat(tot_buf, head_buf);
 		
 	}
@@ -388,7 +394,7 @@ void buat_file_setting(unsigned int flag)
 	
 	buat_bottom();
 	
-	printf("pjg setting = %d\r\n", strlen(tot_buf));
+	//printf("pjg setting = %d\r\n", strlen(tot_buf));
 	
 	return;
 }
@@ -526,7 +532,7 @@ void buat_file_sumber(void)
 	strcat(tot_buf,"</h4>");
 	buat_bottom();
 	
-	printf("pjg sumber = %d\r\n", strlen(tot_buf));	
+	//printf("pjg sumber = %d\r\n", strlen(tot_buf));	
 	
 	return;
 }

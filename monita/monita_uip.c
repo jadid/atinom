@@ -24,8 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct t_xdata 			xdata  		__attribute__ ((section (".eth_test")));
-struct t_data_float 	data_float  __attribute__ ((section (".eth_test")));
+struct t_xdata 			xdata  		;/*__attribute__ ((section (".eth_test")));*/
+struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 
 extern struct t_data_float s_data[JML_SUMBER];
 
@@ -184,8 +184,8 @@ extern struct t_titik titik[];
 extern unsigned char daytime[32];
 
 //struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
-struct t_status status[JML_MODUL] __attribute__ ((section (".eth_test")));
-struct t_xdata in_buf __attribute__ ((section (".eth_test")));
+struct t_status status[JML_MODUL]; 	/* __attribute__ ((section (".eth_test"))); */
+struct t_xdata in_buf;				/* __attribute__ ((section (".eth_test"))); */
 
 void sambungan_init(void)
 {

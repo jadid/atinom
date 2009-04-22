@@ -4,8 +4,8 @@ MEMORY
 	/* ram	: ORIGIN = 0x40000000, LENGTH = 32K */
 	ram	: ORIGIN = 0x40000000, LENGTH = (32K - 32) 
 	usbram   : ORIGIN = 0x7FD00000, LENGTH = 8K
-	ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K
-	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K
+	/* ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K */
+	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K /* 16 K */
 }
 
 __stack_end__ = 0x40000000 + 32K - 4;

@@ -14,7 +14,7 @@
 
 #define JML_SUMBER	20
 #define JML_MESIN	10
-#define TIAP_MESIN	70
+#define TIAP_MESIN	100	// 70
 #define JML_KANAL	20
 #define JML_MODUL	JML_SUMBER
 

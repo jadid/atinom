@@ -90,10 +90,10 @@ extern struct t_titik titik[];
 extern struct t_sumber sumber[];
 extern char keter[100][25];
 
-unsigned char head_buf[1024] 				__attribute__ ((section (".eth_test")));
+unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 #else
-unsigned char head_buf[1024] 				__attribute__ ((section (".eth_test")));
+unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 #endif
 
@@ -267,7 +267,31 @@ static PT_THREAD(handle_output(struct httpd_state *s))
 	{
 		//printf(" Buat file setting\r\n");
 		
-		buat_file_setting();
+		buat_file_setting(0);
+		
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/set_satu", 9) == 0)
+	{
+		//printf(" Buat file setting\r\n");
+		
+		buat_file_setting(1);
+		
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/set_dua", 8) == 0)
+	{
+		//printf(" Buat file setting\r\n");
+		
+		buat_file_setting(2);
 		
 		s->file.len = strlen(tot_buf);
 		

@@ -31,7 +31,8 @@ static unsigned int nomer_mesin=0;
   <tbody align=""center"">\n \
 	<tr>\n \
       <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""setting.html"">Setting</a></td>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""set_satu.html"">Setting 1-50</a></td>\n \
+	  <td bgcolor=""lightGray"" width=""200""><a href=""set_dua.html"">Setting 51-100</a></td>\n \
       <td bgcolor=""lightGray"" width=""200""><a href=""sumber.html"">Sumber Data</a></td>\n \
       <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
     </tr>\n \
@@ -41,6 +42,7 @@ static unsigned int nomer_mesin=0;
 #define LINK_BAWAH "<table border=""0"" align=""left"">\n \
   <tbody align=""center"">\n \
 	<tr>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
       <td bgcolor=""lightGray"" width=""200"">.</td>\n \
       <td bgcolor=""lightGray"" width=""200"">.</td>\n \
       <td bgcolor=""lightGray"" width=""200"">.</td>\n \
@@ -178,7 +180,7 @@ void buat_file_index(void)
 	strcat(tot_buf, "<th>Nilai</th>\n");
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 	
-	for (i=0; i<70; i++)
+	for (i=0; i< TIAP_MESIN ; i++)
 	{
 		// titik & nilai
 		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%1.4f</td>\n", (i+1+cek_mesin), titik[i + cek_mesin].data);
@@ -274,19 +276,24 @@ void buat_file_index(void)
 	
 	buat_bottom();
 	
-	//printf("pjg index = %d\r\n", strlen(tot_buf));
+	printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
 
-void buat_file_setting(void)
+void buat_file_setting(unsigned int flag)
 {
 	int i;
 	unsigned int cek_mesin;
+	unsigned int mulai = 0;
+	unsigned int akhir = 0;
 	
 	buat_head(0);
 	
 	#ifdef BOARD_TAMPILAN
-	nomer_mesin++;
+	
+	if (flag == 1)
+		nomer_mesin++;
+	
 	if (nomer_mesin == 5) nomer_mesin = 0;
 	
 	cek_mesin = TIAP_MESIN * nomer_mesin;
@@ -320,17 +327,28 @@ void buat_file_setting(void)
 	strcat(tot_buf, "<th bgcolor=""white"">Status</th>\n</tr>\n");
 	#endif
 	
-	for (i=0; i<70; i++)
+	if (flag == 1)
+	{
+		mulai = 0;
+		akhir = 50;
+	}
+	if (flag == 2)
+	{
+		mulai = 50;
+		akhir = TIAP_MESIN;
+	}
+	
+	for (i=mulai; i<akhir; i++)
 	{
 		// titik & sumber
 		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%d</td>\n", (i+1+cek_mesin), titik[i+cek_mesin].ID_sumber);
 		strcat(tot_buf, head_buf);
 		
 		// IP sumber & kanal	
-		sprintf(head_buf, "<td>%d.%d.%d.%d</td>\n<td>%d</td>\n", sumber[ titik[i+cek_mesin].ID_sumber ].IP0, \
-			sumber[ titik[i+cek_mesin ].ID_sumber ].IP1, \
-			sumber[ titik[i+cek_mesin ].ID_sumber ].IP2, \
-			sumber[ titik[i+cek_mesin ].ID_sumber ].IP3, \
+		sprintf(head_buf, "<td>%d.%d.%d.%d</td>\n<td>%d</td>\n", sumber[ titik[i+cek_mesin].ID_sumber-1 ].IP0, \
+			sumber[ titik[i+cek_mesin ].ID_sumber-1 ].IP1, \
+			sumber[ titik[i+cek_mesin ].ID_sumber-1 ].IP2, \
+			sumber[ titik[i+cek_mesin ].ID_sumber-1 ].IP3, \
 			titik[i+cek_mesin ].kanal ); 
 			
 		strcat(tot_buf, head_buf);
@@ -370,7 +388,9 @@ void buat_file_setting(void)
 	
 	buat_bottom();
 	
-	//printf("pjg setting = %d\r\n", strlen(tot_buf));
+	printf("pjg setting = %d\r\n", strlen(tot_buf));
+	
+	return;
 }
 
 void buat_file_about(void)
@@ -440,6 +460,8 @@ void buat_file_about(void)
 	strcat(tot_buf,"</h4>");
 	buat_bottom();
 	//printf("pjg status = %d\r\n", strlen(tot_buf));
+	
+	return;
 }
 
 void buat_file_sumber(void)
@@ -505,5 +527,7 @@ void buat_file_sumber(void)
 	buat_bottom();
 	
 	printf("pjg sumber = %d\r\n", strlen(tot_buf));	
+	
+	return;
 }
 

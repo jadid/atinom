@@ -1213,12 +1213,16 @@ union uip_conn_comb {
 	uip_tcp_appstate_telnetd telnetd;
 	#endif
 	
+	uip_tcp_appstate_httpd   httpd;	
+	
+	#if 0
 	#ifdef BOARD_KOMON
 	uip_tcp_appstate_httpd   httpd;	
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD
 	uip_tcp_appstate_httpd   httpd;	
+	#endif
 	#endif
 	//	uip_tcp_appstate_t3   smtp;
 

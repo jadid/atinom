@@ -232,6 +232,7 @@ struct uip_udp_conn *uip_udp_conn;
 
 #ifndef PAKE_RAM_ETH2
 struct uip_udp_conn uip_udp_conns[UIP_UDP_CONNS]  __attribute__ ((section (".eth_test")));
+ss
 #else
 struct uip_udp_conn *uip_udp_conns;
 #endif

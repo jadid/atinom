@@ -164,12 +164,12 @@ void set_titik(int argc, char **argv)
 				printf("     jika alamat kosong, default = 1\r\n");
 				printf("\r\n");
 				printf("   Catatan :\r\n");
-				printf("   Satu mesin dialokasikan 70 titik, sehingga mesin 1 akan\r\n"); 
-				printf("   mencakup titik 1 sampai titik 70, sedangkan mesin 2 akan\r\n"); 
-				printf("   mencakup titik 71 sampai dengan 140, dst.\r\n");
+				printf("   Satu mesin dialokasikan 100 titik, sehingga mesin 1 akan\r\n"); 
+				printf("   mencakup titik 1 sampai titik 100, sedangkan mesin 2 akan\r\n"); 
+				printf("   mencakup titik 101 sampai dengan 200, dst.\r\n");
 				printf("\r\n");
-				printf("   Titik 1 selalu mempunyai keterangan yang sama dengan titik 71,\r\n");
-				printf("   misalnya, Titik 1 = Charge air pressure kiri, maka titik 71\r\n");
+				printf("   Titik 1 selalu mempunyai keterangan yang sama dengan titik 101,\r\n");
+				printf("   misalnya, Titik 1 = Charge air pressure kiri, maka titik 101\r\n");
 				printf("   juga Charge air pressure kiri, tetapi untuk mesin #2\r\n");
 				printf("   begitu seterusnya.\r\n");
 				

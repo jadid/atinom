@@ -25,3 +25,9 @@ dengan telnet).
 Default sumber menjadi 192.168.1.254, jika 255 jadi semacam broadcast.
 Ditambahkan menu bahan bakar pada LCD.
 
+23 April 2009, jadid
+=======================
+SEMUA, VERSI jadi 1.41
+Watchdog lupa belum dipakai, jadi kalau hang .. forever.
+Diset untuk 1 menit, jika tidak di tendang, maka akan reset.
+

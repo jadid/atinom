@@ -33,3 +33,9 @@ Perbedaanya sebenarnya hanya di init adc & range adc
 Komon_A :
 RTD menghasilkan voltage terlalu rendah, sehingga perlu 
 di adjust full scale ADC nya.
+
+Telnet :
+Diberikan tambahan informasin IP.
+
+Komon_Thermo :
+masih reset sendiri jika di telnet

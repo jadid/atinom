@@ -434,6 +434,4 @@ void hitung_data_float(void)
 		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
 	}
 #endif
-
-
 }

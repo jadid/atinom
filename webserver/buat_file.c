@@ -245,8 +245,7 @@ void buat_file_index(void)
 #ifdef BOARD_KOMON_A_RTD
 	for (i=0; i< 5; i++)
 	{		
-		/*  tegangan */
-		
+		/*  tegangan */		
 		temp_rpm = st_adc.data[i] * faktor_pengali_RTD / 0xffff;
 		
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
@@ -313,8 +312,18 @@ void buat_file_index(void)
 		{
 			temp_rpm = 0;
 			fl = 0;
-		}					
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), data_hit[i]);
+		}
+		
+		/* 
+			faktor kalibrasi dipakai pada konter 
+			
+			faktor kalibrasi kanal 0 untuk data_hit 0
+				 
+		*/
+		unsigned int t_hit;
+		t_hit = (unsigned int) (data_hit[i] * env2.kalib[i].m);
+							
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), t_hit );
 		strcat(tot_buf, head_buf);	
 		
 		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);		

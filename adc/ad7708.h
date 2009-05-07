@@ -27,11 +27,15 @@
 #define rate_7708		71			// 20 data per detik
 
 #define	UNIPOLAR		0x08
-#define range_RTD		(4 | UNIPOLAR)	// 0 - 320 mV
+//#define range_RTD		(4 | UNIPOLAR)	// 0 - 320 mV
+
+#define range_RTD		(5 | UNIPOLAR)	// 0 - 640 mV
 #define range_420		(7 | UNIPOLAR)	// 0 - 2.5 V
+
 //#define range_adc		13				// 0 - 640 mV
 	
-#define faktor_pengali_RTD		0.320
+//#define faktor_pengali_RTD		0.320
+#define faktor_pengali_RTD		0.640
 #define faktor_pengali_420		2.5
 
 #define AD7708_LPC_KOMON

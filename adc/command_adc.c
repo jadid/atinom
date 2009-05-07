@@ -25,14 +25,14 @@ void status_adc(void)
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD
-	printf("Volt RTD\r\n");
+	printf("Voltage RTD\r\n");
 	for (i=0; i<5; i++)
 	{
 		f = st_adc.data[i] * faktor_pengali_RTD / 0xffff;
 		printf("%2d : %6d : %1.4f V\r\n", (i+1), st_adc.data[i], f);
 	}
 	
-	printf("Volt 4-20 mA\r\n");
+	printf("Voltage 4-20 mA\r\n");
 	for (i=5; i<10; i++)
 	{
 		f = st_adc.data[i] * faktor_pengali_420 / 0xffff;

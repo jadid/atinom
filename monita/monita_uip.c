@@ -47,6 +47,11 @@ extern struct t_adc st_adc;
 #define BOARD_KOMON
 #endif
 
+#ifdef BOARD_KOMON_KONTER
+#include "../tinysh/enviro.h"
+extern struct t_env env2;
+#endif
+
 
 #ifdef BOARD_KOMON
 
@@ -114,6 +119,8 @@ void monita_appcall(void)
 				loop_kirim++;
 				
 				#ifdef BOARD_KOMON_A_RTD
+				hitung_data_float();
+				
 				for (i=0; i<20;i++)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
@@ -121,6 +128,8 @@ void monita_appcall(void)
 				#endif
 				
 				#ifdef BOARD_KOMON_B_THERMO
+				hitung_data_float();
+				
 				for (i=0; i<20;i++)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
@@ -134,7 +143,8 @@ void monita_appcall(void)
 				t=0;
 				for (i=0; i<10;i++)
 				{
-					data_float.data[t] = data_hit[i];
+					//data_float.data[t] = data_hit[i];
+					data_float.data[t] = (unsigned int) (data_hit[i] * env2.kalib[i].m);
 					t++;
 					
 					if (data_putaran[i])

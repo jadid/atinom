@@ -41,9 +41,23 @@ Komon_A :
 RTD menghasilkan voltage terlalu rendah, sehingga perlu 
 di adjust full scale ADC nya.
 
+ganti full scale RTD ke 640 mV
+full scale 4-20 mA tidak berubah
+
+versi komon_A ke 1.42
+
 Telnet :
 Diberikan tambahan informasin IP.
 
 Komon_Thermo :
-masih reset sendiri jika di telnet
+masih reset sendiri jika di telnet --> rupanya branch bentrok dengan master
+sudah OK
 
+versi komon_Thermo ke 1.41
+
+konter:
+faktor kalibrasi dipakai untuk menghitung pulsa
+seperti biasa, misalnya jika harus setengah kalinya, maka m dari faktor
+kalibrasi harus diisi dengan 0.5
+
+versi konter ke 1.42

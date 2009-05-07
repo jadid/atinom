@@ -245,7 +245,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				}
 		 }	// tanpa paket
 		 
-		 #ifdef BOARD_KOMON
+		 #ifdef BOARD_KOMON_A_RTD
+		 proses_data_adc();
+		 #endif
+		 
+		 #ifdef BOARD_KOMON_B_THERMO
 		 proses_data_adc();
 		 #endif
 	}

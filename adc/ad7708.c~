@@ -12,9 +12,9 @@
 #include "ad7708.h"
 #include <math.h>
 #include "../tinysh/enviro.h"
+extern struct t_env env2;
 
 static unsigned int kalibrated;
-
 struct t_adc st_adc;
 
 #include "kalibrasi_adc.c"

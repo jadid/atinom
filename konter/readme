@@ -1,0 +1,4 @@
+18 April 2009
+========================
+74HC14 sebaiknya diganti dengan 74HCT14, soalnya tegangan
+keluar dari optocouple hanya 2.2 Volt.

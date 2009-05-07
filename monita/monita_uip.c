@@ -24,15 +24,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../GPIO/gpio.h"
-extern struct t2_konter konter;
-
-struct t_xdata xdata  __attribute__ ((section (".eth_test")));
-struct t_data_float data_float  __attribute__ ((section (".eth_test")));
+struct t_xdata 			xdata  		;/*__attribute__ ((section (".eth_test")));*/
+struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 
 extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;
+
+#ifdef BOARD_KOMON_A_RTD
+
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+
+#define BOARD_KOMON
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
+
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+
+#define BOARD_KOMON
+#endif
+
+#ifdef BOARD_KOMON_KONTER
+#include "../tinysh/enviro.h"
+extern struct t_env env2;
+#endif
+
 
 #ifdef BOARD_KOMON
 
@@ -98,18 +117,49 @@ void monita_appcall(void)
 			if (strncmp(buf, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;
-				//printf("data monita");	
+				
+				#ifdef BOARD_KOMON_A_RTD
+				hitung_data_float();
+				
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = st_adc.flt_data[i];
+				}		
+				#endif
+				
+				#ifdef BOARD_KOMON_B_THERMO
+				hitung_data_float();
+				
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = st_adc.flt_data[i];
+				}			
+				#endif
+				
+				#ifdef BOARD_KOMON_KONTER
+				extern unsigned int data_putaran[];
+				extern unsigned int data_hit[];				
+				
 				t=0;
 				for (i=0; i<10;i++)
 				{
-					data_float.data[t] = konter.t_konter[i].hit;
+					//data_float.data[t] = data_hit[i];
+					data_float.data[t] = (unsigned int) (data_hit[i] * env2.kalib[i].m);
 					t++;
-					// cari frekuensi
-					temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-					// rpm
-					data_float.data[t] = temp_rpm * 60;
+					
+					if (data_putaran[i])
+					{
+						// cari frekuensi
+						temp_rpm = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
+						// rpm
+						data_float.data[t] = temp_rpm * 60;
+					}
+					else
+						data_float.data[t] = 0;
+					
 					t++;
 				}
+				#endif
 				
 				xdata.nomer = loop_kirim;
 				//xdata.flag = 30;		//pulsa
@@ -156,8 +206,9 @@ extern struct t_sumber sumber[];
 extern struct t_titik titik[];
 extern unsigned char daytime[32];
 
-struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
-struct t_xdata in_buf __attribute__ ((section (".eth_test")));
+//struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
+struct t_status status[JML_MODUL]; 	/* __attribute__ ((section (".eth_test"))); */
+struct t_xdata in_buf;				/* __attribute__ ((section (".eth_test"))); */
 
 void sambungan_init(void)
 {
@@ -231,7 +282,7 @@ void sambungan_connect(int no)
 			printf("PAKSA ");
 			for(i = 0; i < UIP_CONNS; i++) 
 			{
-		  		if (uip_conns[i].nomer_sambung == no)
+		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_MONITA))
 				{
 					uip_conns[i].tcpstateflags = UIP_CLOSED;
 		  			uip_conns[i].nomer_sambung = 0;
@@ -485,4 +536,4 @@ void daytime_appcall(void)
 	}
 }
 
-#endif
+#endif // TAMPILAN

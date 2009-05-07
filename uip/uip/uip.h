@@ -1208,12 +1208,13 @@ extern u16_t uip_urglen, uip_surglen;
  */
 
 union uip_conn_comb {
-	//uip_tcp_appstate_telnetd telnetd;
 	
-	#ifdef BOARD_KOMON
-	uip_tcp_appstate_httpd   httpd;
+	#ifdef PAKE_TELNETD
+	uip_tcp_appstate_telnetd telnetd;
 	#endif
-
+	
+	uip_tcp_appstate_httpd   httpd;	
+	
 	//	uip_tcp_appstate_t3   smtp;
 
   	#ifdef BOARD_TAMPILAN

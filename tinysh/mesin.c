@@ -58,7 +58,21 @@ void set_mesin(int argc, char **argv)
 	{
 		if (argc > 1)
 		{
-			if (strcmp(argv[1], "default") == 0)
+			if (strcmp(argv[1], "help") == 0)
+			{
+				printf(" Setting mesin yang akan ditampilkan\r\n");
+				garis_bawah();
+				printf(" argument : help, default, nama\r\n");
+				printf("   help   : printout keterangan ini\r\n");
+				printf("   default : load default setting mesin\r\n");
+				printf(" \r\n");
+				printf("   nama : memberikan nama mesin yang akan ditampilkan\r\n");
+				printf("     misalnya : $ set_mesin nama 1 GMT_#4\r\n");
+				printf("     artinya memberikan nama mesin 1 dengan GMT_#4\r\n");
+			
+				return ;
+			}
+			else if (strcmp(argv[1], "default") == 0)
 			{
 				printf("set mesin dengan data default !\n");
 				set_awal_mesin();
@@ -66,7 +80,8 @@ void set_mesin(int argc, char **argv)
 				return;
 			}		
 		}
-		printf(" argument kurang !\r\n");
+		printf(" ERR: argument kurang !\r\n");
+		printf(" coba set_mesin help \r\n");
 		return;	
 	}
 	
@@ -90,7 +105,13 @@ void set_mesin(int argc, char **argv)
 			sprintf(mesin[sumb-1].nama, argv[3]);
 			printf(" Nama : %s\r\n", mesin[sumb-1].nama); 
 		}
-		else return;	
+		else return ; 	
+	}
+	else
+	{
+		printf(" ERR: perintah tidak benar !\r\n");
+		printf(" coba set_mesin help \r\n");
+		return;
 	}
 }							 
 

@@ -74,12 +74,30 @@ void set_sumber(int argc, char **argv)
 		{
 			if (strcmp(argv[1], "help") == 0)
 			{
-				printf("  ipaddr X aaa.bbb.ccc.ddd\r\n");
-				printf("  : setting ip address sumber nomer X dengan ip abcd\r\n");
-		
-				printf("  nama X gedombreng\r\n");
-				printf("  : setting nama sumber nomer X dengan nama gedombreng (maks 10 karakter)\r\n");	
-			
+				printf(" Setting sumber data\r\n");
+				garis_bawah();
+				printf(" argument : help, default, ipaddr, nama, status, board\r\n");
+				printf("   help   : printout keterangan ini\r\n");
+				printf("   default : load sumber dengan default ip & setting\r\n");
+				printf(" \r\n");
+				printf("   ipaddr : memberikan alamat IP pada sumber tertentu\r\n");
+				printf("     misalnya : $ set_sumber ipaddr 4 192.168.1.21\r\n");
+				printf("     artinya set sumber nomer 4 dengan IP tersebut\r\n");
+				printf(" \r\n");
+				printf("   nama : memberikan nama pada sumber tertentu\r\n");
+				printf("     misalnya : $ set_sumber nama 4 RTD_SWD#2\r\n");
+				printf("     artinya sumber nomer 4 diberi nama RTD_SWD#2 (maks 10 karakter)\r\n");	
+				printf(" \r\n");
+				printf("   status : set pada sumber tertentu\r\n");
+				printf("     status 0 = tidak aktif, 1 = aktif, 5 = daytime\r\n");
+				printf("     aktif artinya sumber akan dicari terus menerus !\r\n");			
+				printf("     misalnya : $ set_sumber status 4 1\r\n");
+				printf("     artinya sumber nomer 4 supaya aktif\r\n");	
+				printf(" \r\n");
+				printf("   modul : set nomer modul\r\n");
+				printf("     hal ini berguna misalnya modul memiliki lebih dari 1 modul\r\n");
+				printf("     misalnya : $ set_sumber modul 4 1\r\n");
+				printf("     artinya sumber nomer 4 pada modul nomer 1\r\n");	
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
@@ -163,7 +181,8 @@ void set_sumber(int argc, char **argv)
 		}
 		else return;	
 	}
-	else if (strcmp(argv[1], "alamat") == 0)
+	//else if (strcmp(argv[1], "alamat") == 0)
+	else if (strcmp(argv[1], "modul") == 0)
 	{
 		sprintf(buf, "%s", argv[2]);	
 		sumb = cek_nomer_sumber(buf, 20);
@@ -182,6 +201,12 @@ void set_sumber(int argc, char **argv)
 			}
 		}
 		else return;
+	}
+	else
+	{
+		printf(" ERR: perintah tidak benar !\r\n");
+		printf(" coba set_sumber help \r\n");
+		return;	
 	}
 }							 
 
@@ -259,7 +284,7 @@ void set_awal_sumber(void)
 		sumber[i].IP0 = 192;
 		sumber[i].IP1 = 168;
 		sumber[i].IP2 = 1;
-		sumber[i].IP3 = 255;
+		sumber[i].IP3 = 254;
 	}	
 	
 	/* testing

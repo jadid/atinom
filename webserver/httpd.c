@@ -77,132 +77,38 @@
 
 #include "../GPIO/gpio.h"
 #include "../tinysh/enviro.h"
-extern struct t2_konter konter;
 extern struct t_env env2;
 
 void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
 
-#define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
+#define BESAR_BUF_HTTP	8192
 
-unsigned char head_buf[2048] __attribute__ ((section (".eth_test")));
-//unsigned char tot_buf[4096] __attribute__ ((section (".eth_test")));
-//unsigned char tot_buf_siap[4096] __attribute__ ((section (".eth_test")));
-//unsigned int http_hit = 0;
-unsigned char tot_buf[2048] __attribute__ ((section (".eth_test")));
-unsigned char tot_buf_siap[2048] __attribute__ ((section (".eth_test")));
+#ifdef BOARD_TAMPILAN
+#include "../monita/monita_uip.h"
+extern struct t_mesin mesin[];
+extern struct t_titik titik[];
+extern struct t_sumber sumber[];
+extern char keter[100][25];
 
-//unsigned short 
-void buat_file_index(void)
-{
-	int besar;
-	int i;
-	float fl;
-	float temp_rpm;
-	
-	unsigned int sec;
-	unsigned int menit;
-	unsigned int jam;
-	unsigned int hari;
-	unsigned int tahun;
-				
-	//http_hit++;
-	//portENTER_CRITICAL();
-	
-	sprintf(head_buf, "%s<meta http-equiv=""refresh"" content=""3"">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
-	sprintf(tot_buf, "%s", head_buf);
-	strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering");
-	sprintf(head_buf, "<br>monita_rtos_%s</h4>\n", VERSI_KOMON);
-	strcat(tot_buf, head_buf);
-	
-	//strcat(tot_buf, "<h4>Modul Counter / Frekuensi / RPM</h4>\n");
-	strcat(tot_buf, "<p>Modul Counter / Frekuensi / RPM\n");
-	sprintf(head_buf, "<br>\nNama Modul = %s</p>\n", env2.nama_board);
-	strcat(tot_buf, head_buf);
-			
-	strcat(tot_buf, "<table border>\n");
-	strcat(tot_buf, "<col width = ""120px"" />\n");
-	strcat(tot_buf, "<col width = ""140px"" />\n");
-	strcat(tot_buf, "<col width = ""140px"" />\n");
-	strcat(tot_buf, "<col width = ""400px"" />\n");
-	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
-	strcat(tot_buf, "<th>Puls (Count)</th>\n");
-	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
-	
-	for (i=0; i< 10; i++)
-	{		
-		// cari frekuensi
-		temp_rpm = (float) 1000000000.00 / (konter.t_konter[i].beda); // beda msh dlm nS
-		// rpm
-		fl = temp_rpm * 60;
-							
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), konter.t_konter[i].hit);
-		strcat(tot_buf, head_buf);
-		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);	
-		strcat(tot_buf, head_buf);
-				
-	}	
-	//strcat(tot_buf, "</table>\n<p>Test report kondisi adalah sabagaimana ...</p>\n");
-	strcat(tot_buf, "</table>\n");
-	//sprintf(head_buf,"<h5>-- %d --\n<br>", http_hit);
-	//strcat(tot_buf, head_buf);
-	
-	/* data uptime */
-	uptime(&sec, &menit, &jam, &hari, &tahun);
-	strcat(tot_buf, "<h5>Uptime = ");
-	if (tahun !=0)
-	{
-		sprintf(head_buf, "%d thn ", tahun);
-		strcat(tot_buf, head_buf);	
-	}
-	if (hari !=0)
-	{
-		sprintf(head_buf, "%d hari ", hari);
-		strcat(tot_buf, head_buf);		
-	}
-	if (jam !=0)
-	{
-		sprintf(head_buf, "%d jam ", jam);
-		strcat(tot_buf, head_buf);		
-	}
-	if (menit !=0)
-	{
-		sprintf(head_buf, "%d mnt ", menit);
-		strcat(tot_buf, head_buf);		
-	}
-		
-	sprintf(head_buf, "%d dtk</h5>\n", sec);
-	strcat(tot_buf, head_buf);		
-		
-	//sprintf(head_buf,"-- Up = %s --</h5>\n", uptime());
-	//strcat(tot_buf, head_buf);
-	
-	sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
-	strcat(tot_buf, head_buf);
-	strcat(tot_buf, "<br>NXP LPC2368, 60 MHz, FreeRTOS 5.1.1</h5>\n");
-	
-	
-	// close html
-    sprintf(head_buf, "\n</body>\n</html>\n");
-    strcat(tot_buf, head_buf);
-	
-	//besar = strlen(tot_buf);
-	//printf(tot_buf);
-	//printf(" HTTP pjg file = %d\n", besar);
-	
-	//return besar;
-	
-	//portEXIT_CRITICAL();
-	return;
-}
+unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
+unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+#else
+unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
+unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+#endif
+
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+
+#include "buat_file.c"
 
 /*---------------------------------------------------------------------------*/
 static unsigned short
 generate_part_of_file(void *state)
 {
 	struct httpd_state *s = (struct httpd_state *)state;
-
+	
+	//printf("gen file\r\n");
   	if(s->file.len > uip_mss()) {
     	s->len = uip_mss();
   	} else {
@@ -346,7 +252,7 @@ static PT_THREAD(handle_output(struct httpd_state *s))
 
   if(!httpd_fs_open(s->filename, &s->file)) 
   {
-    //printf(" HTTP file %s tidak ada ?\n", s->filename);
+    printf(" HTTP file %s tidak ada ?\n", s->filename);
 	httpd_fs_open(http_404_html, &s->file);
     strcpy(s->filename, http_404_html);
     PT_WAIT_THREAD(&s->outputpt,
@@ -356,19 +262,74 @@ static PT_THREAD(handle_output(struct httpd_state *s))
 		   send_file(s));
   } 
   else 
-  {
-    //bsr = buat_file_index();
-	//s->file.len = bsr;
-	//s->file.data = tot_buf;
+  {	
+	if (strncmp(s->filename, "/setting", 8) == 0)
+	{
+		//printf(" Buat file setting\r\n");
+		
+		buat_file_setting(0);
+		
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/set_satu", 9) == 0)
+	{
+		//printf(" Buat file setting\r\n");
+		
+		buat_file_setting(1);
+		
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/set_dua", 8) == 0)
+	{
+		//printf(" Buat file setting\r\n");
+		
+		buat_file_setting(2);
+		
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/about", 6) == 0)
+	{
+		//printf(" Buat file about\r\n");
+		buat_file_about();
+		s->file.len = strlen(tot_buf);
 	
-	portENTER_CRITICAL();
-	strcpy(tot_buf_siap, tot_buf);
-	portEXIT_CRITICAL();
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else if (strncmp(s->filename, "/sumber", 7) == 0)
+	{
+		buat_file_sumber();
+		s->file.len = strlen(tot_buf);
 	
-	s->file.len = strlen(tot_buf_siap);
-	s->file.data = tot_buf_siap;
-	
-	//printf(" HTTP request file %s", s->filename);
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
+	else
+	/* (strncmp(s->filename, "/index", 6) == 0) */
+	{
+		//printf(" Buat file index\r\n");
+		buat_file_index();
+
+		s->file.len = strlen(tot_buf);
+		
+		portENTER_CRITICAL();
+		s->file.data = tot_buf;
+		portEXIT_CRITICAL();
+	}
 
 	PT_WAIT_THREAD(&s->outputpt,
 		   send_headers(s,

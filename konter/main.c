@@ -7,8 +7,9 @@
 	buat buffer file index.html dilakukan di 
 	task led.
 	
+	21 April 2009
+	Clean up untuk release stable versi 1.4
 */
-
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -30,8 +31,14 @@
 #define LED_UTAMA	BIT(27)
 #endif
 
+#ifdef DEBUG_KONTER
+#define LED_DEBUG	BIT(19)		// P1.19
+#endif
+
 xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
+unsigned int idle_lama;
+unsigned int tot_idle;
 
 static char tog;
 static void sysInit(void);
@@ -43,6 +50,7 @@ xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
+#if (DEBUG_KONTER == 1)
 void dele(int dd)
 {
 	int g;
@@ -55,6 +63,22 @@ void dele(int dd)
 	}
 }
 
+static unsigned int led_konter; 
+
+void togle_led_konter(void)
+{
+	if (led_konter)
+	{
+		led_konter = 0;
+		FIO1SET = LED_DEBUG;
+	}
+	else
+	{
+		led_konter = 1;
+		FIO1CLR = LED_DEBUG;
+	}
+}
+#endif
 
 /*-----------------------------------------------------------*/
 #define jalankan
@@ -63,11 +87,18 @@ int main( void )
 {
 	sysInit();
 
-	PCONP |= 0x80000000;	// USB power 
+	/* USB Power dinyalakan supaya memory USB bisa dipakai */
+	PCONP |= 0x80000000; 
 
 	FIO0DIR = LED_UTAMA;
 	FIO0CLR = LED_UTAMA;	
 	
+	#if ( DEBUG_KONTER == 1) 
+	FIO1DIR = FIO0DIR | LED_DEBUG;
+	FIO1SET = LED_DEBUG;
+	#endif
+	
+	FIO2DIR = 0x0;
 	
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -82,9 +113,9 @@ int main( void )
 	}
 #endif
 
-	xSerialPortInitMinimal( BAUD_RATE, 128 );	// 256 OK
+	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
 
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
 
@@ -101,55 +132,66 @@ int main( void )
 #endif
 }
 
-//int jum=0;
-
 void togle_led_utama(void)
 {
-	//jum++;
 	if (tog)
 	{
-		//FIO1CLR = (1 << 19);
 		FIO0SET = LED_UTAMA;
-		//tes_high();
 		tog = 0;
-		//xSemaphoreGive( lcd_sem );
+		
+		/* kalkulasi idle loop */
+		tot_idle = loop_idle - idle_lama;
+		idle_lama = loop_idle;
+		
+		/* reset wdog setiap detik */
+		tendang_wdog();
+		
 	}
 	else
 	{
-		//titik_siap++;
-		//FIO1SET = (1 << 19);
 		FIO0CLR = LED_UTAMA;
-		//tes_low();
 		tog = 1;
-		//teks_h(20, 60, "ini langsung ke LCD");
-		//printf_lcd("ini %d", jum);
-		//if (titik_siap > 3)
-		//	sambungan_connect();
 	}
 }
 
-#define BACKLIT		BIT(20)	// PF15, P1.20
-
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
-	tog = 0;
+	unsigned int muter=0;
 	
-	vTaskDelay(100);
-	FIO1SET |= BACKLIT;
+	tog = 0;
+	loop_idle = 0;
+	idle_lama = 0;
 
 	vTaskDelay(2000);
 	
 	for (;;)
-	{
-		togle_led_utama();
-		buat_file_index();
-		vTaskDelay(1100);
+	{		
+		/* 
+			setiap 100 ms, cek apakah rpm masih jalan,
+			dicek satu per satu, supaya tidak balapan 
+			(race condition)
+			
+			kemudian setiap 500 jalankan togle led
+			seperti biasa
+			
+			*/
+		
+		hitung_rpm();
+		
+		muter++;		
+		if (muter > 5)
+		{
+			togle_led_utama();
+			muter = 0;
+		}	
+		
+		vTaskDelay(100);
 	}
 }
 void init_led_utama(void)
 {
-	//xTaskCreate(task_led2, ( signed portCHAR * ) "Led2", 51 , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 8) , NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
+		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
 

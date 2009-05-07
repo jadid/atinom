@@ -119,14 +119,9 @@ static xQueueHandle xCharsForTx;
 static volatile portLONG *plTHREEmpty;
 
 /*-----------------------------------------------------------*/
-/*
-void serial_puts(char *ss)
-{
-	vSerialPutString(1, ss, 10);	
-}*/
 
 #include <stdarg.h>
-char printbuffer[128] __attribute__ ((section (".eth_test")));
+char printbuffer[256];
    
 int printf2 (const char *fmt, ...)
 {
@@ -244,8 +239,9 @@ signed portCHAR *pxNext;
 	/* Send each character in the string, one at a time. */
 	pxNext = ( signed portCHAR * ) pcString;
 	while( *pxNext )
-	{
+	{		
 		//xSerialPutChar( pxPort, *pxNext, serNO_BLOCK );
+		
 		xSerialPutChar( pxPort, *pxNext, 1000 );	// 100 OK
 		pxNext++;
 	}
@@ -258,8 +254,12 @@ signed portBASE_TYPE xReturn;
 
 	/* This demo driver only supports one port so the parameter is not used. */
 	( void ) pxPort;
-
-	portENTER_CRITICAL();
+	
+	#ifdef PAKE_TELNETD
+	telnetdPutChar(cOutChar);
+	#endif
+	
+	//portENTER_CRITICAL();
 	{
 		/* Is there space to write directly to the UART? */
 		if( *plTHREEmpty == ( portLONG ) pdTRUE )
@@ -289,8 +289,8 @@ signed portBASE_TYPE xReturn;
 			}
 		}
 	}
-	portEXIT_CRITICAL();
-
+	//portEXIT_CRITICAL();
+	
 	return xReturn;
 }
 /*-----------------------------------------------------------*/
@@ -303,7 +303,10 @@ void vSerialClose( xComPortHandle xPort )
 /*-----------------------------------------------------------*/
 
 
-
+void uart0GetRxQueue (xQueueHandle *qh)
+{
+  	*qh = xRxedChars;
+}
 
 
 

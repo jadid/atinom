@@ -19,10 +19,24 @@
 #include "../monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
+#ifdef PAKE_TELNETD
+#include "apps/telnetd/telnetd.h"
+#endif
 
-#define prio ( tskIDLE_PRIORITY + 3)	// paling tinggi dari yang lain
+#ifdef BOARD_KOMON_A_RTD
+#define BOARD_KOMON
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+#endif
 
-#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
+#ifdef BOARD_KOMON_B_THERMO
+#define BOARD_KOMON
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+#endif
+
+//#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
+#define RT_CLOCK_SECOND   ( configTICK_RATE_HZ / 10 )
 #define uipARP_FREQUENCY  (20)
 #define uipMAX_BLOCK_TIME (RT_CLOCK_SECOND / 4)
 #define pucUIP_Buffer ((struct uip_eth_hdr *) &uip_buf [0])
@@ -31,7 +45,10 @@
 #ifdef BOARD_KOMON
 #define PAKE_HTTP
 #endif
-//#define PAKE_TELNETD
+
+#ifdef BOARD_TAMPILAN
+#define PAKE_HTTP
+#endif
 
 
 unsigned int paket_per_menit=0;
@@ -39,7 +56,7 @@ unsigned int paket_kita=0;
 	
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
-extern unsigned int loop_idle;
+
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -225,16 +242,24 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					
 					paket_per_menit = 0;
 					paket_kita = 0;
-					loop_idle = 0;
 				}
 		 }	// tanpa paket
+		 
+		 #ifdef BOARD_KOMON_A_RTD
+		 proses_data_adc();
+		 #endif
+		 
+		 #ifdef BOARD_KOMON_B_THERMO
+		 proses_data_adc();
+		 #endif
 	}
 }
 
 
 void start_ether(void)
 {
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", 1024, NULL, prio, ( xTaskHandle * ) &hdl_ether );
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 8), \
+		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 
 void dispatch_tcp_appcall (void)
@@ -242,19 +267,18 @@ void dispatch_tcp_appcall (void)
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 	
 #ifdef PAKE_HTTP
-	if (uip_conn->lport == HTONS (80)) httpd_appcall ();
+	if (uip_conn->lport == HTONS (80)) 
+		httpd_appcall ();
 #endif
 
 #ifdef PAKE_TELNETD
-  if (uip_conn->lport == HTONS (23))
-    telnetd_appcall ();
+  	if (uip_conn->lport == HTONS (23))
+    	telnetd_appcall ();
 #endif
 
 #ifdef BOARD_KOMON
   	if (uip_conn->lport == HTONS(PORT_MONITA))
-	{
 		monita_appcall();
-	}
 #endif
 
 #ifdef BOARD_TAMPILAN
@@ -285,14 +309,3 @@ void dispatch_udp_appcall (void)
 
 
 
-/* 
- * 18 feb 2009, idle hook
- * dipakai untuk cek paket
- * soalnya dalam loop 1 ms, masih sering paket hilang ?
- * 
- * 
- * */
-void vApplicationIdleHook( void )
-{
-	loop_idle++;	
-}

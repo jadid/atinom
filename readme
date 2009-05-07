@@ -1,0 +1,63 @@
+Sak jane karo Iman ora oleh gawe readme ...
+
+tes ...
+
+21 April 2009, jadid
+========================
+Release versi 1.4, diharapkan sudah stabil
+
+Beberapa perubahan :
+Tampilan sudah bisa di telnet.
+Tampilan juga ada web server.
+Alokasi memory dirapikan, shg lebih banyak yang dpt diselamatkan.
+Model tampilan web server diperbaiki, ada menu2 tambahan.
+Ada link langsung ke sumber data dari sumber tampilan
+
+22 April 2009, jadid
+========================
+TAMPILAN
+Data sumber & titik pada web browser diperbaiki.
+Satu mesin sekarang mempunyai 100 titik.
+Masih terjadi sedikit error jika telnet & browser sama2 dibuka, tetapi
+tidak sampai hang.
+Paksa konek untuk sumber yang mati diperbaiki (tadinya bentrok
+dengan telnet).
+Default sumber menjadi 192.168.1.254, jika 255 jadi semacam broadcast.
+Ditambahkan menu bahan bakar pada LCD.
+
+23 April 2009, jadid
+=======================
+SEMUA, VERSI jadi 1.41
+Watchdog lupa belum dipakai, jadi kalau hang .. forever.
+Diset untuk 1 menit, jika tidak di tendang, maka akan reset.
+
+
+7 Mei 2009, jadid
+========================
+Copy komon_A ke komon_Thermo (untuk modul thermocouple)
+Perbedaanya sebenarnya hanya di init adc & range adc
+
+Komon_A :
+RTD menghasilkan voltage terlalu rendah, sehingga perlu 
+di adjust full scale ADC nya.
+
+ganti full scale RTD ke 640 mV
+full scale 4-20 mA tidak berubah
+
+versi komon_A ke 1.42
+
+Telnet :
+Diberikan tambahan informasin IP.
+
+Komon_Thermo :
+masih reset sendiri jika di telnet --> rupanya branch bentrok dengan master
+sudah OK
+
+versi komon_Thermo ke 1.41
+
+konter:
+faktor kalibrasi dipakai untuk menghitung pulsa
+seperti biasa, misalnya jika harus setengah kalinya, maka m dari faktor
+kalibrasi harus diisi dengan 0.5
+
+versi konter ke 1.42

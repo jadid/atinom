@@ -313,7 +313,7 @@ void enc28j60Send (void)
   u16_t length;
   u16_t value;
 
-	portENTER_CRITICAL();
+	//portENTER_CRITICAL();
 	
 	
   length = uip_len;           // Save length for later
@@ -376,7 +376,7 @@ void enc28j60Send (void)
   encBFCReg (EIR, EIR_TXIF);
   encBFSReg (ECON1, ECON1_TXRTS);
   
-  portEXIT_CRITICAL();
+  //portEXIT_CRITICAL();
   
 }
 
@@ -389,7 +389,7 @@ u16_t enc28j60Receive (void)
   u16_t u;
   int jum_pak;
   
-	portENTER_CRITICAL();
+	//portENTER_CRITICAL();
 	
 #ifndef USE_INTERRUPTS
   //
@@ -397,8 +397,8 @@ u16_t enc28j60Receive (void)
   //
   	if ((encReadEthReg (EIR) & EIR_PKTIF) == 0)
   	{
-    	printf("INT %X ENC, re init()\n", encReadEthReg(EIR));
-		portEXIT_CRITICAL();
+    	//printf("INT %X ENC, re init()\n", encReadEthReg(EIR));
+		//portEXIT_CRITICAL();
 		
 		// re init ENC
 		enc28j60Init();	
@@ -440,9 +440,9 @@ u16_t enc28j60Receive (void)
   if (ethRxPointer > RXEND)
   {
     	ethRxPointer = 0;
-		printf("reset rx pointer!"); 
+		//printf("reset rx pointer!"); 
 		
-		portEXIT_CRITICAL();
+		//portEXIT_CRITICAL();
 	//enc28j60Init ();
     return 0;
   }
@@ -465,7 +465,7 @@ u16_t enc28j60Receive (void)
     for (u = 0; u < len; u++)
       encMACread ();
 
-	portEXIT_CRITICAL();
+	//portEXIT_CRITICAL();
     return 0;
   }
 
@@ -490,7 +490,7 @@ u16_t enc28j60Receive (void)
   //  Return the length - the 4 bytes of CRC (why?)
   //
   
-  portEXIT_CRITICAL();
+  //portEXIT_CRITICAL();
   return (len - 4);
 }
 
@@ -522,26 +522,25 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 
 unsigned int cek_paket(void)
 {
-	portENTER_CRITICAL();
+	#if 1
 	if (FIO_CEK_PAKET & INT_ENC)
 	{
-		portEXIT_CRITICAL();
 		return 0;
 	}
 	else
 	{
-		portEXIT_CRITICAL();
 		return 1;
 	}
-
+	#endif
 	/*
 	 * 13 feb 09, bukan karena ini paket sering ilang 
 	*/
-	/*
+	
+	#if 0
 	encBankSelect (BANK1);
 	if (encReadEthReg (EPKTCNT)) return 1;
 	else return 0;
-	*/
+	#endif
 	
 }
 
@@ -800,7 +799,6 @@ static void encMACwrite (u8_t data)
  *****************************************************************************/
 static void encMACwriteBulk (u8_t *buffer, u16_t length)
 {
-  //portENTER_CRITICAL();
   ENC28J60_Select ();
 
   spiPut (WBM);
@@ -809,7 +807,6 @@ static void encMACwriteBulk (u8_t *buffer, u16_t length)
     spiPut (*buffer++);
 
   ENC28J60_Deselect ();
- // portEXIT_CRITICAL();
 }
 
 /******************************************************************************
@@ -848,7 +845,6 @@ static u8_t encMACread (void)
  *****************************************************************************/
 static void encMACreadBulk (u8_t *buffer, u16_t length)
 {
-  //portENTER_CRITICAL();
   ENC28J60_Select ();
 
   spiPut (RBM);
@@ -857,6 +853,5 @@ static void encMACreadBulk (u8_t *buffer, u16_t length)
     *buffer++ = spiPut  (0x00);
 
   ENC28J60_Deselect ();
-  //portEXIT_CRITICAL();
 }
 

@@ -37,15 +37,18 @@
 #include "lpc23xx.h"
 
 #define BOARD_TAMPILAN
-#define VERSI_TAMPILAN	"1.12"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2
 #define printf	printf2
 
+#define PAKE_TELNETD
 #define TAMPILAN_LPC_4
 
-//#define printf(c, ...) serial_puts(c)
+#define PAKE_TELNETD
+#define VERSI_KOMON		"1.41"
+#define PROMPT 		"Tampilan $ "
+#define NAMA_BOARD	"Tampilan"
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -69,18 +72,15 @@
 	#error Please uncomment one of the two configPINSEL2_VALUE definitions above, depending on the revision of the LPC2000 device being used.
 #endif
 
-#define configUSE_PREEMPTION		1
-#define configUSE_IDLE_HOOK         0
+#define configUSE_PREEMPTION		0
+#define configUSE_IDLE_HOOK         1
 #define configUSE_TICK_HOOK         0
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */
 #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 60000000 )
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-//#define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 208 )
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )		// batasanya 11 x
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 6 * 1024 ) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 32 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

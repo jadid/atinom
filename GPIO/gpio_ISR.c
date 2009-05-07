@@ -15,9 +15,13 @@
 #include "gpio.h"
 #include "../tampilan/tampilan.h"
 
+#ifdef BOARD_TAMPILAN
 extern xSemaphoreHandle keypad_sem;
-struct t2_konter konter;
+#endif
 
+#ifdef BOARD_KOMON_KONTER
+struct t2_konter konter;
+#endif
 
 void gpio_ISR_Wrapper( void ) __attribute__ ((naked));
 void gpio_ISR_Handler( void );
@@ -31,11 +35,16 @@ void gpio_ISR_keypad_Handler( void );
 
 void set_konter(int st, unsigned int period);
 
+#ifdef BOARD_KOMON_KONTER
 void gpio_ISR_Wrapper( void )
 {
 	/* Save the context of the interrupted task. */
 	portSAVE_CONTEXT();
 
+	#if ( DEBUG_KONTER == 1) 
+	togle_led_konter();
+	#endif
+	
 	/* Call the handler.  This must be a separate function from the wrapper
 	to ensure the correct stack frame is set up. */
 	gpio_ISR_Handler();
@@ -43,7 +52,9 @@ void gpio_ISR_Wrapper( void )
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
 }
+#endif
 
+#ifdef BOARD_TAMPILAN
 void gpio_ISR_Wrapper_keypad( void )
 {
 	/* Save the context of the interrupted task. */
@@ -56,7 +67,9 @@ void gpio_ISR_Wrapper_keypad( void )
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
 }
+#endif
 
+#ifdef BOARD_KOMON_KONTER
 void timer1_ISR_Wrapper( void )
 {
 	/* Save the context of the interrupted task. */
@@ -179,7 +192,9 @@ void set_konter(int st, unsigned int period)
 	konter.t_konter[st].hit++;
 	konter.t_konter[st].last_period = period;
 }
+#endif // KOMON_KONTER
 
+#ifdef BOARD_TAMPILAN
 void gpio_ISR_keypad_Handler( void )
 {
 	static portBASE_TYPE xHigherPriorityTaskWoken;
@@ -195,3 +210,4 @@ void gpio_ISR_keypad_Handler( void )
 	/* Clear the ISR in the VIC. */
 	VICVectAddr = 0;	
 }
+#endif

@@ -357,6 +357,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO
+	tinysh_add_command(&cek_adc_cmd);
+	tinysh_add_command(&set_kanal_cmd);
+#endif
+
 #ifdef PAKE_TELNETD
 	tinysh_add_command(&matikan_telnet_cmd);
 #endif
@@ -397,6 +402,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD
+	kalibrasi_adc1();
+	vTaskDelay(100);
+	start_adc_1();
+	#endif
+	
+	#ifdef BOARD_KOMON_B_THERMO
 	kalibrasi_adc1();
 	vTaskDelay(100);
 	start_adc_1();

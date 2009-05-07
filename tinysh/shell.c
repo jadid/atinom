@@ -22,6 +22,11 @@
 #include "set_kanal.c"
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO
+#include "../adc/command_adc.c"
+#include "set_kanal.c"
+#endif
+
 #include "enviro.h"
 
 #include "../GPIO/gpio.h"

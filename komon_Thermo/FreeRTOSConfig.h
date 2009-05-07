@@ -39,7 +39,7 @@
 #define PAKE_TELNETD
 
 #define BOARD_KOMON_B_THERMO
-#define VERSI_KOMON		"1.4"
+#define VERSI_KOMON		"1.41"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 

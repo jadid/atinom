@@ -143,6 +143,9 @@ void togle_led_utama(void)
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
 		
+		/* reset wdog setiap detik */
+		tendang_wdog();
+		
 	}
 	else
 	{

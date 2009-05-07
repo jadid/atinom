@@ -123,4 +123,6 @@ void sysInit(void)
 	PINMODE8 = 0x00000000;
 	
 	PINSEL0 = PINSEL0 | 0x50; // enable TX & RX
+	
+	setup_wdog();
 }

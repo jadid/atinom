@@ -440,7 +440,7 @@ u16_t enc28j60Receive (void)
   if (ethRxPointer > RXEND)
   {
     	ethRxPointer = 0;
-		printf("reset rx pointer!"); 
+		//printf("reset rx pointer!"); 
 		
 		//portEXIT_CRITICAL();
 	//enc28j60Init ();

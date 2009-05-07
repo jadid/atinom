@@ -25,3 +25,11 @@ dengan telnet).
 Default sumber menjadi 192.168.1.254, jika 255 jadi semacam broadcast.
 Ditambahkan menu bahan bakar pada LCD.
 
+7 Mei 2009, jadid
+========================
+Copy komon_A ke komon_Thermo (untuk modul thermocouple)
+Perbedaanya sebenarnya hanya di init adc & range adc
+
+Komon_A :
+RTD menghasilkan voltage terlalu rendah, sehingga perlu 
+di adjust full scale ADC nya.

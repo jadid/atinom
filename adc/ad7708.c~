@@ -10,8 +10,8 @@
 
 #include "FreeRTOS.h"
 #include "ad7708.h"
-
-
+#include <math.h>
+#include "../tinysh/enviro.h"
 
 static unsigned int kalibrated;
 
@@ -278,8 +278,29 @@ void start_adc_1(int fdx)
 	st_adc.cur_kanal = 0;
 	
 	printf("Starting ADC collecting data !\r\n");
-	//reset_data_adc(fdx);
+	
+	/* 	
+		range adc thermocouple adalah fix di range_adc
+		lihat di ad7708.h header 
+	
+		sedangkan range_adc untuk thermocouple adalah
+		tergantung masing2 kanal
+		
+		kanal 1 -  5 adalah RTD
+		kanal 6 - 10 adalah 4-20 mA
+		
+		output dari opamp RTD, jika 100 C adalah 0.3 Volt
+		sehingga kanal 1 - 5 harus dipakai range
+		320 mV
+	*/
+	
+	#ifdef BOARD_KOMON_B_THERMO
 	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_adc);
+	#endif
+	
+	#ifdef BOARD_KOMON_A_RTD
+	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_RTD);
+	#endif
 		
 	set_adccon(temp_char);
 	set_mode((unsigned char) (3 + 16));			//continuous sampling + CHCON
@@ -289,7 +310,6 @@ void start_adc_1(int fdx)
 	printf(" ADCCON = %d ;", (unsigned char) cek_adccon());
 	printf(" MODE = %d\r\n",(unsigned char)  cek_mode());
 	
-	//usleep(100);
 }
 
 inline unsigned int cek_adc_rdy(void)
@@ -325,6 +345,44 @@ void proses_data_adc(void)
 		 	st_adc.cur_kanal = 0;
 		}
 		
+		if (st_adc.cur_kanal < 5)
+		{
+			temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_RTD);
+		}
+		else
+		{
+			if (st_adc.cur_kanal == 8)
+			temp = (unsigned char) ((14 << 4) + range_420);
+		
+			else if (st_adc.cur_kanal == 9)
+			temp = (unsigned char) ((15 << 4) + range_420);
+		
+			else
+			temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
+		}
+		
+		set_adccon(temp);
+	}
+}
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
+void proses_data_adc(void)
+{
+	unsigned char temp;
+	
+	if (cek_adc_rdy() == 1)
+	{
+		st_adc.count++;
+		st_adc.data[ st_adc.cur_kanal ] = baca_data();
+		 	
+		st_adc.cur_kanal++;
+		if (st_adc.cur_kanal == 10)
+		{
+		 	/* satu round 10 kanal sudah selesai */
+		 	st_adc.cur_kanal = 0;
+		}
+		
 		if (st_adc.cur_kanal == 8)
 		temp = (unsigned char) ((14 << 4) + range_adc);
 		
@@ -338,3 +396,44 @@ void proses_data_adc(void)
 	}
 }
 #endif
+
+void hitung_data_float(void)
+{
+	int i;
+	float fl;
+	float temp_rpm;
+	
+#ifdef BOARD_KOMON_B_THERMO	
+	for (i=0; i< 10; i++)
+	{		
+		/*  tegangan */		
+		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
+				
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			}
+#endif
+
+#ifdef BOARD_KOMON_A_RTD
+	for (i=0; i< 5; i++)
+	{		
+		/*  tegangan */
+		
+		temp_rpm = st_adc.data[i] * faktor_pengali_RTD / 0xffff;
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;				
+	}
+	
+	/* data 4-20 mA */
+	for (i=5; i< 10; i++)
+	{		
+		/*  tegangan */		
+		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+	}
+#endif
+
+
+}

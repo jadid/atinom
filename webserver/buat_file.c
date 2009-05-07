@@ -243,11 +243,28 @@ void buat_file_index(void)
 
 	
 #ifdef BOARD_KOMON_A_RTD
-	for (i=0; i< 10; i++)
+	for (i=0; i< 5; i++)
 	{		
 		/*  tegangan */
 		
-		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
+		temp_rpm = st_adc.data[i] * faktor_pengali_RTD / 0xffff;
+		
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
+		strcat(tot_buf, head_buf);
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
+		strcat(tot_buf, head_buf);
+				
+	}
+	
+	/* data 4-20 mA */
+	for (i=5; i< 10; i++)
+	{		
+		/*  tegangan */		
+		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
 		strcat(tot_buf, head_buf);

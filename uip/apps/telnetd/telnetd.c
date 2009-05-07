@@ -70,11 +70,12 @@
 
 #include "../../../main.h"
 #endif
-
-
 #include "../../uip/uip.h"
 #include "../../lib/memb.h"
 #include "telnetd.h"
+
+#include "../../tinysh/enviro.h"
+extern struct t_env env2;
 
 //
 //
@@ -232,8 +233,11 @@ static int telnetdOpen (void)
   
   telnetdBufferAppend (&telnetdBuf, HELLO_1, strlen (HELLO_1));
   telnetdBufferAppend (&telnetdBuf, HELLO_2, strlen (HELLO_2));
-  
+    
   sprintf(tt, "%s v%s \n", NAMA_BOARD, VERSI_KOMON);
+  telnetdBufferAppend (&telnetdBuf, tt, strlen (tt));
+  
+  sprintf(tt, "IP: %d.%d.%d.%d \n", env2.IP0, env2.IP1, env2.IP2, env2.IP3); 
   telnetdBufferAppend (&telnetdBuf, tt, strlen (tt));
   
   telnetdBufferAppend (&telnetdBuf, HELLO_3, strlen (HELLO_3));

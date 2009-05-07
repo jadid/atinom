@@ -662,6 +662,8 @@ void cls_layar(void)
 		layar.buf[i] = 0;	
 }
 
+
+
 // membersihkan bagian tertentu dari ram, supaya ditulis bersih
 void teks_clear(unsigned short x, unsigned short y, unsigned short pjg)
 {

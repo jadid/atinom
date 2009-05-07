@@ -33,11 +33,10 @@ void cek_titik(unsigned char no_mes)
 	printf("\r\n");
 	
 	pasnya = TIAP_MESIN * (no_mes - 1);
-	//titik[pasnya].data = 0.1234567;
-	//titik[pasnya+1].data = 12345.67;
 
 	for (i=0; i<60; i++)
 	{
+		
 		printf("%3d. %3d. %3d. %3d. %9s: %s\r\n", pasnya+1, titik[pasnya].ID_sumber, \
 			titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya].data), \
 			keter[i]);

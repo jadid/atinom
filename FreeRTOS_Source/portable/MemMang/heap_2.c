@@ -263,7 +263,7 @@ xBlockLink *pxLink;
 #define maks_stack	0x400			/* 1 KB */
 
 static unsigned int  stack_used = 0;
-void *pvPortMallocKU( size_t xWantedSize )
+void *pvPortMallocKU2( size_t xWantedSize )
 {
 	void *pvReturn=NULL;
 	

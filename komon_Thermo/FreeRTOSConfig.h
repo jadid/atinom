@@ -36,19 +36,18 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-#define BOARD_TAMPILAN
+#define PAKE_TELNETD
+
+#define BOARD_KOMON_B_THERMO
+#define VERSI_KOMON		"1.41"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 #define _printf	printf2
 #define printf	printf2
 
-#define PAKE_TELNETD
-#define TAMPILAN_LPC_4
-
-#define PAKE_TELNETD
-#define VERSI_KOMON		"1.42"
-#define PROMPT 		"Tampilan $ "
-#define NAMA_BOARD	"Tampilan"
+#define PROMPT 		"Komon_Th $ "
+#define NAMA_BOARD	"Babelan Komon-B (Thermocouple)"
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -80,7 +79,7 @@
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 32 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 30 * configMINIMAL_STACK_SIZE * 4) )
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

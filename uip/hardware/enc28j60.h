@@ -17,13 +17,6 @@
 
 //
 //
-/*
-#define ENC28J60_Select()   GPIO0_FIOCLR = GPIO_IO_P7
-#define ENC28J60_Deselect() GPIO0_FIOSET = GPIO_IO_P7
-
-#define ENC28J60_Reset()    GPIO0_FIOCLR = GPIO_IO_P22
-#define ENC28J60_Unreset()  GPIO0_FIOSET = GPIO_IO_P22
-*/
 
 
 #ifdef KOMON_KONTER
@@ -32,6 +25,13 @@
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
+#define CS_ENC	BIT(18)
+#define INT_ENC	BIT(17)
+
+#define BOARD_KOMON
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
 #define CS_ENC	BIT(18)
 #define INT_ENC	BIT(17)
 
@@ -71,7 +71,7 @@
 
 #define init_enc_port()		FIO1DIR = FIO1DIR & ~(INT_ENC); \
 							FIO1DIR = FIO1DIR | CS_ENC;
-							
+						
 #endif
 
 #ifdef TAMPILAN_LPC_4
@@ -79,8 +79,11 @@
 #define INT_ENC	BIT(1)		// P2
 
 
-#define ENC28J60_Select()   FIO1CLR = CS_ENC 
-#define ENC28J60_Deselect() FIO1SET = CS_ENC
+#define ENC28J60_Select()  portENTER_CRITICAL(); \
+FIO1CLR = CS_ENC;
+ 
+#define ENC28J60_Deselect() FIO1SET = CS_ENC;	\
+portEXIT_CRITICAL();
 
 // seharusnya tidak ada pin reset (sudah disambung ke VCC)
 #define ENC28J60_Reset()    FIO1CLR = CS_ENC

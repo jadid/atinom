@@ -13,7 +13,7 @@ Copyright:         (c) Martin Maurer 2003-2007, All rights reserved
 Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.com
 */
 
-#define VERSION_STR "1.48"
+#define VERSION_STR "1.48_DBE"
 
 /*
 
@@ -459,7 +459,7 @@ static LPC_DEVICE_TYPE LPCtypes[] =
   { 0x0603FB02, 2364, 128, 34, 11, 4096, SectorTable_213x },
   { 0x0603FB23, 2366, 256, 58, 15, 4096, SectorTable_213x },
   /*{ 0x0603FB25, 2368, 512, 58, 27, 4096, SectorTable_213x },  edit 5 jun 08*/
-  /*{ 0x1600F925, 2368, 512, 58, 27, 4096, SectorTable_213x }, */
+  { 0x1600F925, 2368, 512, 58, 27, 4096, SectorTable_213x }, 	/* biar bisa barengan 2368 */
   { 0x1600E825, 2367, 512, 58, 27, 4096, SectorTable_213x },		/* di tambah untuk 2367, 1 des 08 */
   { 0x0703FF25, 2378, 512, 58, 27, 4096, SectorTable_213x },
   { 0x0503FF35, 2458, 512, 98, 27, 4096, SectorTable_213x },

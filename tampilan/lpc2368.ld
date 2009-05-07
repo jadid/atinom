@@ -3,9 +3,9 @@ MEMORY
 	flash	: ORIGIN = 0x00000000, LENGTH = 500K
 	/* ram	: ORIGIN = 0x40000000, LENGTH = 32K */
 	ram	: ORIGIN = 0x40000000, LENGTH = (32K - 32) 
-	usbram   : ORIGIN = 0x7FD00400, LENGTH = 7196		/* dibagi dengan stack uart */
-	ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K
-	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K
+	usbram   : ORIGIN = 0x7FD00000, LENGTH = 8K
+	/* ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K */
+	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K /* 16 K */
 }
 
 __stack_end__ = 0x40000000 + 32K - 4;
@@ -61,9 +61,10 @@ SECTIONS
 	/*.usbram (NOLOAD): harus dikasih NOLOAD supaya bisa di LOAD */
 	.usbram (NOLOAD) :
 	{
-	__usbram_beg__ = .;
-	*(.usb_text)
-	*(.dmaram)
+		__usbram_beg__ = .;
+		/*(.usb_text)*/
+		/*(.dmaram)*/
+		*(.index_text)
 		__usbram_end__ = .;
 	} >usbram
 	

@@ -152,9 +152,26 @@ void set_titik(int argc, char **argv)
 		{
 			if (strcmp(argv[1], "help") == 0)
 			{
-				printf("  set_titik a b c d\r\n");
-				printf("  : a nomer titik, b nomer sumber, c kanal, d alamat/stack board\r\n");
-				printf("    jika alamat kosong, default = 1\r\n");
+				printf(" Setting titik yang akan ditampilkan\r\n");
+				garis_bawah();
+				printf(" argument : help, default, a b c d\r\n");
+				printf("   help   : printout keterangan ini\r\n");
+				printf("   default : load default setting titik\r\n");
+				printf("\r\n");
+				printf("   misalnya : $ set_titik a b c d\r\n");
+				printf("     a nomer titik, b nomer sumber, c kanal, d alamat/stack modul\r\n");
+				printf("     jika alamat kosong, default = 1\r\n");
+				printf("\r\n");
+				printf("   Catatan :\r\n");
+				printf("   Satu mesin dialokasikan 100 titik, sehingga mesin 1 akan\r\n"); 
+				printf("   mencakup titik 1 sampai titik 100, sedangkan mesin 2 akan\r\n"); 
+				printf("   mencakup titik 101 sampai dengan 200, dst.\r\n");
+				printf("\r\n");
+				printf("   Titik 1 selalu mempunyai keterangan yang sama dengan titik 101,\r\n");
+				printf("   misalnya, Titik 1 = Charge air pressure kiri, maka titik 101\r\n");
+				printf("   juga Charge air pressure kiri, tetapi untuk mesin #2\r\n");
+				printf("   begitu seterusnya.\r\n");
+				
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
@@ -166,6 +183,7 @@ void set_titik(int argc, char **argv)
 			}	
 		}
 		printf(" ERR: argument kurang !\r\n");
+		printf(" coba set_titik help \r\n");
 		return;	
 	}
 	

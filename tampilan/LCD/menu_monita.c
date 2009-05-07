@@ -73,12 +73,58 @@ char keter[100][25] __attribute__ ((section (".lokasi_font"))) = \
 		"Voltage (V)", \
 		"Ampere (A)", \
 		"frekuensi", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", /* 60 */\
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", /* 70 */\
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", /* 80 */\
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", /* 90 */\
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", \
+		"--", /* 100 */\
 		};
 
 extern struct t_sumber sumber[];
 extern struct t_mesin	mesin[];
 extern struct t_titik	titik[];
 extern struct t_status status[];
+extern struct t_data_hitung data_hitung[];
 extern unsigned char daytime[32];
 
 unsigned short x;
@@ -111,6 +157,7 @@ void menu_pelumas(unsigned int mes);
 void menu_jacket(unsigned int mes);
 void menu_exhaust(unsigned int mes);
 void menu_generator(unsigned int mes);
+void menu_bbakar(unsigned int mes, unsigned int nomer_mesin);
 void menu_setting(unsigned int ttk);
 void menu_titik(unsigned int ttk, unsigned char flag);
 void menu_system(void);
@@ -179,6 +226,9 @@ void menu_monita(unsigned char p)
 	teks_layar(menu_kiri, menu_top+4*(menu_tinggi+menu_antara), 	 "Generator");
 	teks_layar(menu_kiri, menu_top+4*(menu_tinggi+menu_antara)+8, "Load");
 	
+	teks_layar(menu_kiri, menu_top+5*(menu_tinggi+menu_antara), 	 "Bahan");
+	teks_layar(menu_kiri, menu_top+5*(menu_tinggi+menu_antara)+8, "Bakar");
+	
 	// setting
 	if (p == 6)
 		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+3, "Setting");
@@ -245,14 +295,20 @@ void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsig
    */
 }
 
-//void menu_pilih(unsigned char p)
-/* p adalah group, misalnya charge air dll, mesin adalah unitnya) */
-/* flag : jika diakses dari menu lebih dalam */
+/* 	
+	p adalah group, misalnya charge air dll, 
+	p ini berdasarkan tombol naik turun
+	
+	mesin adalah unitnya, bedasarkan tombol kanan
+ 	
+ 	flag : jika diakses dari menu lebih dalam 
+ 	
+ 	*/
 void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 {
 	unsigned int ttk;
 	
-	if (p < 5)
+	if (p < 6)
 		kotak_bolong(2, 40-menu_jarak_atas+(p*(menu_tinggi+menu_antara)), menu_kanan, 40+menu_tinggi+(p*(menu_tinggi+menu_antara)));
 	else
 		kotak_bolong(2, 40-menu_jarak_atas+(6*(menu_tinggi+menu_antara))+(p-6)*2, menu_kanan, 40+menu_tinggi+(6*(menu_tinggi+menu_antara))+(p-6)*2);
@@ -275,14 +331,14 @@ void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 	if (mesin == 4 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#5");
 	
-	//ttk = TIAP_MESIN * (mesin-1);
 	ttk = TIAP_MESIN * mesin;
 	
 	if (p == 0) menu_charge(ttk);	
-	else if (p == 1) menu_jacket(mesin);
-	else if (p == 2) menu_pelumas(mesin);
-	else if (p == 3) menu_exhaust(mesin);
+	else if (p == 1) menu_jacket(ttk);
+	else if (p == 2) menu_pelumas(ttk);
+	else if (p == 3) menu_exhaust(ttk);
 	else if (p == 4) menu_generator(ttk);
+	else if (p == 5) menu_bbakar(ttk, mesin);
 	
 	else if (p == 6) menu_setting(ttk);
 	else if (p == 7) menu_sumber(ttk);
@@ -367,10 +423,10 @@ void menu_pelumas(unsigned int mes)
 	teks_arial(100, 70, tek); 
 
 	teks_layar(92, 91, "Outlet");
-	sprintf(tek, "P = %3.2f bar", titik[OFFSET_LOP_OUT1].data);
+	sprintf(tek, "P = %3.2f bar", titik[ mes + OFFSET_LOP_OUT1 ].data);
 	teks_arial(100, 100, tek); 
 	
-	sprintf(tek, "T = %3.2f C", titik[mes + OFFSET_LOT_OUT1].data);
+	sprintf(tek, "T = %3.2f C", titik[ mes + OFFSET_LOT_OUT1 ].data);
 	teks_arial(100, 120, tek);
 	 
 }
@@ -444,6 +500,34 @@ void menu_generator(unsigned int mes)
 	teks_arial(85, 170, tek);
 	
 	//titik[mes].data);
+}
+
+void menu_bbakar(unsigned int mes, unsigned int nomer_mesin)
+{
+	float f1=0;
+	float f2=0;
+	
+	teks_arial(menu_kanan+menu_kiri+4, menu_besar_tinggi-18, "Bahan Bakar");
+	
+	sprintf(tek, "In  = %4.0f", titik[mes + OFFSET_BB_IN].data);
+	teks_arial(85, 50, tek); 
+	
+	sprintf(tek, "Out = %4.0f ", titik[mes + OFFSET_BB_OUT].data);
+	teks_arial(85, 70, tek); 
+	
+	teks_layar(77, 91, "Per menit");
+	sprintf(tek, "In  = %4.0f", data_hitung[ nomer_mesin ].bb_in);
+	teks_arial(85, 100, tek); 
+	
+	sprintf(tek, "Out = %4.0f", data_hitung[ nomer_mesin ].bb_out);
+	teks_arial(85, 120, tek);
+	
+	sprintf(tek, "kWh = %4.0f", data_hitung[ nomer_mesin ].kwh);
+	teks_arial(85, 140, tek);
+	
+	sprintf(tek, "sfc = %4.0f", data_hitung[ nomer_mesin ].sfc);
+	teks_arial(85, 160, tek);
+	
 }
 
 void menu_setting(unsigned int ttk)
@@ -592,7 +676,7 @@ void menu_system(void)
 	unsigned int tahun;
 	unsigned char up[64];
 	
-	sprintf(tek, "Monita Tampilan %s", VERSI_TAMPILAN);
+	sprintf(tek, "Monita %s v %s", NAMA_BOARD, VERSI_KOMON);
 	teks_layar(80, 35, tek);
 	teks_layar(80, 45, "CPU : LPC2368 60 MHz FreeRTOS 5.1.1");
 	teks_layar(80, 55, "daun biru Engineering, Des 2008");	

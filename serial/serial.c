@@ -121,7 +121,7 @@ static volatile portLONG *plTHREEmpty;
 /*-----------------------------------------------------------*/
 
 #include <stdarg.h>
-char printbuffer[128] __attribute__ ((section (".eth_test")));
+char printbuffer[256];
    
 int printf2 (const char *fmt, ...)
 {

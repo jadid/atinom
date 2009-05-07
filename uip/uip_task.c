@@ -29,7 +29,11 @@
 extern struct t_adc st_adc;
 #endif
 
-#define prio ( tskIDLE_PRIORITY + 3)	// paling tinggi dari yang lain
+#ifdef BOARD_KOMON_B_THERMO
+#define BOARD_KOMON
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+#endif
 
 //#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
 #define RT_CLOCK_SECOND   ( configTICK_RATE_HZ / 10 )
@@ -41,7 +45,10 @@ extern struct t_adc st_adc;
 #ifdef BOARD_KOMON
 #define PAKE_HTTP
 #endif
-//#define PAKE_TELNETD
+
+#ifdef BOARD_TAMPILAN
+#define PAKE_HTTP
+#endif
 
 
 unsigned int paket_per_menit=0;
@@ -241,13 +248,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		 #ifdef BOARD_KOMON_A_RTD
 		 proses_data_adc();
 		 #endif
+		 
+		 #ifdef BOARD_KOMON_B_THERMO
+		 proses_data_adc();
+		 #endif
 	}
 }
 
 
 void start_ether(void)
 {
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", 1024, NULL, prio, ( xTaskHandle * ) &hdl_ether );
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 8), \
+		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 
 void dispatch_tcp_appcall (void)

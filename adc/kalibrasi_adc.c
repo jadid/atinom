@@ -27,7 +27,7 @@ char kalibrasi_adc1(int fdy)
 	unsigned int mask;
 	
 	printf("Start calibrating ADC");
-	
+
 	stop_adc();
 	set_calibrated(0);
 	vTaskDelay(100);
@@ -56,8 +56,9 @@ char kalibrasi_adc1(int fdy)
 	   	kalib_ulang:
 	   	loop_ulang++;
 		set_adccon(temp_char);
-		//printf("temp=%3d", temp_char);
-		set_mode(4 + 16);			//kalibrasi zero scale + CHCON
+		
+		/* kalibrasi zero scale + CHCON */
+		set_mode(4 + 16);			
 		cek = cek_adccon();
 		//if (cek != temp_char) printf(" !%d ", cek); 
 		//serial_puts("tidak cocok");

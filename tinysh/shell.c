@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <errno.h>
+#include <float.h>
+#include <math.h>
 
 #include "tinysh.h"
 #include "FreeRTOS.h"
@@ -20,6 +22,11 @@
 #include "set_kanal.c"
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO
+#include "../adc/command_adc.c"
+#include "set_kanal.c"
+#endif
+
 #include "enviro.h"
 
 #include "../GPIO/gpio.h"
@@ -28,7 +35,6 @@
 #include <stdlib.h>
 
 void reset_cpu(void);
-extern struct t2_konter konter;
 
 extern struct t_mesin mesin[];
 extern struct t_titik titik[];
@@ -163,30 +169,44 @@ static tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",
                               cek_uptime,0,0,0};
 
 
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
+extern unsigned int data_putaran[];
+extern unsigned int data_hit[];	
+extern struct t2_konter konter;
+				
+unsigned int is_angka(float a)
+{
+	return (a == a);
+}
+
 static void cek_rpm(int argc, char **argv)
 {
 	unsigned int i;
-	float uptime;
+	float temp_f;
+	float temp_rpm;
 
 	printf("Global hit = %d\n", konter.global_hit);
 	printf("Ov flow = %d\n", konter.ovflow);
 
 	for (i=0; i<10; i++)
-	{
-		printf(" %2d : beda = %12d ns, hit = %d\n", (i+1), konter.t_konter[i].beda, konter.t_konter[i].hit);
+	{	
+		if (data_putaran[i])
+		{
+			// cari frekuensi
+			temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
+			// rpm
+			temp_rpm = temp_f * 60;
+		}
+		else
+		{
+			temp_f = 0;
+			temp_rpm = 0;
+		}	
+		
+		printf(" %2d : F = %4.2f Hz, rpm = %4.2f, hit = %d\n", (i+1), \
+			temp_f, temp_rpm, konter.t_konter[i].hit);
 
 	}
-	uptime = (float) konter.ovflow * per_oflow;
-	i = T1TC;
-	uptime = uptime + (i * (float) per_tik);
-	if (uptime > 60)
-	{
-		uptime = uptime / 60;
-		printf("Uptime = %.3f jam\n", uptime);
-	}
-	else
-		printf("Uptime = %.3f menit\n", uptime);
 }
 
 static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",
@@ -320,7 +340,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
-#ifdef BOARD_KOMON
+#ifdef BOARD_KOMON_KONTER
 	tinysh_add_command(&cek_rpm_cmd);
 #endif
 
@@ -338,6 +358,11 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
+	tinysh_add_command(&cek_adc_cmd);
+	tinysh_add_command(&set_kanal_cmd);
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
 	tinysh_add_command(&cek_adc_cmd);
 	tinysh_add_command(&set_kanal_cmd);
 #endif
@@ -387,6 +412,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	start_adc_1();
 	#endif
 	
+	#ifdef BOARD_KOMON_B_THERMO
+	kalibrasi_adc1();
+	vTaskDelay(100);
+	start_adc_1();
+	#endif
+	
 	tinysh_set_prompt(PROMPT);
 	
 	/* 
@@ -404,5 +435,6 @@ portTASK_FUNCTION(shell, pvParameters )
 
 void init_shell(void)
 {
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 8), NULL, 1, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), \
+		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }

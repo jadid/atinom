@@ -240,14 +240,16 @@ size_t xQueueSizeInBytes;
 	/* Allocate the new queue structure. */
 	if( uxQueueLength > ( unsigned portBASE_TYPE ) 0 )
 	{
-		pxNewQueue = ( xQUEUE * ) pvPortMallocKU( sizeof( xQUEUE ) );
+		//pxNewQueue = ( xQUEUE * ) pvPortMallocKU( sizeof( xQUEUE ) );
+		pxNewQueue = ( xQUEUE * ) pvPortMalloc( sizeof( xQUEUE ) );
 		if( pxNewQueue != NULL )
 		{
 			/* Create the list of pointers to queue items.  The queue is one byte
 			longer than asked for to make wrap checking easier/faster. */
 			xQueueSizeInBytes = ( size_t ) ( uxQueueLength * uxItemSize ) + ( size_t ) 1;
 
-			pxNewQueue->pcHead = ( signed portCHAR * ) pvPortMallocKU( xQueueSizeInBytes );
+			//pxNewQueue->pcHead = ( signed portCHAR * ) pvPortMallocKU( xQueueSizeInBytes );
+			pxNewQueue->pcHead = ( signed portCHAR * ) pvPortMalloc( xQueueSizeInBytes );			
 			if( pxNewQueue->pcHead != NULL )
 			{
 				/* Initialise the queue members as described above where the

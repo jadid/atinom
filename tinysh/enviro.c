@@ -13,7 +13,6 @@
 #include "task.h"
 
 // kalau ditaruh di ethram, nulisnya jadi error
-//struct t_env env2  __attribute__ ((section (".eth_test")));
 struct t_env env2;
 
 unsigned int command[5]; 	// For Command Table
@@ -163,7 +162,7 @@ int baca_env(char tampil)
 			
 			if (tampil == 1)
 			{
-				printf(" Faktor kalibrasi :\r\n");
+				printf(" Faktor kalibrasi (y = mx + C) :\r\n");
 				
 				extern char tek;
 				
@@ -181,9 +180,9 @@ int baca_env(char tampil)
 				
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) m = %3.3f, y= %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
+					printf("  (%2d) m = %3.3f, C = %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
 					i++;
-					printf("  (%2d) m = %3.3f, y= %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
+					printf("  (%2d) m = %3.3f, C = %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
 				}
 				
 				printf(" Keterangan kanal :\r\n");

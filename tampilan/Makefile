@@ -42,8 +42,9 @@ CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
+PENULIS= ../Penulis/./lpc_dbe
 
-NAMA_FILE=konter_1
+NAMA_FILE=tampilan
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
@@ -99,6 +100,13 @@ THUMB_SOURCE= \
 		../uip/uip/uiplib.c \
 		../uip/uip_task.c \
 		../monita/monita_uip.c \
+		../system/idle_hook.c \
+		../uip/apps/telnetd/telnetd.c	\
+		../webserver/httpd.c \
+		../webserver/httpd-fs.c \
+		../webserver/http-strings.c \
+		../webserver/httpd-cgi.c \
+		
 #		../GPIO/gpio.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \
@@ -143,7 +151,10 @@ clean :
 #	touch Makefile
 	
 tulis :
-	./lpc68 -hex konter_1.hex /dev/ttyUSB0 115200 14748
+	$(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
+
+tulis1 :
+	$(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB1 115200 14748
 	
 MSG_SIZE_BEFORE = Size before: 
 MSG_SIZE_AFTER = Size after:

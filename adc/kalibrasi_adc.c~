@@ -27,7 +27,7 @@ char kalibrasi_adc1(int fdy)
 	unsigned int mask;
 	
 	printf("Start calibrating ADC");
-	
+
 	stop_adc();
 	set_calibrated(0);
 	vTaskDelay(100);
@@ -43,6 +43,7 @@ char kalibrasi_adc1(int fdy)
 	er = 0;
 	ada_adc_1 = false;
 
+#ifdef BOARD_KOMON_B_THERMO	
 	for (t=0; t<10; t++)
 	{
 		temp_char = (unsigned char) ((er << 4) + 15);		// 0x0F
@@ -56,8 +57,9 @@ char kalibrasi_adc1(int fdy)
 	   	kalib_ulang:
 	   	loop_ulang++;
 		set_adccon(temp_char);
-		//printf("temp=%3d", temp_char);
-		set_mode(4 + 16);			//kalibrasi zero scale + CHCON
+		
+		/* kalibrasi zero scale + CHCON */
+		set_mode(4 + 16);			
 		cek = cek_adccon();
 		//if (cek != temp_char) printf(" !%d ", cek); 
 		//serial_puts("tidak cocok");
@@ -108,7 +110,7 @@ char kalibrasi_adc1(int fdy)
 	   	
 	   	printf(" ADC iocon %d", cek_iocon());
 		printf("; adccon %d", cek_adccon());
-		printf("; mode %d", cek_mode());
+		printf("; mode %d\r\n", cek_mode());
 	
 		set_iocon(0x00);
 		
@@ -120,4 +122,6 @@ char kalibrasi_adc1(int fdy)
 		set_calibrated(0);
 		return 0;
 	}
+#endif
+	
 }

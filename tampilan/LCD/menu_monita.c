@@ -295,9 +295,15 @@ void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsig
    */
 }
 
-//void menu_pilih(unsigned char p)
-/* p adalah group, misalnya charge air dll, mesin adalah unitnya) */
-/* flag : jika diakses dari menu lebih dalam */
+/* 	
+	p adalah group, misalnya charge air dll, 
+	p ini berdasarkan tombol naik turun
+	
+	mesin adalah unitnya, bedasarkan tombol kanan
+ 	
+ 	flag : jika diakses dari menu lebih dalam 
+ 	
+ 	*/
 void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 {
 	unsigned int ttk;
@@ -325,13 +331,12 @@ void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 	if (mesin == 4 && p != 8)
 		teks_arial(menu_besar_kanan-22, menu_besar_tinggi-18, "#5");
 	
-	//ttk = TIAP_MESIN * (mesin-1);
 	ttk = TIAP_MESIN * mesin;
 	
 	if (p == 0) menu_charge(ttk);	
-	else if (p == 1) menu_jacket(mesin);
-	else if (p == 2) menu_pelumas(mesin);
-	else if (p == 3) menu_exhaust(mesin);
+	else if (p == 1) menu_jacket(ttk);
+	else if (p == 2) menu_pelumas(ttk);
+	else if (p == 3) menu_exhaust(ttk);
 	else if (p == 4) menu_generator(ttk);
 	else if (p == 5) menu_bbakar(ttk, mesin);
 	
@@ -418,10 +423,10 @@ void menu_pelumas(unsigned int mes)
 	teks_arial(100, 70, tek); 
 
 	teks_layar(92, 91, "Outlet");
-	sprintf(tek, "P = %3.2f bar", titik[OFFSET_LOP_OUT1].data);
+	sprintf(tek, "P = %3.2f bar", titik[ mes + OFFSET_LOP_OUT1 ].data);
 	teks_arial(100, 100, tek); 
 	
-	sprintf(tek, "T = %3.2f C", titik[mes + OFFSET_LOT_OUT1].data);
+	sprintf(tek, "T = %3.2f C", titik[ mes + OFFSET_LOT_OUT1 ].data);
 	teks_arial(100, 120, tek);
 	 
 }

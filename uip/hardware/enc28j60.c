@@ -145,7 +145,7 @@ xSemaphoreHandle xENC28J60Semaphore = NULL;
 int enc28j60Init (void)
 {
   volatile portTickType xTicks;
-	
+		
 	
   //
   //  If the current MAC address is 00:00:00:00:00:00, default to UIP_ETHADDR[0..5] values
@@ -153,11 +153,32 @@ int enc28j60Init (void)
 
   if (!uip_ethaddr.addr[0] && !uip_ethaddr.addr[1] && !uip_ethaddr.addr[2] && !uip_ethaddr.addr[3] && !uip_ethaddr.addr[4] && !uip_ethaddr.addr[5])
   {
-    //struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, UIP_ETHADDR3, UIP_ETHADDR4, UIP_ETHADDR5}};
-    struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, UIP_ETHADDR4, env2.IP3+3}};
-	printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
-		UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, UIP_ETHADDR4, env2.IP3+3);
-	uip_setethaddr (mac);
+    	unsigned char ran_mac;
+    	unsigned int sed;
+    
+    	/* 
+    		init random seed 
+			ambil dari watchdog clock    
+    	*/
+    	sed = WDTV;
+    	printf("Random seed = %u, ", sed);
+    	sed = sed * env2.IP3;
+    	
+    	srand(sed);
+    	
+    	ran_mac = rand() % 255;
+    	printf("ran mac = %X\r\n", ran_mac);
+    
+    	//struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, UIP_ETHADDR3, UIP_ETHADDR4, UIP_ETHADDR5}};
+    	/*
+    	struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, UIP_ETHADDR4, env2.IP3+3}};
+		printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
+			UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, UIP_ETHADDR4, env2.IP3+3);
+		*/
+		struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3}};
+		printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
+			UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3);
+		uip_setethaddr (mac);
   }
 
 #ifdef GUNA_SEMA
@@ -265,6 +286,15 @@ int enc28j60Init (void)
   encWriteReg (MABBIPG, 0x12);            // Set back to back inter-packet gap
 
   encBankSelect (BANK3);
+
+	#if 0
+	printf("\r\nDebug MAC address :\r\n");
+	printf("  (%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X) ", \
+		uip_ethaddr.addr [0], uip_ethaddr.addr [1],	\
+		uip_ethaddr.addr [2], uip_ethaddr.addr [3], \
+		uip_ethaddr.addr [4], uip_ethaddr.addr [5]);
+		
+	#endif
 
   encWriteReg (MAADR1, uip_ethaddr.addr [0]);
   encWriteReg (MAADR2, uip_ethaddr.addr [1]);

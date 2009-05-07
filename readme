@@ -25,20 +25,18 @@ dengan telnet).
 Default sumber menjadi 192.168.1.254, jika 255 jadi semacam broadcast.
 Ditambahkan menu bahan bakar pada LCD.
 
-<<<<<<< HEAD:readme
-7 Mei 2009, jadid
-========================
-Copy komon_A ke komon_Thermo (untuk modul thermocouple)
-Perbedaanya sebenarnya hanya di init adc & range adc
-=======
 23 April 2009, jadid
 =======================
 SEMUA, VERSI jadi 1.41
 Watchdog lupa belum dipakai, jadi kalau hang .. forever.
 Diset untuk 1 menit, jika tidak di tendang, maka akan reset.
->>>>>>> master:readme
 
-<<<<<<< HEAD:readme
+
+7 Mei 2009, jadid
+========================
+Copy komon_A ke komon_Thermo (untuk modul thermocouple)
+Perbedaanya sebenarnya hanya di init adc & range adc
+
 Komon_A :
 RTD menghasilkan voltage terlalu rendah, sehingga perlu 
 di adjust full scale ADC nya.
@@ -48,5 +46,4 @@ Diberikan tambahan informasin IP.
 
 Komon_Thermo :
 masih reset sendiri jika di telnet
-=======
->>>>>>> master:readme
+

@@ -27,8 +27,11 @@
 #include "set_kanal.c"
 #endif
 
-#include "enviro.h"
+#ifdef BOARD_KOMON_KONTER
+#include "set_kanal.c"
+#endif
 
+#include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
 
@@ -342,6 +345,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	
 #ifdef BOARD_KOMON_KONTER
 	tinysh_add_command(&cek_rpm_cmd);
+	tinysh_add_command(&set_kanal_cmd);
 #endif
 
 #ifdef BOARD_TAMPILAN

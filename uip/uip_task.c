@@ -29,6 +29,12 @@
 extern struct t_adc st_adc;
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO
+#define BOARD_KOMON
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+#endif
+
 //#define RT_CLOCK_SECOND   (configTICK_RATE_HZ)
 #define RT_CLOCK_SECOND   ( configTICK_RATE_HZ / 10 )
 #define uipARP_FREQUENCY  (20)
@@ -239,7 +245,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				}
 		 }	// tanpa paket
 		 
-		 #ifdef BOARD_KOMON_A_RTD
+		 #ifdef BOARD_KOMON
 		 proses_data_adc();
 		 #endif
 	}

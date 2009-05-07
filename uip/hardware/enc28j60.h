@@ -17,13 +17,6 @@
 
 //
 //
-/*
-#define ENC28J60_Select()   GPIO0_FIOCLR = GPIO_IO_P7
-#define ENC28J60_Deselect() GPIO0_FIOSET = GPIO_IO_P7
-
-#define ENC28J60_Reset()    GPIO0_FIOCLR = GPIO_IO_P22
-#define ENC28J60_Unreset()  GPIO0_FIOSET = GPIO_IO_P22
-*/
 
 
 #ifdef KOMON_KONTER
@@ -32,6 +25,13 @@
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
+#define CS_ENC	BIT(18)
+#define INT_ENC	BIT(17)
+
+#define BOARD_KOMON
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
 #define CS_ENC	BIT(18)
 #define INT_ENC	BIT(17)
 

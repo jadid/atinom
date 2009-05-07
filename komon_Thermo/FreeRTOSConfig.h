@@ -38,7 +38,6 @@
 
 #define PAKE_TELNETD
 
-//#define BOARD_KOMON_A_RTD
 #define BOARD_KOMON_B_THERMO
 #define VERSI_KOMON		"1.4"
 
@@ -47,8 +46,8 @@
 #define _printf	printf2
 #define printf	printf2
 
-#define PROMPT 		"Komon_A $ "
-#define NAMA_BOARD	"Babelan Komon-A (RTD & Pressure 4-20mA)"
+#define PROMPT 		"Komon_Th $ "
+#define NAMA_BOARD	"Babelan Komon-B (Thermocouple)"
 
 /*-----------------------------------------------------------
  * Application specific definitions.

@@ -39,6 +39,14 @@ extern struct t_adc st_adc;
 #define BOARD_KOMON
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO
+
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+
+#define BOARD_KOMON
+#endif
+
 
 #ifdef BOARD_KOMON
 
@@ -104,15 +112,20 @@ void monita_appcall(void)
 			if (strncmp(buf, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;
-				//printf("data monita");	
 				
 				#ifdef BOARD_KOMON_A_RTD
 				for (i=0; i<20;i++)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
-				}			
+				}		
 				#endif
 				
+				#ifdef BOARD_KOMON_B_THERMO
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = st_adc.flt_data[i];
+				}			
+				#endif
 				
 				#ifdef BOARD_KOMON_KONTER
 				extern unsigned int data_putaran[];

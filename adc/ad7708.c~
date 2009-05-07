@@ -59,7 +59,9 @@ inline void uncs_ad7708(void)
 }
 #endif
 
-#ifdef BOARD_KOMON_A_RTD
+//#ifdef BOARD_KOMON_A_RTD
+
+#ifdef AD7708_LPC_KOMON
 
 #define kirim_word	spiPut
 #define ambil_word	spiPut
@@ -83,6 +85,7 @@ inline void cs_ad7708(void)
 inline void uncs_ad7708(void)
 {
 	FIO1SET = port_cs_ad7708;
+	SPI_SPCR = MSTR;			// ENC biar gak problem
 	portEXIT_CRITICAL();
 }
 
@@ -305,6 +308,7 @@ inline unsigned int cek_adc_rdy(void)
 		return 0;
 }
 
+#ifdef BOARD_KOMON_A_RTD
 void proses_data_adc(void)
 {
 	unsigned char temp;
@@ -333,3 +337,4 @@ void proses_data_adc(void)
 		set_adccon(temp);
 	}
 }
+#endif

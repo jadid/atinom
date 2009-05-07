@@ -11,6 +11,14 @@
 
 #ifdef BOARD_KOMON_A_RTD
 #include "../adc/ad7708.h"
+
+#define AD7708_GPIO_KOMON
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
+#include "../adc/ad7708.h"
+
+#define AD7708_GPIO_KOMON
 #endif
 
 #define INTERRUPT_GPIO	0x20000 // EINT3
@@ -166,7 +174,7 @@ void init_gpio_keypad(void)
 #endif
 }
 
-#ifdef BOARD_KOMON_A_RTD
+#ifdef AD7708_GPIO_KOMON
 void init_gpio_adc(void)
 {
 	portENTER_CRITICAL();

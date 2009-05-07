@@ -11,6 +11,9 @@
 	coba porting untuk Komon_A (RTD & 4-20 mA)	
 	21 April 2009
 	Clean up untuk release stable versi 1.4
+	
+	7 Mei 2009
+	dicopy dari komon_A
 */
 
 /* Scheduler includes. */

@@ -59,7 +59,9 @@ inline void uncs_ad7708(void)
 }
 #endif
 
-#ifdef BOARD_KOMON_A_RTD
+//#ifdef BOARD_KOMON_A_RTD
+
+#ifdef AD7708_LPC_KOMON
 
 #define kirim_word	spiPut
 #define ambil_word	spiPut
@@ -306,6 +308,7 @@ inline unsigned int cek_adc_rdy(void)
 		return 0;
 }
 
+#ifdef BOARD_KOMON_A_RTD
 void proses_data_adc(void)
 {
 	unsigned char temp;
@@ -334,3 +337,35 @@ void proses_data_adc(void)
 		set_adccon(temp);
 	}
 }
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
+void proses_data_adc(void)
+{
+	unsigned char temp;
+	
+	if (cek_adc_rdy() == 1)
+	{
+		st_adc.count++;
+		st_adc.data[ st_adc.cur_kanal ] = baca_data();
+		 	
+		st_adc.cur_kanal++;
+		if (st_adc.cur_kanal == 10)
+		{
+		 	/* satu round 10 kanal sudah selesai */
+		 	st_adc.cur_kanal = 0;
+		}
+		
+		if (st_adc.cur_kanal == 8)
+		temp = (unsigned char) ((14 << 4) + range_adc);
+		
+		else if (st_adc.cur_kanal == 9)
+		temp = (unsigned char) ((15 << 4) + range_adc);
+		
+		else
+		temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_adc);
+		
+		set_adccon(temp);
+	}
+}
+#endif

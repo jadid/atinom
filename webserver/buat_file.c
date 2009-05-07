@@ -21,6 +21,10 @@ static unsigned int nomer_mesin=0;
 #define BOARD_KOMON_WEB
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO
+#define BOARD_KOMON_WEB
+#endif
+
 #ifdef BOARD_KOMON_KONTER
 #define BOARD_KOMON_WEB
 #endif
@@ -225,6 +229,12 @@ void buat_file_index(void)
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
+#ifdef BOARD_KOMON_B_THERMO	
+	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
+	strcat(tot_buf, "<th>Celcius</th>\n");
+	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
+#endif
+
 #ifdef BOARD_KOMON_KONTER
 	strcat(tot_buf, "<th>Puls (Count)</th>\n");
 	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
@@ -237,6 +247,24 @@ void buat_file_index(void)
 	{		
 		/*  tegangan */
 		
+		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
+		
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
+		strcat(tot_buf, head_buf);
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
+		strcat(tot_buf, head_buf);
+				
+	}
+#endif
+
+#ifdef BOARD_KOMON_B_THERMO
+	for (i=0; i< 10; i++)
+	{		
+		/*  tegangan */		
 		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
 		
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);

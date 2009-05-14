@@ -27,7 +27,7 @@ void cek_sumber(void)
 	int i;
 	extern struct t_sumber sumber[];
 	
-	printf("  No.    Nama       ipaddr        alamat   status\r\n");
+	printf("  No.    Nama       ipaddr        modul    status\r\n");
 
 	for (i=0; i<55; i++)
 		printf("-");
@@ -76,7 +76,7 @@ void set_sumber(int argc, char **argv)
 			{
 				printf(" Setting sumber data\r\n");
 				garis_bawah();
-				printf(" argument : help, default, ipaddr, nama, status, board\r\n");
+				printf(" argument : help, default, ipaddr, nama, status, modul\r\n");
 				printf("   help   : printout keterangan ini\r\n");
 				printf("   default : load sumber dengan default ip & setting\r\n");
 				printf(" \r\n");
@@ -181,7 +181,6 @@ void set_sumber(int argc, char **argv)
 		}
 		else return;	
 	}
-	//else if (strcmp(argv[1], "alamat") == 0)
 	else if (strcmp(argv[1], "modul") == 0)
 	{
 		sprintf(buf, "%s", argv[2]);	
@@ -197,7 +196,7 @@ void set_sumber(int argc, char **argv)
 			{
 				sumber[sumb-1].alamat = stat;
 				printf("%d.%d.%d.%d : ", sumber[sumb-1].IP0, sumber[sumb-1].IP1, sumber[sumb-1].IP2, sumber[sumb-1].IP3);
-				printf("pd alamat = %d\r\n", sumber[sumb-1].alamat);
+				printf("pd modul = %d\r\n", sumber[sumb-1].alamat);
 			}
 		}
 		else return;

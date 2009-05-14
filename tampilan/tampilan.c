@@ -173,15 +173,12 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				if (key_press == ATAS)
 				{
 					key_index--;
-					if (key_index == 255) key_index = 9;
-					//else if (key_index == 5) key_index = 4;		   
+					if (key_index == 255) key_index = 10;	// 9	   
 				}
 				else if ( key_press == BAWAH )
 				{
 					key_index++;	
-					//if (key_index == 5) key_index =6;
-					//else 
-					if (key_index > 9) key_index = 0;
+					if (key_index > 10) key_index = 0;		// 9
 				}
 				else if ( key_press == KANAN )
 				{
@@ -213,12 +210,16 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		
 		if (loop > 10)
 		{
+			
+			if (key_index != 10)
+			{
 			/* force untuk update layar */
 			cls_layar();
 			menu_monita(key_index);		
 			menu_pilih(key_index, mesin_index, 0);
 			menu_OK(key_index, mesin_index);
 			update_lcd();
+			}
 			
 			loop = 0;
 			
@@ -244,15 +245,15 @@ void init_task_tampilan(void)
 
 int cek_keypad(void)
 {
-	portENTER_CRITICAL();
+	//portENTER_CRITICAL();
 	if ((FIO_KEYPAD & PF14) == PF14)
 	{
-		portEXIT_CRITICAL();		
+		//portEXIT_CRITICAL();		
 		return 1;	
 	}
 	else
 	{
-		portEXIT_CRITICAL();	
+		//portEXIT_CRITICAL();	
 		return 0;	
 	}
 }

@@ -207,14 +207,14 @@ extern struct t_titik titik[];
 extern unsigned char daytime[32];
 
 //struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
-struct t_status status[JML_MODUL]; 	/* __attribute__ ((section (".eth_test"))); */
-struct t_xdata in_buf;				/* __attribute__ ((section (".eth_test"))); */
+struct t_status 	status[ JML_SUMBER ]; 	/* __attribute__ ((section (".eth_test"))); */
+struct t_xdata 		in_buf;				/* __attribute__ ((section (".eth_test"))); */
 
 void sambungan_init(void)
 {
 	int i;
 	
-	for (i=0; i<JML_MODUL; i++)
+	for (i=0; i < JML_SUMBER ; i++)
 	{
 		status[i].stat = 0;
 		status[i].reply = 0;
@@ -230,6 +230,7 @@ void sambungan_init(void)
  * dipanggil setiap 50 ms (memutar), sehingga jika ada 20
  * client, setiap client akan dipanggil 1000 ms ( 1 detik ).
  * 
+ * no : mulai dari nol sampai (JML_SUMBER - 1)
  */
 
 void sambungan_connect(int no)
@@ -238,6 +239,7 @@ void sambungan_connect(int no)
 	struct sambungan_state *samb3;
 	uip_ipaddr_t ip_modul;
 	int i;
+	char ipne[32];
 	
 	if (sumber[no].status == 1 && status[no].stat == 0)	// harus diaktfikan lagi
 	{
@@ -251,7 +253,7 @@ void sambungan_connect(int no)
 		conn = uip_connect(ip_modul, HTONS(PORT_MONITA));
 		if (conn == NULL)
 		{
-			printf("ERR: Koneksi Penuh\r\n");	
+			debug_out_h("ERR: Koneksi Penuh");	
 			return ;
 		}
 		//printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
@@ -262,7 +264,11 @@ void sambungan_connect(int no)
 		status[no].timer = 0;
 		status[no].reply_lama = 0;
 		/* rport akan selalu sama */
-		//printf("init %d lport %d, rport %d\n", no+1, status[no].lport, conn->rport);
+		//debug_out_h("init %d lport %d, rport %d\n", no+1, status[no].lport, conn->rport);
+		sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", no+1, uip_conn->rport, \
+			sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);
+		
+		debug_out_h("Konek %s", ipne);	
 		
 		return;
 	}
@@ -279,7 +285,7 @@ void sambungan_connect(int no)
 		{
 			/* cari dulu koneksi yang lama
 			 * dan set menjadi belum konek */
-			printf("PAKSA ");
+			debug_out_h("forced to connect ");
 			for(i = 0; i < UIP_CONNS; i++) 
 			{
 		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_MONITA))
@@ -287,7 +293,8 @@ void sambungan_connect(int no)
 					uip_conns[i].tcpstateflags = UIP_CLOSED;
 		  			uip_conns[i].nomer_sambung = 0;
 					
-					printf("con %d ", i);
+					//printf("con %d ", i);
+					debug_out_h("con %d ", i);
 				}
 	  		}
 			
@@ -295,8 +302,8 @@ void sambungan_connect(int no)
 			status[no].timer = 0;
 			status[no].reply_lama = 0;
 			
-			printf("rekonek sumber %d :", no+1);
-			printf("%d.%d.%d.%d\r\n", sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);	
+			debug_out_h("rekonek sumber %d :", no+1);
+			debug_out_h("  %d.%d.%d.%d", sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);	
 		}
 	}
 	/* daytime server, harusnya hanya ada 1 server */
@@ -311,7 +318,7 @@ void sambungan_connect(int no)
 		conn = uip_connect(ip_modul, HTONS(PORT_DAYTIME));
 		if (conn == NULL)
 		{
-			printf("ERR: Koneksi Penuh\r\n");	
+			debug_out_h("ERR: Koneksi Penuh");	
 			return ;
 		}
 		//printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
@@ -335,13 +342,14 @@ void sambungan_connect(int no)
 void samb_appcall(void)
 {
 	int len;
-	char buf[32];
+	char buf[64];
 	int i;
 	unsigned int nomer_sambung = (unsigned int) uip_conn->nomer_sambung;
 	
 	if (nomer_sambung > 19)
 	{
-		printf("Nomer sambung invalid !");
+		//printf("Nomer sambung invalid !");
+		debug_out_h("Nomer sambung invalid !");
 		uip_close();
 		return;	
 	}
@@ -363,8 +371,18 @@ void samb_appcall(void)
 		if (status[nomer_sambung].stat == 1)
 		{
 			status[nomer_sambung].stat = 2;
-			sprintf(buf, "sampurasun");
-			uip_send((char *) buf, 10);
+			
+			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+			//sprintf(buf, "sampurasun");
+			
+			/* sampurasun + nomor modul (dalam karakter) */
+			sprintf(buf, "sampurasun%d", (char) sumber[nomer_sambung].alamat);	
+			debug_out_h("%s->%s", buf, ipne);
+					
+			uip_send((char *) buf, 11);		// 10
 		}
 		else
 		{
@@ -372,7 +390,7 @@ void samb_appcall(void)
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
-			printf("force to close %s\n", ipne);
+			debug_out_h("force to close %s", ipne);
 			uip_close();
 			return;
 		}
@@ -406,7 +424,7 @@ void samb_appcall(void)
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
-			printf("invalid acknoledge %s\n", ipne);
+			debug_out_h("invalid acknoledge %s", ipne);
 			uip_close();	
 		}
 	}
@@ -420,7 +438,7 @@ void samb_appcall(void)
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
-			printf("pool timeout %s\n", ipne);
+			debug_out_h("pool timeout %s", ipne);
 			uip_close();		
 		}			
 	}
@@ -440,6 +458,8 @@ void samb_appcall(void)
 				//printf("Data MOMON\n");	
 				status[nomer_sambung].reply++;
 				memcpy((char *) &s_data[nomer_sambung].data, in_buf.buf, sizeof (data_float));
+				
+				debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
 				
 				#ifdef DEBUG_DATA
 				printf(" %d:", sbg->nomer_samb);
@@ -469,7 +489,7 @@ void samb_appcall(void)
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 	
-			printf("Invalid uip_newdata() %s, leng = %d\n", ipne, len);
+			debug_out_h("Invalid uip_newdata() %s, leng = %d", ipne, len);
 			uip_close();
 			return;	
 		}

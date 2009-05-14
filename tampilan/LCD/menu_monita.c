@@ -161,8 +161,12 @@ void menu_bbakar(unsigned int mes, unsigned int nomer_mesin);
 void menu_setting(unsigned int ttk);
 void menu_titik(unsigned int ttk, unsigned char flag);
 void menu_system(void);
+static void menu_log(void);
 
 unsigned char isi_sumber[20];	//sambungan yang aktif
+
+static unsigned int enable_log;
+#include "debug_layar.c"
 
 extern unsigned char tek[];
 
@@ -175,7 +179,7 @@ void init_scroll(void)
 void print_scroll(char *s)
 {
 	//teks_layar4(x, y, "                                          ");
-   //teks_layar4(x, y, s);
+   	//teks_layar4(x, y, s);
 	
 	y = y+10;
 	if (y > 238) init_scroll();
@@ -198,20 +202,14 @@ void tabel_data(void)
 }
 
 void menu_monita(unsigned char p)
-{
-	//char s[32];
-	//sprintf(s,"%s", loc_data.nama);
-	
-   //teks_arial(230, 2, "SWD #1");
-   //teks_arial(230, 2, s);
-   
-   //waktu
+{  
+   	//waktu
 	sprintf(tek, "%s", daytime);
 	//teks_layar(menu_kanan+menu_kiri-4, 11, s);
-   teks_layar(175, 232, tek);
-   //teks_layar(180, 232, "harusnya waktu");
+   	teks_layar(175, 232, tek);
+   	//teks_layar(180, 232, "harusnya waktu");
    
-   teks_layar(menu_kiri, menu_top, "Charge");
+   	teks_layar(menu_kiri, menu_top, "Charge");
 	teks_layar(menu_kiri, menu_top+8, "Air");
 	
 	teks_layar(menu_kiri, menu_top+menu_tinggi+menu_antara, 	"Jacket");
@@ -229,6 +227,8 @@ void menu_monita(unsigned char p)
 	teks_layar(menu_kiri, menu_top+5*(menu_tinggi+menu_antara), 	 "Bahan");
 	teks_layar(menu_kiri, menu_top+5*(menu_tinggi+menu_antara)+8, "Bakar");
 	
+	enable_log = 0;
+	
 	// setting
 	if (p == 6)
 		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+3, "Setting");
@@ -242,15 +242,15 @@ void menu_monita(unsigned char p)
 	else if (p == 9)
 		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+8, "System");
 	
+	else if (p == 10)
+	{
+		teks_layar(menu_kiri, menu_top+6*(menu_tinggi+menu_antara)+9, "Log...");
+		
+		init_debug_layar(72);
+		enable_log = 1;
+	}
 	//teks_layar(menu_kiri, menu_top+7*(menu_tinggi+menu_antara)+8, "---");
 	
-	/*
-	teks_layar(mesin_kiri, mesin_top, "Unit #1");	
-	teks_layar(mesin_kiri+(mesin_width), mesin_top, "Unit #2");
-	teks_layar(mesin_kiri+(mesin_width*2), mesin_top, "Unit #3");	
-	teks_layar(mesin_kiri+(mesin_width*3), mesin_top, "Unit #4");
-	teks_layar(mesin_kiri+(mesin_width*4), mesin_top, "Unit #5");	
-	*/
 	
 	// hard coded nama mesin
 	/*
@@ -266,9 +266,6 @@ void menu_monita(unsigned char p)
 	teks_layar(mesin_kiri+(mesin_width*3), mesin_top, mesin[3].nama);
 	teks_layar(mesin_kiri+(mesin_width*4), mesin_top, mesin[4].nama);	
 	
-	
-	// testing
-	//teks_arial(20, 220, "Sedang di test .. !");
 }
 
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2)
@@ -344,6 +341,7 @@ void menu_pilih(unsigned char p, unsigned char mesin, unsigned char flag)
 	else if (p == 7) menu_sumber(ttk);
 	else if (p == 8) menu_titik(ttk, flag);
 	else if (p == 9) menu_system();
+	else if (p == 10) menu_log();
 	
 }
 
@@ -738,3 +736,11 @@ void menu_system(void)
 	sprintf(tek, "Gateway  : %d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
 	teks_layar(80, 190, tek);
 }
+
+static void menu_log(void)
+{
+
+
+}
+
+

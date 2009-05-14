@@ -127,12 +127,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (loop > 50) 		// 50, 40, 80
 		{
 			loop = 0;
-			
-			//mul=8;
 			sambungan_connect(mul);	
 			
 			mul++;
-			if (mul > JML_MODUL) mul = 0;
+			if (mul > JML_SUMBER) mul = 0;
 		}
 		#endif
 	

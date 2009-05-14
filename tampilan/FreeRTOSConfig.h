@@ -46,7 +46,7 @@
 #define TAMPILAN_LPC_4
 
 #define PAKE_TELNETD
-#define VERSI_KOMON		"1.42"
+#define VERSI_KOMON		"1.43"
 #define PROMPT 		"Tampilan $ "
 #define NAMA_BOARD	"Tampilan"
 

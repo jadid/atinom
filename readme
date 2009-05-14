@@ -66,3 +66,20 @@ Tampilan :
 cari masalah yang salah kamar ... sudah OK
 random seed untuk generate mac address !
 ganti versi ke 1.42
+
+14 Mei 2009, jadid
+=================================
+Tampilan :
+set_sumber modul belum digunakan untuk mengecek asalnya data !
+komand yang betul : set_sumber modul 4 1
+
+Pada saat save titik, data saat itu akan ikut tersimpan, ini
+menjadi runyam jika data tersebut tidak pernah di update, sehingga
+angkanya akan muncul itu terus !
+
+set_titik a b c d, dimana d adalah variable modul, itu sebenarnya
+tidak perlu, karena d sudah pasti pada sumber
+
+Diberikan menu log pada LCD, supaya bisa lihat log koneksi
+
+versi tampilan ke 1.43

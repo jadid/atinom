@@ -77,7 +77,7 @@ static void puts(char *s)
   while(*s)
     putchar(*s++);
 
-  vTaskDelay(10);
+  //vTaskDelay(10);
 }
 
 /* callback for help function

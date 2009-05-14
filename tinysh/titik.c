@@ -25,7 +25,7 @@ void cek_titik(unsigned char no_mes)
 	int i;
 	int pasnya;
 	
-	printf(" No. Sbr. Knl. Almt     Data : Keterangan\r\n");
+	printf(" No. Sbr. Knl. Modul    Data : Keterangan\r\n");
 	
 	for (i=0; i<55; i++)
 		printf("-");
@@ -234,6 +234,15 @@ static tinysh_cmd_t set_titik_cmd={0,"set_titik","set konfigurasi titik","(titik
 
 void save_titik(void)
 {
+	int i;
+	
+	/* 	
+		data titik harus dinol kan dulu, supaya tidak ikut 
+		di hard coded ke flash 
+	*/
+	for (i=0; i<(TIAP_MESIN * JML_MESIN); i++)
+		titik[i].data = (float) 0.0;
+	
 	printf("Save struct titik ke flash ..");
 	if(prepare_flash(SEKTOR_TITIK, SEKTOR_TITIK)) return;
 	printf("..");

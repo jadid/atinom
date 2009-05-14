@@ -14,9 +14,8 @@
 
 #define JML_SUMBER	20
 #define JML_MESIN	10
-#define TIAP_MESIN	100	// 70
+#define TIAP_MESIN	100
 #define JML_KANAL	20
-#define JML_MODUL	JML_SUMBER
 
 
 #define SEKTOR_SUMBER	25
@@ -106,15 +105,6 @@ struct t_xdata {
 	char buf[232];				//16 jan 08, disesuaikan dengan Client Utama
 };
 
-/*
-struct monita_state {
-	struct psock p;
-	unsigned int timer;
-	char in_buf[10];
-	char name[40];
-};
-*/
-
 struct sambungan_state {
 	/*
 	struct psock p;
@@ -122,9 +112,6 @@ struct sambungan_state {
 	unsigned int nomer_samb;
 	unsigned int timer;
 	*/
-	//struct t_xdata in_buf;
-	//char in_buf[256];	// harusnya 248 cukup
-	//char name[40];
 };
 
 typedef struct sambungan_state uip_sambungan_state;
@@ -139,7 +126,7 @@ sumber status :
 struct t_sumber {
 	char nama[10];
 	//char ID_sumber;
-	char alamat;		/* untuk alamat Power meter atau stack board (jika ada) */
+	char alamat;		/* untuk alamat/modul Power meter atau stack board (jika ada) */
 	char IP0;
 	char IP1;
 	char IP2;

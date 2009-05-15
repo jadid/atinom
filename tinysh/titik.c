@@ -20,7 +20,7 @@ extern char keter[100][25];
 
 char *f_out(float ff);
 							  
-void cek_titik(unsigned char no_mes)
+void cek_titik(int no_mes)
 {
 	int i;
 	int pasnya;
@@ -124,14 +124,14 @@ void cek_titik(unsigned char no_mes)
 	
 	
 }							 
-
+/*
 static tinysh_cmd_t cek_titik_cmd={0,"cek_titik","menampilkan konfigurasi titik","[args]",
                               cek_titik,0,0,0};
-
+*/
 
 char *f_out(float ff)
 {
-	char tek[32];
+	char tek[64];
 	sprintf(tek, "%5.3f", ff);	
 	
 	return tek;	
@@ -171,6 +171,8 @@ void set_titik(int argc, char **argv)
 				printf("   misalnya, Titik 1 = Charge air pressure kiri, maka titik 101\r\n");
 				printf("   juga Charge air pressure kiri, tetapi untuk mesin #2\r\n");
 				printf("   begitu seterusnya.\r\n");
+				printf("\r\n");
+				printf("   Untuk disable, cukup set_titik dengan nomer sumber = 0 dst.\r\n");
 				
 				return;
 			} 
@@ -197,10 +199,19 @@ void set_titik(int argc, char **argv)
 	{
 		sprintf(buf, "%s", argv[2]);	
 		sumb = cek_nomer_sumber(buf, JML_SUMBER);
-		if (sumb > 0)
+		if (sumb >= 0)
 		{
+			if (sumb == 0)
+			{
+				printf("Titik %d tidak diaktifkan\r\n", ttk);
+				titik[ttk - 1].ID_sumber = sumb;
+				//titik[ttk - 1].kanal = kanal;
+				
+				return;
+			}
+			
 			sprintf(buf, "%s", argv[3]);	
-			kanal = cek_nomer_sumber(buf, JML_KANAL);
+			kanal = cek_nomer_sumber(buf, JML_KANAL);			
 			if (kanal > 0)
 			{
 				titik[ttk - 1].ID_sumber = sumb;
@@ -222,9 +233,15 @@ void set_titik(int argc, char **argv)
 				ttk, sumb, kanal, almt); 
 			}
 			else
-				printf(" ERR !\r\n");
-		} 
+				printf(" ERR: Argumen nomer kanal salah !\r\n");
+				//printf(" ERR !\r\n");
+		}
+		else
+			printf(" ERR: Argumen nomer sumber salah !\r\n"); 
 	}
+	else
+		printf(" ERR: Argumen nomer titik salah !\r\n");
+		
 	return;
 }							 
 

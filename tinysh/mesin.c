@@ -6,6 +6,8 @@
 	*/
 
 #include "../monita/monita_uip.h"
+void cek_titik(int no_mes);
+
 extern struct t_mesin mesin[JML_MESIN];
 
 							  
@@ -36,7 +38,7 @@ void cek_mesin(int argc, char **argv)
 		{
 			printf(" pada mesin = %d\r\n", no_mesin);
 			
-			cek_titik(no_mesin);
+			cek_titik((int) no_mesin);
 		}
 		else return;
 			

@@ -353,7 +353,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_sumber_cmd);
 	tinysh_add_command(&cek_mesin_cmd);
 	tinysh_add_command(&set_mesin_cmd);
-	tinysh_add_command(&cek_titik_cmd);
+	//tinysh_add_command(&cek_titik_cmd);
 	tinysh_add_command(&set_titik_cmd);
 	
 	tinysh_add_command(&save_sumber_cmd);
@@ -439,6 +439,7 @@ portTASK_FUNCTION(shell, pvParameters )
 
 void init_shell(void)
 {
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), \
+	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 7), \
 		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }

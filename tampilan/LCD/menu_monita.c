@@ -203,6 +203,13 @@ void tabel_data(void)
 
 void menu_monita(unsigned char p)
 {  
+   	if (enable_log == 1)
+	{
+		cls_layar();
+		enable_log = 0;
+		update_lcd_layer2();
+	}
+   	
    	//waktu
 	sprintf(tek, "%s", daytime);
 	//teks_layar(menu_kanan+menu_kiri-4, 11, s);
@@ -226,8 +233,6 @@ void menu_monita(unsigned char p)
 	
 	teks_layar(menu_kiri, menu_top+5*(menu_tinggi+menu_antara), 	 "Bahan");
 	teks_layar(menu_kiri, menu_top+5*(menu_tinggi+menu_antara)+8, "Bakar");
-	
-	enable_log = 0;
 	
 	// setting
 	if (p == 6)

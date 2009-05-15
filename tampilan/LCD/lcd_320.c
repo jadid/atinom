@@ -11,9 +11,10 @@
 
 extern xSemaphoreHandle lcd_sem;
 
-#define CSRW	0x46
-#define awal_grafik	1600
-#define grafik_kedua	12000
+#define CSRW				0x46
+#define AWAL_LAYER_SATU		1600
+#define GRAFIK_LAYER_DUA	12000
+#define GRAFIK_LAYER_TIGA	22000
 
 #define BACKLIT		BIT(20)	// PF15, P1.20
 
@@ -53,6 +54,7 @@ static unsigned konvert_y[8] __attribute__ ((section (".lokasi_font"))) = {128, 
 static int x_awal;
 static int y_awal;
 
+#if 0
 void tes_high(void)
 {
 	FIO0SET |= WR;
@@ -70,6 +72,7 @@ void tes_low(void)
 	FIO0CLR |= RD;
 	FIO1PIN3 = 0x00;	
 }
+#endif
 
 void init_port_lcd(void)
 {
@@ -167,7 +170,12 @@ void init_lcd(void)
 	int j;
 	//init LCD dengan 8pixel per karakter
 	tulis_command(0x40); //delay_ms(5);  //init command	
-		tulis_param(0x30);// P1. HW setup 
+		tulis_param(0x30);// P1. HW setup
+		
+		/*
+			internal CG ROM, single panel drive */
+			
+		 
 		tulis_param(0x87);// P2. Char width dalam pixel <== DIBUAT 8 pixel per karakter supaya mudah grafiknya
 								// kalau sudah jadi baru dikonversi ke 6 pixel per karakter lagi
 		
@@ -182,17 +190,17 @@ void init_lcd(void)
 	
 	dele(100);	
 	
-	tulis_command(0x44); //
-		tulis_param((char) grafik_kedua);//	7
-		tulis_param((char)(grafik_kedua >> 8));//	8
+	tulis_command(0x44); // SCROLL
+		tulis_param((char) (AWAL_LAYER_SATU & 0xFF));		//	--> awal grafik 0x640 (1600)		4
+		tulis_param((char) (AWAL_LAYER_SATU >> 8));	//	
+		tulis_param(240); 								
 		
-		tulis_param(240); //							3		
-		tulis_param((char)awal_grafik);//	--> awal grafik 0x640 (1600)		4
-		tulis_param((char)(awal_grafik >> 8));//										5
-		
+		tulis_param((char) 	(GRAFIK_LAYER_DUA & 0xFF));//	7
+		tulis_param((char)	(GRAFIK_LAYER_DUA >> 8));//	8		
 		tulis_param(240); // 									6
-		tulis_param(0x00);//	7
-		tulis_param(0x00);//	8
+		
+		tulis_param((char) (GRAFIK_LAYER_TIGA & 0xFF));//	7
+		tulis_param((char) (GRAFIK_LAYER_TIGA >> 8));//	8
 		//tulis_param((char) grafik_kedua);//	7
 		//tulis_param((char)(grafik_kedua >> 8));//	8
 		tulis_param(0x00);//	9
@@ -208,40 +216,55 @@ void init_lcd(void)
 
 	//OVERLAY	
 	tulis_command(0x5B);//delay_ms(5);
-		//tulis_param(0x01);delay_ms(100);	// --> 2 layer 1 teks dan 2 grafik
-		//tulis_param(0x03);
-		tulis_param(12);
+		//tulis_param(12);
+		tulis_param(0x1F);		// simple animation / grey / depth
 		
 	//DISP ON OFF
-	tulis_command(0x58); //off
-		//tulis_param(0x56);delay_ms(100);
-		tulis_param(0x15);											//ini yang biasa
-		//tulis_param(10);
-		
+	tulis_command(0x58); //off		
+		/* layer 1 on, layer 2 on, layer 3 off */
+		tulis_param(0x10 + 0x04);
+		/* layer 1 on, layer 2 on, layer 3 flash 16 Hz */
+		//tulis_param(0x04 + 0x10 + 0xC0);
+		/* layer 1 on, layer 2 flash 2 detik, layer 3 flash 16 Hz */
+		//tulis_param(0x20 + 0x04 + 0xC0);
+			
 	tulis_command(0x59);	//display on
-		//tulis_param(0x18);
-		//tulis_param(2+4);
-		//tulis_param(0x10 + 4);		//SAD1 & 2 On, no blink
-		tulis_param(0x10);
-		
-	//clear memory  	
- 
+		tulis_param(0x10 + 0x04);
+		 
    //csr form		--> set cursor type
    tulis_command(0x5D);
    		tulis_param(0x04);	//blink 2 HZ
     	tulis_param(0x86);
 		
-	
-	
+		
 	tulis_command(0x4c);	//direction of cursor movement --> right
 
+	// bersihkan layer 2
 	tulis_command(CSRW);		//posisi tulisan coba di SAD1
-   	tulis_param((char) grafik_kedua);
-    	tulis_param((char)(grafik_kedua >>8));
+   		tulis_param((char) (GRAFIK_LAYER_DUA & 0xFF));
+    	tulis_param((char) (GRAFIK_LAYER_DUA >>8));
    
-   tulis_command(0x42); 
-   for (j=0; j<9600; j++)
-   	  tulis_param(0x11);
+   	tulis_command(0x42); 
+   		for (j=0; j<9600; j++)
+   	  		tulis_param(0x00);
+   	
+   	// bersihkan layer 3
+	tulis_command(CSRW);		//posisi tulisan coba di SAD1
+   		tulis_param((char) (GRAFIK_LAYER_TIGA & 0xFF));
+    	tulis_param((char) (GRAFIK_LAYER_TIGA >>8));
+   
+   	tulis_command(0x42); 
+   		for (j=0; j<9600; j++)
+   	  		tulis_param(0x00);
+   	
+
+	tulis_command(CSRW);		//posisi tulisan coba di SAD1
+   		tulis_param((char) AWAL_LAYER_SATU);
+    	tulis_param((char)(AWAL_LAYER_SATU >>8));
+   
+   	tulis_command(0x42); 
+   	for (j=0; j<9600; j++)
+   	  	tulis_param(0x11);
    	//tulis_param('A');
    /*		
    tulis_command(0x42);
@@ -252,8 +275,8 @@ void init_lcd(void)
    }*/
    
    
-	tulis_command(0x46);
-   	tulis_param(0x40);
+	tulis_command( CSRW );
+   		tulis_param(0x40);
     	tulis_param(0x06);
    
    	tulis_command(0x42); 
@@ -389,9 +412,9 @@ void update_hard_lcd(void)
 	if (layar.flag == 0)
 	{
    		portENTER_CRITICAL();
-		tulis_command(0x46);
-   		tulis_param(0x40);
-   		tulis_param(0x06);
+		tulis_command( CSRW );
+   		tulis_param((char) (AWAL_LAYER_SATU & 0xFF));
+		tulis_param((char) (AWAL_LAYER_SATU >> 8));
    		
   		tulis_command(0x42);
   		portEXIT_CRITICAL();
@@ -400,12 +423,43 @@ void update_hard_lcd(void)
   		{
   			tulis_param(layar.buf[t]);  		
   		}
-		//portEXIT_CRITICAL();
 	}
-	else
+	else if (layar.flag == 1)
 	{
 		teks_h_hard(layar.pos_x, layar.pos_y, layar.teks);
 		layar.flag = 0;
+	}
+	else if (layar.flag == 23)
+	{
+		// bersihkan layer 2
+		portENTER_CRITICAL();
+		tulis_command(CSRW);		//posisi tulisan coba di SAD1
+   			tulis_param((char) (GRAFIK_LAYER_DUA & 0xFF));
+    		tulis_param((char) (GRAFIK_LAYER_DUA >>8));
+   
+   		tulis_command(0x42); 
+   		portEXIT_CRITICAL();
+   		
+   		for (t=0; t<9600; t++)
+  		{
+  			tulis_param(layar.buf[t]);  		
+  		}
+	}
+	else if (layar.flag == 24)
+	{
+		// update layer 3 dari buffer layar 
+		portENTER_CRITICAL();
+		tulis_command(CSRW);		//posisi tulisan coba di SAD1
+   			tulis_param((char) (GRAFIK_LAYER_TIGA & 0xFF));
+    		tulis_param((char) (GRAFIK_LAYER_TIGA >>8));
+   
+   		tulis_command(0x42); 
+   		portEXIT_CRITICAL();
+   		
+   		for (t=0; t<9600; t++)
+  		{
+  			tulis_param(layar.buf[t]);  		
+  		}
 	}
 }
 
@@ -415,6 +469,19 @@ void update_lcd(void)
 	xSemaphoreGive( lcd_sem );	
 }
 
+void update_lcd_layer2(void)
+{
+	layar.flag = 23;
+	xSemaphoreGive( lcd_sem );		// supaya segera dijadwalkan untuk update_hard_lcd
+	vTaskDelay(10);	
+}
+
+void update_lcd_layer3(void)
+{
+	layar.flag = 24;
+	xSemaphoreGive( lcd_sem );		// supaya segera dijadwalkan untuk update_hard_lcd
+	vTaskDelay(10);	
+}
 
 void teks_layar(unsigned short x, unsigned short y, char *pc)
 {
@@ -513,12 +580,12 @@ void teks_h(unsigned short x, unsigned short y, char *pc)
 {
 	layar.pos_x = x;
 	layar.pos_y = y;
-	//memcpy(layar.teks, pc, strlen(pc));
+
 	sprintf(layar.teks,"%s",pc);
 	
 	layar.flag = 1;
 	xSemaphoreGive( lcd_sem );		// supaya segera dijadwalkan untuk update_hard_lcd
-	vTaskDelay(50);
+	vTaskDelay(50);		// 50
 }
 
 
@@ -577,9 +644,12 @@ void teks_h_hard(unsigned short x, unsigned short y, char *pc)
    	{
    		//portENTER_CRITICAL();
 		
-		tulis_command(0x46);
-  			tulis_param((char) (awal_grafik + offsetku));	
-  			tulis_param((char) ((awal_grafik + offsetku)>>8));
+		tulis_command( CSRW );
+  			//tulis_param((char) (AWAL_LAYER_SATU + offsetku));	
+  			//tulis_param((char) ((AWAL_LAYER_SATU + offsetku)>>8));
+  			tulis_param((char) (GRAFIK_LAYER_DUA + offsetku));	
+  			tulis_param((char) ((GRAFIK_LAYER_DUA + offsetku)>>8));
+  			
   			tulis_command(0x42);
    		layar.buf[offsetku]= layar.buf[offsetku] ^ (font_h[i] >> hasil.rem);
    		tulis_param(layar.buf[offsetku]);
@@ -660,7 +730,6 @@ void cls_layar(void)
 }
 
 
-
 // membersihkan bagian tertentu dari ram, supaya ditulis bersih
 void teks_clear(unsigned short x, unsigned short y, unsigned short pjg)
 {
@@ -728,4 +797,12 @@ void msg_box(char *msg)
    hapus(kiri-20+1, 79, kiri+20+(cl*6) -1, 111);
    kotak3d(kiri-20, 81, kiri+20+(cl*6), 109);
    teks_layar(kiri-4+4, 90, msg);
+}
+
+void fill_layar(unsigned char fil)
+{
+	int i;
+	
+	for (i=0; i<BESAR_LAYAR; i++)
+		layar.buf[i] = (unsigned char) fil;	
 }

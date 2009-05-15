@@ -99,6 +99,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	vTaskDelay(500);
 	update_lcd();
 	vTaskDelay(100);
+	update_lcd_layer2();
+	vTaskDelay(10);
 	
 	teks_h(14, 20, "Data Mesin :");
 	for (i=0; i<10; i++)
@@ -110,6 +112,8 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	vTaskDelay(800);
 	update_lcd();
 	vTaskDelay(100);
+	update_lcd_layer2();
+	vTaskDelay(10);
 	
 	teks_h(14, 20, "Data Sumber Data :");
 	for (i=0; i<JML_SUMBER; i++)
@@ -134,10 +138,18 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		for(loop = 0; loop < 20; loop++)
 		{
 			s_data[i].data[loop] = 0.00;	
-		}
-		
+		}	
 	}
+	
+	cls_layar();
+	// test depth
+	//fill_layar(0x0F);
 	vTaskDelay(800);
+	update_lcd_layer2();
+	
+	//cls_layar();
+	//kotak(10, 10, 300, 220);
+	//update_lcd_layer3();
 	
 	key_index = 0;
 	mesin_index = 0;

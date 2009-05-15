@@ -89,8 +89,9 @@ void debug_out_h(const char *fmt, ...)
 	   	{
 	   		cls_layar();
 	   		vTaskDelay(10);
+	   		update_lcd_layer2();	   		
 	   		debug_line = 0;
-	   		update_lcd();
+	   		//update_lcd();
 	   		//vTaskDelay(20);
 	   	}	   	
 	   	//teks_h( pinggir , (debug_line*8) + 9, tek );

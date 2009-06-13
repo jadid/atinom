@@ -151,7 +151,7 @@ void togle_led_utama(void)
 		
 		/* wdog malimping */
 		dog_menit++;
-		if (dog_menit > 20)
+		if (dog_menit > 65)
 		{
 			// jika 1 menit tidak ada perubahan jumlah request
 			// berarti server ngehang

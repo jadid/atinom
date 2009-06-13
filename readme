@@ -86,3 +86,8 @@ set_titik diberikan opsi untuk disable titik, yaitu :
 set_titik 14 0 2, artinya set titik 14 dengan sumber = 0 (disable).
 
 versi tampilan ke 1.43
+
+13 Juni 2009, jadid, Malimping
+===================================
+Copy komon_A ke dog_malimp (malimping hard watchdog)
+

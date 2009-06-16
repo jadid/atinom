@@ -461,6 +461,7 @@ static LPC_DEVICE_TYPE LPCtypes[] =
   /*{ 0x0603FB25, 2368, 512, 58, 27, 4096, SectorTable_213x },  edit 5 jun 08*/
   { 0x1600F925, 2368, 512, 58, 27, 4096, SectorTable_213x }, 	/* biar bisa barengan 2368 */
   { 0x1600E825, 2367, 512, 58, 27, 4096, SectorTable_213x },		/* di tambah untuk 2367, 1 des 08 */
+  { 385941301, 2387, 512, 98, 27, 4096, SectorTable_213x },	/* LPC 2387, 16 juni 2009 */
   { 0x0703FF25, 2378, 512, 58, 27, 4096, SectorTable_213x },
   { 0x0503FF35, 2458, 512, 98, 27, 4096, SectorTable_213x },
   { 0x0603FF35, 2468, 512, 98, 27, 4096, SectorTable_213x }

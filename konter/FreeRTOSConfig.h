@@ -39,7 +39,7 @@
 //#define BOARD_TAMPILAN
 #define BOARD_KOMON
 #define BOARD_KOMON_KONTER
-#define VERSI_KOMON		"1.42"
+#define VERSI_KOMON		"1.43"
 
 #define DEBUG_KONTER	0
 

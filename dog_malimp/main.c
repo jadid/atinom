@@ -11,6 +11,9 @@
 	coba porting untuk Komon_A (RTD & 4-20 mA)	
 	21 April 2009
 	Clean up untuk release stable versi 1.4
+	
+	19 Juni 2009
+	dog_malimping
 */
 
 /* Scheduler includes. */
@@ -146,15 +149,14 @@ void togle_led_utama(void)
 		/* tiap detik cek apakah rpm mati */
 		cek_gpio_lama();
 		#endif
-		
-		//dog_malimp_up();
-		
+				
 		/* wdog malimping */
 		dog_menit++;
-		if (dog_menit > 65)
+		if (dog_menit > (60 * 5)) /* 5 menit */
 		{
-			// jika 1 menit tidak ada perubahan jumlah request
-			// berarti server ngehang
+			/* 	jika 5 menit tidak ada perubahan jumlah request
+			 	berarti server ngehang */
+			 	
 			if (dog_lama == loop_kirim)
 			{
 				dog_malimp_up();					
@@ -179,8 +181,6 @@ void togle_led_utama(void)
 	{
 		FIO0CLR = LED_UTAMA;
 		tog = 1;		
-		
-		//dog_malimp_down();
 	}
 }
 

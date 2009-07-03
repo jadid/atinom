@@ -36,22 +36,20 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-//#define BOARD_TAMPILAN
-#define BOARD_KOMON
-#define BOARD_KOMON_KONTER
-#define VERSI_KOMON		"1.45"
-#define KONTER_MALINGPING	1
+//#define PAKE_TELNETD
+//#define BOARD_KOMON_A_RTD
 
-#define DEBUG_KONTER	0
+#define VERSI_KOMON		"1.42"
+#define BOARD_SIG_GEN	1
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 #define _printf	printf2
 #define printf	printf2
 
-#define PAKE_TELNETD
-
-#define PROMPT 		"Konter $ "
-#define NAMA_BOARD	"Babelan Komon Konter"
+#define PROMPT 		"Sig_gen $ "
+#define NAMA_BOARD	"Babelan Signal Generator"
+#define TEST_PORT	BIT(3)
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -75,7 +73,7 @@
 	#error Please uncomment one of the two configPINSEL2_VALUE definitions above, depending on the revision of the LPC2000 device being used.
 #endif
 
-#define configUSE_PREEMPTION		0		
+#define configUSE_PREEMPTION		0
 #define configUSE_IDLE_HOOK         1
 #define configUSE_TICK_HOOK         0
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */

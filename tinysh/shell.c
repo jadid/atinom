@@ -210,6 +210,12 @@ static void cek_rpm(int argc, char **argv)
 			temp_f, temp_rpm, konter.t_konter[i].hit);
 
 	}
+	
+	#if (KONTER_MALINGPING == 1)
+	/* data kanal 1 adalah adc1 (adc0 internal) */
+	extern float volt_supply;
+	printf("\r\nADC 1 = %.3f\r\n", volt_supply );						
+	#endif
 }
 
 static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",

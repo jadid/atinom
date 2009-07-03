@@ -159,6 +159,15 @@ void monita_appcall(void)
 					
 					t++;
 				}
+				#if (KONTER_MALINGPING == 1)
+				/* data kanal 1 adalah adc1 (adc0 internal) */
+				extern float volt_supply;
+				
+				data_float.data[0] = (float) ((volt_supply * env2.kalib[0].m) + env2.kalib[0].C);
+				
+				
+				#endif
+				
 				#endif
 				
 				xdata.nomer = loop_kirim;

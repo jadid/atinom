@@ -326,6 +326,16 @@ void buat_file_index(void)
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), t_hit );
 		strcat(tot_buf, head_buf);	
 		
+		#if (KONTER_MALINGPING == 1)
+		/* data kanal 1 adalah adc1 (adc0 internal) */
+		if (i== 0)
+		{
+			extern float volt_supply;				
+			fl = (float) ((volt_supply * env2.kalib[0].m) + env2.kalib[0].C);
+		}		
+				
+		#endif
+				
 		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);		
 		strcat(tot_buf, head_buf);
 				

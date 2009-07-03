@@ -16,6 +16,9 @@
 	
 	26 Juni 2009, Malimping
 	sudah ok, data adc1 dimasukkan pada data kanal1
+	
+	28 Juni 2009, Malimping
+	Blok_3 untuk drive ke penduduk, jika level lebih dari setting 24 Volt
 */
 
 /* Scheduler includes. */
@@ -372,14 +375,22 @@ void init_led_utama(void)
 }
 
 /* task untuk adc, setiap 2 ms */
+
+#if (KONTER_MALINGPING == 1)
+
+float volt_supply;
+
 static portTASK_FUNCTION( task_adc , pvParameters )
 {
 	int loop=0;
 	unsigned long tot=0;
-	float volt_supply;
 	int loop_mati = 1000;
 	mati_total = 1;
 	
+	/* 	saat awal, server tidak usah mati dulu
+		sehingga jika supply kurang maka akan 
+		mati dengan sendirinya */
+		
 	vTaskDelay(3000);
 	
 	
@@ -395,7 +406,7 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 			tot = (tot / 500);
 			
 			volt_supply = (float) (tot * 3.3 / 0xFFFF);	
-			printf("ADC 1 = 0x%4X = %.3f\r\n", tot, volt_supply );
+			//printf("ADC 1 = 0x%4X = %.3f\r\n", tot, volt_supply );
 			
 			/* 	cek jika diatas setting, maka relay diaktifkan !
 				relay normaly open.
@@ -421,6 +432,9 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 					/* server juga nyala */
 					blok_2_down();
 					
+					/* ke penduduk nyala */
+					blok_3_up();
+					
 					mati_total = 0;
 				}
 				else
@@ -429,14 +443,17 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 			
 			//if (volt_supply < 2.80) /* line < 22 Volt */
 			//if (volt_supply < 2.77) /* line < 22 Volt */
-			if (volt_supply < 2.52)   /* line < 20 Volt */	
+			if (volt_supply < 2.52)   /* line <  20.286 */	
 			{
 				blok_1_down();
 				
 				/* server juga harus ikutan mati */
 				blok_2_up();
-				mati_total = 1;
 				
+				/* ke penduduk mati */
+				blok_3_down();
+				
+				mati_total = 1;				
 				loop_mati=0;
 			}
 				
@@ -453,5 +470,5 @@ void init_task_adc(void)
 		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
-
+#endif
 

@@ -118,6 +118,39 @@ void vPortYieldProcessor( void )
 		
 		portRESTORE_CONTEXT();
 	}
+	
+	static int time=0;
+	static int tog_test=0;
+	extern unsigned short tabl[360];
+	void sinus_interupt( void ) __attribute__((naked));
+	void sinus_interupt( void )
+	{	
+		portSAVE_CONTEXT();
+
+		//FIO2SET = TEST_PORT;		
+		set_da(tabl[time]);
+		time++;
+		if (time == 361) time = 0;
+	
+		/*
+		if (tog_test == 0)
+		{
+			FIO2SET = TEST_PORT;
+			tog_test = 1;
+		}
+		else
+		{
+			FIO2CLR = TEST_PORT;
+			tog_test = 0;
+		}*/
+		//FIO2CLR = TEST_PORT;
+				
+		
+		T1IR = 2;
+		VICVectAddr = portCLEAR_VIC_INTERRUPT;
+		
+		portRESTORE_CONTEXT();
+	}
 
 #else
 
@@ -152,7 +185,7 @@ void vPortYieldProcessor( void )
  * the utilities are defined as macros in portmacro.h - as per other ports.
  */
 #ifdef THUMB_INTERWORK
-
+	
 	void vPortDisableInterruptsFromThumb( void ) __attribute__ ((naked));
 	void vPortEnableInterruptsFromThumb( void ) __attribute__ ((naked));
 

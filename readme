@@ -101,3 +101,15 @@ Copy komon_A ke dog_malimp (malimping hard watchdog)
 KONTER
 - fungsi adc dicoba
 
+2 Juli 2009, Jadid, Jakarta
+====================================
+Buat direktori sig_gen
+- untuk signal generator sinus
+
+3 Juli 2009, Jadid, Jakarta
+====================================
+TAMPILAN
+- coba menggunakan MAX485 untuk protokol modbus
+- buat direktori modbus
+
+

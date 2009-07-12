@@ -106,7 +106,7 @@ THUMB_SOURCE= \
 		../webserver/httpd-fs.c \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
-		
+		../modbus/low_mod.c	\
 #		../GPIO/gpio.c \
 #		webserver/httpd.c \
 #		webserver/httpd-fs.c \

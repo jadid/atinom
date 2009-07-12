@@ -119,6 +119,7 @@ void vPortYieldProcessor( void )
 		portRESTORE_CONTEXT();
 	}
 	
+	#if (BOARD_SIG_GEN == 1)
 	static int time=0;
 	static int tog_test=0;
 	extern unsigned short tabl[360];
@@ -151,6 +152,7 @@ void vPortYieldProcessor( void )
 		
 		portRESTORE_CONTEXT();
 	}
+	#endif
 
 #else
 

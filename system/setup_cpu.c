@@ -14,6 +14,8 @@
 #define PLLCFG_NSEL   		((PLL_DIV - 1) << 16UL) // PLL Divider
 #define CCLKCFG_CCLKSEL_VAL ((CCLK_DIV -1 ) << 0UL )
 #define CCLK_DIV           	(8)         			// PLL out -> CPU clock divider --> 480 / 8 = 60 MHz
+//#define CCLK_DIV           	(6)         			// PLL out -> CPU clock divider --> 480 / 8 = 60 MHz
+
 //#define CCLK_DIV           	(7)         			// PLL out -> CPU clock divider --> 480 / 7 = 69 MHz
 
 typedef unsigned int		uint32_t;

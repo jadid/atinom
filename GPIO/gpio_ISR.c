@@ -15,7 +15,7 @@
 #include "gpio.h"
 #include "../tampilan/tampilan.h"
 
-#ifdef BOARD_TAMPILAN
+#ifdef TAMPILAN_LPC_4
 extern xSemaphoreHandle keypad_sem;
 #endif
 
@@ -54,7 +54,7 @@ void gpio_ISR_Wrapper( void )
 }
 #endif
 
-#ifdef BOARD_TAMPILAN
+#ifdef TAMPILAN_LPC_4
 void gpio_ISR_Wrapper_keypad( void )
 {
 	/* Save the context of the interrupted task. */
@@ -194,7 +194,7 @@ void set_konter(int st, unsigned int period)
 }
 #endif // KOMON_KONTER
 
-#ifdef BOARD_TAMPILAN
+#ifdef TAMPILAN_LPC_4
 void gpio_ISR_keypad_Handler( void )
 {
 	static portBASE_TYPE xHigherPriorityTaskWoken;

@@ -74,6 +74,52 @@ static void init_PLL(void)
 	}
 }
 
+void ubah_clk( unsigned int clk_div)
+{
+	uint32_t readback;
+
+	#if 1
+	// clock source berasal dari internal 4 MHz
+	// check if PLL connected, disconnect if yes
+	if ( PLLSTAT & PLLSTAT_PLLC ) {
+		PLLCON = PLLCON_PLLE;       /* Enable PLL, disconnected ( PLLC = 0 )*/
+		PLLFEED = 0xaa;
+		PLLFEED = 0x55;
+	}
+
+	PLLCON  = 0;        /* Disable PLL, disconnected */
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+
+	PLLCFG = PLLCFG_MSEL | PLLCFG_NSEL;
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+
+	PLLCON = PLLCON_PLLE;       /* Enable PLL, disconnected ( PLLC = 0 ) */
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+	#endif
+	
+	CCLKCFG = (clk_div - 1);     /* Set clock divider, Manual p.45 */
+
+	while ( ( PLLSTAT & PLLSTAT_PLOCK ) == 0 )  {
+		; /* Check lock bit status */
+	}
+
+	readback = PLLSTAT & 0x00FF7FFF;
+	while ( readback != (PLLCFG_MSEL | PLLCFG_NSEL) )
+	{
+		; // stall - invalid readback
+	}
+
+	PLLCON = ( PLLCON_PLLE | PLLCON_PLLC );  /* enable and connect */
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+	while ( ((PLLSTAT & PLLSTAT_PLLC) == 0) ) {
+		;  /* Check connect bit status, wait for connect */
+	}
+}
+
 static void lowInit(void)
 {
 	init_PLL();
@@ -125,6 +171,12 @@ void sysInit(void)
 	PINMODE8 = 0x00000000;
 	
 	PINSEL0 = PINSEL0 | 0x50; // enable TX & RX
+	
+	#ifdef BOARD_ORDC
+	/* power timer0 & uart0 */
+	PCONP = BIT(1) | BIT(3);
+	
+	#endif
 	
 	setup_wdog();
 }

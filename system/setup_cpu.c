@@ -1,5 +1,7 @@
 /*
  * setup CPU supaya siap
+ 
+ 	FCCO = (2 × M × FIN) / N
  */
 
 
@@ -8,15 +10,25 @@
 
 
 /*-----------------------------------------------------------*/
-#define PLL_MUL				(60)					// 4 MHz * 60 = 480 MHz
+#define PLL_MUL				(60)					// 2 * 4 MHz * 60 = 480 MHz
 #define PLL_DIV             (1)
+
+#ifdef USB_TEST
+/* cristal 8 MHZ, dibagi N = 2, sehingga yang lain2 harusnya tidak berubah */
+#define PLL_MUL				(60)					// 2 * 4 MHz * 60 = 480 MHz
+#define PLL_DIV             (2)
+#define USB_SEL				(10)
+#define USBSEL				(USB_SEL - 1)
+
+#endif
+
 #define PLLCFG_MSEL   		((PLL_MUL - 1) << 0) 	// PLL Multiplier
 #define PLLCFG_NSEL   		((PLL_DIV - 1) << 16UL) // PLL Divider
 #define CCLKCFG_CCLKSEL_VAL ((CCLK_DIV -1 ) << 0UL )
 #define CCLK_DIV           	(8)         			// PLL out -> CPU clock divider --> 480 / 8 = 60 MHz
 //#define CCLK_DIV           	(6)         			// PLL out -> CPU clock divider --> 480 / 8 = 60 MHz
-
 //#define CCLK_DIV           	(7)         			// PLL out -> CPU clock divider --> 480 / 7 = 69 MHz
+
 
 typedef unsigned int		uint32_t;
 #define MEMMAP_FLASH		1
@@ -33,7 +45,7 @@ typedef unsigned int		uint32_t;
 static void init_PLL(void)
 {
 	uint32_t readback;
-
+	
 	// clock source berasal dari internal 4 MHz
 	// check if PLL connected, disconnect if yes
 	if ( PLLSTAT & PLLSTAT_PLLC ) {
@@ -45,6 +57,22 @@ static void init_PLL(void)
 	PLLCON  = 0;        /* Disable PLL, disconnected */
 	PLLFEED = 0xaa;
 	PLLFEED = 0x55;
+	
+	#ifdef USB_TEST22
+	SCS |= BIT(5);   /* Enable main OSC, SCS Man p.28 */
+	while( !( SCS & BIT(6) ) ) {
+		;	/* Wait until main OSC is usable */
+	}
+	
+	/* main oscilator dari kristal 8 MHZ dipakai */
+	CLKSRCSEL = 0x01;
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+	
+	USBCLKCFG = USBSEL;
+	PLLFEED = 0xaa;
+	PLLFEED = 0x55;
+	#endif
 
 	PLLCFG = PLLCFG_MSEL | PLLCFG_NSEL;
 	PLLFEED = 0xaa;
@@ -175,8 +203,8 @@ void sysInit(void)
 	#ifdef BOARD_ORDC
 	/* power timer0 & uart0 */
 	PCONP = BIT(1) | BIT(3);
-	
 	#endif
+	PCONP = BIT(1) | BIT(3);
 	
 	setup_wdog();
 }

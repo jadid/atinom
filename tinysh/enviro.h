@@ -22,6 +22,10 @@ struct t_env {
 	char GW2;
 	char GW3;
 	struct t_kalib kalib[20];
+	#ifdef PAKAI_MMC
+	unsigned int mmc_serial;		// dipakai untuk MAC
+	unsigned int mmc_tot_sektor;	// sektor maks MMC
+	#endif
 	int magic1;
 	int magic2;
 };

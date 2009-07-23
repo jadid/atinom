@@ -121,7 +121,12 @@ static volatile portLONG *plTHREEmpty;
 /*-----------------------------------------------------------*/
 
 #include <stdarg.h>
+
+#ifdef PAKAI_MMC
+char printbuffer[512];
+#else
 char printbuffer[256];
+#endif
    
 int printf2 (const char *fmt, ...)
 {

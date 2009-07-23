@@ -31,6 +31,10 @@
 #include "set_kanal.c"
 #endif
 
+#ifdef PAKAI_MMC
+#include "../fatfs/shell_fs.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
@@ -319,6 +323,7 @@ static tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
 
 #endif
 
+extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
@@ -336,6 +341,21 @@ portTASK_FUNCTION(shell, pvParameters )
 		printf("NON Preemptive kernel digunakan !\r\n"); 
 	else
 		printf("Preemptive kernel digunakan !\r\n");
+	
+	#ifdef USB_TEST
+	Host_Init();               /* Initialize the lpc2468 host controller                                    */
+    //c = Host_EnumDev();       /* Enumerate the device connected */     
+   	// if (c == 0) printf("Ketemu !\r\n");  
+   	
+   	#if 1
+   	if (OHCIInit() == 0)
+   	{
+   		printf("------------ Init error \r\n");
+   	}
+   	
+   	//install_usb_interrupt();
+   	#endif
+	#endif
 	
 	/* 
 	 * add command
@@ -406,7 +426,11 @@ portTASK_FUNCTION(shell, pvParameters )
   	//tinysh_add_command(&bgcmd);
   	//xTaskCreate( bg_cmd_thread, "bg_cmd", 1000, NULL, 2, &xHandle);
 
+	#ifdef PAKAI_MMC
+  	vTaskDelay(40);
+  	#else
   	vTaskDelay(450);
+  	#endif
 
 	#ifdef BOARD_TAMPILAN	
 	// cek ukuran struk
@@ -428,16 +452,40 @@ portTASK_FUNCTION(shell, pvParameters )
 	start_adc_1();
 	#endif
 	
+	#ifdef PAKAI_MMC
+	tinysh_add_command(&util_ls_cmd);
+	tinysh_add_command(&util_mkdir_cmd);
+	
+	init_gpio_mmc();
+	uncs_mmc();
+	
+	set_fs_mount();
+	cek_fs_free();
+	#endif
+	
 	tinysh_set_prompt(PROMPT);
 	
 	/* 
 	 * main loop shell
   	 */
-  	
+  	int lop = 0;
   	while(1)
     {
-	  if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+	  lop++;
+	  //if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+	  if (xSerialGetChar(1, &c, 100 ) == pdTRUE)
 	  	tinysh_char_in((unsigned char)c);
+	  	
+	  #ifdef USB_TEST
+	  c = HC_INT_STAT ;
+	  {
+	  	printf("%4d: usb stat 0x%X\r\n", lop, c);
+	  	
+	  	HC_INT_STAT |= c;
+	  	
+	  	usb_terup = 0;
+	  }
+	  #endif
     }
   	
   	return;
@@ -446,6 +494,6 @@ portTASK_FUNCTION(shell, pvParameters )
 void init_shell(void)
 {
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 7), \
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10),	/* 7 */	\
 		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }

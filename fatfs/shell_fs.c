@@ -137,8 +137,6 @@ static int util_ls(int argc, char **argv)
 	U16 jum_dirs;
 	FATFS *fs;
 	
-	//fs = &Fatfs;
-	
 	fileInfo.lfname = buf_lfn;
 	fileInfo.lfsize = sizeof (buf_lfn);
 
@@ -160,7 +158,6 @@ static int util_ls(int argc, char **argv)
 	if ((res = f_opendir (&dirs, path)))
 	{ 
 		printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
-		//f_printerror (res); 
 		return 0;
 	}
 	#if 1

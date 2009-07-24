@@ -3,6 +3,9 @@
  *
  *  Created on: Dec 10, 2008
  *      Author: jadid
+ 
+ 	24 Juli 2009
+ 	ditambahkan PORT_KONTROL
  */
 
 #include "../uip/uip/psock.h"
@@ -30,6 +33,7 @@
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
 #define 	ISO_nl 			0x0a
+#define		PORT_KONTROL	7235
 
 
 /* offset masing2 data pada array */
@@ -171,6 +175,13 @@ struct t_data_hitung {
 	float kwh;
 	float kwh_lama;
 	float sfc;
+};
+
+struct t_xcontrol {
+	char  header[12];
+ 	short out_kanal;	// 16 bit (akan ada 64 K obyek kontrol)
+ 	short status;	// akan ada 64 kemungkinan status
+ 	float analog;	// future use
 };
 
 #endif /* MONITA_UIP_H_ */

@@ -207,7 +207,7 @@ unsigned portLONG ulCompareMatch;
 	T0MCR  = (3 << 3);  /* Reset timer on match and generate interrupt */
 
 	/* Setup the VIC for the timer. */
-	VICIntEnable |= 0x00000010;	// tadinya tidak di OR
+	VICIntEnable = 0x00000010;
 	
 	/* The ISR installed depends on whether the preemptive or cooperative
 	scheduler is being used. */
@@ -223,8 +223,8 @@ unsigned portLONG ulCompareMatch;
 	}
 	#endif
 
-	//VICVectCntl4 = 1;
-	VICVectCntl4 = ( 0x020 | 0x04);
+	VICVectCntl4 = 1;
+	//VICVectCntl4 = ( 0x020 | 0x04);
 
 	/* Start the timer - interrupts are disabled when this function is called
 	so it is okay to do this here. */

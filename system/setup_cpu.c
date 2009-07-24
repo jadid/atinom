@@ -204,7 +204,7 @@ void sysInit(void)
 	/* power timer0 & uart0 */
 	PCONP = BIT(1) | BIT(3);
 	#endif
-	PCONP = BIT(1) | BIT(3);
+	//PCONP = BIT(1) | BIT(3);
 	
 	setup_wdog();
 }

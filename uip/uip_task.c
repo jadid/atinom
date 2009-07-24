@@ -73,40 +73,47 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
 	
-	printf("UIP : uip_init\n");
+	printf("UIP : uip_init\r\n");
 	uip_init ();
 	
 	//uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
 	uip_ipaddr( xIPAddr, env2.IP0, env2.IP1, env2.IP2, env2.IP3 );
 	uip_sethostaddr( xIPAddr );
 
-	printf("ARP : arp_init\n");
+	printf("ARP : arp_init\r\n");
 	uip_arp_init ();
 
 	printf("Init ENC28J .. ");
 
 	if (enc28j60Init() == 1)
 	{
-		 printf(" .. OK\n");
+		 printf(" .. OK\r\n");
 	}
 	else
-		printf("ENC tidak respons !\n");
+		printf("ENC tidak respons !\r\n");
 
 	#ifdef PAKE_HTTP
+	printf("SIMPLE HTTP : init\r\n");
 	httpd_init ();
 	#endif
 
 	#ifdef PAKE_TELNETD
+	printf("SIMPLE TELNET : init\r\n");
     telnetd_init ();
 	#endif
 
 #ifdef BOARD_KOMON
-    printf("MONITA : monita init\n");
+    printf("MONITA : monita init\r\n");
     monita_init();
 #endif
 
+#if (PAKAI_KONTROL == 1)
+	printf("MONITA : monita kontrol init\r\n");
+	kontrol_init();
+#endif
 	
 #ifdef BOARD_TAMPILAN
+	printf("MONITA : sambungan_aktif init\r\n");
 	sambungan_init();
 	mul = 0;
 #endif
@@ -121,6 +128,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	for (;;)
 	{
 		vTaskDelay(1);
+		//portYIELD();
 		
 		#ifdef BOARD_TAMPILAN
 		loop++;
@@ -277,6 +285,11 @@ void dispatch_tcp_appcall (void)
 #ifdef BOARD_KOMON
   	if (uip_conn->lport == HTONS(PORT_MONITA))
 		monita_appcall();
+#endif
+
+#if (PAKAI_KONTROL == 1)
+	else if (uip_conn->lport == HTONS(PORT_KONTROL))
+		kontrol_appcall();
 #endif
 
 #ifdef BOARD_TAMPILAN

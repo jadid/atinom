@@ -311,6 +311,8 @@ int main( void )
 #endif
 }
 
+int brace_stat;
+
 void togle_led_utama(void)
 {
 	if (tog)
@@ -374,12 +376,18 @@ void togle_led_utama(void)
 		delay(100);
 		relay_D_off();
 		#endif
+		
+		if (brace_stat == 1)
+			relay_C_on();
 	}
 	else
 	{
 		FIO0CLR = LED_UTAMA;
 		tog = 1;
 		
+		if (brace_stat == 1)
+			relay_C_off();
+			
 		#if 0
 		relay_A_on();
 		delay(100);
@@ -395,22 +403,41 @@ void togle_led_utama(void)
 	}
 }
 
+//int armed = 0;
+extern unsigned char koil_stat[];
+extern stat_input[];
+extern int jum_tutup;
+		
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
-	unsigned int muter=0;
+	unsigned int muter = 0;
+	int wait_30 = 0;
+	int warning = 0;
+	int armed = 0;
+
 	
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
+	brace_stat = 0;
 	
 	vTaskDelay(2000);
 	
 	#if (PAKAI_KONTROL == 1)
-	extern unsigned char koil_stat[];
 	
 	for (tog = 0; tog < 8; tog++)
 		koil_stat[tog] = 0;
+	
+	/* reset stat_input */	
+	
+	for (tog=0; tog<= 10; tog++)
+		stat_input[tog] = 0;
+	
+	jum_tutup = 0;
+	
 	#endif
+	
+	tog = 0;
 	
 	for (;;)
 	{		
@@ -424,7 +451,9 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 			
 			*/
 		
+		#if (PAKAI_KONTROL == 0)
 		hitung_rpm();
+		#endif
 		
 		muter++;		
 		if (muter > 5)
@@ -436,6 +465,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		vTaskDelay(100);
 		
 		#if (PAKAI_KONTROL == 1)
+		/*
 		extern unsigned char koil_stat[];
 		if (koil_stat[0] == 0) relay_A_off();
 		else if (koil_stat[0] == 1) relay_A_on(); 
@@ -448,111 +478,84 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		
 		if (koil_stat[3] == 0) relay_D_off();
 		else if (koil_stat[3] == 1) relay_D_on(); 
+		*/
+
+		
+		/* 
+		 * untuk menyalakan, armed = 1, tunggu sampai 30 detik
+		 * keluar, tutup pintu, dan OK aktif
+		 */
+		if ( stat_input[9] == 1)
+		{
+			wait_30 ++;
+			if (wait_30 == 300)
+			{
+				armed = 1;
+				jum_tutup = 0;
+				warning = 0;
+				/* relay B diaktifkan untuk nyalain apa saja */
+				relay_B_on();
+			}
+		}
+		
+		/* 
+		 * berarti sudah armed dan ada yang buka pintu 
+		 * tunggu 20 detik untuk matikan armed
+		 */
+		if (armed == 1 && jum_tutup > 0)
+		{
+			warning++;
+			if (warning == 300)
+			{
+				if (stat_input[9] == 1)
+				{
+					/* brace brace .. somebody enter */
+					relay_A_on();
+					brace_stat = 1;
+				}
+				else
+				{
+					/* 
+					 * ok, berarti armed di nolkan 
+					 * alarm tidak sempat berbunyi
+					 */
+					armed = 0;
+					wait_30 = 0;
+					jum_tutup = 0;
+					relay_B_off();
+				}
+			}
+		}
+		
+		
+		/* untuk mereset jika sudah kadung bunyi, 
+		 * armed = 0, dan buka tutup 5 kali */
+		if ( stat_input[9] == 0 && jum_tutup > 20)
+		{
+			jum_tutup = 0;
+			armed = 0;
+			wait_30 = 0;
+			brace_stat = 0;
+			
+			relay_A_off();
+			relay_B_off();
+			relay_C_off();
+		}
+		
+		/* jika gak ke buru ke pintu, tinggal matikan / nyalakan
+		 * armed lagi untuk reset waktu tunggu 30 
+		 */
+		if (stat_input[9] == 0)
+		{
+			wait_30 = 0;
+		}
 		
 		#endif
 	}
 }
 void init_led_utama(void)
 {
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
-		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 4) , NULL, \
+		tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_led );
 }
-
-/* task untuk adc, setiap 2 ms */
-
-#if (KONTER_MALINGPING == 1)
-
-float volt_supply;
-
-static portTASK_FUNCTION( task_adc , pvParameters )
-{
-	int loop=0;
-	unsigned long tot=0;
-	int loop_mati = 1000;
-	mati_total = 1;
-	
-	/* 	saat awal, server tidak usah mati dulu
-		sehingga jika supply kurang maka akan 
-		mati dengan sendirinya */
-		
-	vTaskDelay(3000);
-	
-	
-	for (;;)
-	{
-		start_adc_1();
-		vTaskDelay(2);
-		tot = tot + read_adc_1();
-		
-		loop++;
-		if (loop > 500)
-		{			
-			tot = (tot / 500);
-			
-			volt_supply = (float) (tot * 3.3 / 0xFFFF);	
-			//printf("ADC 1 = 0x%4X = %.3f\r\n", tot, volt_supply );
-			
-			/* 	cek jika diatas setting, maka relay diaktifkan !
-				relay normaly open.
-				
-				pertimbangkan juga saat waktunya on (histerisis ?)
-				jangan sampai malah hidup/mati hidup/mati
-				terlalu sering.
-				
-				beri jarak setiap 2 menit. 
-				
-				atau, mati pada < 22 Volt
-				dan nyala jika > 22.5 Volt atau 23 Volt sekalian
-			*/
-			
-			//if (volt_supply > 2.86) /* line > 22.5 Volt */
-			//if (volt_supply > 2.83) /* line > 22.5 Volt */
-			if (volt_supply > 2.65) /* line > 22.5 Volt */
-			{
-				if (loop_mati > (60 * 2))
-				{
-					blok_1_up();
-					
-					/* server juga nyala */
-					blok_2_down();
-					
-					/* ke penduduk nyala */
-					blok_3_up();
-					
-					mati_total = 0;
-				}
-				else
-					loop_mati++;
-			}
-			
-			//if (volt_supply < 2.80) /* line < 22 Volt */
-			//if (volt_supply < 2.77) /* line < 22 Volt */
-			if (volt_supply < 2.52)   /* line <  20.286 */	
-			{
-				blok_1_down();
-				
-				/* server juga harus ikutan mati */
-				blok_2_up();
-				
-				/* ke penduduk mati */
-				blok_3_down();
-				
-				mati_total = 1;				
-				loop_mati=0;
-			}
-				
-			
-			tot = 0;
-			loop = 0;
-		}
-	}
-}
-
-void init_task_adc(void)
-{
-	xTaskCreate(task_adc, ( signed portCHAR * ) "on_adc",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
-		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
-}
-
-#endif
 

@@ -102,6 +102,15 @@ void init_gpio(void)
 	
 	// enable falling edge interrupt
 	IO2_INT_EN_F = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
+	
+	#if (PAKAI_KONTROL == 1)
+	/* untuk kontrol pintu, ketika ditutup / rising edge lagi 
+	 * juga di cek 
+	 */
+	
+	IO2_INT_EN_R = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
+	
+	#endif
 
 	portEXIT_CRITICAL();
 }
@@ -196,3 +205,4 @@ void init_gpio_adc(void)
 	portEXIT_CRITICAL();
 }
 #endif
+

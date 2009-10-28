@@ -5,6 +5,10 @@
  *      Author: jadid
  *
  *      ini harus dicompile pada mode ARM
+ * 
+ *  11 Sept 2009
+ * 	handler untuk GPIO input kontrol (status saja)
+ * 	
  */
 
 /* Scheduler includes. */
@@ -28,6 +32,7 @@ void gpio_ISR_Handler( void );
 
 void timer1_ISR_Wrapper( void ) __attribute__ ((naked));
 void timer1_ISR_Handler( void );
+void timer1_ISR_KONTROL( void );
 
 void gpio_ISR_Wrapper_keypad( void ) __attribute__ ((naked));
 void gpio_ISR_keypad_Handler( void );
@@ -47,8 +52,15 @@ void gpio_ISR_Wrapper( void )
 	
 	/* Call the handler.  This must be a separate function from the wrapper
 	to ensure the correct stack frame is set up. */
-	gpio_ISR_Handler();
+	
+#if (PAKAI_KONTROL == 1)
+	/* 11 Sept 2009, jika GPIO hanya untuk status on off */
+	gpio_ISR_KONTROL();
 
+#else
+	
+	gpio_ISR_Handler();
+#endif
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
 }
@@ -209,5 +221,77 @@ void gpio_ISR_keypad_Handler( void )
 	
 	/* Clear the ISR in the VIC. */
 	VICVectAddr = 0;	
+}
+#endif
+
+#if (PAKAI_KONTROL == 1)
+/* ingat bahwa input sesuai dengan nomer kanal, bukan array */
+
+int stat_input[11];
+int jum_tutup;
+
+void gpio_ISR_KONTROL( void )
+{
+	//cek sumber
+	if (IO2_INT_STAT_F & kont_10)	// falling, pintu nutup, switch on
+	{
+		stat_input[10] = 1;
+		jum_tutup++;
+		
+		IO2_INT_CLR = kont_10;
+	}	
+	if (IO2_INT_STAT_R & kont_10)
+	{
+		stat_input[10] = 0;		// rising, pintu buka, swith off / open
+		jum_tutup++;
+		
+		IO2_INT_CLR = kont_10;
+	}
+	
+	
+	if (IO2_INT_STAT_F & kont_9) // armed on
+	{
+		stat_input[9] = 1;
+		
+		IO2_INT_CLR = kont_9;
+	}
+	if (IO2_INT_STAT_R & kont_9) // armed off
+	{
+		stat_input[9] = 0;
+		
+		IO2_INT_CLR = kont_9;
+	}
+	
+	
+	if (IO2_INT_STAT_F & kont_8)
+	{
+		stat_input[8] = 1;
+		
+		IO2_INT_CLR = kont_8;
+	}
+	if (IO2_INT_STAT_F & kont_7)
+	{
+		stat_input[7] = 1;
+		
+		IO2_INT_CLR = kont_7;
+	}
+	
+	
+	if (IO2_INT_STAT_F & kont_6) 
+	{
+		stat_input[6] = 1;
+		
+		IO2_INT_CLR = kont_6;
+	}
+	
+	if (IO2_INT_STAT_R & kont_6) 
+	{
+		stat_input[6] = 0;
+		
+		IO2_INT_CLR = kont_6;
+	}
+	
+	/* Clear the ISR in the VIC. */
+	VICVectAddr = 0;
 }
 #endif

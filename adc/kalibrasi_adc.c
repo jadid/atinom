@@ -79,7 +79,7 @@ char kalibrasi_adc1(int fdy)
 				   	goto kalib_ulang;
 				}
 
-				printf("\n gagal !");
+				printf("\n gagal !\r\n");
 				ada_adc_1 = false;
 				break;
 			}

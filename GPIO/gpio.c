@@ -9,6 +9,10 @@
 #include "gpio.h"
 #include "../tampilan/tampilan.h"
 
+#ifdef BOARD_KOMON_420_SAJA
+#include "../adc/ad7708.h"
+#endif
+
 #ifdef BOARD_KOMON_A_RTD
 #include "../adc/ad7708.h"
 
@@ -201,6 +205,24 @@ void init_gpio_adc(void)
 		coba nanti perbaiki boardnya
 	*/
 	FIO1DIR = FIO1DIR & ~port_rdy_ad7708;	
+		
+	portEXIT_CRITICAL();
+}
+#endif
+
+/* 3 Nov 2009 */
+#ifdef BOARD_KOMON_420_SAJA
+void init_gpio_adc(void)
+{
+	portENTER_CRITICAL();
+	
+	/* GPIO CS diset output */
+	FIO1DIR = FIO1DIR | port_cs_ad7708;
+	
+	uncs_ad7708();
+	
+	/* port 2, nanti ganti ke mode interrupt */
+	FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	
 		
 	portEXIT_CRITICAL();
 }

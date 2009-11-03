@@ -440,6 +440,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
 	
+	#ifdef BOARD_KOMON_420_SAJA
+	kalibrasi_adc1();
+	vTaskDelay(100);
+	start_adc_1();
+	#endif
+	
 	#ifdef BOARD_KOMON_A_RTD
 	kalibrasi_adc1();
 	vTaskDelay(100);

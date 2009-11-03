@@ -104,6 +104,7 @@ THUMB_SOURCE= \
 		../system/idle_hook.c \
 		../adc/ad7708.c	\
 		../uip/apps/telnetd/telnetd.c	\
+		../spi/low_ss1.c	\
 
 #		LCD/lcd_320.c \
 #		tampilan.c \

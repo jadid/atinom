@@ -38,7 +38,9 @@
 
 #define PAKE_TELNETD
 
-#define BOARD_KOMON_A_RTD
+//#define BOARD_KOMON_A_RTD
+
+#define BOARD_KOMON_420_SAJA
 #define VERSI_KOMON		"1.42"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
@@ -46,8 +48,8 @@
 #define _printf	printf2
 #define printf	printf2
 
-#define PROMPT 		"Komon_A $ "
-#define NAMA_BOARD	"Babelan Komon-A (RTD & Pressure 4-20mA)"
+#define PROMPT 		"Komon_420 $ "
+#define NAMA_BOARD	"Babelan Komon-420 (4-20mA Saja)"
 
 /*-----------------------------------------------------------
  * Application specific definitions.

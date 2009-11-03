@@ -17,6 +17,10 @@ extern struct t_adc st_adc;
 
 static unsigned int nomer_mesin=0;
 
+#ifdef BOARD_KOMON_420_SAJA
+#define BOARD_KOMON_WEB
+#endif
+
 #ifdef BOARD_KOMON_A_RTD
 #define BOARD_KOMON_WEB
 #endif

@@ -66,6 +66,15 @@ inline void uncs_ad7708(void)
 #define kirim_word	spiPut
 #define ambil_word	spiPut
 
+#ifdef BOARD_KOMON_420_SAJA
+void kirim_word_mmc(unsigned char t);
+unsigned char ambil_word_mmc(void);
+
+#define kirim_word	kirim_word_mmc
+#define ambil_word	ambil_word_mmc
+
+#endif
+
 #define SPI_SPCCR	S0SPCCR
 #define SPI_SPCR	S0SPCR
 #define SPI_SPSR	S0SPSR

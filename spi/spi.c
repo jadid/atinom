@@ -11,9 +11,9 @@
 #include "spi.h"
 #include "../uip/hardware/enc28j60.h"
 
-#define GPIO0_FIODIR	FIO1DIR
-#define GPIO0_FIOSET	FIO1SET
-#define GPIO_IO_P7		CS_ENC
+//#define GPIO0_FIODIR	FIO1DIR
+//#define GPIO0_FIOSET	FIO1SET
+//#define GPIO_IO_P7		CS_ENC
 
 #define SPI_SPCCR	S0SPCCR
 #define SPI_SPCR	S0SPCR
@@ -44,8 +44,8 @@ void spiInit (void)
   //
   //  Set P0.7 as output, deselect by driving high
   //
-  GPIO0_FIODIR |= GPIO_IO_P7;
-  GPIO0_FIOSET  = GPIO_IO_P7;
+  //GPIO0_FIODIR |= GPIO_IO_P7;
+  //GPIO0_FIOSET  = GPIO_IO_P7;
 
   //
   //  Turn on SPI module power

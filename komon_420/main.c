@@ -11,6 +11,9 @@
 	coba porting untuk Komon_A (RTD & 4-20 mA)	
 	21 April 2009
 	Clean up untuk release stable versi 1.4
+	
+	3 Nov 2009
+	Untuk Komon_420 saja !
 */
 
 /* Scheduler includes. */
@@ -27,6 +30,10 @@
 #define LED_UTAMA	BIT(26)
 #endif
 
+#ifdef BOARD_KOMON_420_SAJA
+#define LED_UTAMA	BIT(27)
+#endif
+
 xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -35,6 +42,7 @@ unsigned int tot_idle;
 static int tog;
 static void sysInit(void);
 void init_led_utama(void);
+void init_spi_mmc(char min)	;
 
 xTaskHandle hdl_lcd;
 xTaskHandle hdl_led;
@@ -90,6 +98,11 @@ int main( void )
 #endif
 
 	init_gpio_adc();
+	
+#ifdef BOARD_KOMON_420_SAJA
+	/* init spi #1 untuk adc & MMC */
+	init_spi_mmc(0);
+#endif
 
 #ifdef jalankan
 	init_led_utama();

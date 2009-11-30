@@ -7,7 +7,7 @@ typedef void (*IAP)(unsigned int [],unsigned int[]);
 
 struct t_kalib {
 	float m;
-	float y;
+	float C;
 	char ket[64];
 };
 

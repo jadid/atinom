@@ -108,7 +108,7 @@ unsigned char cek_status(void)
 {
 	unsigned char s;
 	//s = ambil_word();
-   cs_ad7708();
+	cs_ad7708();
 	kirim_word((m_read | reg_status));
 	s = spi_rx();					//dummy read
 	s= ambil_word();
@@ -310,6 +310,10 @@ void start_adc_1(int fdx)
 	#ifdef BOARD_KOMON_A_RTD
 	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_RTD);
 	#endif
+	
+	#ifdef BOARD_KOMON_420_SAJA
+	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
+	#endif
 		
 	set_adccon(temp_char);
 	set_mode((unsigned char) (3 + 16));			//continuous sampling + CHCON
@@ -400,6 +404,38 @@ void proses_data_adc(void)
 		
 		else
 		temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_adc);
+		
+		set_adccon(temp);
+	}
+}
+#endif
+
+#ifdef BOARD_KOMON_420_SAJA
+void proses_data_adc(void)
+{
+	unsigned char temp;
+	
+	if (cek_adc_rdy() == 1)
+	{
+		st_adc.count++;
+		st_adc.data[ st_adc.cur_kanal ] = baca_data();
+		 	
+		st_adc.cur_kanal++;
+		if (st_adc.cur_kanal == 10)
+		{
+		 	/* satu round 10 kanal sudah selesai */
+		 	st_adc.cur_kanal = 0;
+		}
+		
+		
+		if (st_adc.cur_kanal == 8)
+			temp = (unsigned char) ((14 << 4) + range_420);
+		
+		else if (st_adc.cur_kanal == 9)
+			temp = (unsigned char) ((15 << 4) + range_420);
+		
+		else
+			temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
 		
 		set_adccon(temp);
 	}

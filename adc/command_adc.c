@@ -39,6 +39,15 @@ void status_adc(void)
 		printf("%2d : %6d : %1.4f V\r\n", (i+1), st_adc.data[i], f);
 	}
 	#endif
+	
+	#ifdef BOARD_KOMON_420_SAJA
+	printf("Voltage 4-20 mA\r\n");
+	for (i=0; i<10; i++)
+	{
+		f = st_adc.data[i] * faktor_pengali_420 / 0xffff;
+		printf("%2d : %6d : %1.4f V\r\n", (i+1), st_adc.data[i], f);
+	}
+	#endif
 }							 
 
 static tinysh_cmd_t cek_adc_cmd={0,"status_adc","konversi adc & voltnya","[args]",

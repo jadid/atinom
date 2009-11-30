@@ -17,6 +17,11 @@
 #include "titik.c"
 #endif
 
+#ifdef BOARD_KOMON_420_SAJA
+#include "../adc/command_adc.c"
+#include "set_kanal.c"
+#endif
+
 #ifdef BOARD_KOMON_A_RTD
 #include "../adc/command_adc.c"
 #include "set_kanal.c"
@@ -388,6 +393,11 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
+	tinysh_add_command(&cek_adc_cmd);
+	tinysh_add_command(&set_kanal_cmd);
+#endif
+
+#ifdef BOARD_KOMON_420_SAJA
 	tinysh_add_command(&cek_adc_cmd);
 	tinysh_add_command(&set_kanal_cmd);
 #endif

@@ -258,6 +258,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		 #ifdef BOARD_KOMON_B_THERMO
 		 proses_data_adc();
 		 #endif
+		 
+		 #ifdef BOARD_KOMON_420_SAJA
+		 proses_data_adc();
+		 #endif
+
 	}
 }
 

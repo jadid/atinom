@@ -116,5 +116,10 @@ signed portBASE_TYPE xSerialPutChar( xComPortHandle pxPort, signed portCHAR cOut
 portBASE_TYPE xSerialWaitForSemaphore( xComPortHandle xPort );
 void vSerialClose( xComPortHandle xPort );
 
+
+void ser2_putstring(const signed portCHAR * const pcString);
+signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );
+signed portBASE_TYPE ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime );
+
 #endif
 

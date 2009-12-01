@@ -48,7 +48,7 @@
 
 #define reg_frek_f	1000
 
-#define reg_satuan 4105
+#define reg_satuan 	4105
 //#define reg_satuan 	1
 #define reg_speed 	7006
 
@@ -241,7 +241,7 @@ struct t_kontrol_PM {
      unsigned char baru;        // data baru atau tidak
 };
 
-unsigned short get_PM710(unsigned short reg, unsigned char uk);
+unsigned int get_PM710(unsigned short reg, unsigned char uk);
 
 //---------------------------------------------------------------------------
 #endif

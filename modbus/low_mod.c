@@ -3,22 +3,22 @@
  * yang dikembangkan sejak Meulaboh - NAD
  */
 
-#define 	JUMLAH_PM		5
+#define 	JUMLAH_PM		1
 #define		TIPE_PM710
 
 #include 	"low_mod.h"
 #include 	"mbcrc.h"
 #include 	"mbcrc.c"
 
-unsigned short jum_PM710_masuk;
+//unsigned short jum_PM710_masuk;
 unsigned short reg_flag;
-unsigned short urut_PM710;    //urutan pengambilan data
-unsigned short jum_balik;
-extern unsigned char addr_PM710;
-extern unsigned char addr_KTA;
+//unsigned short urut_PM710;    //urutan pengambilan data
+//unsigned short jum_balik;
+//extern unsigned char addr_PM710;
+//extern unsigned char addr_KTA;
 
-//struct d_PM710 data_PM710[JUMLAH_PM];
-//struct f_PM710 asli_PM710[JUMLAH_PM];
+struct d_PM710 data_PM710[JUMLAH_PM];
+struct f_PM710 asli_PM710[JUMLAH_PM];
 //struct t_kontrol_PM kontrol_PM[JUMLAH_PM];
 
 unsigned short 	wind_speed;
@@ -29,7 +29,7 @@ unsigned short wind_satuan;
 unsigned short wind_speed_tr;		// retransmision value
 unsigned short wind_dir_tr;
 
-
+#define buf	buf_rx
 extern struct d_pmod pmod;
 
 #define MOD_SERVER
@@ -41,9 +41,9 @@ extern struct d_pmod pmod;
 
    return adalah jumlah byte yang seharusnya diterima
 */
-unsigned char addr_PM710=4;		//2
+unsigned char addr_PM710=2;		//2
 
-unsigned short get_PM710(unsigned short reg, unsigned char uk)
+unsigned int get_PM710(unsigned short reg, unsigned char uk)
 {
    unsigned short dcrc;
    int i;
@@ -90,7 +90,7 @@ unsigned short cek_PM()
 	return 7;	// respon harusnya 7 byte
 	//return (1 + 1 + 1 + (uk * 2) + 2);		
 }
-#if 0
+#if 1
 //void taruh_data(int no_slave, int urt, char *buf)
 void taruh_data(int no_slave, int urt)
 {
@@ -358,6 +358,7 @@ void taruh_data(int no_slave, int urt)
 	
 }
 
+/*
 // 22 Jan 09
 unsigned short get_KTA(unsigned short reg, unsigned char uk)
 {
@@ -381,7 +382,7 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
    pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);;
 
    	return (1 + 1 + 1 + (uk * 2) + 2);
-}
+}*/
 #endif
 
 //---------------------------------------------------------------------------

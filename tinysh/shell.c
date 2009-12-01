@@ -91,6 +91,14 @@ void cek_stack(void)
 	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
 	
+	#if (TAMPILAN_MALINGPING == 1)
+	extern xTaskHandle hdl_proses_pm;
+	
+	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
+	#endif
+	
 	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	
 }							 
@@ -481,6 +489,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	
 	tinysh_set_prompt(PROMPT);
 	
+	//serial2_init( 19200, 64);
+	
 	/* 
 	 * main loop shell
   	 */
@@ -488,10 +498,10 @@ portTASK_FUNCTION(shell, pvParameters )
   	while(1)
     {
 	  lop++;
-	  //if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
-	  if (xSerialGetChar(1, &c, 100 ) == pdTRUE)
-	  	tinysh_char_in((unsigned char)c);
-	  	
+	  if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+	  {
+		tinysh_char_in((unsigned char)c);
+	  }	
 	  #ifdef USB_TEST
 	  c = HC_INT_STAT ;
 	  {

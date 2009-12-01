@@ -43,7 +43,7 @@
 typedef unsigned char uchar;
 /* redefine some useful and maybe missing utilities to avoid conflicts */
 #define strlen tinysh_strlen
-#define putchar(c) xSerialPutChar(1, c, 0);
+#define putchar(c) xSerialPutChar(1, c, 10000);
 
 
 static void help_fnt(int argc, char **argv);

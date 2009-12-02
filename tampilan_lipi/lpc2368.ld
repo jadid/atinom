@@ -3,8 +3,8 @@ MEMORY
 	flash	: ORIGIN = 0x00000000, LENGTH = 500K
 	/* ram	: ORIGIN = 0x40000000, LENGTH = 32K */
 	/* ram	: ORIGIN = 0x40000000, LENGTH = (32K - 32) */		/* LPC2368 */
-	ram	: ORIGIN = 0x40000000, LENGTH = (64K - 32)				/* LPC2387 */
-	usbram   : ORIGIN = 0x7FD00000, LENGTH = 8K
+	ram		: ORIGIN = 0x40000000, LENGTH = (64K - 32)			/* LPC2387 */
+	usbram  : ORIGIN = 0x7FD00000, LENGTH = 8K
 	/* ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K */
 	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K /* 16 K */
 }
@@ -77,12 +77,14 @@ SECTIONS
 		*(.eth_test)
 		__ethram_end__ = .;
 	} >ethram
-
-
+	
+	. = ALIGN (32 / 8);
+	end = .;
 }
+	/*
 	. = ALIGN(32 / 8);
 	_end = .;
 	
 	PROVIDE (end = .);
-
+	*/
 

@@ -118,6 +118,16 @@ UIP_SOURCE = \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
 
+#THUMB_SOURCE += $(UIP_SOURCE)
+FATFS_SOURCE = \
+		../fatfs/ff.c	\
+		../fatfs/spi_mmc.c	\
+		../fatfs/option/ccsbcs.c	\
+		../spi/low_ss1.c	\
+		../spi/gmmc.c	\
+		../system/rtc.c		
+
+THUMB_SOURCE += $(FATFS_SOURCE)	
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

@@ -11,6 +11,8 @@
 #include "rw_flash.c"
 #include "set_ipaddr.c"
 
+#define debug_printf printf
+
 #ifdef BOARD_TAMPILAN
 #include "sumber.c"
 #include "mesin.c"
@@ -38,6 +40,10 @@
 
 #ifdef PAKAI_MMC
 #include "../fatfs/shell_fs.c"
+#endif
+
+#ifdef PAKAI_RTC
+#include "../system/rtc.h"
 #endif
 
 #include "enviro.h"
@@ -78,7 +84,75 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 							  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
-							 
+
+#ifdef PAKAI_RTC
+void set_date(int argc, char **argv)
+{	
+	unsigned char *buf;
+	struct rtc_time tmku;
+	int ret;
+	time_t clk;	
+	
+	rtc_reset();
+	rtc_init();
+	rtc_start();
+	
+	buf = malloc(512);
+	if (buf == NULL) 
+	{
+		printf("ERR: alok failed\r\n");
+		free(buf);
+		return;
+	}
+	
+	printf("dapat free %X\r\n", buf);	
+	memset(buf, 0, 512);	
+	
+	printf("set_date tahun bulan tanggal jam menit\r\n");
+	
+	if (argc < 5) 
+	{
+		printf("Argument kurang !\r\n");
+		free(buf);
+		return;
+	}
+		
+	//display_args(argc, argv);
+	sprintf(buf, "%s:%s:%s:%s:%s", argv[1], argv[2], argv[3], argv[4], argv[5]); 
+	ret = sscanf(buf, "%d:%d:%d:%d:%d", &tmku.tm_year, &tmku.tm_mon, &tmku.tm_mday, &tmku.tm_hour, &tmku.tm_min); 
+	if (ret < 5)
+	{
+		printf(" ERR: format salah !\r\n");
+		free(buf);
+		return;
+	}
+
+	printf(" Set : %d-%d-%d %d:%d ",  tmku.tm_year, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
+		
+	tmku.tm_year = tmku.tm_year - 1900;
+	tmku.tm_mon  = tmku.tm_mon - 1;
+	tmku.tm_sec = 0;
+		
+	debug_printf(" OK : %d-%d-%d %d:%d\r\n",  tmku.tm_year, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
+	/*
+	if (rtc_valid_tm(&tmku)) 
+	{
+		printf(" ERR: waktu tidak mungkin !\r\n");
+		return;
+	}*/
+	rtc_set_time_tm( tmku );
+	//clk = mktime(&tmku);	
+	//ret = rtc_time_to_bfin(clk);
+	//bfin_write_RTC_STAT(ret);
+	free(buf);
+	printf(" ..OK\r\n");
+}							 
+
+static tinysh_cmd_t set_date_cmd={0,"set_date","Mengeset waktu","thn bulan tgl jam menit",
+                              set_date,0,0,0};							 
+
+#endif
+							  
 void cek_stack(void)
 {
 	printf("Sisa stack masing2 task (bytes)\r\n");
@@ -181,6 +255,14 @@ static void cek_uptime(int argc, char **argv)
 	}
 		
 	printf("%d dtk : idle = %d\n", sec, tot_idle);
+	
+	#ifdef PAKAI_RTC
+	RTCTime wt;
+	
+	wt = rtc_get_time();
+	printf(" Now = %02d:%02d:%02d  %d-%d-%d\r\n", wt.RTC_Hour, wt.RTC_Min, wt.RTC_Sec, \
+			wt.RTC_Mday, wt.RTC_Mon, (1900 + wt.RTC_Year));
+	#endif
 		
 	return ;
 }
@@ -487,11 +569,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	cek_fs_free();
 	#endif
 	
-	tinysh_set_prompt(PROMPT);
+	#ifdef PAKAI_RTC	
+	tinysh_add_command(&set_date_cmd);
+	#endif
 	
-	//serial2_init( 19200, 64);
-	
-	/* 
+	tinysh_set_prompt( PROMPT );
+	/*
 	 * main loop shell
   	 */
   	int lop = 0;

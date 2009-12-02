@@ -24,6 +24,7 @@ struct t_env {
 	struct t_kalib kalib[20];
 	int magic1;
 	int magic2;
+	int mmc_serial;
 };
 
 void save_env(int argc, char **argv);

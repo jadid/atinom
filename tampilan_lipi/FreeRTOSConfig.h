@@ -43,6 +43,9 @@
 #define printf	printf2
 
 //#define PAKE_TELNETD
+
+#define PAKAI_RTC
+#define PAKAI_MMC
 #define TAMPILAN_LPC_4
 #define TAMPILAN_MALINGPING			1
 

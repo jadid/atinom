@@ -66,6 +66,15 @@ inline void uncs_ad7708(void)
 #define kirim_word	spiPut
 #define ambil_word	spiPut
 
+#ifdef BOARD_KOMON_420_SAJA
+void kirim_word_mmc(unsigned char t);
+unsigned char ambil_word_mmc(void);
+
+#define kirim_word	kirim_word_mmc
+#define ambil_word	ambil_word_mmc
+
+#endif
+
 #define SPI_SPCCR	S0SPCCR
 #define SPI_SPCR	S0SPCR
 #define SPI_SPSR	S0SPSR
@@ -99,7 +108,7 @@ unsigned char cek_status(void)
 {
 	unsigned char s;
 	//s = ambil_word();
-   cs_ad7708();
+	cs_ad7708();
 	kirim_word((m_read | reg_status));
 	s = spi_rx();					//dummy read
 	s= ambil_word();
@@ -301,6 +310,10 @@ void start_adc_1(int fdx)
 	#ifdef BOARD_KOMON_A_RTD
 	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_RTD);
 	#endif
+	
+	#ifdef BOARD_KOMON_420_SAJA
+	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
+	#endif
 		
 	set_adccon(temp_char);
 	set_mode((unsigned char) (3 + 16));			//continuous sampling + CHCON
@@ -397,6 +410,38 @@ void proses_data_adc(void)
 }
 #endif
 
+#ifdef BOARD_KOMON_420_SAJA
+void proses_data_adc(void)
+{
+	unsigned char temp;
+	
+	if (cek_adc_rdy() == 1)
+	{
+		st_adc.count++;
+		st_adc.data[ st_adc.cur_kanal ] = baca_data();
+		 	
+		st_adc.cur_kanal++;
+		if (st_adc.cur_kanal == 10)
+		{
+		 	/* satu round 10 kanal sudah selesai */
+		 	st_adc.cur_kanal = 0;
+		}
+		
+		
+		if (st_adc.cur_kanal == 8)
+			temp = (unsigned char) ((14 << 4) + range_420);
+		
+		else if (st_adc.cur_kanal == 9)
+			temp = (unsigned char) ((15 << 4) + range_420);
+		
+		else
+			temp = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
+		
+		set_adccon(temp);
+	}
+}
+#endif
+
 void hitung_data_float(void)
 {
 	int i;
@@ -435,5 +480,15 @@ void hitung_data_float(void)
 	}
 #endif
 
-
+#ifdef BOARD_KOMON_420_SAJA
+	/* data 4-20 mA */
+	for (i=5; i< 10; i++)
+	{		
+		/*  tegangan */		
+		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+	}ss
+#endif
 }

@@ -23,6 +23,12 @@
 #include "apps/telnetd/telnetd.h"
 #endif
 
+#ifdef BOARD_KOMON_420_SAJA
+#define BOARD_KOMON
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
+#endif
+
 #ifdef BOARD_KOMON_A_RTD
 #define BOARD_KOMON
 #include "../adc/ad7708.h"

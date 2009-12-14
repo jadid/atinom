@@ -32,18 +32,20 @@ extern struct t_data_float s_data[JML_SUMBER];
 unsigned int loop_kirim;
 
 #ifdef BOARD_KOMON_A_RTD
-
 #include "../adc/ad7708.h"
 extern struct t_adc st_adc;
+#define BOARD_KOMON
+#endif
 
+#ifdef BOARD_KOMON_420_SAJA
+#include "../adc/ad7708.h"
+extern struct t_adc st_adc;
 #define BOARD_KOMON
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO
-
 #include "../adc/ad7708.h"
 extern struct t_adc st_adc;
-
 #define BOARD_KOMON
 #endif
 
@@ -119,6 +121,15 @@ void monita_appcall(void)
 				loop_kirim++;
 				
 				#ifdef BOARD_KOMON_A_RTD
+				hitung_data_float();
+				
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = st_adc.flt_data[i];
+				}		
+				#endif
+				
+				#ifdef BOARD_KOMON_420_SAJA
 				hitung_data_float();
 				
 				for (i=0; i<20;i++)

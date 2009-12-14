@@ -479,4 +479,17 @@ void hitung_data_float(void)
 		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
 	}
 #endif
+
+#ifdef BOARD_KOMON_420_SAJA
+	
+	/* data 4-20 mA */
+	for (i=0; i< 10; i++)
+	{		
+		/*  tegangan */		
+		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
+		
+		/* satuan yang diinginkan */
+		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+	}
+#endif
 }

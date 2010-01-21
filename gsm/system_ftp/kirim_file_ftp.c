@@ -30,25 +30,52 @@
   
 	code2 serial kebanyakan didapat dari :
 	http://www.faqs.org/docs/Linux-HOWTO/Serial-Programming-HOWTO.html
+	
+	19 Jan 2010
+	dicoba untuk tampilan_lipi
 	 	
 */
-#include <termios.h>
+
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#if ( PAKAI_LINUX == 1 )
+#include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/signal.h>
 #include <sys/types.h>
-#include <curses.h>
-#include <stdlib.h>
-#include <string.h>
+
+#else
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+
+#define sleep(c) vTaskDelay(c * 1000)
+//#define gettimeofday_r(c) do{ } while(0)
+
+time_t time(time_t * tt)
+{
+	tt = 21;
+}
+
+#endif
+
 
 #define DEBUG	1
 #include "serial.c"
 
 
-#define FTP_SERVER 	"daunbiru.dynalias.com"
-#define FTP_USER	"monitadata"
-#define FTP_PASSWD	"diesel2009"
+//#define FTP_SERVER 	"daunbiru.dynalias.com"
+//#define FTP_USER	"monitadata"
+//#define FTP_PASSWD	"diesel2009"
+#define FTP_SERVER 	"ftp.daunbiru.com"
+#define FTP_USER	"malingping@daunbiru.com"
+#define FTP_PASSWD	"diesel"
 #define FTP_PORT	21
 
 #define GPRS_APN2	"telkomsel"
@@ -66,6 +93,7 @@ char buf[128];
 int fd;
 
 int cek_awal(void);
+int set_cpin(void);
 int set_wipbr(void);
 int set_wipbr_apn(void);
 int set_wipbr_passwd(void);
@@ -77,7 +105,7 @@ int upload_data_file(char *nama_data);
 
 void send_etx(void);
 
-int main(int argc, char *argv[])
+int gsm_ftp(int argc, char *argv[])
 {
 	int i;
 	int c, res;
@@ -137,6 +165,12 @@ int main(int argc, char *argv[])
 	if (cek_awal() < 0)
 	{
 		printf("Modem tidak terdeteksi !\r\n");
+		return;
+	}
+	
+	if ( set_cpin() < 0)
+	{
+		printf("Setting CPIN error !\r\n");
 		return;
 	}
 	
@@ -279,10 +313,53 @@ int cek_awal(void)
 	return -1;
 }
 
-int set_wipcfg(void)
+int set_cpin(void)
 {
-	//char buf[32];
+	/* cek dulu apakah pin sudah dimasukkan ? */	
+	sprintf(buf, "AT+CPIN?\r\n");
+	tulis_serial(buf, strlen(buf), 0);	
+	baca_serial(buf, 20, 5);
 	
+	if (strncmp(buf, "+CPIN: READY", 12) == 0 )	
+	{
+		printf(" %s(): OK Ready\r\n", __FUNCTION__);
+		return 0;
+	}
+	
+	if (strncmp(buf, "+CPIN: SIM PIN", 14) == 0 )	
+	{
+		/* pin belum dimasukkan */
+		sprintf(buf, "AT+CPIN=1234\r\n");
+		tulis_serial(buf, strlen(buf), 0);	
+		baca_serial(buf, 20, 5);
+	
+		if (strncmp(buf, "+CPIN", 5) == 0 || strncmp(buf, "ERROR", 5) == 0)	
+		{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, buf);
+			return -1;
+		}	
+	
+		if (strncmp(buf, "OK", 2) == 0)
+		{
+			printf(" %s(): OK\r\n", __FUNCTION__);
+			printf(" %s(): Sleep 10\r\n", __FUNCTION__);
+			/* sleep dulu 10 detik, biasanya ada WIND dll */
+			sleep(10);
+			
+			return 0;
+		}
+		else
+		{
+			printf(" %s(): ERR ??\r\n", __FUNCTION__);
+			return -1;
+		}
+	}
+	else
+		return -1;
+}
+
+int set_wipcfg(void)
+{	
 	/* nyalakan dulu, jika tidak bisa matikan dulu */
 	sprintf(buf, "AT+WIPCFG=1\r\n");
 	tulis_serial(buf, strlen(buf), 0);	
@@ -328,8 +405,6 @@ int set_wipcfg(void)
 
 int set_wipbr(void)
 {
-	//char buf[64];
-	
 	sprintf(buf, "AT+WIPBR=1,6\r\n");
 	tulis_serial(buf, strlen(buf), 0);	
 	baca_serial(buf, 20, 5);

@@ -7,17 +7,35 @@
 	30 des 2009, daun biru engineering
 	
 	*/
+int fd = 0;
+	
+#if ( PAKAI_LINUX == 1)
 static wait_flag;
 static struct termios oldtio,newtio;
 static struct sigaction saio;           /* definition of signal action */
 
 void signal_handler_IO (int status);
+#else
+
+#define read(a, b, c) ser2_getchar(a, b, 1000)
+
+int write(int a, char *bf, int len)
+{
+	int i;
+	
+	for (i=0; i<len; i++)
+	{
+		xSerialPutChar2( 0, *bf++, 1000 );
+	}
+}
+
+#endif
+
 #define BAUDRATE B115200
-int fd;
 
 int buka_serial(char *dev)
 {
-	fd = 0;
+	//fd = 0;
 	
 	/* open the device to be non-blocking (read will return immediatly) */
     //fd = open( dev, O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -26,6 +44,7 @@ int buka_serial(char *dev)
 	printf(" %s(): %s\r\n", __FUNCTION__, dev);
 	#endif
 	
+	#if ( PAKAI_LINUX == 1)
     fd = open( dev, O_RDWR | O_NOCTTY );
 	
 	if (fd <0) {
@@ -153,8 +172,19 @@ int buka_serial(char *dev)
         tcsetattr(fd,TCSANOW,&newtio);
 	#endif
 	
+	#else	/* PAKAI LINUX */
+	
+	if (fd == 0)
+	{
+		printf("Init Serial Port 2\r\n");
+		serial2_init( 115200, 64);
+		fd = 1;
+	}
+	
+	#endif
 	//write(fd, buf, strlen(buf));
 }
+
 
 int baca_serial(char *buf, int len, int timeout)
 {
@@ -222,8 +252,10 @@ int tulis_char(char c)
 
 int tutup_serial()
 {
+	#if ( PAKAI_LINUX == 1)
 	tcsetattr(fd,TCSANOW,&oldtio);
 	close( fd );
+	#endif
 	//return 1;
 }
 

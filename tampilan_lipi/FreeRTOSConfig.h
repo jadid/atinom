@@ -36,18 +36,20 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-//#define BOARD_TAMPILAN
+
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2
 #define printf	printf2
 
 //#define PAKE_TELNETD
-
-#define PAKAI_RTC
-#define PAKAI_MMC
+//#define BOARD_TAMPILAN
+//#define PAKAI_RTC
+//#define PAKAI_MMC
 #define TAMPILAN_LPC_4
-#define TAMPILAN_MALINGPING			1
+//#define PAKAI_FONT_KOMIK	1
+//#define PAKAI_GSM_FTP		1
+//#define TAMPILAN_MALINGPING			1
 
 #define VERSI_KOMON		"1.43"
 #define PROMPT 		"Tamp_LIPI $ "

@@ -34,6 +34,8 @@
 	30 Nov 2009
 	untuk tampilan lipi : malingping
 	
+	19 Jan 2010
+	Coba untuk GSM FTP
 */
 
 
@@ -170,7 +172,7 @@ int main( void )
 	//start_ether();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
-	init_task_pm();			// 10, +1
+	//init_task_pm();			// 10, +1
 
 	vTaskStartScheduler();
 

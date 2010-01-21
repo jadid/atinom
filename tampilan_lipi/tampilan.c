@@ -7,6 +7,9 @@
 	27 februari 2009
 	di edit dari service desktop
 	
+	19 Jan 2010
+	GSM system_ftp mulai dicoba
+	
 	*/
 #include "FreeRTOS.h"
 #include "task.h"
@@ -80,7 +83,13 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	teks_h(14, 56, tek);
 	
 	teks_arial(22, 70, "Monita");
+	
+	#if (PAKAI_FONT_KOMIK == 1)
 	teks_komik(18, 87, "Online Monitoring System");
+	#else
+	teks_arial(18, 87, "Performance Monitoring");
+	#endif
+	
 	update_lcd();
 	vTaskDelay(100);
 	teks_h(14, 110, "Loading setting ...");
@@ -113,6 +122,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	update_lcd_layer2();
 	vTaskDelay(10);
 	
+	/*
 	teks_h(14, 20, "Data Sumber Data :");
 	for (i=0; i<JML_SUMBER; i++)
 	{
@@ -138,11 +148,12 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			s_data[i].data[loop] = 0.00;	
 		}	
 	}
+	*/
 	
 	cls_layar();
 	// test depth
 	//fill_layar(0x0F);
-	vTaskDelay(800);
+	vTaskDelay(100);		// 800
 	update_lcd_layer2();
 	
 	//cls_layar();
@@ -150,7 +161,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	//update_lcd_layer3();
 	
 	loop = 0;
-		
+	/*
 	for (;;)
 	{
 		vTaskDelay(201);
@@ -162,11 +173,10 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		sprintf(tek, "loop tampilan = %d", loop);
 		teks_layar(10, 20, tek);
 		
-		update_lcd();
+		update_lcd();	
+	}*/
 	
-	
-	}
-	#if 0	
+	#if 1	
 	
 	key_index = 0;
 	mesin_index = 0;
@@ -212,7 +222,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				else if ( key_press == KANAN )
 				{
 					mesin_index++;
-					if (mesin_index > 4) mesin_index = 0;
+					if (mesin_index > 5) mesin_index = 0;
 				}
 				else if ( key_press == OK)
 				{

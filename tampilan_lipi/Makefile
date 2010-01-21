@@ -86,14 +86,16 @@ THUMB_SOURCE= \
 		LCD/lcd_320.c \
 		LCD/printw.c	\
 		tampilan.c \
-		pm_server.c		\
 		../spi/spi.c \
 		../system/idle_hook.c \
+		
 #		../GPIO/gpio.c \
-#		webserver/httpd.c \
-#		webserver/httpd-fs.c \
-#		webserver/http-strings.c \
-#		webserver/httpd-cgi.c \
+
+PM_SOURCE = \
+		pm_server.c
+
+GSM_FTP_SOURCE = \
+		../gsm/system_ftp/kirim_file_ftp.c
 
 MONITA_SOURCE = \
 		../monita/monita_uip.c \
@@ -118,7 +120,6 @@ UIP_SOURCE = \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
 
-#THUMB_SOURCE += $(UIP_SOURCE)
 FATFS_SOURCE = \
 		../fatfs/ff.c	\
 		../fatfs/spi_mmc.c	\
@@ -127,7 +128,9 @@ FATFS_SOURCE = \
 		../spi/gmmc.c	\
 		../system/rtc.c		
 
-THUMB_SOURCE += $(FATFS_SOURCE)	
+#THUMB_SOURCE += $(FATFS_SOURCE)
+THUMB_SOURCE += $(MONITA_SOURCE)
+#THUMB_SOURCE += $(UIP_SOURCE)
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

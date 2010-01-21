@@ -418,6 +418,15 @@ static tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
 
 #endif
 
+
+#if (PAKAI_GSM_FTP == 1)
+/* GSM FTP */
+int gsm_ftp(int argc, char *argv[]);
+
+static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","proses gsm ftp","[args]",
+                              gsm_ftp,0,0,0};
+#endif
+
 extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
@@ -500,6 +509,10 @@ portTASK_FUNCTION(shell, pvParameters )
 #ifdef PAKE_TELNETD
 	tinysh_add_command(&matikan_telnet_cmd);
 #endif
+
+#if (PAKAI_GSM_FTP == 1)
+	tinysh_add_command(&gsm_ftp_cmd);
+#endif	
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);

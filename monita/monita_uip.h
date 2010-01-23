@@ -26,6 +26,7 @@
 
 #define SEKTOR_MESIN	26
 #define ALMT_MESIN		0x7C000
+#define ALMT_GROUP		ALMT_MESIN
 
 #define SEKTOR_TITIK	21
 #define ALMT_TITIK		0x70000
@@ -183,5 +184,17 @@ struct t_xcontrol {
  	short status;	// akan ada 64 kemungkinan status
  	float analog;	// future use
 };
+
+/* Konfigurasi versi 2 */
+
+/* group adalah nama mesin yang ditampilkan pada tabbook atas
+ * pada tampilan */
+struct t_group {
+	char nama[10];
+	char ID_group;
+	char stat;		// 1 aktif (ditampilkan), 0 mati / unset (tidak ditampilkan) 
+	char ket[32];	// keterangan group yang ditampilkan pada bagian bawah
+};
+
 
 #endif /* MONITA_UIP_H_ */

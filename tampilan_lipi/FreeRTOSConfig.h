@@ -51,6 +51,8 @@
 //#define PAKAI_GSM_FTP		1
 //#define TAMPILAN_MALINGPING			1
 
+#define VERSI_KONFIG	2
+
 #define VERSI_KOMON		"1.43"
 #define PROMPT 		"Tamp_LIPI $ "
 #define NAMA_BOARD	"Tampilan"

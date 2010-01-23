@@ -16,11 +16,6 @@ unsigned int baca_ip(char *ipne);
 unsigned char dec_to_bin(char CC);
 int baca_kanal(char *c);
 
-void garis_bawah(void)
-{
-	printf("-----------------------------------------------------\r\n");	
-}
-
 
 unsigned char char_to_bin(unsigned char x)
 {

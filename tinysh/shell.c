@@ -13,6 +13,11 @@
 
 #define debug_printf printf
 
+#if (VERSI_KONFIG == 2)
+#include "utils.c"
+#include "group.c"
+#endif
+
 #ifdef BOARD_TAMPILAN
 #include "sumber.c"
 #include "mesin.c"
@@ -513,6 +518,12 @@ portTASK_FUNCTION(shell, pvParameters )
 #if (PAKAI_GSM_FTP == 1)
 	tinysh_add_command(&gsm_ftp_cmd);
 #endif	
+
+#if (VERSI_KONFIG == 2)
+	tinysh_add_command(&cek_group_cmd);
+	tinysh_add_command(&set_group_cmd);
+#endif	
+
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);

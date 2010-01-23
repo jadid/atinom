@@ -222,7 +222,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				else if ( key_press == KANAN )
 				{
 					mesin_index++;
-					if (mesin_index > 5) mesin_index = 0;
+					if (mesin_index > 9) mesin_index = 0;
 				}
 				else if ( key_press == OK)
 				{

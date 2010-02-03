@@ -24,7 +24,7 @@
  * baca & tulis
  */
 
-struct t_sumber sumber[JML_SUMBER];
+//struct t_sumber sumber[JML_SUMBER];
 struct t_mesin	mesin[JML_MESIN];
 struct t_titik	titik[TIAP_MESIN * JML_MESIN];
 struct t_data_hitung data_hitung[JML_MESIN];
@@ -98,7 +98,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	//set_awal_sumber();
 	//set_awal_titik();
 	
-	//read_sumber();
+	read_sumber();
 	//read_mesin();
 	//read_titik();
 	
@@ -232,11 +232,12 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 				{
 					//jum_OK--;	
 				}
-				menu_OK(key_index, mesin_index, jum_OK);
+				//menu_OK(key_index, mesin_index, jum_OK);
 				jum_OK = 0;
 				
-				menu_monita(key_index);
-				menu_pilih(key_index, mesin_index, 0);		
+				//menu_monita(key_index);
+				menu_pilih(key_index, mesin_index, 0);
+				menu_group(key_index, mesin_index);		
 				
 				update_lcd();
 				loop = 0;
@@ -254,9 +255,10 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			{
 			/* force untuk update layar */
 			cls_layar();
-			menu_monita(key_index);		
+			//menu_monita(key_index);		
 			menu_pilih(key_index, mesin_index, 0);
-			menu_OK(key_index, mesin_index);
+			menu_group(key_index, mesin_index);
+			//menu_OK(key_index, mesin_index);
 			update_lcd();
 			}
 			

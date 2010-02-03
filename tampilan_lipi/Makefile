@@ -101,6 +101,7 @@ MONITA_SOURCE = \
 		../monita/monita_uip.c \
 		LCD/menu_monita.c \
 		LCD/menu_popup.c \
+#		../monita/monita_kontrol_2.c
 
 UIP_SOURCE = \
 		../uip/hardware/enc28j60.c	\

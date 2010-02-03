@@ -15,19 +15,26 @@
 	konsekuensi pada saat reques data, alamat ini harus
 	disertakan, juga saat menerima data. alamat harus dicek ... huh
 	
+	3 Feb 2010, furkan jadid
+	Untuk menghemat pemakaian RAM
+	sumber diakses pakai pointer kepada memory di flash
+	
+	
 */
 	
 #include "../monita/monita_uip.h"
-extern struct t_sumber sumber[JML_SUMBER];
+struct t_sumber *sumber;
 int cek_nomer_sumber(char *arg, int maks);
 void set_awal_sumber(void);
+static int simpan_sumber( struct t_sumber *pgr);
 							  
 void cek_sumber(void)
 {
 	int i;
-	extern struct t_sumber sumber[];
+	struct t_sumber *sumber;
 	
-	printf("  No.    Nama       ipaddr        modul    status\r\n");
+	sumber = (char *) ALMT_SUMBER;
+	printf("  No.    Nama       ipaddr          modul   status\r\n");
 
 	for (i=0; i<55; i++)
 		printf("-");
@@ -38,7 +45,7 @@ void cek_sumber(void)
 	for (i=0; i<20; i++)
 	{
 		printf(" (%2d): %10s : ", (i+1), sumber[i].nama);	
-		printf("%d.%d.%d.%d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
+		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
 		
 		/* alamat */
 		printf("%2d : ", sumber[i].alamat);
@@ -67,6 +74,8 @@ void set_sumber(int argc, char **argv)
 	int sumb;
 	unsigned int ret_ip;
 	int stat;
+	
+	judul(" Setting Sumber\r\n");
 	
 	if (argc < 4) 
 	{
@@ -102,7 +111,7 @@ void set_sumber(int argc, char **argv)
 			} 
 			else if (strcmp(argv[1], "default") == 0)
 			{
-				printf("set sumber dengan data default !\n");
+				printf(" Set sumber dengan data default !\n");
 				set_awal_sumber();
 				
 				return;
@@ -113,9 +122,20 @@ void set_sumber(int argc, char **argv)
 		return;	
 	}
 	
-	printf(" set_sumber %s dipanggil\r\n", argv[1]);
-	garis_bawah();
   	display_args(argc,argv);
+	
+	/* copy dulu yang lama kedalam buffer */
+	struct t_sumber *p_sbr;
+	p_sbr = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
+	
+	if (p_sbr == NULL)
+	{
+		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+		return -1;
+	}
+	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);	
+	memcpy((char *) p_sbr, (char *) ALMT_SUMBER, (JML_SUMBER * sizeof (struct t_sumber)));
+	
 	
 	if (strcmp(argv[1], "ipaddr") == 0)
 	{
@@ -128,17 +148,19 @@ void set_sumber(int argc, char **argv)
 		
 			ret_ip = baca_ip(buf);
 			
-			sumber[sumb-1].IP0 = (unsigned char) (ret_ip >> 24);
-			sumber[sumb-1].IP1 = (unsigned char) (ret_ip >> 16);
-			sumber[sumb-1].IP2 = (unsigned char) (ret_ip >> 8);
-			sumber[sumb-1].IP3 = (unsigned char) (ret_ip);
+			p_sbr[sumb-1].IP0 = (unsigned char) (ret_ip >> 24);
+			p_sbr[sumb-1].IP1 = (unsigned char) (ret_ip >> 16);
+			p_sbr[sumb-1].IP2 = (unsigned char) (ret_ip >> 8);
+			p_sbr[sumb-1].IP3 = (unsigned char) (ret_ip);
 			
-			printf("IP = %d.%d.%d.%d\r\n", sumber[sumb-1].IP0, sumber[sumb-1].IP1, sumber[sumb-1].IP2, sumber[sumb-1].IP3);
+			printf("IP = %d.%d.%d.%d\r\n", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 			
 		}
 		else
+		{
+			vPortFree( p_sbr );
 			return;
-			
+		}	
 	}
 	else if (strcmp(argv[1], "nama") == 0)
 	{
@@ -151,12 +173,18 @@ void set_sumber(int argc, char **argv)
 			if (strlen(argv[3]) > 10)
 			{
 				printf("\n ERR: nama terlalu panjang !\r\n");
+				vPortFree( p_sbr );
+				
 				return;
 			}
-			sprintf(sumber[sumb-1].nama, argv[3]);
-			printf(" Nama : %s\r\n", sumber[sumb-1].nama); 
+			sprintf(p_sbr[sumb-1].nama, argv[3]);
+			printf(" Nama : %s\r\n", p_sbr[sumb-1].nama); 
 		}
-		else return;	
+		else
+		{
+			vPortFree( p_sbr );
+			return;
+		}	
 	}
 	else if (strcmp(argv[1], "status") == 0)
 	{
@@ -172,14 +200,18 @@ void set_sumber(int argc, char **argv)
 			
 			if (stat >=0)
 			{
-				sumber[sumb-1].status = stat;
-				printf("%d.%d.%d.%d : ", sumber[sumb-1].IP0, sumber[sumb-1].IP1, sumber[sumb-1].IP2, sumber[sumb-1].IP3); 
+				p_sbr[sumb-1].status = stat;
+				printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3); 
 				if (stat == 0) printf("Tidak diaktifkan\r\n");
 				else if (stat == 1) printf("Diaktifkan\r\n");	
 				else if (stat == 5) printf("Daytime\r\n");	
 			}
 		}
-		else return;	
+		else 
+		{
+			vPortFree( p_sbr );
+			return;
+		}	
 	}
 	else if (strcmp(argv[1], "modul") == 0)
 	{
@@ -194,19 +226,32 @@ void set_sumber(int argc, char **argv)
 			
 			if (stat >=0)
 			{
-				sumber[sumb-1].alamat = stat;
-				printf("%d.%d.%d.%d : ", sumber[sumb-1].IP0, sumber[sumb-1].IP1, sumber[sumb-1].IP2, sumber[sumb-1].IP3);
-				printf("pd modul = %d\r\n", sumber[sumb-1].alamat);
+				p_sbr[sumb-1].alamat = stat;
+				printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
+				printf("pd modul = %d\r\n", p_sbr[sumb-1].alamat);
 			}
 		}
-		else return;
+		else {
+			vPortFree( p_sbr );
+			return;
+		}
 	}
 	else
 	{
 		printf(" ERR: perintah tidak benar !\r\n");
 		printf(" coba set_sumber help \r\n");
+		
+		vPortFree( p_sbr );			
 		return;	
 	}
+	
+	// SEMUA TRUE dan sampai disini
+	if (simpan_sumber( p_sbr ) < 0)
+	{
+		vPortFree( p_sbr );
+		return -1;
+	}
+	vPortFree( p_sbr );
 }							 
 
 //static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama status alamat default","[args]",
@@ -244,6 +289,7 @@ int cek_nomer_sumber(char *arg, int maks)
 
 void save_sumber(void)
 {
+	/*
 	printf("Save struct sumber ke flash ..");
 	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return;
 	printf("..");
@@ -256,7 +302,7 @@ void save_sumber(void)
 	
 	if(tulis_flash(ALMT_SUMBER, (unsigned short *) &sumber, sizeof (sumber))) return;
 	printf(".. OK\r\n");
-	
+	*/
 }
 
 static tinysh_cmd_t save_sumber_cmd={0,"save_sumber","menyimpan konfigurasi sumber ke flash","[args]",
@@ -265,26 +311,44 @@ static tinysh_cmd_t save_sumber_cmd={0,"save_sumber","menyimpan konfigurasi sumb
 
 void read_sumber(void)
 {
-	taskENTER_CRITICAL();
-	memcpy((char *)&sumber, (char *) ALMT_SUMBER, sizeof (sumber));
-	taskEXIT_CRITICAL();		
+	struct t_sumber *sumber;
+	
+	sumber = (char *) ALMT_SUMBER;
+	printf("%s(): OK\r\n", __FUNCTION__);		
 }
 
 void set_awal_sumber(void)
 {
-	int i;
+	int i;	
+	struct t_sumber *p_sbr;
+	
+	//judul(" Set Sumber ke Default\r\n");
+	
+	p_sbr = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
+	if (p_sbr == NULL)
+	{
+		printf("%s(): Err allok memory gagal !\r\n");
+		return -1;
+	}
 	
 	for (i=0; i<JML_SUMBER; i++)
 	{
-		sprintf(sumber[i].nama, "-");
-		sumber[i].alamat = 1;		/* default alamat = 1, PM = 1, atau board modul tanpa tumpukan / stack */
-		sumber[i].status = 0;	
+		sprintf(p_sbr[i].nama, "-");
+		p_sbr[i].alamat = 1;		/* default alamat = 1, PM = 1, atau board modul tanpa tumpukan / stack */
+		p_sbr[i].status = 0;	
 		
-		sumber[i].IP0 = 192;
-		sumber[i].IP1 = 168;
-		sumber[i].IP2 = 1;
-		sumber[i].IP3 = 254;
+		p_sbr[i].IP0 = 192;
+		p_sbr[i].IP1 = 168;
+		p_sbr[i].IP2 = 1;
+		p_sbr[i].IP3 = 254;
 	}	
+	
+	if (simpan_sumber( p_sbr ) < 0)
+	{
+		vPortFree( p_sbr );
+		return -1;
+	}
+	vPortFree( p_sbr );
 	
 	/* testing
 	sumber[2].status = 2;
@@ -293,4 +357,22 @@ void set_awal_sumber(void)
 	sumber[2].IP2 = 1;
 	sumber[2].IP3 = 251;
 	*/
+}
+
+static int simpan_sumber( struct t_sumber *pgr)
+{
+	printf(" Save struct SUMBER ke flash ..");
+	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return -1;
+	printf("..");
+	
+	if(hapus_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return -1;
+	printf("..");
+	
+	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return -1;
+	printf("..");
+	
+	if(tulis_flash(ALMT_SUMBER, (unsigned short *) pgr, (sizeof (struct t_sumber) * JML_SUMBER))) return -1;
+	
+	printf(".. OK\r\n");
+	return 0;
 }

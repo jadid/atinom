@@ -6,6 +6,11 @@
  
  	24 Juli 2009
  	ditambahkan PORT_KONTROL
+	
+	3 Feb 2010
+	SEKTOR_DT_SET & ALMT_DT_SET ditambahkan
+	dan disamakan alamatnya dengan TITIK
+	
  */
 
 #include "../uip/uip/psock.h"
@@ -30,6 +35,9 @@
 
 #define SEKTOR_TITIK	21
 #define ALMT_TITIK		0x70000
+
+#define SEKTOR_DT_SET	21
+#define ALMT_DT_SET		0x70000
 
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
@@ -192,8 +200,9 @@ struct t_xcontrol {
 struct t_group {
 	char nama[10];
 	char ID_group;
-	char stat;		// 1 aktif (ditampilkan), 0 mati / unset (tidak ditampilkan) 
-	char ket[32];	// keterangan group yang ditampilkan pada bagian bawah
+	char stat;			// 1 aktif (ditampilkan), 0 mati / unset (tidak ditampilkan) 
+	char ket[32];		// keterangan group yang ditampilkan pada bagian bawah
+	//short no_data[40];	// nomer data yang perlu ditampilkan.
 };
 
 

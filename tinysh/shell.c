@@ -16,10 +16,11 @@
 #if (VERSI_KONFIG == 2)
 #include "utils.c"
 #include "group.c"
+#include "sumber.c"
+#include "../monita/monita_kontrol_2.c"
 #endif
 
 #ifdef BOARD_TAMPILAN
-#include "sumber.c"
 #include "mesin.c"
 #include "titik.c"
 #endif
@@ -61,7 +62,7 @@ void reset_cpu(void);
 
 extern struct t_mesin mesin[];
 extern struct t_titik titik[];
-extern struct t_sumber sumber[];
+//extern struct t_sumber sumber[];
 
 extern struct sambungan_state samb;
 
@@ -522,6 +523,13 @@ portTASK_FUNCTION(shell, pvParameters )
 #if (VERSI_KONFIG == 2)
 	tinysh_add_command(&cek_group_cmd);
 	tinysh_add_command(&set_group_cmd);
+	
+	tinysh_add_command(&cek_sumber_cmd);
+	tinysh_add_command(&set_sumber_cmd);
+	
+	// data
+	tinysh_add_command(&set_data_cmd);
+	tinysh_add_command(&cek_data_cmd);
 #endif	
 
 	/* add sub commands
@@ -605,10 +613,26 @@ portTASK_FUNCTION(shell, pvParameters )
   	while(1)
     {
 	  lop++;
-	  if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)
 	  {
-		tinysh_char_in((unsigned char)c);
+			lop = 0;
+			tinysh_char_in((unsigned char)c);
 	  }	
+	  
+	  /* dilindungi password setiap menit tidak ada aktifitas*/
+	  if (lop > 60)
+	  {
+			lop = 0;
+			printf("\r\nPasswd lock!\r\n");
+			while(1)
+			{
+				if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+				{
+					if (proses_passwd( &c ) == 1) break;
+				}
+			}
+	  }
+	  
 	  #ifdef USB_TEST
 	  c = HC_INT_STAT ;
 	  {

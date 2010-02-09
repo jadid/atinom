@@ -83,13 +83,14 @@ int cek_data(int argc, char **argv)
 	p_dt = (char *) ALMT_DT_SET;
 	
 	judul(" Data Setting\r\n");
-	printf(" ID  : Nama       : Status : Keterangan : &Memory\r\n");
+	printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
 	garis_bawah();
 	
 	for (i=0; i<20; i++)
 	{
-		printf(" (%2d): %10s :    %d   : %10s : (%X)\r\n", p_dt[i].relay, \
-			p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, &p_dt[i]);	
+		printf(" (%3d): %10s :  %d   : %6s : %4.2f : %2d : (%X)\r\n", (i+1), \
+			p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm, \
+			p_dt[i].relay, &p_dt[i]);	
 	}
 	
 	
@@ -210,13 +211,29 @@ int set_data(int argc, char **argv)
 		if (sumb > 0)		
 		{
 			printf(" Group %d : nama : %s\r\n", sumb, argv[3]);			
-			if (strlen(argv[3]) > 10)
+			if (strlen(argv[3]) > 16)
 			{
-				printf(" ERR: nama terlalu panjang (Maks 10 karakter)!\r\n");
+				printf(" ERR: nama terlalu panjang (Maks 16 karakter)!\r\n");
 				vPortFree( p_dt );
 				return;
 			}
 			sprintf(p_dt[sumb-1].nama, argv[3]);	
+		}
+	}
+	if (strcmp(argv[2], "satuan") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_valid(buf, 10);
+		if (sumb > 0)		
+		{
+			printf(" Group %d : satuan : %s\r\n", sumb, argv[3]);			
+			if (strlen(argv[3]) > 8)
+			{
+				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt[sumb-1].satuan, argv[3]);	
 		}
 	}
 	/*

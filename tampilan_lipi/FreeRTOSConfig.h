@@ -46,7 +46,7 @@
 //#define BOARD_TAMPILAN
 //#define PAKAI_RTC
 //#define PAKAI_MMC
-#define TAMPILAN_LPC_4
+#define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
 //#define PAKAI_GSM_FTP		1
 //#define TAMPILAN_MALINGPING			1
@@ -87,7 +87,7 @@
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
 //#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 32 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 74 * configMINIMAL_STACK_SIZE * 4) )			// 54, LPC2387
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 74 * configMINIMAL_STACK_SIZE * 4) )			// 74, LPC2387
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

@@ -287,7 +287,7 @@ int enc28j60Init (void)
 
   encBankSelect (BANK3);
 
-	#if 0
+	#if 1
 	printf("\r\nDebug MAC address :\r\n");
 	printf("  (%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X) ", \
 		uip_ethaddr.addr [0], uip_ethaddr.addr [1],	\

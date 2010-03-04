@@ -59,7 +59,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	FIO1DIR = FIO1DIR  & ~(PF10 | PF14 | KEY_DAT);
 	#endif
 	
-	#ifdef TAMPILAN_LPC_4
+	#ifdef TAMPILAN_LPC_43
 	FIO2DIR = FIO2DIR  & ~PF14;
 	
 	/* masking dengan 0 supaya bisa dibaca */

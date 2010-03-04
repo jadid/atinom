@@ -166,7 +166,7 @@ int tulis_flash(int dst, unsigned short *data, int pjg)
 	
 		if (pjg > 256) uk = 512;
 		if (pjg > 512) uk = 1024;
-		if (pjg > 1024 && pjg > 4096) uk = 4096;
+		if (pjg > 1024 && pjg < 4096) uk = 4096;
 		
 		
 		//printf(" uk=%d ", uk);

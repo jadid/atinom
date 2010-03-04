@@ -19,6 +19,11 @@
 #define FIO_KEYPAD FIO2PIN
 #endif
 
+#ifdef TAMPILAN_LPC_43
+#define PF14	BIT(12)			// P2, 12
+#define FIO_KEYPAD FIO2PIN
+#endif
+
 #define PF11	BIT(16)
 #define PF12	BIT(17)
 #define PF13	BIT(18)

@@ -154,6 +154,29 @@ portEXIT_CRITICAL();
 
 #endif
 
+#ifdef TAMPILAN_LPC_43
+#define CS_ENC	BIT(9)		// P1
+#define INT_ENC	BIT(13)		// P2
+
+
+#define ENC28J60_Select()  portENTER_CRITICAL(); \
+FIO1CLR = CS_ENC;
+ 
+#define ENC28J60_Deselect() FIO1SET = CS_ENC;	\
+portEXIT_CRITICAL();
+
+// seharusnya tidak ada pin reset (sudah disambung ke VCC)
+#define ENC28J60_Reset()    FIO1CLR = CS_ENC
+#define ENC28J60_Unreset()  FIO1SET = CS_ENC
+
+#define FIO_CEK_PAKET 		FIO2PIN
+#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
+							FIO1DIR = FIO1DIR | CS_ENC; \
+							FIO2MASK = FIO2MASK & ~(INT_ENC); \
+							FIO1MASK = FIO1MASK & ~(CS_ENC);
+
+#endif
+
 //
 //
 //

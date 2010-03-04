@@ -151,7 +151,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())
 		{
-		      paket_per_menit++;
+			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
 		         into the uip_buf. If it returns > 0, there is a packet in the
 		         uip_buf buffer. */

@@ -24,6 +24,7 @@
 #define JML_MESIN	10
 #define TIAP_MESIN	100
 #define JML_KANAL	20
+#define PER_SUMBER	20
 
 
 #define SEKTOR_SUMBER	25
@@ -31,7 +32,12 @@
 
 #define SEKTOR_MESIN	26
 #define ALMT_MESIN		0x7C000
-#define ALMT_GROUP		ALMT_MESIN
+
+//#define SEKTOR_GROUP	20
+//#define ALMT_GROUP		0x68000
+
+#define SEKTOR_GROUP	26
+#define ALMT_GROUP		0x7C000
 
 #define SEKTOR_TITIK	21
 #define ALMT_TITIK		0x70000
@@ -202,8 +208,17 @@ struct t_group {
 	char ID_group;
 	char stat;			// 1 aktif (ditampilkan), 0 mati / unset (tidak ditampilkan) 
 	char ket[32];		// keterangan group yang ditampilkan pada bagian bawah
-	//short no_data[40];	// nomer data yang perlu ditampilkan.
+	short no_data[40];	// nomer data yang perlu ditampilkan.
 };
 
+struct t_dt_set  {
+	float 	alarm_H;
+	float 	alarm_L;
+	char	relay;
+	char 	aktif;
+	//char	ket[32];	
+	char	nama[16];
+	char 	satuan[8];	
+};
 
 #endif /* MONITA_UIP_H_ */

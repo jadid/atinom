@@ -46,21 +46,12 @@
 #define debug		printf
 //#define debug(...)	do{} while(0)
 
-#define PER_SUMBER	20
 
 
 
 
 //float data_sumber[ JML_SUMBER ][ PER_SUMBER ];
-
-struct t_dt_set  {
-	float 	alarm;
-	char	relay;
-	char 	aktif;
-	//char	ket[32];	
-	char	nama[16];
-	char 	satuan[8];	
-};
+float data_f [ (JML_SUMBER * PER_SUMBER) ];
 
 static int simpan_data( struct t_dt_set *pgr);
 /*	
@@ -78,21 +69,69 @@ int reset_data_sumber(void)
 int cek_data(int argc, char **argv)
 {
 	int i;
+	unsigned char buf[24];
+	int sumb=0;
 	
-	struct t_dt_set *p_dt;
-	p_dt = (char *) ALMT_DT_SET;
-	
-	judul(" Data Setting\r\n");
-	printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-	garis_bawah();
-	
-	for (i=0; i<20; i++)
+	/* jika hanya cek_data
+	 * maka akam ditampilkan semua 
+	 * sekitar 400 items
+	 */
+	if (argc == 1)
 	{
-		printf(" (%3d): %10s :  %d   : %6s : %4.2f : %2d : (%X)\r\n", (i+1), \
-			p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm, \
-			p_dt[i].relay, &p_dt[i]);	
-	}
+		struct t_dt_set *p_dt;
+		p_dt = (char *) ALMT_DT_SET;
 	
+		judul(" Data Setting\r\n");
+	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
+		printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+		garis_bawah();
+	
+		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
+		{
+			printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+				p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+				p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
+		}
+	}
+	else if (argc > 1)
+	{
+		if (strcmp(argv[1], "help") == 0)
+		{
+				printf(" Perintah untuk menampilkan setting data !\r\n");
+				printf("    cek_data help  : untuk menampilkan ini.\r\n");
+				printf("    cek_data       : menampilkan seluruh setting data.\r\n");
+				printf("    cek_data 10    : manampikan data ke 10 sampai 30 (20 data saja).\r\n"); 
+		}		
+		else
+		{
+			sprintf(buf, "%s", argv[1]);	
+			sumb = cek_nomer_valid(buf, 400);
+			if (sumb > 0 && sumb < 400)		
+			{
+				struct t_dt_set *p_dt;
+				p_dt = (char *) ALMT_DT_SET;
+		
+				judul(" Data Setting\r\n");
+				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
+				printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+				garis_bawah();
+				
+				sumb--;
+		
+				for (i = sumb; i< (sumb + 20); i++)
+				{
+					if (i >= (JML_SUMBER * PER_SUMBER)) break;
+					
+					printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+						p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
+					
+				}
+			}
+			else
+				printf(" ERR: Perintah tidak dikenali !\r\n");
+		}
+	}
 	
 }
 
@@ -121,7 +160,8 @@ static int set_data_default(void)
 		//sprintf(p_gr[i].ket, "--");
 		sprintf(p_gr[i].satuan, "-");
 		p_gr[i].relay = 0;
-		p_gr[i].alarm = 0;
+		p_gr[i].alarm_L = 0;
+		p_gr[i].alarm_H = 10.0;
 		p_gr[i].aktif = 0;
 	}
 	
@@ -207,7 +247,7 @@ int set_data(int argc, char **argv)
 	if (strcmp(argv[2], "nama") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
+		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
 		if (sumb > 0)		
 		{
 			printf(" Group %d : nama : %s\r\n", sumb, argv[3]);			
@@ -223,7 +263,7 @@ int set_data(int argc, char **argv)
 	if (strcmp(argv[2], "satuan") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
+		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
 		if (sumb > 0)		
 		{
 			printf(" Group %d : satuan : %s\r\n", sumb, argv[3]);			

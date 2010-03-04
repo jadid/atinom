@@ -51,7 +51,7 @@
 #define LED_UTAMA	(1 << 26)			// GPIO026
 #endif
 
-#ifdef TAMPILAN_LPC_4
+#ifdef TAMPILAN_LPC_43
 #define LED_UTAMA	BIT(27)
 
 /* led di keypad */

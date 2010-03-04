@@ -10,6 +10,7 @@
 	Nama group akan dijadikan judul tab pada tampilan
 	
 	23 Jan 2010
+	----------------------
 	perintah2 pada group :
 	
 	set_group x nama aaabbbccc
@@ -31,6 +32,18 @@
 	
 	10 * 40 * 2 byte = 800 byte
 	
+	3 Maret 2010
+	--------------------
+	Bagaimana menset data pada group ?
+	
+	set_group 5 data 34		  : memasukkan data nomer 34 ke group 5
+	set_group 5 data clear	  : membersihkan / reset nomer data group 5,
+					sehingga group 5 tidak lagi punya data yang perlu
+					ditampilkan.
+	
+	set_group 5 data 34 unset : jika data 34 ada di group 5, maka data 34
+					akan diremove dari group 5.
+	
 */
 
 #include "../monita/monita_uip.h"
@@ -40,24 +53,80 @@ void judul(char *s);
 static int set_group_default(void);
 static int simpan_group( struct t_group *pgr);
 
-struct t_group *pgroup;
+//struct t_group *pgroup;
 //struct t_mesin *pmesin;
 
 int cek_group(int argc, char **argv)
 {
 	int i;
+	struct t_group *pgroup;
+	int sumb;
+	unsigned char buf[24];
+	int y=0;
 	
-	pgroup = (char *) ALMT_MESIN;
+	pgroup = (char *) ALMT_GROUP;
 	
-	judul(" Group Setting\r\n");
-	printf(" ID  : Nama       : Status : Keterangan : &Memory\r\n");
-	garis_bawah();
-	
-	for (i=0; i<10; i++)
+	//printf(" Ukuran %d !\r\n", (10 * sizeof (struct t_group)));
+	if (argc == 1)
 	{
-		printf(" (%2d): %10s :    %d   : %10s : (%X)\r\n", pgroup[i].ID_group, \
-			pgroup[i].nama, pgroup[i].stat, pgroup[i].ket, &pgroup[i]);	
+		judul(" Group Setting\r\n");
+		printf(" ID  : Nama       : Status : Keterangan : Jum Data : &Memory\r\n");
+		garis_bawah();
+	
+		for (i=0; i<10; i++)
+		{
+			/* hitung jumlah data yang berkontribusi pada group ini */
+			sumb = 0;
+			for (y = 0; y<40; y++)
+				if ( pgroup[i].no_data[y] != 0 ) sumb++;
+			
+			printf(" (%2d): %10s :    %d   : %10s : %8d : (%X)\r\n", pgroup[i].ID_group, \
+				pgroup[i].nama, pgroup[i].stat, pgroup[i].ket, sumb, &pgroup[i]);	
+		}
 	}
+	else if (argc > 1)
+	{
+		if (strcmp(argv[1], "help") == 0)
+		{
+				printf(" Perintah untuk menampilkan setting group !\r\n");
+				printf("    cek_group help  : untuk menampilkan ini.\r\n");
+				printf("    cek_group       : menampilkan setting global group\r\n");
+				printf("    cek_group 2     : manampikan setting group 2.\r\n"); 
+		}		
+		else
+		{
+			sumb = 0;
+			sprintf(buf, "%s", argv[1]);	
+			sumb = cek_nomer_valid(buf, 10);
+			if (sumb > 0 && sumb < 400)		
+			{		
+				struct t_dt_set *p_dt;
+				p_dt = (char *) ALMT_DT_SET;
+		
+				judul(" Group Setting\r\n");
+				printf("  Nomer      = %d, ID = %d\r\n", sumb, pgroup[ sumb - 1 ].ID_group);
+				printf("  Nama       = %s\r\n", pgroup[ sumb - 1 ].nama);
+				printf("  Status     = %d\r\n", pgroup[ sumb - 1 ].stat);
+				printf("  Keterangan = %s\r\n", pgroup[ sumb - 1 ].ket);
+				
+				printf("  ----- koneksi data ------\r\n");
+				
+				y = 0;
+				for (i=0; i<40; i++)
+				{
+					if ( pgroup[ sumb - 1 ].no_data[i] != 0 )
+					{
+						y++;
+						printf("  %d. data dari --> %d, %s\r\n", y, pgroup[ sumb - 1 ].no_data[i],\
+						p_dt[ (pgroup[ sumb - 1 ].no_data[i] - 1)].nama );
+					}
+				}
+			}
+			else
+				printf(" ERR: Perintah tidak dikenali !\r\n");
+		}
+	}
+	
 	
 	
 }
@@ -69,8 +138,11 @@ int set_group(int argc, char **argv)
 {
 	unsigned char buf[24];
 	int sumb=0;
+	int ndata=0;
 	unsigned int ret_ip;
 	struct t_group *p_gr;
+	int i;
+	int y;
 	
 	judul(" Setting Group\r\n");
 	
@@ -132,7 +204,7 @@ int set_group(int argc, char **argv)
 	}
 	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_gr);
 	
-	memcpy((char *) p_gr, (char *) ALMT_MESIN, (10 * sizeof (struct t_group)));
+	memcpy((char *) p_gr, (char *) ALMT_GROUP, (10 * sizeof (struct t_group)));
 	
 	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
 	if (strcmp(argv[2], "nama") == 0)
@@ -186,6 +258,67 @@ int set_group(int argc, char **argv)
 			sprintf(p_gr[sumb-1].ket, argv[3]);	
 		}
 	}
+	else if (strcmp(argv[2], "data") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_valid(buf, 10);
+		if (sumb > 0)		
+		{
+			// cek jika argumen selanjutnya adalah clear, maka direset
+			if (strcmp(argv[3], "clear") == 0)
+			{
+				printf(" Reset koneksi data dari group %d !\r\n", sumb);
+				
+				for ( i = 0; i<40; i++)
+					p_gr[ sumb - 1 ].no_data[i] = 0;
+				
+			}
+			else
+			{
+				/* cek jika ini bilangan nomer data */
+				sprintf(buf, "%s", argv[3]);	
+				ndata = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
+				
+				if (ndata > 0)
+				{
+				
+					/* jika argument terakhir masih ada unset maka hanya pada 
+					* nomer data itu saja yang dihapus */
+					if (strcmp(argv[4], "unset") == 0)
+					{
+						printf(" Unset koneksi data %d dari group %d !\r\n", ndata, sumb);
+						for (i=0; i<40; i++)
+						{
+							if ( p_gr[ sumb - 1 ].no_data[i] == ndata )
+							{
+								p_gr[ sumb - 1 ].no_data[i] = 0;
+								break;
+							}
+						}
+					}
+					else
+					{
+						printf(" Set koneksi data %d ke group %d !\r\n", ndata, sumb);
+						/* cari slot no_data yang masih nol */
+						for (i=0; i<40; i++)
+						{
+							if ( p_gr[ sumb - 1 ].no_data[i] == 0 )
+							{
+								p_gr[ sumb - 1 ].no_data[i] = ndata;
+								break;
+							}
+						}
+					}
+				}
+				else
+				{
+					printf(" ERR: nomer data tidak sesuai !\r\n");
+					vPortFree( p_gr );
+					return;
+				}
+			} /* else clear */
+		} /* nomer group valid */
+	}
 	else
 	{
 		printf(" ERR: perintah tidak benar !\r\n");
@@ -218,6 +351,7 @@ static tinysh_cmd_t set_group_cmd={0,"set_group","menampilkan konfigurasi mesin"
 static int set_group_default(void)
 {
 	int i;
+	int y;
 	struct t_group *p_gr;
 	
 	judul(" Set Group ke Default\r\n");
@@ -235,6 +369,9 @@ static int set_group_default(void)
 		p_gr[i].ID_group = (i+1);
 		p_gr[i].stat = 0;			// pasif/unset
 		sprintf(p_gr[i].ket, "--");
+		
+		for (y = 0; y<40; y++)
+			p_gr[i].no_data[y] = 0;
 	}
 	
 	if (simpan_group( p_gr ) < 0)
@@ -249,16 +386,16 @@ static int set_group_default(void)
 static int simpan_group( struct t_group *pgr)
 {
 	printf(" Save struct GROUP ke flash ..");
-	if(prepare_flash(SEKTOR_MESIN, SEKTOR_MESIN)) return -1;
+	if(prepare_flash(SEKTOR_GROUP, SEKTOR_GROUP)) return -1;
 	printf("..");
 	
-	if(hapus_flash(SEKTOR_MESIN, SEKTOR_MESIN)) return -1;
+	if(hapus_flash(SEKTOR_GROUP, SEKTOR_GROUP)) return -1;
 	printf("..");
 	
-	if(prepare_flash(SEKTOR_MESIN, SEKTOR_MESIN)) return -1;
+	if(prepare_flash(SEKTOR_GROUP, SEKTOR_GROUP)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_MESIN, (unsigned short *) pgr, (sizeof (struct t_group) * 10))) return -1;
+	if(tulis_flash(ALMT_GROUP, (unsigned short *) pgr, (sizeof (struct t_group) * 10))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

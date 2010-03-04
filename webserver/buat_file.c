@@ -35,7 +35,7 @@ static unsigned int nomer_mesin=0;
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
-#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_TAMPILAN
 #define LINK_ATAS "<table border=""0"" align=""left"">\n \
   <tbody align=""center"">\n \
 	<tr>\n \
@@ -59,7 +59,7 @@ static unsigned int nomer_mesin=0;
     </tr>\n \
   </tbody>\n \
 </table>\n"
-#endif
+//#endif
 
 #ifdef BOARD_KOMON_WEB
 #define LINK_ATAS "<table border=""0"" align=""left"">\n \

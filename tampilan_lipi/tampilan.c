@@ -248,18 +248,19 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 			loop_key = 0;	
 		}
 		
-		if (loop > 10)
+		if (loop > 5)
 		{
 			
 			if (key_index != 10)
 			{
-			/* force untuk update layar */
-			cls_layar();
-			//menu_monita(key_index);		
-			menu_pilih(key_index, mesin_index, 0);
-			menu_group(key_index, mesin_index);
-			//menu_OK(key_index, mesin_index);
-			update_lcd();
+				/* force untuk update layar */
+				cls_layar();
+				//menu_monita(key_index);		
+				menu_pilih(key_index, mesin_index, 0);
+				menu_group(key_index, mesin_index);
+				//menu_OK(key_index, mesin_index);
+							
+				update_lcd();
 			}
 			
 			loop = 0;

@@ -88,6 +88,7 @@ THUMB_SOURCE= \
 		tampilan.c \
 		../spi/spi.c \
 		../system/idle_hook.c \
+		../system/rtc.c	
 		
 #		../GPIO/gpio.c \
 
@@ -127,9 +128,10 @@ FATFS_SOURCE = \
 		../fatfs/option/ccsbcs.c	\
 		../spi/low_ss1.c	\
 		../spi/gmmc.c	\
-		../system/rtc.c		
+		../fatfs/simpan_file.c
+			
 
-#THUMB_SOURCE += $(FATFS_SOURCE)
+THUMB_SOURCE += $(FATFS_SOURCE)
 THUMB_SOURCE += $(MONITA_SOURCE)
 #THUMB_SOURCE += $(UIP_SOURCE)
 	

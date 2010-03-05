@@ -111,9 +111,8 @@ int cek_fs_free(void)
 
 	#if 1
 	if ((res = scan_files (buffer, &acc_size, &acc_files, &acc_dirs)))
-	{ 
-	//f_printerror (res); 
-	return 0;
+	{  
+		return 0;
 	}
 
 	printf ("\r\n%u files, %u bytes.\r\n%u folders.\r\n"
@@ -221,6 +220,8 @@ static void util_mkdir(int argc, char **argv)
 	if (argc < 2)
 	{
 		printf("%s(): ERR: Argument kurang !\r\n", __FUNCTION__);	
+		printf("%s(): Untuk membuat direktori dalam direktori, gunakan bakslash !\r\n", __FUNCTION__);
+		printf("%s(): Misalnya mkdir dua\dalam_dua\r\n", __FUNCTION__);
 	}
 	else
 	{

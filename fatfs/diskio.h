@@ -9,6 +9,9 @@
 
 #include "integer.h"
 
+typedef unsigned int BOOL;
+#define FALSE 0
+#define TRUE 1
 
 /* Status of Disk Functions */
 typedef BYTE	DSTATUS;

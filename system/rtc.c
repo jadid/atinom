@@ -8,9 +8,11 @@
 
 #include "FreeRTOS.h"
 #include "../fatfs/integer.h" /* ambil def DWORD saja */
+#include <time.h>
 #include "rtc.h"
 
-RTCTime local_time, current_time;
+
+//RTCTime local_time, current_time;
 
 void rtc_init(void)
 {
@@ -94,9 +96,70 @@ RTCTime rtc_get_time( void )
   return ( LocalTime );    
 }
 
+void p_rtc_get_time( RTCTime *LocalTime ) 
+{
+    
+  LocalTime->RTC_Sec = RTC_SEC;
+  LocalTime->RTC_Min = RTC_MIN;
+  LocalTime->RTC_Hour = RTC_HOUR;
+  LocalTime->RTC_Mday = RTC_DOM;
+  LocalTime->RTC_Wday = RTC_DOW;
+  LocalTime->RTC_Yday = RTC_DOY;
+  LocalTime->RTC_Mon = RTC_MONTH;
+  LocalTime->RTC_Year = RTC_YEAR;
+  
+  return;    
+}
+
+void get_rtc_time(time_t *tt )
+{
+	time_t tmp;
+	/*	
+	tmp = 	RTC_SEC + (RTC_MIN * 60) + 
+			(RTC_HOUR * 60 * 60) +
+			(RTC_
+			*/
+}
+
+void get_tm_time(struct tm *theTime)
+{
+	theTime->tm_sec   = RTC_SEC;
+  theTime->tm_min   = RTC_MIN;
+  theTime->tm_hour  = RTC_HOUR;
+  theTime->tm_mday  = RTC_DOM;
+  theTime->tm_mon   = RTC_MONTH - 1;
+  theTime->tm_year  = RTC_YEAR - 1900;
+  theTime->tm_wday  = RTC_DOW;
+  theTime->tm_yday  = RTC_DOY - 1;
+  theTime->tm_isdst = 0;
+}
 
 unsigned int get_fattime ()
 {
 
 
+}
+
+void rtcWrite (struct tm *newTime)
+{
+  //rtcWake ();
+  portENTER_CRITICAL ();
+
+  //RTC_CCR &= ~RTC_CCR_CLKEN;
+  //RTC_CCR |=  RTC_CCR_CTCRST;
+
+  RTC_SEC   = newTime->tm_sec;
+  RTC_MIN   = newTime->tm_min;
+  RTC_HOUR  = newTime->tm_hour;
+  RTC_DOM   = newTime->tm_mday;
+  RTC_MONTH = newTime->tm_mon + 1;
+  RTC_YEAR  = newTime->tm_year + 1900;
+  RTC_DOW   = newTime->tm_wday;
+  RTC_DOY   = newTime->tm_yday + 1;
+
+  //RTC_CCR &= ~RTC_CCR_CTCRST;
+ // RTC_CCR |=  RTC_CCR_CLKEN;
+
+  portEXIT_CRITICAL ();
+  //rtcSleep ();
 }

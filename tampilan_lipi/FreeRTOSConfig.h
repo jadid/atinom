@@ -44,10 +44,12 @@
 
 //#define PAKE_TELNETD
 //#define BOARD_TAMPILAN
-//#define PAKAI_RTC
-//#define PAKAI_MMC
+#define PAKAI_RTC
+#define PAKAI_MMC
 #define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
+#define PAKAI_FILE_SIMPAN	1
+
 //#define PAKAI_GSM_FTP		1
 //#define TAMPILAN_MALINGPING			1
 

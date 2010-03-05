@@ -103,7 +103,7 @@ void set_date(int argc, char **argv)
 	rtc_init();
 	rtc_start();
 	
-	buf = malloc(512);
+	buf = pvPortMalloc(512);
 	if (buf == NULL) 
 	{
 		printf("ERR: alok failed\r\n");
@@ -114,12 +114,14 @@ void set_date(int argc, char **argv)
 	printf("dapat free %X\r\n", buf);	
 	memset(buf, 0, 512);	
 	
-	printf("set_date tahun bulan tanggal jam menit\r\n");
+	printf(" set_date tahun bulan tanggal jam menit\r\n");
+	printf("   misalnya : set_date 2010 3 5 10 22\r\n");
+	printf("   artinya  : set waktu ke tgl 3 Maret 2010, jam 10 22 pagi\r\n");
 	
 	if (argc < 5) 
 	{
 		printf("Argument kurang !\r\n");
-		free(buf);
+		vPortFree(buf);
 		return;
 	}
 		
@@ -129,7 +131,7 @@ void set_date(int argc, char **argv)
 	if (ret < 5)
 	{
 		printf(" ERR: format salah !\r\n");
-		free(buf);
+		vPortFree(buf);
 		return;
 	}
 
@@ -146,11 +148,12 @@ void set_date(int argc, char **argv)
 		printf(" ERR: waktu tidak mungkin !\r\n");
 		return;
 	}*/
-	rtc_set_time_tm( tmku );
+	//rtc_set_time_tm( tmku );
+	rtcWrite( &tmku );
 	//clk = mktime(&tmku);	
 	//ret = rtc_time_to_bfin(clk);
 	//bfin_write_RTC_STAT(ret);
-	free(buf);
+	vPortFree(buf);
 	printf(" ..OK\r\n");
 }							 
 
@@ -242,7 +245,7 @@ static void cek_uptime(int argc, char **argv)
 	extern unsigned int tot_idle;
 	
 	uptime(&sec, &menit, &jam, &hari, &tahun);
-	printf(" Up = ");
+	printf(" Up  = ");
 	if (tahun !=0)
 	{
 		printf("%d thn ", tahun);	
@@ -626,12 +629,20 @@ portTASK_FUNCTION(shell, pvParameters )
 			printf("\r\nPasswd lock!\r\n");
 			while(1)
 			{
-				if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+				if (xSerialGetChar(1, &c, 1000) == pdTRUE)
 				{
 					if (proses_passwd( &c ) == 1) break;
 				}
+				
+				//proses_simpan_file();
 			}
 	  }
+	  
+	  #ifdef PAKAI_MMC
+	  #if (PAKAI_FILE_SIMPAN == 1)
+	  proses_simpan_file();
+	  #endif
+	  #endif
 	  
 	  #ifdef USB_TEST
 	  c = HC_INT_STAT ;

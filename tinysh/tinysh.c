@@ -33,7 +33,7 @@
 #define MAX_ARGS 6		//16
 #endif
 #ifndef PROMPT_SIZE
-#define PROMPT_SIZE 16
+#define PROMPT_SIZE 	16 // 16
 #endif
 #ifndef TOPCHAR
 #define TOPCHAR '/'
@@ -639,9 +639,10 @@ void tinysh_set_prompt(char *str)
   int i;
   for(i=0;str[i] && i<PROMPT_SIZE;i++)
     prompt[i]=str[i];
+  
   prompt[i]=0;
   /* force prompt display by generating empty command */
-  tinysh_char_in('\r');
+  //tinysh_char_in('\r');
 }
 
 /* return current command argument

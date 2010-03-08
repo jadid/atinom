@@ -50,6 +50,8 @@
 #define PAKAI_FONT_KOMIK	1
 #define PAKAI_FILE_SIMPAN	1
 
+//#define PROMPT_SIZE 		64
+
 //#define PAKAI_GSM_FTP		1
 //#define TAMPILAN_MALINGPING			1
 

@@ -596,12 +596,17 @@ portTASK_FUNCTION(shell, pvParameters )
 	#ifdef PAKAI_MMC
 	tinysh_add_command(&util_ls_cmd);
 	tinysh_add_command(&util_mkdir_cmd);
+	tinysh_add_command(&util_cd_cmd);
+	tinysh_add_command(&util_pwd_cmd);
+	
 	
 	init_gpio_mmc();
 	uncs_mmc();
 	
 	set_fs_mount();
 	cek_fs_free();
+	
+	sprintf(abs_path, "%s", "");
 	#endif
 	
 	#ifdef PAKAI_RTC	
@@ -609,6 +614,9 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	tinysh_set_prompt( PROMPT );
+	/* force untuk tampil prompt */
+	tinysh_char_in('\r');
+	
 	/*
 	 * main loop shell
   	 */

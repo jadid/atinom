@@ -23,8 +23,8 @@
 
 #define no_printf(...)	do {} while(0)
 
-#define printf_fs	printf
-//#define printf_fs	no_printf
+//#define printf_fs	printf
+#define printf_fs	no_printf
 //#define printf_fs	debug_out
 
 #define S_MAX_SIZ 512

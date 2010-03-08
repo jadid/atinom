@@ -136,17 +136,30 @@ void get_tm_time(struct tm *theTime)
 
 unsigned int get_fattime ()
 {
+	struct tm tm;
+	unsigned int tmr;
+	
+	get_tm_time( &tm );
+	
+	if (tm.tm_year < 80) tm.tm_year = 80;
 
+  	tmr = 0
+    | ((tm.tm_year - 80) << 25)
+    | ((tm.tm_mon + 1)   << 21)
+    | (tm.tm_mday        << 16)
+    | (tm.tm_hour        << 11)
+    | (tm.tm_min         << 5)
+    | (tm.tm_sec         >> 1);
+
+	//debug_printf("%s(): %u, year = %d\r\n", __FUNCTION__, tmr, tm.tm_year);
+	
+  	return tmr;
 
 }
 
 void rtcWrite (struct tm *newTime)
 {
-  //rtcWake ();
   portENTER_CRITICAL ();
-
-  //RTC_CCR &= ~RTC_CCR_CLKEN;
-  //RTC_CCR |=  RTC_CCR_CTCRST;
 
   RTC_SEC   = newTime->tm_sec;
   RTC_MIN   = newTime->tm_min;
@@ -157,9 +170,5 @@ void rtcWrite (struct tm *newTime)
   RTC_DOW   = newTime->tm_wday;
   RTC_DOY   = newTime->tm_yday + 1;
 
-  //RTC_CCR &= ~RTC_CCR_CTCRST;
- // RTC_CCR |=  RTC_CCR_CLKEN;
-
   portEXIT_CRITICAL ();
-  //rtcSleep ();
 }

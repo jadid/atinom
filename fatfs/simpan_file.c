@@ -74,8 +74,7 @@ int proses_simpan_file(void)
 		}
 		
 		sprintf(path, "%s\\%s", buat_direktori(timeval), temp);
-		printf("%s\r\n", path);
-		//sprintf(path, "%s\\%s", buat_direktori( timeval )
+		//printf("%s\r\n", path);
 		
 		if (sudah_buka == 1)
 		{
@@ -135,7 +134,7 @@ char * buat_direktori(time_t timeval)
 	char temp[32];
 	char jam[128];
 				
-	if (res = f_mkdir(".data") != 0)
+	if (res = f_mkdir("\\data") != 0)
 	{
 		debug_printf("ERR: %s() : log : %d\r\n", __FUNCTION__, res);
 	}	
@@ -143,7 +142,7 @@ char * buat_direktori(time_t timeval)
 	#if 1		
 	// tahun
 	sprintf(tek,"%s", ctime(&timeval));
-	snprintf(thn, 17, ".data\\tahun_%s", &tek[20]);	// 11
+	snprintf(thn, 17, "\\data\\tahun_%s", &tek[20]);	// 11
 	if (res = f_mkdir(thn) != 0)
 		debug_printf("ERR: %s() : tahun : %d\r\n", __FUNCTION__, res);
 	

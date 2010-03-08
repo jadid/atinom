@@ -26,7 +26,7 @@ DIR dirs;
 FRESULT res;
 unsigned char buf_lfn[255];
 char buffer [100];
-//FATFS *fs;
+char abs_path[128]; 
   
 static FRESULT scan_files_ex (char *path, int *total_size, int *total_files, int *total_dirs)
 {
@@ -87,8 +87,6 @@ int cek_fs_free(void)
 	int acc_size;
 	int acc_files;
 	int acc_dirs;
-
-	//fs = (FATFS *) &Fatfs;
 	
 	if ((res = f_getfree ("", (U32 *) &p2, &fs)))
 	{ 
@@ -129,7 +127,6 @@ char spath[64];
 	
 static int util_ls(int argc, char **argv)
 {	
-	//DIR dir;
 	FRESULT res;
 	U32 size;
 	U16 files;
@@ -143,16 +140,16 @@ static int util_ls(int argc, char **argv)
 	char *path;
 	char *nama;
 	
-	path = spath;
+	//path = spath;
 	
-	//printf("argc = %d", argc);
 	if (argc == 1)
 	{
-		sprintf(path, "");
+		//sprintf(path, "");
+		path = abs_path;
 	}
 	else
 		path = argv[1];
-	//path = argc ? argv [1] : "";
+	
 
 	if ((res = f_opendir (&dirs, path)))
 	{ 
@@ -203,6 +200,76 @@ static int util_ls(int argc, char **argv)
 	#endif
 	return 0;
 }
+
+//extern char prompt[];
+
+static int util_cd(int argc, char **argv)
+{
+	FRESULT res;
+	FATFS *fs;
+	int ln;
+	int i;
+	
+	if (argc == 1 ) return;
+	
+	if ( *argv[1] == '\\')
+	{
+		sprintf(abs_path, "%s", "");
+	}
+	else
+	{
+		if ( strncmp(argv[1], "..", 2) == 0 )
+		{
+			/* naik satu step keatas */
+			ln = strlen(abs_path);		
+			for (i=ln; i>=0; i--)
+			{
+				if ( abs_path[i] == '\\' ) 
+				{
+					abs_path[i] = 0;			
+					break;
+				}
+			}
+		}
+		else
+		{
+			strcat(abs_path, "\\");		
+			strcat(abs_path, argv[1]);
+		}		
+	}
+	printf(" >> \\%s\r\n", abs_path);
+	
+	if ((res = f_opendir (&dirs, abs_path)))
+	{ 
+		printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
+		
+		/* karena error, harus dikembalikan ke path semula */
+		ln = strlen(abs_path);
+		
+		for (i=ln; i>=0; i--)
+		{
+			if ( abs_path[i] == '\\' ) 
+			{
+				abs_path[i] = 0;			
+				break;
+			}
+		}
+		
+		return 0;
+	}
+}
+
+static tinysh_cmd_t util_cd_cmd={0,"cd","change direktory","[args]",
+                              util_cd,0,0,0};
+
+static int util_pwd()
+{
+	printf(" >> %s\r\n", abs_path);
+	return 0;
+}			
+
+static tinysh_cmd_t util_pwd_cmd={0,"pwd","printf directory","[args]",
+                              util_pwd,0,0,0};				  
 
 #if (SIMULATOR == 0)
 static tinysh_cmd_t util_ls_cmd={0,"ls","list direktory","[args]",

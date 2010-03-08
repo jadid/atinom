@@ -26,15 +26,14 @@
 #define JML_KANAL	20
 #define PER_SUMBER	20
 
+#define SEKTOR_SFILE	24
+#define ALMT_SFILE		0x7A000
 
 #define SEKTOR_SUMBER	25
 #define ALMT_SUMBER		0x7B000
 
 #define SEKTOR_MESIN	26
 #define ALMT_MESIN		0x7C000
-
-//#define SEKTOR_GROUP	20
-//#define ALMT_GROUP		0x68000
 
 #define SEKTOR_GROUP	26
 #define ALMT_GROUP		0x7C000
@@ -219,6 +218,13 @@ struct t_dt_set  {
 	//char	ket[32];	
 	char	nama[16];
 	char 	satuan[8];	
+};
+
+struct t_simpan_file {
+	int 	periode;		// periode disimpan dalam MMC
+	int 	set;			// aktif atau tidak
+	int 	detik;			// periode data disimpan dalam file
+	short 	no_data[ JML_SUMBER * PER_SUMBER ];
 };
 
 #endif /* MONITA_UIP_H_ */

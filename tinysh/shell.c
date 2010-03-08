@@ -18,6 +18,7 @@
 #include "group.c"
 #include "sumber.c"
 #include "../monita/monita_kontrol_2.c"
+#include "sfile.c"
 #endif
 
 #ifdef BOARD_TAMPILAN
@@ -533,6 +534,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	// data
 	tinysh_add_command(&set_data_cmd);
 	tinysh_add_command(&cek_data_cmd);
+	
+	// simpan file
+	tinysh_add_command(&cek_file_cmd);
+	tinysh_add_command(&set_file_cmd);
 #endif	
 
 	/* add sub commands
@@ -598,7 +603,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&util_mkdir_cmd);
 	tinysh_add_command(&util_cd_cmd);
 	tinysh_add_command(&util_pwd_cmd);
-	
+	tinysh_add_command(&util_view_cmd);
 	
 	init_gpio_mmc();
 	uncs_mmc();

@@ -27,7 +27,9 @@ FRESULT res;
 unsigned char buf_lfn[255];
 char buffer [100];
 char abs_path[128]; 
-  
+ 
+static void mundurkan_path(void); 
+ 
 static FRESULT scan_files_ex (char *path, int *total_size, int *total_files, int *total_dirs)
 {
   if ((res = f_opendir (&dirs, path)) == FR_OK) 
@@ -122,8 +124,6 @@ int cek_fs_free(void)
 
 	return 0;
 }
-
-char spath[64];
 	
 static int util_ls(int argc, char **argv)
 {	
@@ -135,12 +135,9 @@ static int util_ls(int argc, char **argv)
 	
 	fileInfo.lfname = buf_lfn;
 	fileInfo.lfsize = sizeof (buf_lfn);
-
-
+	
 	char *path;
 	char *nama;
-	
-	//path = spath;
 	
 	if (argc == 1)
 	{
@@ -221,15 +218,7 @@ static int util_cd(int argc, char **argv)
 		if ( strncmp(argv[1], "..", 2) == 0 )
 		{
 			/* naik satu step keatas */
-			ln = strlen(abs_path);		
-			for (i=ln; i>=0; i--)
-			{
-				if ( abs_path[i] == '\\' ) 
-				{
-					abs_path[i] = 0;			
-					break;
-				}
-			}
+			mundurkan_path();
 		}
 		else
 		{
@@ -244,16 +233,7 @@ static int util_cd(int argc, char **argv)
 		printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
 		
 		/* karena error, harus dikembalikan ke path semula */
-		ln = strlen(abs_path);
-		
-		for (i=ln; i>=0; i--)
-		{
-			if ( abs_path[i] == '\\' ) 
-			{
-				abs_path[i] = 0;			
-				break;
-			}
-		}
+		mundurkan_path();
 		
 		return 0;
 	}
@@ -270,6 +250,70 @@ static int util_pwd()
 
 static tinysh_cmd_t util_pwd_cmd={0,"pwd","printf directory","[args]",
                               util_pwd,0,0,0};				  
+
+static void mundurkan_path(void)
+{
+	int ln;
+	int i;
+
+	ln = strlen(abs_path);
+		
+	for (i=ln; i>=0; i--)
+	{
+		if ( abs_path[i] == '\\' ) 
+		{
+			abs_path[i] = 0;			
+			break;
+		}
+	}	
+}
+
+static int util_view (int argc, char **argv)
+{
+	int ret;
+	int ln;
+	int i;
+	FIL fd;
+	
+	if (argc == 1 ) 
+	{
+		printf(" ERR: Tolong masukkan nama file !\r\n");
+		
+		return 0;
+	}
+	
+	strcat(abs_path, "\\");		
+	strcat(abs_path, argv[1]);
+	
+	if (ret = f_open(&fd, abs_path, FA_READ | FA_WRITE))
+	{
+		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, ret);
+		
+		/* karena error, harus dikembalikan ke path semula */
+		mundurkan_path();
+							
+		return -1;
+	}
+	
+	/* meskipun tidak error, harus tetap dikembalikan */
+	mundurkan_path();
+		
+	ret = sizeof (buffer);
+	for (;;)
+	{
+		f_read( &fd, buffer, ret, &ln);
+		
+		printf("%s", buffer);
+		
+		if (ln < ret) break; // sudah mencapai akhir file		
+	}
+	f_close( &fd );
+		
+	return;
+}
+
+static tinysh_cmd_t util_view_cmd={0,"view","simple text viewer","[args]",
+                              util_view,0,0,0};
 
 #if (SIMULATOR == 0)
 static tinysh_cmd_t util_ls_cmd={0,"ls","list direktory","[args]",

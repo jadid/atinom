@@ -53,10 +53,7 @@ void judul(char *s);
 static int set_group_default(void);
 static int simpan_group( struct t_group *pgr);
 
-//struct t_group *pgroup;
-//struct t_mesin *pmesin;
-
-int cek_group(int argc, char **argv)
+static int cek_group(int argc, char **argv)
 {
 	int i;
 	struct t_group *pgroup;
@@ -125,10 +122,7 @@ int cek_group(int argc, char **argv)
 			else
 				printf(" ERR: Perintah tidak dikenali !\r\n");
 		}
-	}
-	
-	
-	
+	}	
 }
 
 static tinysh_cmd_t cek_group_cmd={0,"cek_group","menampilkan konfigurasi mesin","[] nomer",

@@ -296,7 +296,7 @@ void vUART3_ISR_Wrapper( void )
 #endif
 
 
-#if (TAMPILAN_MALINGPING == 1)
+#if (PAKAI_SERIAL_2 == 1)
 /* UART 2 */
 /* UART0 interrupt service routine entry point. */
 void vUART2_ISR_Wrapper( void ) __attribute__ ((naked));

@@ -469,7 +469,7 @@ signed portBASE_TYPE xReturn;
 	return xReturn;
 }#endif
 
-#if (TAMPILAN_MALINGPING == 1)
+#if (PAKAI_SERIAL_2 == 1)
 /* UART 2, untuk PM server */
 static xQueueHandle Qrx2;
 static xQueueHandle Qtx2;

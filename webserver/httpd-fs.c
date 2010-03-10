@@ -218,8 +218,7 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 	FIL *pfd = NULL;
 	
 	printf("%s(): %s\r\n", __FUNCTION__, name);
-	
-	
+		
 	#if 1
 	/* cari slot file desc yang kosong */
 	for (ret = 0; ret<5; ret++)
@@ -229,6 +228,12 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 			pfd = &fweb[ ret ];
 			break;
 		}
+	}
+	
+	if (ret == 5)
+	{
+		printf(" Tidak ada slot kosong !\r\n");
+		return 0;
 	}
 		
 	printf(" Slot file %d kosong\r\n", ret);

@@ -136,7 +136,7 @@ int main( void )
 	FIO0SET = TXDE;
 	#endif
 	
-	#if (TAMPILAN_MALINGPING == 1)
+	#if (PAKAI_SERIAL_2 == 1)
 	/* PCONP enable UART2 */
 	PCONP |= BIT(24);
 	

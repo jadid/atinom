@@ -5,14 +5,22 @@
 	20 april 2009
 	furkan jadid, daun biru engineering
 	
+	9 Mar 2010
+	Adaptasi untuk model web server baru
+	
 	*/
 
+#include "../tinysh/enviro.h"
+extern struct t_env env2;
+#define		tot_buf	buffer
+
+#if 0
 extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
-extern struct t_env env2;
+
 extern struct t_adc st_adc;
 
 static unsigned int nomer_mesin=0;
@@ -31,6 +39,7 @@ static unsigned int nomer_mesin=0;
 
 #ifdef BOARD_KOMON_KONTER
 #define BOARD_KOMON_WEB
+#endif
 #endif
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
@@ -85,6 +94,8 @@ static unsigned int nomer_mesin=0;
 
 void buat_head(unsigned int flag)
 {
+	char head_buf[256];
+	
 	/* flag = 1, perlu di refresh */
 	if (flag == 1)
 		sprintf(head_buf, "%s<meta http-equiv=""refresh"" content=""3"">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
@@ -96,7 +107,6 @@ void buat_head(unsigned int flag)
 	sprintf(head_buf, "%s<br>", LINK_ATAS);
 	strcat(tot_buf, head_buf);
 
-	//strcat(tot_buf, "<hr>\n<h4>Daun Biru Engineering");
 	strcat(tot_buf, "\n<h4>Daun Biru Engineering");
 	sprintf(head_buf, "<br>Monita %s v %s</h4>\n", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
@@ -110,6 +120,8 @@ void buat_head(unsigned int flag)
 
 void buat_bottom(void)
 {
+	char head_buf[256];
+	
 	unsigned int sec;
 	unsigned int menit;
 	unsigned int jam;
@@ -157,6 +169,7 @@ void buat_bottom(void)
     strcat(tot_buf, head_buf);
 }
 
+#if 0
 
 void buat_file_index(void)
 {
@@ -630,3 +643,4 @@ void buat_file_sumber(void)
 	return;
 }
 
+#endif

@@ -24,6 +24,7 @@
 #include "semphr.h"
 
 #include "ff.h"
+#include "../monita/monita_uip.h"
 
 //#define debug		printf
 #define debug_printf(...)	do{} while(0)
@@ -31,9 +32,11 @@
 char * buat_direktori(time_t timeval);
 	
 static int jum_dipanggil=0;
+static int jum_detik=0;
 static int sudah_buka = 0;
 
-FIL fd;
+static FIL fd;
+extern float data_f[];
 
 int proses_simpan_file(void)
 {
@@ -44,84 +47,152 @@ int proses_simpan_file(void)
 	int ret;
 	int jm;
 	int i;
+	struct t_simpan_file *ts;
+	struct t_dt_set *dt;
 		
 	jum_dipanggil++;
+	ts = (char *) ALMT_SFILE;
+	dt = (char *) ALMT_DT_SET;
 	
-	/* jika sepuluh menit lewat */
-	if (jum_dipanggil > 20) 
+	if (ts->set == 1)
 	{
-		get_tm_time( &tw );
-		timeval = mktime( &tw );
-		
-		//debug
-		//printf("TIMEVAL = %d\r\n", timeval);
-		//printf("cek %s\r\n",  ctime(&timeval));
-
-	
-		/* close file */
-		//printf("test buat %s\r\n", buat_direktori( timeval ));
-		
-		
-		/* buat file baru */
-		sprintf(temp, "angin_%s", ctime(&timeval));
-		
-		/* cari spasi dan jadikan underscore */
-		jm = strlen(temp);
-		for (i=0; i<jm; i++)
-		{
-			if ( temp[i] == ' ' ) temp[i] = '_';
-			if ( temp[i] == ':' ) temp[i] = '_';
-		}
-		
-		sprintf(path, "%s\\%s", buat_direktori(timeval), temp);
-		//printf("%s\r\n", path);
-		
-		if (sudah_buka == 1)
-		{
-			/*
-			if (ret = f_close( &fd ))
-			{
-				printf("%s(): Close file %s error %d !\r\n", __FUNCTION__, path, ret);
+		/* jika sepuluh menit lewat */
+		if (jum_dipanggil > (ts->periode * 60))
+		{						
+			if (sudah_buka == 1)
+			{		
+				f_close( &fd );
+				sudah_buka = 0;
 			}
-			else
-			*/
-			
-			f_close( &fd );
-			sudah_buka = 0;
+						
+			jum_dipanggil=0;
 		}
-		
-		if (sudah_buka == 0)
+		else /* per detik */
 		{
-			if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))
+			if (sudah_buka == 1)
 			{
-				printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);
-			}
-			else
-			{
-				sudah_buka = 1;
-				sprintf(path, "Hari Bln Tgl Jam Tahun Wind_speed Wind_direct Turbin_rpm Turbin_current Turbin_voltage ");
-				if (ret = f_write( &fd, path, strlen(path), &jm))
+				jum_detik++;
+				if (jum_detik >= ts->detik)
 				{
-					printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+					get_tm_time( &tw );
+					timeval = mktime( &tw );
+				
+					/* kasih tag waktu */
+					sprintf(path, "%s", ctime(&timeval));
+					
+					/* buang new linenya */
+					path[24] = ' ';
+					
+					if (ret = f_write( &fd, path, strlen(path), &jm))
+					{
+								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+								return ;
+					}
+					
+					/* tulis data */
+					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
+					{
+						jm = ts->no_data[i];
+			
+						if ( jm != 0) 
+						{
+							//sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
+							
+							sprintf(path, "%.3f ", data_f[ jm - 1] );
+							
+							if (ret = f_write( &fd, path, strlen(path), &jm))
+							{
+								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+								return ;
+							}							
+						}
+					}
+					
+					/* kasih new line */
+					sprintf(path, "\r\n");
+					if (ret = f_write( &fd, path, strlen(path), &jm))
+					{
+								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+								return ;
+					}
+					
+					/* di sync dulu */
+					f_sync( &fd );
+					
+					jum_detik = 0;
+				}
+			}			
+			else /* file belum dibuat */
+			{
+				get_tm_time( &tw );
+				timeval = mktime( &tw );
+				
+				//debug
+				//printf("TIMEVAL = %d\r\n", timeval);
+				//printf("cek %s\r\n",  ctime(&timeval));
+		
+				/* close file */
+				//printf("test buat %s\r\n", buat_direktori( timeval ));
+							
+				/* buat file baru */
+				sprintf(temp, "angin_%s", ctime(&timeval));
+				
+				/* cari spasi dan jadikan underscore */
+				jm = strlen(temp);
+				for (i=0; i<jm; i++)
+				{
+					if ( temp[i] == ' ' ) temp[i] = '_';
+					if ( temp[i] == ':' ) temp[i] = '_';
+				}
+				
+				/* buat direktori */
+				sprintf(path, "%s\\%s", buat_direktori(timeval), temp);
+				//printf("OK SAAT FILE %s\r\n", path);
+				if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))
+				{
+					printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);
+				}
+				else
+				{
+					sudah_buka = 1;
+					jum_detik = 0;
+					
+					/* kasih tag waktu */
+					sprintf(path, "Hari Bln Tgl Jam Tahun ");
+					if (ret = f_write( &fd, path, strlen(path), &jm))
+					{
+						printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+					}
+					
+					/* print out nama dan satuan dan nomer data dulu */
+					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
+					{
+						jm = ts->no_data[i];
+			
+						if ( jm != 0) 
+						{
+							/* nomer, nama, satuan, spasi ! */
+							sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
+							if (ret = f_write( &fd, path, strlen(path), &jm))
+							{
+								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+								return ;
+							}							
+						}
+					}
+					/* kasih new line */
+					sprintf(path, "\r\n");
+					if (ret = f_write( &fd, path, strlen(path), &jm))
+					{
+								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+								return ;
+					}
+					/* di sync dulu */
+					f_sync( &fd );
 				}
 			}
 		}
-		
-		jum_dipanggil=0;
-	}
-	else
-	{
-		if (sudah_buka == 1)
-		{
-			sprintf(path, "ini nomer %d\r\n", jum_dipanggil);
-			if (ret = f_write( &fd, path, strlen(path), &jm))
-			{
-				printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-			}
-		}
-	}
-
-
+	} /* jika set simpan = 1 */
 }
 
 char * buat_direktori(time_t timeval)

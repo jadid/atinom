@@ -56,6 +56,9 @@ extern struct t_adc st_adc;
 #define PAKE_HTTP
 #endif
 
+#ifdef PAKAI_HTTP
+#define PAKE_HTTP
+#endif
 
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;

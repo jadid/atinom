@@ -21,12 +21,12 @@
 #include <string.h>
 
 FATFS Fatfs;
-FILINFO fileInfo;
 DIR dirs;
 FRESULT res;
 unsigned char buf_lfn[255];
 char buffer [100];
 char abs_path[128]; 
+FILINFO fileInfo;
  
 static void mundurkan_path(void); 
  

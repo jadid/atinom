@@ -114,7 +114,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_CONF_MAX_CONNECTIONS 20		// tadinya 5
+#define UIP_CONF_MAX_CONNECTIONS 10		// tadinya 5
 
 /**
  * Maximum number of listening TCP ports.

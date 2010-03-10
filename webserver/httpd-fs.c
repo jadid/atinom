@@ -31,6 +31,13 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  * $Id: httpd-fs.c,v 1.1 2006/06/07 09:13:08 adam Exp $
+ * 
+ * 
+ * 9 Maret 2010
+ * furkan jadid, daun biru engineering
+ * 
+ * edit untuk menampilkan isi MMC
+ * 
  */
 
 #include "httpd.h"
@@ -46,6 +53,92 @@
 #if HTTPD_FS_STATISTICS
 static u16_t count[HTTPD_FS_NUMFILES];
 #endif /* HTTPD_FS_STATISTICS */
+
+FIL fweb;
+DIR dirs;
+FATFS *fs;
+FILINFO fileInfo;
+char link_asli[128];
+	
+extern unsigned char buf_lfn[255];
+
+#include "FreeRTOS.h"
+
+#define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
+
+int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
+{
+	int ret;
+	char *nama;
+	char temp[256];
+	char *name = s->filename;
+	
+	if ( s->file.nomer == 0 ) /* awal baca direktori */
+	{
+		fileInfo.lfname = buf_lfn;
+		fileInfo.lfsize = sizeof (buf_lfn);
+	
+		
+
+		/* HEAD */
+		sprintf(buf, "%s\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);		
+		strcat( buf, "<br>");
+		
+		/* nama diganti html, biar langsung ditampilkan */
+		//sprintf( name, "data.html");
+		
+		s->file.nomer = 1;		
+		s->len = strlen(buf);	/* pjg yang harus ditransmit */		
+		*pjg = s->len;
+		
+		return 1;				/* masih harus dipanggil lagi */		
+	}
+	
+	if (((ret = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0])
+	{
+		/* sudah habis, BOTTOM */
+		sprintf( buf, "\n</body>\n</html>\n");
+			
+		s->len = strlen(buf);	/* pjg yang harus ditransmit */
+		*pjg = 0;
+		return 0;				/* sudah habis, tidak perlu dipanggil lagi */
+	}
+	
+	sprintf(buf, "");
+	
+	if (fileInfo.lfname[0] == 0)
+		nama = &(fileInfo.fname [0]);
+	else
+		nama = &(fileInfo.lfname[0]);
+			
+	if (fileInfo.fattrib & AM_DIR)
+	{
+		sprintf(temp, "<img src=\"/www/folder.gif\" alt=\"[DIR]\"> ");
+		strcat( buf, temp );
+	}
+			
+	sprintf(temp, "<a href=\"%s/%s\">", link_asli, nama);
+	strcat( buf, temp);
+			/*		
+			sprintf (temp, "\r\n%c%c%c%c%c %u/%02u/%02u %02u:%02u %9u  %s",
+				(fileInfo.fattrib & AM_DIR) ? 'D' : '-',
+				(fileInfo.fattrib & AM_RDO) ? 'R' : '-',
+				(fileInfo.fattrib & AM_HID) ? 'H' : '-',
+				(fileInfo.fattrib & AM_SYS) ? 'S' : '-',
+				(fileInfo.fattrib & AM_ARC) ? 'A' : '-',
+				(fileInfo.fdate >> 9) + 1980, (fileInfo.fdate >> 5) & 15, fileInfo.fdate & 31,
+				(fileInfo.ftime >> 11), (fileInfo.ftime >> 5) & 63,
+				fileInfo.fsize, nama);
+			*/
+	sprintf (temp, "%s", nama);
+	strcat( buf, temp);
+	strcat( buf, "</a>\n<br>");
+	
+	s->len = strlen(buf);	/* pjg yang harus ditransmit */
+	*pjg = s->len;
+	return 1;				/* masih harus dipanggil lagi */
+		
+}
 
 /*-----------------------------------------------------------------------------------*/
 static u8_t
@@ -73,7 +166,49 @@ httpd_fs_strcmp(const char *str1, const char *str2)
 int
 httpd_fs_open(const char *name, struct httpd_fs_file *file)
 {
-#ifdef ASLINYA
+	int ret;
+	unsigned int size;
+	unsigned int files;
+	unsigned int jum_dirs;
+	char *nama;
+	char temp[256];
+	
+	printf("%s(): %s\r\n", __FUNCTION__, name);
+	file->flag = 0;
+
+	
+	if (ret = f_open(&fweb, name, FA_READ | FA_WRITE))
+	{
+		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, ret);
+		
+		/* kemungkinan bukan file, tetapi direktori, coba cek dan list direktori */
+		if ((ret = f_opendir (&dirs, name)))
+		{ 
+			printf("%s(): Buka direktori error = %d !\r\n", __FUNCTION__, ret);
+			return 0;
+		}
+		
+		file->len = 20000; // dummy saja
+		file->fd = NULL;
+		file->flag = 29;	/* baca direktori */
+		file->nomer = 0;	/* awal baca direktori */
+		
+		/* simpan link asli dulu */
+		sprintf( link_asli, "%s", name);
+		
+		sprintf( name, "data.html");
+		
+		return 1;
+	}
+	
+	/* buka file sukses */
+	file->len = fweb.fsize;
+	file->fd = &fweb;
+	
+	return 1;
+	
+	#if 0
+	printf2("%s(): %s\r\n", __FUNCTION__, name);
 	
 #if HTTPD_FS_STATISTICS
   u16_t i = 0;
@@ -98,12 +233,7 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 
   }
   return 0;
-#endif
-	
-	file->len = 100;
-	
-	return 1;
-	
+  #endif
 }
 /*-----------------------------------------------------------------------------------*/
 void

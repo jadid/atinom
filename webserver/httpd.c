@@ -74,74 +74,60 @@
 #define ISO_slash   0x2f
 #define ISO_colon   0x3a
 
-
-#include "../GPIO/gpio.h"
-#include "../tinysh/enviro.h"
-extern struct t_env env2;
-
-void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn);
-
-#define BESAR_BUF_HTTP	8192
-
-#ifdef BOARD_TAMPILAN
-#include "../monita/monita_uip.h"
-extern struct t_mesin mesin[];
-extern struct t_titik titik[];
-extern struct t_sumber sumber[];
-extern char keter[100][25];
-
-unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
-unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
-#else
-unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
-unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
-#endif
-
-#include "../adc/ad7708.h"
-extern struct t_adc st_adc;
-
-#include "buat_file.c"
-
 /*---------------------------------------------------------------------------*/
 static unsigned short
 generate_part_of_file(void *state)
 {
-	struct httpd_state *s = (struct httpd_state *)state;
-	
-	//printf("gen file\r\n");
-  	if(s->file.len > uip_mss()) {
-    	s->len = uip_mss();
-  	} else {
-    	s->len = s->file.len;
-  	}
-  	memcpy(uip_appdata, s->file.data, s->len);
+  struct httpd_state *s = (struct httpd_state *)state;
+	int terbaca;
 
-  	return s->len;
-
-
+  if(s->file.len > uip_mss()) {
+    s->len = uip_mss();
+  } else {
+    s->len = s->file.len;
+  }
+  
+  if ( s->file.fd == NULL )
+  {
+		if ( s->file.flag == 29 )
+		{
+			if (http_fs_baca_dir( uip_appdata, &terbaca, s) == 0)
+			{
+				s->file.len = 0; /* supaya tidak dipanggil lagi ! */
+			}			
+		}
+		else		
+			memcpy(uip_appdata, s->file.data, s->len);
+  }
+  else
+  {		/* baca langsung ke MMC / file system */
+		f_read( s->file.fd, uip_appdata, s->len, &terbaca);
+	}
+  
+  return s->len;
 }
 /*---------------------------------------------------------------------------*/
 static
 PT_THREAD(send_file(struct httpd_state *s))
 {
-  	PSOCK_BEGIN(&s->sout);
-	
+  PSOCK_BEGIN(&s->sout);
+  
   do {
     PSOCK_GENERATOR_SEND(&s->sout, generate_part_of_file, s);
     s->file.len -= s->len;
     s->file.data += s->len;
   } while(s->file.len > 0);
-	
-  	PSOCK_END(&s->sout);
+      
+  PSOCK_END(&s->sout);
 }
-/*---------------------------------------------------------------------------*/
+/*-------------------- INI dipanggil oleh script ---------------------------*/
 static
 PT_THREAD(send_part_of_file(struct httpd_state *s))
 {
   PSOCK_BEGIN(&s->sout);
 
   PSOCK_SEND(&s->sout, s->file.data, s->len);
-
+  
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
@@ -158,7 +144,7 @@ static
 PT_THREAD(handle_script(struct httpd_state *s))
 {
   char *ptr;
-
+  
   PT_BEGIN(&s->scriptpt);
 
 
@@ -177,7 +163,7 @@ PT_THREAD(handle_script(struct httpd_state *s))
 		       httpd_cgi(s->scriptptr)(s, s->scriptptr));
       }
       next_scriptstate(s);
-
+      
       /* The script is over, so we reset the pointers and continue
 	 sending the rest of the file. */
       s->file.data = s->scriptptr;
@@ -207,10 +193,10 @@ PT_THREAD(handle_script(struct httpd_state *s))
       PT_WAIT_THREAD(&s->scriptpt, send_part_of_file(s));
       s->file.data += s->len;
       s->file.len -= s->len;
-
+      
     }
   }
-
+  
   PT_END(&s->scriptpt);
 }
 /*---------------------------------------------------------------------------*/
@@ -243,16 +229,15 @@ PT_THREAD(send_headers(struct httpd_state *s, const char *statushdr))
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
-static PT_THREAD(handle_output(struct httpd_state *s))
+static
+PT_THREAD(handle_output(struct httpd_state *s))
 {
   char *ptr;
-  unsigned short bsr;
-	
+  
   PT_BEGIN(&s->outputpt);
-
-  if(!httpd_fs_open(s->filename, &s->file)) 
-  {
-    printf(" HTTP file %s tidak ada ?\n", s->filename);
+ 
+  if(!httpd_fs_open(s->filename, &s->file)) {
+    /*
 	httpd_fs_open(http_404_html, &s->file);
     strcpy(s->filename, http_404_html);
     PT_WAIT_THREAD(&s->outputpt,
@@ -260,93 +245,21 @@ static PT_THREAD(handle_output(struct httpd_state *s))
 		   http_header_404));
     PT_WAIT_THREAD(&s->outputpt,
 		   send_file(s));
-  } 
-  else 
-  {	
-	if (strncmp(s->filename, "/setting", 8) == 0)
-	{
-		//printf(" Buat file setting\r\n");
-		
-		buat_file_setting(0);
-		
-		s->file.len = strlen(tot_buf);
-		
-		portENTER_CRITICAL();
-		s->file.data = tot_buf;
-		portEXIT_CRITICAL();
-	}
-	else if (strncmp(s->filename, "/set_satu", 9) == 0)
-	{
-		//printf(" Buat file setting\r\n");
-		
-		buat_file_setting(1);
-		
-		s->file.len = strlen(tot_buf);
-		
-		portENTER_CRITICAL();
-		s->file.data = tot_buf;
-		portEXIT_CRITICAL();
-	}
-	else if (strncmp(s->filename, "/set_dua", 8) == 0)
-	{
-		//printf(" Buat file setting\r\n");
-		
-		buat_file_setting(2);
-		
-		s->file.len = strlen(tot_buf);
-		
-		portENTER_CRITICAL();
-		s->file.data = tot_buf;
-		portEXIT_CRITICAL();
-	}
-	else if (strncmp(s->filename, "/about", 6) == 0)
-	{
-		//printf(" Buat file about\r\n");
-		buat_file_about();
-		s->file.len = strlen(tot_buf);
+	*/
 	
-		portENTER_CRITICAL();
-		s->file.data = tot_buf;
-		portEXIT_CRITICAL();
-	}
-	else if (strncmp(s->filename, "/sumber", 7) == 0)
-	{
-		buat_file_sumber();
-		s->file.len = strlen(tot_buf);
-	
-		portENTER_CRITICAL();
-		s->file.data = tot_buf;
-		portEXIT_CRITICAL();
-	}
-	else
-	/* (strncmp(s->filename, "/index", 6) == 0) */
-	{
-		//printf(" Buat file index\r\n");
-		buat_file_index();
-
-		s->file.len = strlen(tot_buf);
-		
-		portENTER_CRITICAL();
-		s->file.data = tot_buf;
-		portEXIT_CRITICAL();
-	}
-
-	PT_WAIT_THREAD(&s->outputpt,
-		   send_headers(s,
-		   http_header_200));
+  } else {
+    PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_200));
     ptr = strchr(s->filename, ISO_period);
-	
     if(ptr != NULL && strncmp(ptr, http_shtml, 6) == 0) 
 	{
-      //printf(" script !\n");
-	  PT_INIT(&s->scriptpt);
+      PT_INIT(&s->scriptpt);
       PT_WAIT_THREAD(&s->outputpt, handle_script(s));
     } 
 	else 
 	{
-	  //printf(" biasa !\n");
-      PT_WAIT_THREAD(&s->outputpt, send_file(s));
-    } 
+      printf("%s() : send file \r\n", __FUNCTION__);
+	  PT_WAIT_THREAD(&s->outputpt, send_file(s));
+    }
   }
   PSOCK_CLOSE(&s->sout);
   PT_END(&s->outputpt);
@@ -359,7 +272,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
 
   PSOCK_READTO(&s->sin, ISO_space);
 
-
+  
   if(strncmp(s->inputbuf, http_get, 4) != 0) {
     PSOCK_CLOSE_EXIT(&s->sin);
   }
@@ -372,20 +285,12 @@ PT_THREAD(handle_input(struct httpd_state *s))
   if(s->inputbuf[1] == ISO_space) {
     strncpy(s->filename, http_index_html, sizeof(s->filename));
   } else {
-
     s->inputbuf[PSOCK_DATALEN(&s->sin) - 1] = 0;
-
-    /* Process any form input being sent to the server. */
-    {
-        //extern void vApplicationProcessFormInput( char *pcInputString, long xInputLength );
-        //vApplicationProcessFormInput( s->inputbuf, PSOCK_DATALEN(&s->sin) );
-    }
-
     strncpy(s->filename, &s->inputbuf[0], sizeof(s->filename));
   }
 
   /*  httpd_log_file(uip_conn->ripaddr, s->filename);*/
-
+  
   s->state = STATE_OUTPUT;
 
   while(1) {
@@ -396,7 +301,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
       /*      httpd_log(&s->inputbuf[9]);*/
     }
   }
-
+  
   PSOCK_END(&s->sin);
 }
 /*---------------------------------------------------------------------------*/
@@ -413,8 +318,6 @@ void
 httpd_appcall(void)
 {
   struct httpd_state *s = (struct httpd_state *)&(uip_conn->appstate2);
-
-	//serial_puts("http reques !");
 
   if(uip_closed() || uip_aborted() || uip_timedout()) {
   } else if(uip_connected()) {

@@ -271,7 +271,7 @@ static void cek_uptime(int argc, char **argv)
 	
 	wt = rtc_get_time();
 	printf(" Now = %02d:%02d:%02d  %d-%d-%d\r\n", wt.RTC_Hour, wt.RTC_Min, wt.RTC_Sec, \
-			wt.RTC_Mday, wt.RTC_Mon, (1900 + wt.RTC_Year));
+			wt.RTC_Mday, wt.RTC_Mon, wt.RTC_Year);
 	#endif
 		
 	return ;
@@ -646,8 +646,11 @@ portTASK_FUNCTION(shell, pvParameters )
 				{
 					if (proses_passwd( &c ) == 1) break;
 				}
-				
-				//proses_simpan_file();
+				#ifdef PAKAI_MMC
+				#if (PAKAI_FILE_SIMPAN == 1)
+				proses_simpan_file();
+				#endif
+				#endif
 			}
 	  }
 	  

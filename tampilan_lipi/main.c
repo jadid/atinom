@@ -169,7 +169,7 @@ int main( void )
 #if 1
 	init_led_utama();		// 5, -2
 	init_task_lcd();		// 1, +1
-	//start_ether();
+	start_ether();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
 	//init_task_pm();			// 10, +1

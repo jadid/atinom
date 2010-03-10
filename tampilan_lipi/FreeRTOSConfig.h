@@ -44,6 +44,8 @@
 
 //#define PAKE_TELNETD
 //#define BOARD_TAMPILAN
+
+#define PAKAI_HTTP
 #define PAKAI_RTC
 #define PAKAI_MMC
 #define TAMPILAN_LPC_43

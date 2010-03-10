@@ -37,9 +37,14 @@
 
 #define HTTPD_FS_STATISTICS 1
 
+#include "../fatfs/ff.h"
+
 struct httpd_fs_file {
   char *data;
   int len;
+  FIL *fd;
+  char flag;
+  unsigned int nomer;
 };
 
 /* file must be allocated by caller and will be filled in

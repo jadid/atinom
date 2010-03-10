@@ -147,6 +147,7 @@ int set_file(int argc, char **argv)
 				printf("    default : memberikan default setting simpan file\r\n");
 				printf("\r\n");
 				
+				/*
 				printf(" 2. set_group x [opt1] [opt2]\r\n");
 				printf("    x    : nomer group\r\n");
 				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
@@ -165,6 +166,7 @@ int set_file(int argc, char **argv)
 				printf("    desc/ket  : memberikan keterangan/deskripsi pada group\r\n");
 				printf("    misalnya  : $ set_group 7 ket ini_milik_Sulzer\r\n");
 				printf("    catatan   : jangan ada spasi pada keterangannya !\r\n");
+				*/
 				
 				return ;
 			}

@@ -382,16 +382,15 @@ void enc28j60Send (void)
   //
   //  Enable packet Transmission
   //
-  /*
+
   encBFCReg (EIR, EIR_TXIF);
   encBFSReg (ECON1, ECON1_TXRST);         // Errata for B5
   encBFCReg (ECON1, ECON1_TXRST);         // Errata for B5
   encBFCReg (EIR, EIR_TXERIF | EIR_TXIF); // Errata for B5
 
   encBFSReg (ECON1, ECON1_TXRTS);
-  */
-  
-  
+
+  #if 0
   unsigned int temp;
   // dari gaya BF
   temp = encReadEthReg (EIR);
@@ -405,7 +404,7 @@ void enc28j60Send (void)
   
   encBFCReg (EIR, EIR_TXIF);
   encBFSReg (ECON1, ECON1_TXRTS);
-  
+  #endif
   //portEXIT_CRITICAL();
   
 }

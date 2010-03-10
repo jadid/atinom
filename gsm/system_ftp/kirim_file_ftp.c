@@ -33,6 +33,10 @@
 	
 	19 Jan 2010
 	dicoba untuk tampilan_lipi
+	
+	10 Mar 2010
+	jika sudah connect, looping di direktori sejam yang lalu
+	dan mengirimkan file2 sejam yang lalu
 	 	
 */
 
@@ -54,14 +58,17 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include "direktori.c"
 
 #define sleep(c) vTaskDelay(c * 1000)
 //#define gettimeofday_r(c) do{ } while(0)
 
+/*
 time_t time(time_t * tt)
 {
 	tt = 21;
 }
+*/
 
 #endif
 
@@ -111,7 +118,10 @@ int gsm_ftp(int argc, char *argv[])
 	int c, res;
 	int tout;
 	time_t timeval;
+	struct tm tw;
+	
 	char buf_nama[64];
+	char path[64];
 	
 	printf("Program kirim file lewat FTP GSM\r\n");
 	#if ( DEBUG == 1)				
@@ -217,8 +227,20 @@ int gsm_ftp(int argc, char *argv[])
 	{
 		printf("Create FTP sesssion OK !\r\n");
 		
-		(void)time(&timeval); 
-		sprintf(buf_nama, "file_%d.chc", timeval);
+		//(void)time(&timeval); 
+		get_tm_time( &tw );
+		timeval = mktime( &tw );
+		
+		sprintf( path, "%s", cari_sejam_lalu( timeval ));		
+		//sprintf(buf_nama, "file_%d.chc", timeval);
+		
+		DIR dirs;
+		if ((res = f_opendir (&dirs, path)))
+		{ 
+			printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
+			return 0;
+		}
+		printf("Open dir %s OK\r\n", path);
 		
 		if ( upload_file(buf_nama) == 0)
 		{

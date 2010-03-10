@@ -87,7 +87,8 @@ generate_part_of_file(void *state)
     s->len = s->file.len;
   }
   
-  if ( s->file.fd == NULL )
+  //if ( s->file.fd == NULL )
+  if ( s->file.flag == 29 )
   {
 		if ( s->file.flag == 29 )
 		{
@@ -96,12 +97,19 @@ generate_part_of_file(void *state)
 				s->file.len = 0; /* supaya tidak dipanggil lagi ! */
 			}			
 		}
-		else		
-			memcpy(uip_appdata, s->file.data, s->len);
+		//else		
+		//	memcpy(uip_appdata, s->file.data, s->len);
   }
   else
   {		/* baca langsung ke MMC / file system */
 		f_read( s->file.fd, uip_appdata, s->len, &terbaca);
+		
+		/* jika sudah habis (EOF) */
+		//if (terbaca <= s->file.len)
+		{
+			//printf(" Close file\r\n");
+			//f_close( s->file.fd );
+		}
 	}
   
   return s->len;
@@ -117,7 +125,13 @@ PT_THREAD(send_file(struct httpd_state *s))
     s->file.len -= s->len;
     s->file.data += s->len;
   } while(s->file.len > 0);
-      
+  
+	if ( s->file.flag == 27 )
+	{
+		printf(" Close file\r\n");
+		f_close( s->file.fd );
+    }
+	
   PSOCK_END(&s->sout);
 }
 /*-------------------- INI dipanggil oleh script ---------------------------*/

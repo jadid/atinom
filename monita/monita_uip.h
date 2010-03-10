@@ -225,6 +225,7 @@ struct t_simpan_file {
 	int 	set;			// aktif atau tidak
 	int 	detik;			// periode data disimpan dalam file
 	short 	no_data[ JML_SUMBER * PER_SUMBER ];
+	char	nama_file[16];	// awalan nama file, misalnya angin
 };
 
 #endif /* MONITA_UIP_H_ */

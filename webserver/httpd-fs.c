@@ -54,11 +54,16 @@
 static u16_t count[HTTPD_FS_NUMFILES];
 #endif /* HTTPD_FS_STATISTICS */
 
-FIL fweb;
+FIL fweb[5];
+//FIL fweb;
 DIR dirs;
 FATFS *fs;
 FILINFO fileInfo;
-char link_asli[128];
+
+static unsigned int size;
+static unsigned int files;
+static unsigned int jum_dirs;
+static char link_asli[128];
 	
 extern unsigned char buf_lfn[255];
 
@@ -66,11 +71,29 @@ extern unsigned char buf_lfn[255];
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
+static void mundurkan_path2(char *bf)
+{
+	int ln;
+	int i;
+
+	ln = strlen(bf);
+		
+	for (i=ln; i>=0; i--)
+	{
+		if ( bf[i] == '/' ) 
+		{
+			bf[i] = 0;			
+			break;
+		}
+	}	
+}
+
 int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 {
 	int ret;
 	char *nama;
 	char temp[256];
+	char temp2[256];
 	char *name = s->filename;
 	
 	if ( s->file.nomer == 0 ) /* awal baca direktori */
@@ -78,14 +101,22 @@ int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 		fileInfo.lfname = buf_lfn;
 		fileInfo.lfsize = sizeof (buf_lfn);
 	
+		size = 0;
+		files = 0;
+		jum_dirs = 0;
 		
-
 		/* HEAD */
 		sprintf(buf, "%s\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);		
-		strcat( buf, "<br>");
+		strcat( buf, "<br><hr>");
 		
-		/* nama diganti html, biar langsung ditampilkan */
-		//sprintf( name, "data.html");
+		/* akses ke parent direktori */
+		sprintf(temp, "<img src=\"/www/back.gif\" alt=\"icon\"> ");
+		strcat( buf, temp );
+		
+		sprintf( temp2, "%s", link_asli);
+		mundurkan_path2( temp2 );
+		sprintf(temp, "<a href=\"%s\">Parent Directory</a>\n<br>", temp2);
+		strcat( buf, temp);
 		
 		s->file.nomer = 1;		
 		s->len = strlen(buf);	/* pjg yang harus ditransmit */		
@@ -96,12 +127,27 @@ int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 	
 	if (((ret = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0])
 	{
+		sprintf (buf, "\n<hr><br>%4u File(s),%10u bytes\r\n%4u Dir(s)", files, size, jum_dirs);
+
+		if (f_getfree ("", (unsigned int *) &size, &fs) == FR_OK)
+		
+		sprintf (temp,"<br>MMC %10uK bytes free\r\n",size * fs->csize / 2);
+		strcat (buf, temp);
+		
 		/* sudah habis, BOTTOM */
-		sprintf( buf, "\n</body>\n</html>\n");
+		strcat( buf, "\n</body>\n</html>\n");
 			
 		s->len = strlen(buf);	/* pjg yang harus ditransmit */
 		*pjg = 0;
 		return 0;				/* sudah habis, tidak perlu dipanggil lagi */
+	}
+	
+	if (fileInfo.fattrib & AM_DIR) 
+		   jum_dirs++;
+	else 
+	{
+		    files++; 
+		    size += fileInfo.fsize;
 	}
 	
 	sprintf(buf, "");
@@ -167,17 +213,28 @@ int
 httpd_fs_open(const char *name, struct httpd_fs_file *file)
 {
 	int ret;
-	unsigned int size;
-	unsigned int files;
-	unsigned int jum_dirs;
 	char *nama;
 	char temp[256];
+	FIL *pfd = NULL;
 	
 	printf("%s(): %s\r\n", __FUNCTION__, name);
-	file->flag = 0;
-
 	
-	if (ret = f_open(&fweb, name, FA_READ | FA_WRITE))
+	
+	#if 1
+	/* cari slot file desc yang kosong */
+	for (ret = 0; ret<5; ret++)
+	{
+		if ( fweb[ ret ].fs == NULL )
+		{
+			pfd = &fweb[ ret ];
+			break;
+		}
+	}
+		
+	printf(" Slot file %d kosong\r\n", ret);
+	#endif
+	
+	if (ret = f_open( pfd, name, FA_READ | FA_WRITE))
 	{
 		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, ret);
 		
@@ -202,9 +259,11 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 	}
 	
 	/* buka file sukses */
-	file->len = fweb.fsize;
-	file->fd = &fweb;
+	file->len = pfd->fsize;
+	file->fd = pfd;
+	file->flag = 27;
 	
+	printf(" len = %d\r\n", file->len);
 	return 1;
 	
 	#if 0

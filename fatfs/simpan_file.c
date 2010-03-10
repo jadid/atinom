@@ -135,7 +135,8 @@ int proses_simpan_file(void)
 				//printf("test buat %s\r\n", buat_direktori( timeval ));
 							
 				/* buat file baru */
-				sprintf(temp, "angin_%s", ctime(&timeval));
+				//sprintf(temp, "angin_%s", ctime(&timeval));
+				sprintf(temp, "%s_%s", ts->nama_file, ctime(&timeval));
 				
 				/* cari spasi dan jadikan underscore */
 				jm = strlen(temp);

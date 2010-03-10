@@ -7,6 +7,9 @@
 	
 	perintah2 :
 	---------------------
+	set_file nama terong_belanda : memberikan nama/awalan nama yang akan dipakai untuk
+							membuat file (maks 16 karakter)
+							
 	set_file periode 10		: file disimpan dalam MMC setiap 10 menit (maks 60 menit)
 	set_file set 0			: mode menyimpan tidak diaktifkan
 	set_file set 1			: mode menyimpan diaktifkan
@@ -54,6 +57,7 @@ static int cek_file(int argc, char **argv)
 	{
 		judul(" Setting Simpan File\r\n");
 		
+		printf("  Nama    = %s\r\n", psfile->nama_file);
 		printf("  Periode = %d\r\n", psfile->periode);
 		printf("  Set     = %d\r\n", psfile->set);
 		printf("  Detik   = %d\r\n", psfile->detik);
@@ -197,7 +201,22 @@ int set_file(int argc, char **argv)
 	
 	memcpy((char *) p_gr, (char *) ALMT_SFILE, (sizeof (struct t_simpan_file)));
 	
-	if (strcmp(argv[1], "periode") == 0)
+	if (strcmp(argv[1], "nama") == 0)
+	{
+		sprintf(buf, "%s", argv[2]);
+		sumb = strlen(buf);
+		
+		if (sumb > 16)
+		{
+			printf(" ERR: Nama (%s) terlalu panjang !\r\n", buf);
+			vPortFree( p_gr );
+			return;			
+		}
+		
+		sprintf( p_gr->nama_file, "%s", buf);
+		
+	}
+	else if (strcmp(argv[1], "periode") == 0)
 	{
 		sprintf(buf, "%s", argv[2]);	
 		sumb = cek_nomer_valid(buf, 60);
@@ -330,6 +349,7 @@ static int set_file_default(void)
 		return -1;
 	}
 	
+	sprintf(p_gr->nama_file, "Monita");
 	p_gr->periode = 10;
 	p_gr->detik = 1;
 	p_gr->set = 0;

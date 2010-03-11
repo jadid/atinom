@@ -36,7 +36,11 @@
 	
 	10 Mar 2010
 	jika sudah connect, looping di direktori sejam yang lalu
-	dan mengirimkan file2 sejam yang lalu
+	dan mengirimkan file2 sejam yang lalu.
+	
+	Jika error, maka diulang lagi 5 menit kemudian.
+	setiap file yang sudah berhasil dikirim, diberi FLAG waktu saat dikirim
+	di akhir file
 	 	
 */
 
@@ -59,6 +63,9 @@
 #include "queue.h"
 #include "semphr.h"
 #include "direktori.c"
+
+FIL fd2;
+extern char buf_lfn[];
 
 #define sleep(c) vTaskDelay(c * 1000)
 //#define gettimeofday_r(c) do{ } while(0)
@@ -110,7 +117,7 @@ int start_gprs(void);
 int upload_file(char *nama_file);
 int upload_data_file(char *nama_data);
 
-void send_etx(void);
+int send_etx(void);
 
 int gsm_ftp(int argc, char *argv[])
 {
@@ -120,7 +127,7 @@ int gsm_ftp(int argc, char *argv[])
 	time_t timeval;
 	struct tm tw;
 	
-	char buf_nama[64];
+	char abs_path[128];
 	char path[64];
 	
 	printf("Program kirim file lewat FTP GSM\r\n");
@@ -223,6 +230,15 @@ int gsm_ftp(int argc, char *argv[])
 		return;
 	}
 	
+	DIR dirs;
+		unsigned int size;
+		unsigned int files;
+		unsigned int file_sudah=0;
+		unsigned int file_sukses=0;
+		unsigned int jum_dirs;
+		FILINFO fileInfo;
+		char *nama;
+		
 	if (create_ftp_sess() == 0)
 	{
 		printf("Create FTP sesssion OK !\r\n");
@@ -232,28 +248,129 @@ int gsm_ftp(int argc, char *argv[])
 		timeval = mktime( &tw );
 		
 		sprintf( path, "%s", cari_sejam_lalu( timeval ));		
-		//sprintf(buf_nama, "file_%d.chc", timeval);
+		//sprintf(buf_nama, "file_%d.chc", timeval);		
 		
-		DIR dirs;
+		fileInfo.lfname = buf_lfn;
+		fileInfo.lfsize = 255;//sizeof (buf_lfn);
+	
 		if ((res = f_opendir (&dirs, path)))
 		{ 
 			printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
 			return 0;
 		}
-		printf("Open dir %s OK\r\n", path);
+		printf("%s(): Open dir %s OK\r\n", __FUNCTION__, path);
 		
-		if ( upload_file(buf_nama) == 0)
+		/* MULAI LOOP DIREKTORI */
+		for (size = files = jum_dirs = 0;;)
 		{
-			upload_data_file("AAAAAAAAABBBBBBBB");
-		}
-		else
-			printf("Upload file ERROR !\r\n");
+			if (((res = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0]) 
+				break;
+
+			if (fileInfo.fattrib & AM_DIR) 
+				jum_dirs++;
+			else 
+			{
+				files++; 
+				size += fileInfo.fsize;
+			
+				if (fileInfo.lfname[0] == 0)
+					nama = &(fileInfo.fname [0]);
+				else
+					nama = &(fileInfo.lfname[0]);
+				
+				/*		
+				printf ("\r\n%c%c%c%c%c %u/%02u/%02u %02u:%02u %9u  %s",
+					(fileInfo.fattrib & AM_DIR) ? 'D' : '-',
+					(fileInfo.fattrib & AM_RDO) ? 'R' : '-',
+					(fileInfo.fattrib & AM_HID) ? 'H' : '-',
+					(fileInfo.fattrib & AM_SYS) ? 'S' : '-',
+					(fileInfo.fattrib & AM_ARC) ? 'A' : '-',
+					(fileInfo.fdate >> 9) + 1980, (fileInfo.fdate >> 5) & 15, fileInfo.fdate & 31,
+					(fileInfo.ftime >> 11), (fileInfo.ftime >> 5) & 63,
+					fileInfo.fsize, nama);
+				*/
+				sprintf(abs_path,"%s\\%s", path, nama);
+				
+				if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE))
+				{
+					printf("%s(): Buka file error %d !\r\n", __FUNCTION__, res);					
+					return 0;
+				}
+				
+				/* cek apakah sudah pernah dikirim ke server 
+				 * sudah dikirim akan ada tag time dan SEND
+				 * dan ini akan berada di akhir file
+				 * 
+				 * sehingga kira2 begini 
+				 * Thu Mar 11 13:27:42 2010SEND
+				 * 
+				 * kira2 29 karakater dari akhir file
+				 * 
+				 * sehingga hanya perlu dicek 6 karakter terakhir saja
+				 * apakah ada SENDED
+				 */
+				
+				f_lseek( &fd2, fd2.fsize - 6 );
+				f_read( &fd2, abs_path, 6, &res);
+				printf("CEK %s @@@\r\n", abs_path);
+				
+				if (strncmp( abs_path, "SENDED", 6) == 0)
+				{
+					printf("file %s sudah dikirim !\r\n", nama);
+					file_sudah++;
+				}
+				else
+				{				
+					/* kembalikan pointer */
+					f_lseek( &fd2, 0);
+					
+					if ( upload_file(nama) == 0)
+					{
+						//upload_data_file("AAAAAAAAABBBBBBBB");
+						size = sizeof (abs_path);
+						for (;;)
+						{
+							f_read( &fd2, abs_path, size, &res);
+							
+							for (i=0; i<res; i++)
+							{
+								tulis_char( abs_path[i] );
+							}	
+						
+							if ( res < size ) break; 
+						}
+						
+						/* untuk mengakhiri data ftp */
+						if ( send_etx() < 0)
+						{
+							break;
+						}
+						
+						/* tulis SENDED pada akhir file */
+						sprintf(abs_path, "%s", ctime( &timeval ));	
+						sprintf( &abs_path[24], "SENDED");	
+						printf("TULIS %s \r\n", abs_path);
+											
+						f_write( &fd2, abs_path, strlen(abs_path), &res);
+						file_sukses++;
+					}
+					else
+					{
+						printf("Upload %s file ERROR !\r\n", nama);
+						break;
+					}
+				}
+				f_close( &fd2 );
+				
+			}	/* file archive */
+		}	/* loop direktori */	
 	}
 	else
 		printf("Create FTP sesssion error !\r\n");
 	
 	
 	sleep(5);
+	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
 	
 	if (stop_gprs() < 0)
 	{
@@ -610,7 +727,7 @@ int upload_file(char *nama_file)
 	//char buf[64];
 	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s\"\r\n", nama_file);
 	tulis_serial(buf, strlen(buf), 0);	
-	baca_serial(buf, 20, 5);
+	baca_serial(buf, 20, 20);
 	
 	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	
 	{
@@ -644,13 +761,21 @@ int upload_data_file(char *nama_data)
 	send_etx();
 }
 
-void send_etx(void)
+int send_etx(void)
 {
-	//char buf[8];
-	//sprintf(buf, "%c", CTRL_ETX);
 	tulis_char((char) CTRL_ETX );
 	
-	//tulis_serial(buf, strlen(buf), 0);
+	baca_serial(buf, 20, 5);
+	if (strncmp(buf, "OK", 2) == 0)
+	{
+		printf(" %s(): OK\r\n", __FUNCTION__);
+		return 0;
+	}
+	else
+	{
+		printf(" %s(): ERR ??\r\n", __FUNCTION__);
+		return -1;
+	}
 }
 
 /* seharusnya saat [ETX] / ctrl-c dikirim, koneksi sudah langsung putus */

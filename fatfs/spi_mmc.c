@@ -7,6 +7,10 @@
 	
 	21 Juli 2009
 	copy ke atinom
+	
+	11 Maret 2010
+	diberi efek blink saat nulis ke flash
+	
 	*/
 //#include "../penting.h"
 #define SIMULATOR	0
@@ -30,6 +34,20 @@
 #define S_MAX_SIZ 512
 static volatile DSTATUS gDiskStatus = DSTATUS_NOINIT; 
 static mediaStatus_t mediaStatus;
+
+static int ledh=0;
+
+#define BLINK_LED	if ( ledh == 1 ) 		\
+					{						\
+						FIO1CLR = BIT(14);	\
+						ledh = 0;			\
+					}						\
+					else 					\
+					{						\
+						FIO1SET = BIT(14);	\
+						ledh = 1;			\
+					}						\
+
 
 static int init_mmc_awal(void)
 {
@@ -137,6 +155,8 @@ DRESULT disk_read (
 	for (i=0; i<count; i++)
 		baca_mmc_blok(sector + (i * 512), &buff[ i * 512] );
 	
+	BLINK_LED;
+	
 	return DRESULT_OK;
 }
 
@@ -157,6 +177,8 @@ DRESULT disk_write (
   	
   	for (i=0; i<count; i++)
   		tulis_mmc_blok( sector + (i*512) , (unsigned char *) &buff[i * 512]);
+	
+	BLINK_LED;
 	
 	return DRESULT_OK;
 }

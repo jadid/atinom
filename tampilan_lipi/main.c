@@ -36,6 +36,9 @@
 	
 	19 Jan 2010
 	Coba untuk GSM FTP
+	
+	11 Mar 2010
+	tendang_wdog dipindah ke task LCD
 */
 
 
@@ -181,7 +184,10 @@ int main( void )
 	return 0;
 #endif
 }
+
 unsigned int waktu_buat_file=0;
+int saat_gsm_ftp;
+int timer_saat_gsm;
 
 void togle_led_utama(void)
 {
@@ -198,8 +204,14 @@ void togle_led_utama(void)
 		/* reset wdog setiap detik */
 		tendang_wdog();
 		
-		/* testing serial 2 */
-		//ser2_putstring("ini dari panjang sekali apakah cukup kiranya tidak sampai\r\n");
+		/* timer_saat_gsm diclock setiap detik */
+		timer_saat_gsm++;
+		if (timer_saat_gsm > (60 * 10))
+		{
+			saat_gsm_ftp = 1;
+			timer_saat_gsm = 0;
+		}
+	
 	}
 	else
 	{
@@ -218,6 +230,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
+	timer_saat_gsm = 0;
 	
 	vTaskDelay(1000);
 	FIO1SET = BACKLIT;
@@ -226,12 +239,21 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	{
 		togle_led_utama();
 		vTaskDelay(500);
+		
+		#if (PAKAI_GSM_FTP == 1)
+		if (saat_gsm_ftp == 1)
+		{
+			gsm_ftp(0, "asas");
+			saat_gsm_ftp = 0;
+		}
+		#endif
 	}
 }
 void init_led_utama(void)
 {	
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 5) , \
-		NULL, tskIDLE_PRIORITY - 1, ( xTaskHandle * ) &hdl_led );
+	/* tadinya stak = 5, prio - 1 */
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 10) , \
+		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_led );
 }
 
 
@@ -256,6 +278,7 @@ portTASK_FUNCTION( LCD_task, pvParameters )
 		{
 			update_hard_lcd();
 		}
+		
 		//vTaskDelay(200);
 		//update_hard_lcd();	
 	}

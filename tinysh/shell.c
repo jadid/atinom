@@ -432,9 +432,22 @@ static tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
 #if (PAKAI_GSM_FTP == 1)
 /* GSM FTP */
 int gsm_ftp(int argc, char *argv[]);
+extern int saat_gsm_ftp;
+
+void mulai_gsm_ftp(void)
+{
+	if (saat_gsm_ftp == 0)
+	{
+		saat_gsm_ftp = 1;
+	}
+	else
+		printf(" TASK gsm_ftp masih bekerja !!\r\n");
+		
+	return;
+}
 
 static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","proses gsm ftp","[args]",
-                              gsm_ftp,0,0,0};
+                              mulai_gsm_ftp,0,0,0};
 #endif
 
 extern int usb_terup;

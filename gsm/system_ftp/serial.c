@@ -6,6 +6,10 @@
 	furkan jadid
 	30 des 2009, daun biru engineering
 	
+	11 Maret 2010
+	untuk LPC2387, ini akan dipanggil oleh
+	task led_utama, maka watchdog harus ditendang disini
+	
 	*/
 int fd = 0;
 	
@@ -17,7 +21,8 @@ static struct sigaction saio;           /* definition of signal action */
 void signal_handler_IO (int status);
 #else
 
-#define read(a, b, c) ser2_getchar(a, b, 1000)
+#define read(a, b, c) ser2_getchar(a, b, 1000);	\
+		tendang_wdog();
 
 int write(int a, char *bf, int len)
 {

@@ -231,13 +231,13 @@ int gsm_ftp(int argc, char *argv[])
 	}
 	
 	DIR dirs;
-		unsigned int size;
-		unsigned int files;
-		unsigned int file_sudah=0;
-		unsigned int file_sukses=0;
-		unsigned int jum_dirs;
-		FILINFO fileInfo;
-		char *nama;
+	unsigned int size;
+	unsigned int files;
+	unsigned int file_sudah=0;
+	unsigned int file_sukses=0;
+	unsigned int jum_dirs;
+	FILINFO fileInfo;
+	char *nama;
 		
 	if (create_ftp_sess() == 0)
 	{

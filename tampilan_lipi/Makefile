@@ -88,7 +88,8 @@ THUMB_SOURCE= \
 		tampilan.c \
 		../spi/spi.c \
 		../system/idle_hook.c \
-		../system/rtc.c	
+		../system/rtc.c			\
+		../GPIO/selenoid.c
 		
 #		../GPIO/gpio.c \
 

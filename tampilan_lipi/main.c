@@ -211,6 +211,10 @@ void togle_led_utama(void)
 			saat_gsm_ftp = 1;
 			timer_saat_gsm = 0;
 		}
+		
+		#if (PAKAI_SELENOID == 1)
+		set_selenoid( 1 );
+		#endif
 	
 	}
 	else
@@ -218,6 +222,10 @@ void togle_led_utama(void)
 		FIO0CLR = LED_UTAMA;
 		FIO1CLR = LED_PICKUP;
 		tog = 1;
+		
+		#if (PAKAI_SELENOID == 1)
+		unset_selenoid( 1 );
+		#endif
 	}
 }
 
@@ -234,6 +242,10 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	
 	vTaskDelay(1000);
 	FIO1SET = BACKLIT;
+	
+	#if (PAKAI_SELENOID == 1)
+	init_selenoid();
+	#endif
 	
 	for (;;)
 	{

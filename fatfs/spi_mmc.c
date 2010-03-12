@@ -153,8 +153,11 @@ DRESULT disk_read (
 	sector = sector * 512;
 	
 	for (i=0; i<count; i++)
+	{
+		portENTER_CRITICAL();
 		baca_mmc_blok(sector + (i * 512), &buff[ i * 512] );
-	
+		portEXIT_CRITICAL();
+	}
 	BLINK_LED;
 	
 	return DRESULT_OK;
@@ -176,8 +179,11 @@ DRESULT disk_write (
   	sector = sector * 512;  	
   	
   	for (i=0; i<count; i++)
-  		tulis_mmc_blok( sector + (i*512) , (unsigned char *) &buff[i * 512]);
-	
+	{
+  		portENTER_CRITICAL();
+		tulis_mmc_blok( sector + (i*512) , (unsigned char *) &buff[i * 512]);
+		portEXIT_CRITICAL();
+	}
 	BLINK_LED;
 	
 	return DRESULT_OK;

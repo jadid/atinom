@@ -9,6 +9,9 @@
 	masih hanya available pada Tampilan versi 4.3
 	
 	*/
+	
+#if (PAKAI_SELENOID == 1)
+
 #include "FreeRTOS.h"	
 
 #define RLY_1	BIT(26)			/* P3 */
@@ -74,3 +77,5 @@ void unset_selenoid(unsigned int no )
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
 }
+
+#endif

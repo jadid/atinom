@@ -26,10 +26,10 @@
 #include "ff.h"
 #include "../monita/monita_uip.h"
 
-//#define debug		printf
+//#define debug_printf		printf
 #define debug_printf(...)	do{} while(0)
 
-char * buat_direktori(time_t timeval);
+static char * buat_direktori(char *base, time_t timeval, int menit);
 	
 static int jum_dipanggil=0;
 static int jum_detik=0;
@@ -37,6 +37,7 @@ static int sudah_buka = 0;
 
 static FIL fd;
 extern float data_f[];
+static FIL fd_foto;
 
 int proses_simpan_file(void)
 {
@@ -147,7 +148,7 @@ int proses_simpan_file(void)
 				}
 				
 				/* buat direktori */
-				sprintf(path, "%s\\%s", buat_direktori(timeval), temp);
+				sprintf(path, "%s\\%s", buat_direktori("data", timeval, 0), temp);
 				//printf("OK SAAT FILE %s\r\n", path);
 				if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))
 				{
@@ -196,27 +197,34 @@ int proses_simpan_file(void)
 	} /* jika set simpan = 1 */
 }
 
-char * buat_direktori(time_t timeval)
+static char * buat_direktori(char *base, time_t timeval, int menit)
 {
 	int res;
 	char tek[64];
-	char thn[32];
+	char thn[64];
 	char bln[64];
-	char tgl[128];
+	char tgl[64];
 	char temp[32];
-	char jam[128];
-				
-	if (res = f_mkdir("\\data") != 0)
-	{
-		debug_printf("ERR: %s() : log : %d\r\n", __FUNCTION__, res);
-	}	
+	char jam[64];
+	char mnt[64];
 	
-	#if 1		
+	sprintf(jam, "\\%s", base);
+				
+	//if (res = f_mkdir("\\data") != 0)
+	if (res = f_mkdir(jam) != 0)
+	{
+		debug_printf("ERR: %s() : %s : %d\r\n", __FUNCTION__, jam, res);
+	}	
+		
 	// tahun
 	sprintf(tek,"%s", ctime(&timeval));
-	snprintf(thn, 17, "\\data\\tahun_%s", &tek[20]);	// 11
+	res = strlen(tek);
+	tek[res - 1] = 0;
+	
+	//snprintf(thn, 17, "\\%s\\tahun_%s", base, &tek[20]);	// 11
+	sprintf(thn, "\\%s\\tahun_%s", base, &tek[20]);
 	if (res = f_mkdir(thn) != 0)
-		debug_printf("ERR: %s() : tahun : %d\r\n", __FUNCTION__, res);
+		debug_printf("ERR: %s() : %s : %d\r\n", __FUNCTION__, thn, res);
 	
 			
 	// bulan
@@ -237,20 +245,81 @@ char * buat_direktori(time_t timeval)
 	if (res = f_mkdir(tgl) != 0)
 		debug_printf("ERR: %s() : tgl : %d\r\n", __FUNCTION__, res);
 	
-	
+	/* jam */
 	snprintf(temp, 3, "%s", &tek[11]);	// 11
 	sprintf(jam,"%s\\jam_%s", tgl, temp);
 	if (res = f_mkdir(jam) != 0)
 		debug_printf("ERR: %s() : jam : %d\r\n", __FUNCTION__, res);
 	
-	
-	/*
-	printw("err = %d", res);		
-	if (res != 0)
+	/* menit juga dibuat direktorinya */
+	if (menit == 1)
 	{
-		perror("MKDIR creation failed");
-	}*/
-	#endif
+		sprintf(temp,"");
+		snprintf(temp, 3, "%s", &tek[14]);	// 14
+		sprintf(mnt,"%s\\mnt_%s", jam, temp);
+		if (res = f_mkdir(mnt) != 0)
+		debug_printf("ERR: %s() : %s : %d\r\n", __FUNCTION__, mnt, res);
+		
+		return mnt;
+	}
+	else	
+		return jam;
+}
+
+void webclient_connected(void)
+{
+	char path[128];
+	char temp[64];
+	time_t timeval;
+	struct tm tw;
+	int ret;
+	int jm;
+	int i;
 	
-	return jam;
+	/* siapin direktori dan buka file untuk buat */
+	get_tm_time( &tw );
+	timeval = mktime( &tw );
+	
+	sprintf(temp, "%s_%s", "foto", ctime(&timeval));
+				
+	/* cari spasi dan jadikan underscore */
+	jm = strlen(temp);
+	for (i=0; i<jm; i++)
+	{
+		if ( temp[i] == ' ' ) temp[i] = '_';
+		if ( temp[i] == ':' ) temp[i] = '_';
+	}
+	
+	jm = strlen(temp);	
+	sprintf( &temp[jm - 1], ".jpg");
+	//printf(temp);	
+	
+	/* buat direktori */
+	sprintf(path, "%s\\%s", buat_direktori("gambar", timeval, 1), temp);
+	//printf(path);
+	
+	if (ret = f_open( &fd_foto, path, FA_CREATE_ALWAYS | FA_WRITE ))
+	{
+		printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);
+	}
+}
+
+void tulis_foto(char *data, unsigned int len)
+{
+	int ret;
+	int jm;
+	
+	if (len != 0)
+	{
+		if (ret = f_write( &fd_foto, data, len, &jm))
+		{
+				printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+				return ;
+		}
+	}
+	else
+	{
+		if ( fd_foto.fs != NULL)
+			f_close( &fd_foto );
+	}
 }

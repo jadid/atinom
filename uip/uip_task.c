@@ -126,6 +126,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	sambungan_init();
 	mul = 0;
 #endif
+	
+	webclient_init();
+	printf("webclient inited !\r\n");
 
 	/*  Initialise the local timers */
 	xStartTime = xTaskGetTickCount ();
@@ -133,11 +136,20 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	/* supaya cukup waktu buat siap2 */
 	loop = -1000;
+	int wclient = 0;
 
 	for (;;)
 	{
 		vTaskDelay(1);
 		//portYIELD();
+		
+		wclient++;
+		if (wclient == 3000)
+		{
+			wclient = 0;
+			webclient_get("192.168.1.105", 80, "/frame.jpg");
+			//printf("GET mulai !\r\n");
+		}
 		
 		#ifdef BOARD_TAMPILAN
 		loop++;
@@ -277,8 +289,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 
 void start_ether(void)
-{
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 8), \
+{	//8
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 12), \
 		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 
@@ -316,7 +328,15 @@ void dispatch_tcp_appcall (void)
 	{
 		daytime_appcall();
 	}
-#endif	  
+#endif
+
+	/* webclient */
+	if (uip_conn->rport == HTONS(80))
+	{
+		webclient_appcall();
+	}	  
+	
+	//printf("%s(): port = %d\r\n", __FUNCTION__, uip_conn->rport);
 }
 
 void dispatch_udp_appcall (void)

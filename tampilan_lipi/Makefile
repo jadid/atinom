@@ -123,6 +123,10 @@ UIP_SOURCE = \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
 
+WEBCLIENT_SOURCE = \
+		../webserver/webclient/webclient.c			\
+		../webserver/webclient/webclient-strings.c
+
 FATFS_SOURCE = \
 		../fatfs/ff.c	\
 		../fatfs/spi_mmc.c	\
@@ -136,6 +140,7 @@ THUMB_SOURCE += $(FATFS_SOURCE)
 THUMB_SOURCE += $(MONITA_SOURCE)
 THUMB_SOURCE += $(UIP_SOURCE)
 THUMB_SOURCE += $(GSM_FTP_SOURCE)
+THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

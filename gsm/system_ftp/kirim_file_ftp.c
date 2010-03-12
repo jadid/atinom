@@ -44,6 +44,7 @@
 	 	
 */
 
+#if (PAKAI_GSM_FTP == 1)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -829,3 +830,5 @@ int stop_tcpip_stack(void)
 	}	
 	
 }
+
+#endif /* PAKAI_GSM_FTP */

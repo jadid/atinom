@@ -144,7 +144,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		//portYIELD();
 		
 		wclient++;
-		if (wclient == 3000)
+		if (wclient == 30000)	/* 30 detik */
 		{
 			wclient = 0;
 			webclient_get("192.168.1.105", 80, "/frame.jpg");

@@ -19,9 +19,11 @@
 	Untuk menghemat pemakaian RAM
 	sumber diakses pakai pointer kepada memory di flash
 	
-	
+	18 Maret 2010
+	Ubah perintah sumber ke format standart : kommand no_x parameter data
 */
-	
+
+//#include <regex.h>
 #include "../monita/monita_uip.h"
 struct t_sumber *sumber;
 int cek_nomer_sumber(char *arg, int maks);
@@ -90,22 +92,22 @@ void set_sumber(int argc, char **argv)
 				printf("   default : load sumber dengan default ip & setting\r\n");
 				printf(" \r\n");
 				printf("   ipaddr : memberikan alamat IP pada sumber tertentu\r\n");
-				printf("     misalnya : $ set_sumber ipaddr 4 192.168.1.21\r\n");
+				printf("     misalnya : $ set_sumber 4 ipaddr 192.168.1.21\r\n");
 				printf("     artinya set sumber nomer 4 dengan IP tersebut\r\n");
 				printf(" \r\n");
 				printf("   nama : memberikan nama pada sumber tertentu\r\n");
-				printf("     misalnya : $ set_sumber nama 4 RTD_SWD#2\r\n");
+				printf("     misalnya : $ set_sumber 4 nama RTD_SWD#2\r\n");
 				printf("     artinya sumber nomer 4 diberi nama RTD_SWD#2 (maks 10 karakter)\r\n");	
 				printf(" \r\n");
 				printf("   status : set pada sumber tertentu\r\n");
 				printf("     status 0 = tidak aktif, 1 = aktif, 5 = daytime\r\n");
 				printf("     aktif artinya sumber akan dicari terus menerus !\r\n");			
-				printf("     misalnya : $ set_sumber status 4 1\r\n");
+				printf("     misalnya : $ set_sumber 4 status 1\r\n");
 				printf("     artinya sumber nomer 4 supaya aktif\r\n");	
 				printf(" \r\n");
 				printf("   modul : set nomer modul\r\n");
 				printf("     hal ini berguna misalnya modul memiliki lebih dari 1 modul\r\n");
-				printf("     misalnya : $ set_sumber modul 4 1\r\n");
+				printf("     misalnya : $ set_sumber 4 modul 1\r\n");
 				printf("     artinya sumber nomer 4 pada modul nomer 1\r\n");	
 				return;
 			} 
@@ -137,9 +139,9 @@ void set_sumber(int argc, char **argv)
 	memcpy((char *) p_sbr, (char *) ALMT_SUMBER, (JML_SUMBER * sizeof (struct t_sumber)));
 	
 	
-	if (strcmp(argv[1], "ipaddr") == 0)
+	if (strcmp(argv[2], "ipaddr") == 0)
 	{
-		sprintf(buf, "%s", argv[2]);	
+		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, 20);
 		if (sumb > 0)		
 		{
@@ -162,9 +164,10 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[1], "nama") == 0)
+	else if (strcmp(argv[2], "nama") == 0)
 	{
-		sprintf(buf, "%s", argv[2]);	
+		printf("masuk sini\r\n");
+		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, 20);
 		if (sumb > 0)		
 		{
@@ -174,7 +177,7 @@ void set_sumber(int argc, char **argv)
 			{
 				printf("\n ERR: nama terlalu panjang !\r\n");
 				vPortFree( p_sbr );
-				
+
 				return;
 			}
 			sprintf(p_sbr[sumb-1].nama, argv[3]);
@@ -186,9 +189,9 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[1], "status") == 0)
+	else if (strcmp(argv[2], "status") == 0)
 	{
-		sprintf(buf, "%s", argv[2]);	
+		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, 20);
 		if (sumb > 0)		
 		{
@@ -213,9 +216,9 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[1], "modul") == 0)
+	else if (strcmp(argv[2], "modul") == 0)
 	{
-		sprintf(buf, "%s", argv[2]);	
+		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, 20);
 		if (sumb > 0)		
 		{

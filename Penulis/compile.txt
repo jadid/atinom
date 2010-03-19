@@ -1,0 +1,2 @@
+untuk compile :
+gcc lpc21isp.c -o lpc_dbe

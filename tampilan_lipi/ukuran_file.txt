@@ -1,0 +1,45 @@
+18 Maret 2010
+--------------------------------------
+Size before:
+tampilan_lipi.elf  :
+section             size         addr
+startup               68            0
+prog              138744           68
+.data               2912   1073741824
+.bss               45600   1073744736
+.usbram                0   2144337920
+.ethram            14612   2145386496
+.comment            2808            0
+.debug_abbrev      34100            0
+.debug_info       146860            0
+.debug_line        33268            0
+.debug_frame        8116            0
+.debug_loc         69757            0
+.debug_pubnames     4860            0
+.debug_aranges      3360            0
+.debug_str         12651            0
+.debug_ranges       2480            0
+Total             520196
+
+
+sebelum ada komentar
+Size before:
+tampilan_lipi.elf  :
+section             size         addr
+startup               68            0
+prog              138744           68
+.data               2912   1073741824
+.bss               45600   1073744736
+.usbram                0   2144337920
+.ethram            14612   2145386496
+.comment            2826            0
+.debug_abbrev      34100            0
+.debug_info       146860            0
+.debug_line        33268            0
+.debug_frame        8116            0
+.debug_loc         69757            0
+.debug_pubnames     4860            0
+.debug_aranges      3360            0
+.debug_str         12651            0
+.debug_ranges       2480            0
+Total             520214

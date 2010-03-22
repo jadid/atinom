@@ -126,7 +126,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	sambungan_init();
 	mul = 0;
 #endif
-	
+
+#ifdef TAMPILAN_MALINGPING
+	printf("MONITA : sambungan_aktif init\r\n");
+	sambungan_init();
+	mul = 0;
+#endif
+
 	webclient_init();
 	printf("webclient inited !\r\n");
 
@@ -151,7 +157,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			//printf("GET mulai !\r\n");
 		}
 		
-		#ifdef BOARD_TAMPILAN
+		#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
 		loop++;
 		if (loop > 50) 		// 50, 40, 80
 		{
@@ -318,7 +324,8 @@ void dispatch_tcp_appcall (void)
 		kontrol_appcall();
 #endif
 
-#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_TAMPILAN
+#if defined(BOARD_TAMPILAN) || defined(TAMPILAN_MALINGPING)
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
 	{

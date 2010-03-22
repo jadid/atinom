@@ -56,7 +56,7 @@
 //#define PAKAI_SERIAL_2		1
 //#define PAKAI_SELENOID		1		/* ULN2803 */
 
-//#define TAMPILAN_MALINGPING			1
+#define TAMPILAN_MALINGPING			1
 
 #define VERSI_KONFIG	2
 
@@ -94,7 +94,7 @@
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
 //#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 32 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 74 * configMINIMAL_STACK_SIZE * 4) )			// 74, LPC2387
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 100 * configMINIMAL_STACK_SIZE * 4) )		// 74 -> 100, LPC2387, set_data perlu 14400 (400 data)
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

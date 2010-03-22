@@ -147,13 +147,14 @@ static int set_data_default(void)
 	//judul(" Set Group ke Default\r\n");
 	
 	p_gr = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
+	//p_gr = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
 	if (p_gr == NULL)
 	{
 		printf("%s(): Err allok memory gagal !\r\n", __FUNCTION__);
 		return -1;
 	}
 	
-	for (i=0; i< (JML_SUMBER * PER_SUMBER) ; i++)
+	for (i=0; i< (PER_SUMBER) ; i++)
 	{
 		sprintf(p_gr[i].nama, "dd_%d", (i+1));
 		//p_gr[i].ID_group = (i+1);
@@ -191,13 +192,13 @@ int set_data(int argc, char **argv)
 			if (strcmp(argv[1], "help") == 0)
 			{
 				printf(" Perintah untuk setting group !\r\n");
-				printf(" 1. set_group help/default\r\n");
+				printf(" 1. set_data help/default\r\n");
 				printf("    help    : printout keterangan ini\r\n");
-				printf("    default : memberikan default setting group\r\n");
+				printf("    default : memberikan default setting data\r\n");
 				printf("\r\n");
 				
-				printf(" 2. set_group x [opt1] [opt2]\r\n");
-				printf("    x    : nomer group\r\n");
+				printf(" 2. set_data x [opt1] [opt2]\r\n");
+				printf("    x    : nomer data\r\n");
 				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
@@ -233,7 +234,10 @@ int set_data(int argc, char **argv)
   	display_args(argc,argv);
 	
 	/* copy dulu yang lama kedalam buffer */
-	p_dt = pvPortMalloc( (PER_SUMBER * JML_SUMBER) * sizeof (struct t_dt_set) );
+	p_dt = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
+	//printf("Jml alikasi : %d\r\n", (PER_SUMBER) * sizeof (struct t_dt_set));
+	//p_dt = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
+	printf("Jml alikasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
 	if (p_dt == NULL)
 	{
@@ -251,7 +255,7 @@ int set_data(int argc, char **argv)
 		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
 		if (sumb > 0)		
 		{
-			printf(" Group %d : nama : %s\r\n", sumb, argv[3]);			
+			printf(" Data %d : nama : %s\r\n", sumb, argv[3]);			
 			if (strlen(argv[3]) > 16)
 			{
 				printf(" ERR: nama terlalu panjang (Maks 16 karakter)!\r\n");
@@ -261,13 +265,13 @@ int set_data(int argc, char **argv)
 			sprintf(p_dt[sumb-1].nama, argv[3]);	
 		}
 	}
-	if (strcmp(argv[2], "satuan") == 0)
+	else if (strcmp(argv[2], "satuan") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
 		if (sumb > 0)		
 		{
-			printf(" Group %d : satuan : %s\r\n", sumb, argv[3]);			
+			printf(" Data %d : satuan : %s\r\n", sumb, argv[3]);			
 			if (strlen(argv[3]) > 8)
 			{
 				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
@@ -275,6 +279,44 @@ int set_data(int argc, char **argv)
 				return;
 			}
 			sprintf(p_dt[sumb-1].satuan, argv[3]);	
+		}
+	}
+	else if (strcmp(argv[2], "alarmH") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		if (sumb > 0)		
+		{
+			printf(" Data %d : Alarm high : %s\r\n", sumb, argv[3]);			
+			/*
+			if (strlen(argv[3]) > 8)
+			{
+				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			//*/
+			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
+			p_dt[sumb-1].alarm_H = atof(argv[3]);
+		}
+	}
+	else if (strcmp(argv[2], "alarmL") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		if (sumb > 0)		
+		{
+			printf(" Data %d : Alarm low : %s\r\n", sumb, argv[3]);			
+			/*
+			if (strlen(argv[3]) > 8)
+			{
+				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			//*/
+			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
+			p_dt[sumb-1].alarm_L = atof(argv[3]);
 		}
 	}
 	/*
@@ -339,8 +381,8 @@ int set_data(int argc, char **argv)
 
 }
 
-static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin","help default nama ket",
-                              set_data,0,0,0};
+static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin",
+		"help default nama satuan alarmH alarmL",set_data,0,0,0};
 							  
 static int simpan_data( struct t_dt_set *pgr)
 {

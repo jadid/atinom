@@ -17,7 +17,8 @@
 #include "utils.c"
 #include "group.c"
 #include "sumber.c"
-#include "../monita/monita_kontrol_2.c"
+//#include "../monita/monita_kontrol_2.c"
+#include "data_kontrol.c"
 #include "sfile.c"
 #endif
 
@@ -176,11 +177,11 @@ void cek_stack(void)
 	#endif
 	
 	#if (TAMPILAN_MALINGPING == 1)
-	extern xTaskHandle hdl_proses_pm;
+	//extern xTaskHandle hdl_proses_pm;  matikan dulu, pm belum diaktifkan
 	
 	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
 	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
-	printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
+	//printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
 	#endif
 	
 	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));

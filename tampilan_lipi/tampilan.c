@@ -78,7 +78,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	teks_h(14, 20, "Daun Biru Engineering");
 	teks_h(14, 29, "FreeRTOS 5.1.1 by Richard Barry");
 	teks_h(14, 38, "uIP TCP/IP by Adam Dunkels");
-	teks_h(14, 47, "NXP LPC2367, 60 MHz");
+	teks_h(14, 47, "NXP LPC2387, 60 MHz");
 	
 	sprintf(tek, "ARM-GCC %s : %s : %s", __VERSION__, __DATE__, __TIME__);
 	teks_h(14, 56, tek);

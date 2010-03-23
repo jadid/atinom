@@ -319,7 +319,7 @@ void menu_group(unsigned char p, unsigned char grop)
 	teks_layar ( DATA_KIRI_KOMIK + 120, DATA_ATAS_KOMIK, "Data" );
 	teks_layar ( DATA_KIRI_KOMIK + 180, DATA_ATAS_KOMIK, "Satuan" );
 	teks_layar ( DATA_KIRI_KOMIK + 220, DATA_ATAS_KOMIK, "Alarm L / H" );
-	
+//*	
 	for (i=0; i<40; i++)
 	{
 		temp = p_gr[grop].no_data[i];
@@ -332,14 +332,14 @@ void menu_group(unsigned char p, unsigned char grop)
 			sprintf(tek, "%s", p_dt[ temp - 1].nama );
 			teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);  // 14 terlalu mepet
 			
-			data_f[ temp - 1 ] = (float) ((rand() % 100) * 0.10);
+			//data_f[ temp - 1 ] = (float) ((rand() % 100) * 0.10);
 			sprintf(tek, "%.2f", data_f[ temp - 1] );
 			teks_komik( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek); 
 			
 			sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
 			teks_layar( DATA_KIRI_KOMIK + 180, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			
-			/* Batas ALARM */
+			// Batas ALARM //
 			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
 			teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			
@@ -350,6 +350,7 @@ void menu_group(unsigned char p, unsigned char grop)
 			if (jml > 8) break;
 		}
 	}
+//*/
 }
 
 void menu_setting(unsigned int ttk)

@@ -43,14 +43,15 @@
 #define printf	printf2
 
 //#define PAKE_TELNETD
-//#define BOARD_TAMPILAN
 
+#define CARI_SUMBER						// untuk mencari data sumber via Ethernet
 #define PAKAI_HTTP
 #define PAKAI_RTC
 #define PAKAI_MMC
 #define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
 #define PAKAI_FILE_SIMPAN	1
+//#define DEBUG_DATA
 
 //#define PAKAI_GSM_FTP		1
 //#define PAKAI_SERIAL_2		1

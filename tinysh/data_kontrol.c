@@ -144,7 +144,7 @@ static int set_data_default(void)
 	int i;
 	struct t_dt_set *p_gr;
 	
-	//judul(" Set Group ke Default\r\n");
+	judul(" Set Data ke Default\r\n");
 	
 	p_gr = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
 	//p_gr = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
@@ -154,9 +154,9 @@ static int set_data_default(void)
 		return -1;
 	}
 	
-	for (i=0; i< (PER_SUMBER) ; i++)
+	for (i=0; i< (JML_SUMBER * PER_SUMBER) ; i++)
 	{
-		sprintf(p_gr[i].nama, "dd_%d", (i+1));
+		sprintf(p_gr[i].nama, "data_%d", (i+1));
 		//p_gr[i].ID_group = (i+1);
 		//p_gr[i].stat = 0;			// pasif/unset
 		//sprintf(p_gr[i].ket, "--");
@@ -235,9 +235,7 @@ int set_data(int argc, char **argv)
 	
 	/* copy dulu yang lama kedalam buffer */
 	p_dt = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
-	//printf("Jml alikasi : %d\r\n", (PER_SUMBER) * sizeof (struct t_dt_set));
-	//p_dt = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
-	printf("Jml alikasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
+	//printf("Jml alikasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
 	if (p_dt == NULL)
 	{
@@ -383,7 +381,7 @@ int set_data(int argc, char **argv)
 
 static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin",
 		"help default nama satuan alarmH alarmL",set_data,0,0,0};
-							  
+
 static int simpan_data( struct t_dt_set *pgr)
 {
 	printf(" Save struct DATA_SET ke flash ..");

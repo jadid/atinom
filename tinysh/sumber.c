@@ -130,6 +130,7 @@ void set_sumber(int argc, char **argv)
 	struct t_sumber *p_sbr;
 	p_sbr = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
 	
+	
 	if (p_sbr == NULL)
 	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);

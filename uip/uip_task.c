@@ -120,18 +120,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("MONITA : monita kontrol init\r\n");
 	kontrol_init();
 #endif
-	
-#ifdef BOARD_TAMPILAN
+
+//#ifdef BOARD_TAMPILAN
+#ifdef CARI_SUMBER
 	printf("MONITA : sambungan_aktif init\r\n");
 	sambungan_init();
 	mul = 0;
 #endif
 
-#ifdef TAMPILAN_MALINGPING
-	printf("MONITA : sambungan_aktif init\r\n");
-	sambungan_init();
-	mul = 0;
-#endif
 
 	webclient_init();
 	printf("webclient inited !\r\n");
@@ -143,6 +139,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	/* supaya cukup waktu buat siap2 */
 	loop = -1000;
 	int wclient = 0;
+	
 
 	for (;;)
 	{
@@ -157,15 +154,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			//printf("GET mulai !\r\n");
 		}
 		
-		#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
+		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
+		#ifdef CARI_SUMBER
 		loop++;
 		if (loop > 50) 		// 50, 40, 80
 		{
 			loop = 0;
+			
 			sambungan_connect(mul);	
 			
 			mul++;
 			if (mul > JML_SUMBER) mul = 0;
+			
 		}
 		#endif
 	
@@ -324,8 +324,7 @@ void dispatch_tcp_appcall (void)
 		kontrol_appcall();
 #endif
 
-//#ifdef BOARD_TAMPILAN
-#if defined(BOARD_TAMPILAN) || defined(TAMPILAN_MALINGPING)
+#ifdef CARI_SUMBER
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
 	{

@@ -336,10 +336,10 @@ int set_data(int argc, char **argv)
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
 				p_dt[sumb - 1].aktif = (argv[3][0] - '0');
 			} 
-			else if ( strcmp(argv[2], "aktif")==0 ) {
+			else if ( strcmp(argv[3], "aktif")==0 ) {
 				p_dt[sumb - 1].aktif = 1;
 			}
-			else if ( strcmp(argv[2], "mati")==0 ) 	{
+			else if ( strcmp(argv[3], "mati")==0 ) 	{
 				p_dt[sumb - 1].aktif = 0;
 			} else {
 				printf(" Setting relay masih salah\r\n");	

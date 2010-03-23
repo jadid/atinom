@@ -74,6 +74,10 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
+#if (PAKAI_SELENOID == 1)
+	extern xTaskHandle *hdl_relay;
+#endif
+
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
 
@@ -185,6 +189,9 @@ void cek_stack(void)
 	#endif
 	
 	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#if (PAKAI_SELENOID == 1)
+		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
+	#endif
 	
 }							 
 

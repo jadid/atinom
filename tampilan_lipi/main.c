@@ -80,7 +80,11 @@ xTaskHandle hdl_led;
 xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
-xTaskHandle hdl_relay;
+
+
+	xTaskHandle hdl_relay;
+
+
 
 #define TXDE	BIT(24)
 
@@ -177,7 +181,10 @@ int main( void )
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
 //	init_task_pm();			// 10, +1
-	init_task_relay();
+
+
+		init_task_relay();
+
 	//set_selenoid( 1 );
 	vTaskStartScheduler();
 

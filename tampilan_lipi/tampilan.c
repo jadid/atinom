@@ -25,7 +25,7 @@
  */
 
 //struct t_sumber sumber[JML_SUMBER];
-struct t_mesin	mesin[JML_MESIN];
+//struct t_mesin	mesin[JML_MESIN];
 //struct t_titik	titik[TIAP_MESIN * JML_MESIN];
 struct t_titik	titik[32];
 struct t_data_hitung data_hitung[JML_MESIN];
@@ -109,13 +109,14 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	vTaskDelay(100);
 	update_lcd_layer2();
 	vTaskDelay(10);
-	
+/*	
 	teks_h(14, 20, "Data Mesin :");
 	for (i=0; i<10; i++)
 	{
 		sprintf(tek, "%2d     %s", (i+1), mesin[i].nama);
 		teks_h(20, 30 + (i*9), tek);
 	}
+//*/
 	cls_layar();
 	vTaskDelay(800);
 	update_lcd();

@@ -29,7 +29,7 @@
 void init_selenoid(void)
 {
 	FIO3DIR = FIO3DIR | RLY_1 | RLY_2;
-	FIO1DIR = FIO1DIR | RLY_3 | RLY_4 | RLY_4;
+	FIO1DIR = FIO1DIR | RLY_3 | RLY_4 | RLY_5;
 	FIO4DIR = FIO4DIR | RLY_6 | RLY_7;
 	FIO2DIR = FIO2DIR | RLY_8;	
 }

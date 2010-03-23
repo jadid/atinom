@@ -48,6 +48,7 @@
 #include "queue.h"
 #include "semphr.h"
 
+
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
 #ifdef TAMPILAN_LPC
@@ -79,7 +80,7 @@ xTaskHandle hdl_led;
 xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
-
+xTaskHandle hdl_relay;
 
 #define TXDE	BIT(24)
 
@@ -175,8 +176,9 @@ int main( void )
 	start_ether();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
-	//init_task_pm();			// 10, +1
-
+//	init_task_pm();			// 10, +1
+	init_task_relay();
+	//set_selenoid( 1 );
 	vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle
@@ -213,7 +215,7 @@ void togle_led_utama(void)
 		}
 		
 		#if (PAKAI_SELENOID == 1)
-		set_selenoid( 1 );
+		//set_selenoid( 1 );
 		#endif
 	
 	}
@@ -224,7 +226,7 @@ void togle_led_utama(void)
 		tog = 1;
 		
 		#if (PAKAI_SELENOID == 1)
-		unset_selenoid( 1 );
+		//unset_selenoid( 1 );
 		#endif
 	}
 }
@@ -240,13 +242,13 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	idle_lama = 0;
 	timer_saat_gsm = 0;
 	
-	vTaskDelay(1000);
+	vTaskDelay(500);
 	FIO1SET = BACKLIT;
-	
+/*	
 	#if (PAKAI_SELENOID == 1)
 	init_selenoid();
 	#endif
-	
+//*/	
 	for (;;)
 	{
 		togle_led_utama();
@@ -301,6 +303,7 @@ void init_task_lcd(void)
 	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", (configMINIMAL_STACK_SIZE * 1), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
 }
+
 
 #if 0
 /* UART3 dan Modbus */

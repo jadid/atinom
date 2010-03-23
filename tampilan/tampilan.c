@@ -22,11 +22,11 @@
  */
 
 struct t_sumber sumber[JML_SUMBER];
-struct t_mesin	mesin[JML_MESIN];
-struct t_titik	titik[TIAP_MESIN * JML_MESIN];
+//struct t_mesin	mesin[JML_MESIN];
+//struct t_titik	titik[TIAP_MESIN * JML_MESIN];
 struct t_data_hitung data_hitung[JML_MESIN];
 
-struct t_data_float s_data[JML_SUMBER]; /* __attribute__ ((section (".eth_test"))); */
+//struct t_data_float s_data[JML_SUMBER]; /* __attribute__ ((section (".eth_test"))); */
 
 extern xTaskHandle *hdl_tampilan;
 

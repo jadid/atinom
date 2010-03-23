@@ -84,9 +84,8 @@ THUMB_SOURCE= \
 		../tinysh/shell.c \
 		../tinysh/enviro.c \
 		LCD/lcd_320.c \
-		tampilan.c \
 		LCD/menu_monita.c \
-		LCD/menu_popup.c \
+		tampilan.c \
 		../spi/spi.c \
 		../uip/hardware/enc28j60.c	\
 		../uip/clock.c \
@@ -112,7 +111,9 @@ THUMB_SOURCE= \
 #		webserver/httpd-fs.c \
 #		webserver/http-strings.c \
 #		webserver/httpd-cgi.c \
-	
+#		LCD/menu_popup.c \	
+#
+
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../serial/serialISR.c \

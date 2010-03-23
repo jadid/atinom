@@ -469,7 +469,7 @@ void tulis_foto(char *data, unsigned int len);
 
 void webclient_datahandler(char *data, u16_t len)
 {
-	//printf(".");
+	printf("%s", __FUNCTION__);
 	
 	tulis_foto( data, len );
 	

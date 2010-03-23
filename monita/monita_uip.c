@@ -504,7 +504,8 @@ void samb_appcall(void)
 				status[nomer_sambung].reply++;
 				//memcpy((char *) &s_data[nomer_sambung].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER].data, in_buf.buf, sizeof (data_float));
-				memcpy((char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, sizeof (data_float));
+				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, sizeof (data_float));
+				memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
 				
 				debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
 				

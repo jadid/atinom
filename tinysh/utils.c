@@ -42,9 +42,6 @@ int proses_passwd(char *c)
           passc--;
           passin[passc]=0;
         }
-	} else if (*c=='9') {
-		printf("strlen: %d, sizeof:%d, passc: %d\r\n",strlen(passin), sizeof(passin), passc);
-		printf("--%s--\r\n",*passin);
 	}
 	else {
 		printf("*");

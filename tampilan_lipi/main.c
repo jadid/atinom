@@ -48,6 +48,7 @@
 #include "queue.h"
 #include "semphr.h"
 
+//#include "../gsm/system_ftp/kirim_file_ftp.c"
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
@@ -82,7 +83,7 @@ xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
 
-	xTaskHandle hdl_relay;
+xTaskHandle hdl_relay;
 
 
 
@@ -127,7 +128,7 @@ int main( void )
 	init_port_lcd();
 	init_lcd();
 	
-	#if 0
+	#if (PAKAI_SERIAL_3 == 1)
 	/* PCONP enable UART3 */
 	PCONP |= BIT(25);
 	
@@ -154,8 +155,8 @@ int main( void )
 	
 	/* init TX2, RX2 */
 	PINSEL0 |= (BIT(20) | BIT(22));
-	
 	#endif
+
 	
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -171,8 +172,11 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
-	//serial2_init( BAUD_RATE, 32 );
-	//serial2_init( 19200, configMINIMAL_STACK_SIZE );
+	
+	#if (PAKAI_SERIAL_2 == 1)
+		serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
+		//serial2_init( 19200, configMINIMAL_STACK_SIZE );
+	#endif
 
 #if 1
 	init_led_utama();		// 5, -2
@@ -185,7 +189,9 @@ int main( void )
 
 		init_task_relay();
 
-	//set_selenoid( 1 );
+
+	
+	
 	vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle
@@ -215,7 +221,8 @@ void togle_led_utama(void)
 		
 		/* timer_saat_gsm diclock setiap detik */
 		timer_saat_gsm++;
-		if (timer_saat_gsm > (60 * 10))
+		//if (timer_saat_gsm > (60 * 10))
+		if (timer_saat_gsm > (30))
 		{
 			saat_gsm_ftp = 1;
 			timer_saat_gsm = 0;
@@ -264,7 +271,8 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		#if (PAKAI_GSM_FTP == 1)
 		if (saat_gsm_ftp == 1)
 		{
-			gsm_ftp(0, "asas");
+			//gsm_ftp(0, "asas");
+			printf("gsm hidup\r\n");
 			saat_gsm_ftp = 0;
 		}
 		#endif

@@ -54,7 +54,7 @@
 //#define DEBUG_DATA
 
 //#define PAKAI_GSM_FTP		1
-//#define PAKAI_SERIAL_2		1
+#define PAKAI_SERIAL_2		1
 #define PAKAI_SELENOID		1		/* ULN2803 */
 
 #define TAMPILAN_MALINGPING			1

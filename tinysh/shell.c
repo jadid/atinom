@@ -97,6 +97,38 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
 
+#if (PAKAI_SERIAL_2 == 1)
+void kirim_serial_2 (int argc, char **argv) {
+	int sumb=0;
+	unsigned char buf[24];
+	// serial 2 AT\r\n
+	if (argc < 3) 
+	{
+		if (argc > 1)
+		{
+			if (strcmp(argv[1], "help") == 0) {
+				
+			}
+		}
+		printf(" ERR: argument kurang !\r\n");
+		printf(" coba set_group help \r\n");
+		return;	
+	}
+	
+	display_args(argc,argv);
+	sprintf(buf, "%s", argv[1]);
+	sumb = cek_nomer_valid(buf, 3);
+	if (sumb == 2) {
+		ser2_putstring(argv[2]);
+	}
+}
+
+static tinysh_cmd_t kirim_serial_2_cmd={0,"serial","mengirim string ke serial 2","[args]",
+                              kirim_serial_2,0,0,0};
+
+#endif
+
+
 #ifdef PAKAI_RTC
 void set_date(int argc, char **argv)
 {	
@@ -561,6 +593,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_file_cmd);
 #endif	
 
+
+#if (PAKAI_SERIAL_2 == 1)
+	tinysh_add_command(&kirim_serial_2_cmd);
+#endif
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);
@@ -657,8 +693,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  //if (lop > 60)
-	  if (lop > 30)
+	  if (lop > 60)
 	  {
 			lop = 0;
 			printf("\r\nPasswd lock!\r\n");

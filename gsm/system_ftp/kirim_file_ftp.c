@@ -63,7 +63,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-#include "direktori.c"
+//#include "direktori.c"
 
 FIL fd2;
 extern char buf_lfn[];
@@ -126,7 +126,8 @@ int gsm_ftp(int argc, char *argv[])
 	int c, res;
 	int tout;
 	time_t timeval;
-	struct tm tw;
+	//struct tm tw;
+	struct tw;
 	
 	char abs_path[128];
 	char path[64];

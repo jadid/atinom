@@ -313,7 +313,7 @@ void uart0GetRxQueue (xQueueHandle *qh)
   	*qh = xRxedChars;
 }
 
-#if 0
+#if (PAKAI_SERIAL_3 == 1)
 /* UART 3 */
 static xQueueHandle Qrx3;
 static xQueueHandle Qtx3;
@@ -568,7 +568,7 @@ void ser2_putstring(const signed portCHAR * const pcString)
 	pxNext = ( signed portCHAR * ) pcString;
 	while( *pxNext )
 	{		
-		xSerialPutChar2( 0, *pxNext, 1000 );	// 100 OK
+		xSerialPutChar2( 1, *pxNext, 1000 );	// 100 OK
 		pxNext++;
 	}
 }

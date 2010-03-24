@@ -18,6 +18,9 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	init_selenoid();
 	vTaskDelay(1000);
 	vTaskDelay(1000);
+	
+	ser2_putstring("pake ser 2\r\n");
+	
 	reset_flag_alarm();
 	for (;;)
 	{

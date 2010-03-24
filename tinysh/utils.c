@@ -16,30 +16,43 @@ static int  passc;
 int proses_passwd(char *c)
 {
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );
-	printf("*");	
-	if ( *c == 0x0D || *c == 0x0A )
+		
+	if ( *c == 0x0D || *c == 0x0A )			// enter !!
 	{
 		//printf("dicocokkan %s !\r\n", passin);
 		passc = 0;
 				
 		if (strncmp(passin, "diesel", 6) == 0)
 		{
-			printf("%s(): OK\r\n", __FUNCTION__);
+			printf("\r\n%s(): OK\r\n", __FUNCTION__);
 			passc = 0;
 			memset(passin, 0, sizeof (passin));
 			return 1;
 		}
 		else
 		{
-			printf(" Passwd salah !\r\n");
+			printf(" Passwd salah\t!\r\n");
 			memset(passin, 0, sizeof (passin));
 			return 0;
 		}
+	} else if (*c==8 || *c==127) {
+		if(passc>0)
+        {
+          printf("\b \b");
+          passc--;
+          passin[passc]=0;
+        }
+	} else if (*c=='9') {
+		printf("strlen: %d, sizeof:%d, passc: %d\r\n",strlen(passin), sizeof(passin), passc);
+		printf("--%s--\r\n",*passin);
 	}
-	else
+	else {
+		printf("*");
+		//printf("%c",*c);
 		passin[ passc ] = (unsigned char) *c;
+		passc++;
+	}
 	
-	passc++;
 	if (passc > sizeof (passin))
 	{
 		passc = 0;

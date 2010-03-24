@@ -471,7 +471,7 @@ void webclient_datahandler(char *data, u16_t len)
 {
 	//printf("%s", __FUNCTION__);
 	
-	//tulis_foto( data, len );
+	tulis_foto( data, len );
 	
 	//if (len == 0)
 	//	printf("\r\n");

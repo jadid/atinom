@@ -657,7 +657,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 60)
+	  //if (lop > 60)
+	  if (lop > 30)
 	  {
 			lop = 0;
 			printf("\r\nPasswd lock!\r\n");

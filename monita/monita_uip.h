@@ -26,11 +26,8 @@
 #define JML_KANAL	20
 #define PER_SUMBER	20
 
-//#define SEKTOR_SFILE	24
-//#define ALMT_SFILE		0x7A000
-
-#define SEKTOR_SFILE	27				// dipindah karena bentrok ma data
-#define ALMT_SFILE		0x7D000
+#define SEKTOR_SFILE	24
+#define ALMT_SFILE		0x7A000
 
 #define SEKTOR_SUMBER	25
 #define ALMT_SUMBER		0x7B000

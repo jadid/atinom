@@ -73,7 +73,7 @@ static int cek_file(int argc, char **argv)
 			if ( y != 0) 
 			{
 				sumb++;
-				printf(" %2d  : %7d : %16s : %8s\r\n", sumb, y, dt[y - 1].nama, dt[y - 1].satuan );
+				printf(" %2d  : %7d : %-16s : %-8s\r\n", sumb, y, dt[y - 1].nama, dt[y - 1].satuan );
 			}
 		}
 		
@@ -82,10 +82,8 @@ static int cek_file(int argc, char **argv)
 	{
 		if (strcmp(argv[1], "help") == 0)
 		{
-				printf(" Perintah untuk menampilkan setting group !\r\n");
-				printf("    cek_group help  : untuk menampilkan ini.\r\n");
-				printf("    cek_group       : menampilkan setting global group\r\n");
-				printf("    cek_group 2     : manampikan setting group 2.\r\n"); 
+			printf(" Perintah untuk menampilkan setting group !\r\n");
+			printf("    cek_file help  : untuk menampilkan ini.\r\n");
 		}		
 		else
 		{
@@ -151,27 +149,28 @@ int set_file(int argc, char **argv)
 				printf("    default : memberikan default setting simpan file\r\n");
 				printf("\r\n");
 				
-				/*
-				printf(" 2. set_group x [opt1] [opt2]\r\n");
-				printf("    x    : nomer group\r\n");
-				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
+				//*
+				printf(" 2. set_file [opt1] [opt2]\r\n");
+				printf("    set_file [nama|set|periode] [opt2]\r\n");
+				printf("    opt1 : nama, set/aktif, periode, data\r\n");
+				printf("    opt2 : nilai dari opt 1 yang tepat\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
-				printf("    nama     : memberikan nama group yang akan ditampilkan\r\n");
-				printf("    misalnya : $ set_group 2 nama GMT_#4\r\n");
-				printf("    artinya memberikan nama group 1 dengan GMT_#4\r\n");
+				printf("    nama      : memberikan nama file yang akan ditampilkan\r\n");
+				printf("    misalnya  : $ set_file nama MonitaFile. Nama Max 16 karakter.\r\n");
+				printf("    artinya memberikan nama file dengan nilai MonitaFile\r\n");
 				printf("\r\n");
-				printf("    set/aktif : mengaktif/nonaktifkan group di display\r\n");
-				printf("    misalnya  : $ set_group 4 aktif 1\r\n");
-				printf("    artinya mengaktifkan group 4\r\n");
-				printf("    misalnya  : $ set_group 4 aktif 0\r\n");
-				printf("    artinya me-nonaktifkan group 4\r\n");
+				printf("    set/aktif : mengaktif/nonaktifkan penyimpanan file ke memori MMC\r\n");
+				printf("    misalnya  : $ set_file [set|aktif] 1\r\n");
+				printf("    artinya mengaktifkan penyimpanan file\r\n");
+				printf("    misalnya  : $ set_file [set|aktif] 0\r\n");
+				printf("    artinya me-nonaktifkan penyimpanan file\r\n");
 				printf("\r\n");
-				printf("    desc/ket  : memberikan keterangan/deskripsi pada group\r\n");
-				printf("    misalnya  : $ set_group 7 ket ini_milik_Sulzer\r\n");
-				printf("    catatan   : jangan ada spasi pada keterangannya !\r\n");
-				*/
-				
+				printf("    periode   : memberikan nilai periode penyimpanan file dalam MMC\r\n");
+				printf("    misalnya  : $ set_file periode 10\r\n");
+				printf("    artinya   : file disimpan dalam MMC setiap 10 menit\r\n");
+				//*/
+
 				return ;
 			}
 			else if (strcmp(argv[1], "default") == 0)
@@ -201,7 +200,7 @@ int set_file(int argc, char **argv)
 	
 	memcpy((char *) p_gr, (char *) ALMT_SFILE, (sizeof (struct t_simpan_file)));
 	
-	if (strcmp(argv[1], "nama") == 0)
+	if (strcmp(argv[1], "nama") == 0)		// set_file nama monita
 	{
 		sprintf(buf, "%s", argv[2]);
 		sumb = strlen(buf);
@@ -216,17 +215,17 @@ int set_file(int argc, char **argv)
 		sprintf( p_gr->nama_file, "%s", buf);
 		
 	}
-	else if (strcmp(argv[1], "periode") == 0)
+	else if (strcmp(argv[1], "periode") == 0)		// set_file periode 10 (simpan file tiap 10 menit ke MMC)
 	{
 		sprintf(buf, "%s", argv[2]);	
 		sumb = cek_nomer_valid(buf, 60);
 		if (sumb > 0)		
 		{
 			p_gr->periode = sumb;
-			printf(" Setting perioder = %d\r\n", sumb);	
+			printf(" Setting periodenya = %d\r\n", sumb);	
 		}
 	}
-	else if (strcmp(argv[1], "set") == 0)
+	else if ( (strcmp(argv[1], "set")==0) || (strcmp(argv[1], "aktif")==0) )	// set_file aktif 1
 	{
 		sprintf(buf, "%s", argv[2]);	
 		sumb = cek_nomer_valid(buf, 1);
@@ -271,7 +270,7 @@ int set_file(int argc, char **argv)
 					* nomer data itu saja yang dihapus */
 					if ( argc > 3)
 					{
-						if (strcmp(argv[3], "unset") == 0 )
+						if (strcmp(argv[3], "unset") == 0 )		// set_file data x unset
 						{
 						printf(" Unset koneksi data %d dari setting SIMPAN_FILE !\r\n", sumb);
 						for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)

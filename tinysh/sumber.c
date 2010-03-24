@@ -46,7 +46,7 @@ void cek_sumber(void)
 	
 	for (i=0; i<20; i++)
 	{
-		printf(" (%2d): %10s : ", (i+1), sumber[i].nama);	
+		printf(" (%2d): %-10s : ", (i+1), sumber[i].nama);			// rata kiri
 		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
 		
 		/* alamat */

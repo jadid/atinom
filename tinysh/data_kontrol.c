@@ -89,7 +89,7 @@ int cek_data(int argc, char **argv)
 	
 		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
 		{
-			printf(" (%3d): %10s :  %f   :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+			printf(" (%3d): %-10s :  %f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 				p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 				p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 		}
@@ -123,7 +123,7 @@ int cek_data(int argc, char **argv)
 				{
 					if (i >= (JML_SUMBER * PER_SUMBER)) break;
 					
-					printf(" (%3d): %10s :  %4.1f   :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+					printf(" (%3d): %-10s :  %.1f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 					

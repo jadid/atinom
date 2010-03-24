@@ -9,18 +9,30 @@ extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
 extern xTaskHandle hdl_relay;
 
 void cek_alarm_relay(no_sumber);
+#define nALARM 8
+char fAlarm[nALARM];
 
 portTASK_FUNCTION( relay_task, pvParameters ) {
 	int no_nya=0;
+
 	init_selenoid();
 	vTaskDelay(1000);
 	vTaskDelay(1000);
+	reset_flag_alarm();
 	for (;;)
 	{
 		vTaskDelay(50);
+		reset_flag_alarm();
 		cek_alarm_relay(no_nya);
 		no_nya++;
 		if (no_nya>JML_SUMBER) no_nya=0;
+	}
+}
+
+void reset_flag_alarm() {
+	int k=0;
+	for (k=0; k<nALARM; k++) {
+		fAlarm[k] = 0;
 	}
 }
 
@@ -43,8 +55,11 @@ void cek_alarm_relay(no_sumber) {
 			//	 p_dt[index].nama, data_f[index], p_dt[index].alarm_L, p_dt[index].alarm_H);
 			if ((data_f[index]<p_dt[index].alarm_L) || (data_f[index]>p_dt[index].alarm_H) ) {
 				set_selenoid(p_dt[index].relay);
-			} else {
+				fAlarm[p_dt[index].relay] = 1;
+			}
+			if (fAlarm[p_dt[index].relay] != 1) {
 				unset_selenoid(p_dt[index].relay);
+				fAlarm[p_dt[index].relay] = 0;
 			}
 		}
 	}

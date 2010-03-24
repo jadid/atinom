@@ -84,13 +84,13 @@ int cek_data(int argc, char **argv)
 	
 		judul(" Data Setting\r\n");
 	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-		printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
 		garis_bawah();
 	
 		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
 		{
-			printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-				p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+			printf(" (%3d): %10s :  %f   :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+				p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 				p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 		}
 	}
@@ -114,7 +114,7 @@ int cek_data(int argc, char **argv)
 		
 				judul(" Data Setting\r\n");
 				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-				printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+				printf(" no.  : Nama       :  Data  : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
 				garis_bawah();
 				
 				sumb--;
@@ -123,8 +123,8 @@ int cek_data(int argc, char **argv)
 				{
 					if (i >= (JML_SUMBER * PER_SUMBER)) break;
 					
-					printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-						p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+					printf(" (%3d): %10s :  %4.1f   :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 					
 				}
@@ -213,7 +213,7 @@ int set_data(int argc, char **argv)
 				printf("    artinya memberikan setting batasan alarm rendah data 5 dengan nilai 1.25\r\n");
 				printf("\r\n");
 				printf("    relay : mengaktif/nonaktifkan relay pada kanal tertentu\r\n");
-				printf("    misalnya  : $ set_data 4 relay [1|aktif] 7 \r\n");
+				printf("    misalnya  : $ set_data 4 relay [1|aktif|hidup] 7 \r\n");
 				printf("    artinya mengaktifkan relay untuk data ke 4 pada kanal 7\r\n");
 				printf("    misalnya  : $ set_group 8 relay [0|mati] 2\r\n");
 				printf("    artinya me-nonaktifkan relay untuk data ke 8 pada kanal 2\r\n");
@@ -336,14 +336,14 @@ int set_data(int argc, char **argv)
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
 				p_dt[sumb - 1].aktif = (argv[3][0] - '0');
 			} 
-			else if ( strcmp(argv[3], "aktif")==0 ) {
+			else if ( strcmp(argv[3], "aktif")==0 || strcmp(argv[3], "hidup")==0 ) {
 				p_dt[sumb - 1].aktif = 1;
 			}
 			else if ( strcmp(argv[3], "mati")==0 ) 	{
 				p_dt[sumb - 1].aktif = 0;
 			} else {
 				printf(" Setting relay masih salah\r\n");	
-				printf(" Format : set_data [no_data] relay [1|aktif|0|mati] [no_kanal]\r\n");	
+				printf(" Format : set_data [no_data] relay [1|aktif|hidup|0|mati] [no_kanal]\r\n");	
 				vPortFree( p_dt );
 				return;
 			}

@@ -145,7 +145,7 @@ int main( void )
 	FIO0SET = TXDE;
 	#endif
 	
-	#if (PAKAI_SERIAL_2 == 1)
+	#ifdef PAKAI_SERIAL_2
 	/* PCONP enable UART2 */
 	PCONP |= BIT(24);
 	
@@ -173,7 +173,7 @@ int main( void )
 
 	xSerialPortInitMinimal( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
 	
-	#if (PAKAI_SERIAL_2 == 1)
+	#ifdef PAKAI_SERIAL_2
 		serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
 		//serial2_init( 19200, configMINIMAL_STACK_SIZE );
 	#endif
@@ -272,7 +272,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		if (saat_gsm_ftp == 1)
 		{
 			//gsm_ftp(0, "asas");
-			printf("gsm hidup\r\n");
+			//printf("gsm hidup\r\n");
 			saat_gsm_ftp = 0;
 		}
 		#endif

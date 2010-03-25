@@ -128,6 +128,9 @@ char printbuffer[512];
 char printbuffer[256];
 #endif
    
+void ser3_putstring(const signed portCHAR * const pcString);
+   
+   
 int printf2 (const char *fmt, ...)
 {
    va_list args;
@@ -313,7 +316,26 @@ void uart0GetRxQueue (xQueueHandle *qh)
   	*qh = xRxedChars;
 }
 
-#if (PAKAI_SERIAL_3 == 1)
+//*
+void serX_putstring(int no, const signed portCHAR * const pcString) {
+	if (no==2) {
+		ser2_putstring(pcString);
+	} else if (no==3) {
+		//ser3_putstring(pcString);
+	}
+}
+
+void serX_getchar(int no, xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime ) {
+	if (no==2) {
+		ser2_getchar(pxPort, *pcRxedChar, xBlockTime );
+	} else if (no==3) {
+		//ser3_getchar(pxPort, *pcRxedChar, xBlockTime );
+	}
+}
+
+//*/
+
+#ifdef PAKAI_SERIAL_3
 /* UART 3 */
 static xQueueHandle Qrx3;
 static xQueueHandle Qtx3;
@@ -469,7 +491,7 @@ signed portBASE_TYPE xReturn;
 	return xReturn;
 }#endif
 
-#if (PAKAI_SERIAL_2 == 1)
+#ifdef PAKAI_SERIAL_2
 /* UART 2, untuk PM server */
 static xQueueHandle Qrx2;
 static xQueueHandle Qtx2;
@@ -560,6 +582,10 @@ signed portBASE_TYPE ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxe
 }
 
 signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );
+
+
+
+
 
 void ser2_putstring(const signed portCHAR * const pcString)
 {

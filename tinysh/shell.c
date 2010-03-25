@@ -54,6 +54,10 @@
 #include "../system/rtc.h"
 #endif
 
+#ifdef PAKAI_GSM_FTP
+#include "smodem.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
@@ -78,6 +82,8 @@ extern xTaskHandle *hdl_ether;
 	extern xTaskHandle *hdl_relay;
 #endif
 
+#define DIGANTI 2		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
+
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
 
@@ -97,10 +103,10 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
 
-#if (PAKAI_SERIAL_2 == 1)
+#ifdef PAKAI_SERIAL_2
 void kirim_serial_2 (int argc, char **argv) {
 	int sumb=0;
-	unsigned char buf[24];
+	unsigned char buf[40];
 	// serial 2 AT\r\n
 	if (argc < 3) 
 	{
@@ -111,16 +117,50 @@ void kirim_serial_2 (int argc, char **argv) {
 			}
 		}
 		printf(" ERR: argument kurang !\r\n");
-		printf(" coba set_group help \r\n");
+		//printf(" coba set_group help \r\n");
 		return;	
 	}
 	
 	display_args(argc,argv);
 	sprintf(buf, "%s", argv[1]);
 	sumb = cek_nomer_valid(buf, 3);
+
+	#ifdef PAKAI_SERIAL_2
 	if (sumb == 2) {
-		ser2_putstring(argv[2]);
+		ganti_kata(buf, argv[2]);
+		serX_putstring(2, buf);
+		//ser2_putstring(buf);
 	}
+	#endif
+	baca_hasil();
+	
+}
+
+int ganti_kata(char *dest, char *src) {
+	//printf ("kalimat: %s, p: %d\r\n",src, strlen(src));
+	char *asli[] = {"\\r", "\\n"};
+	char *pengganti[] = {"\r", "\n"};
+	char * pch;
+
+	int i=0, j=0, k=0;
+	for (j=0; src[j] != '\0'; ++j) {
+		dest[i] = src[j];
+		//*
+		for (k=0; k<DIGANTI; k++) {
+			pch = strstr (dest,asli[k]);
+			
+			if (pch) {
+				strncpy (pch,pengganti[k],strlen(pengganti[k]));
+				strcat(dest, pengganti[k]);
+				//printf ("ada pch\r\n");
+				i += strlen(pengganti[k])-strlen(asli[k]);
+			}
+		}
+		//*/	
+		//printf ("kalimat: %s, p: %d\r\n",dest, strlen(dest));
+		++i;
+	}
+	dest[i] = '\0';
 }
 
 static tinysh_cmd_t kirim_serial_2_cmd={0,"serial","mengirim string ke serial 2","[args]",
@@ -594,7 +634,7 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif	
 
 
-#if (PAKAI_SERIAL_2 == 1)
+#ifdef PAKAI_SERIAL_2
 	tinysh_add_command(&kirim_serial_2_cmd);
 #endif
 	/* add sub commands

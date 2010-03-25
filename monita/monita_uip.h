@@ -223,6 +223,7 @@ struct t_dt_set  {
 	char 	satuan[8];	
 };
 
+#if (PAKAI_FILE_SIMPAN == 1)
 struct t_simpan_file {
 	int 	periode;		// periode disimpan dalam MMC
 	int 	set;			// aktif atau tidak
@@ -230,5 +231,20 @@ struct t_simpan_file {
 	short 	no_data[ JML_SUMBER * PER_SUMBER ];
 	char	nama_file[16];	// awalan nama file, misalnya angin
 };
+#endif
+
+#if (PAKAI_GSM_FTP == 1) 
+struct t_gsm_ftp {
+	int 	ftp_periode;		// periode disimpan dalam MMC
+	int 	ftp_mode;			// aktif atau tidak mode ftp
+	int		ftp_port;			// portnya ftp
+	int		gsm_mode;			// aktif atau tidak mode gsm
+	char 	ftp_user[16];		// periode data disimpan dalam file
+	char 	ftp_passwd[16];
+	char 	ftp_server[16];
+	char	nama_file[16];		// awalan nama file, misalnya angin
+	char	direktori[16];
+};
+#endif
 
 #endif /* MONITA_UIP_H_ */

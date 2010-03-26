@@ -161,9 +161,9 @@ int set_file(int argc, char **argv)
 				printf("    artinya memberikan nama file dengan nilai MonitaFile\r\n");
 				printf("\r\n");
 				printf("    set/aktif : mengaktif/nonaktifkan penyimpanan file ke memori MMC\r\n");
-				printf("    misalnya  : $ set_file [set|aktif] 1\r\n");
+				printf("    misalnya  : $ set_file [set|aktif]\r\n");
 				printf("    artinya mengaktifkan penyimpanan file\r\n");
-				printf("    misalnya  : $ set_file [set|aktif] 0\r\n");
+				printf("    misalnya  : $ set_file [unset|mati]\r\n");
 				printf("    artinya me-nonaktifkan penyimpanan file\r\n");
 				printf("\r\n");
 				printf("    periode   : memberikan nilai periode penyimpanan file dalam MMC\r\n");

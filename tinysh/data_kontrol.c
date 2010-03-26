@@ -289,16 +289,10 @@ int set_data(int argc, char **argv)
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm high : %s\r\n", sumb, argv[3]);			
-			/*
-			if (strlen(argv[3]) > 8)
-			{
-				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
-				vPortFree( p_dt );
-				return;
-			}
-			//*/
-			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
 			p_dt[sumb-1].alarm_H = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
 		}
 	}
 	else if (strcmp(argv[2], "alarmL") == 0)
@@ -318,6 +312,9 @@ int set_data(int argc, char **argv)
 			//*/
 			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
 			p_dt[sumb-1].alarm_L = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
 		}
 	}
 	else if (strcmp(argv[2], "relay") == 0)		// 	set_data 4 relay [1|aktif] 7
@@ -346,8 +343,10 @@ int set_data(int argc, char **argv)
 				printf(" Format : set_data [no_data] relay [1|aktif|hidup|0|mati] [no_kanal]\r\n");	
 				vPortFree( p_dt );
 				return;
-			}
-						
+			}	
+		} else {
+			vPortFree( p_dt );
+			return;
 		}
 	}
 	/*

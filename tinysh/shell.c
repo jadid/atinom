@@ -121,7 +121,7 @@ void kirim_serial_2 (int argc, char **argv) {
 		return;	
 	}
 	
-	display_args(argc,argv);
+	//display_args(argc,argv);
 	sprintf(buf, "%s", argv[1]);
 	sumb = cek_nomer_valid(buf, 3);
 
@@ -613,8 +613,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&matikan_telnet_cmd);
 #endif
 
-#if (PAKAI_GSM_FTP == 1)
-	tinysh_add_command(&gsm_ftp_cmd);
+#ifdef PAKAI_GSM_FTP
+	tinysh_add_command(&set_modem_ftp_cmd);
+	tinysh_add_command(&cek_modem_cmd);
+	tinysh_add_command(&set_modem_gsm_cmd);
+	//tinysh_add_command(&gsm_ftp_cmd);
 #endif	
 
 #if (VERSI_KONFIG == 2)

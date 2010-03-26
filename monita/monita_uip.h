@@ -26,8 +26,10 @@
 #define JML_KANAL	20
 #define PER_SUMBER	20
 
-#define SEKTOR_SFILE	24
-#define ALMT_SFILE		0x7A000
+#ifdef PAKAI_FILE_SIMPAN
+	#define SEKTOR_SFILE	24
+	#define ALMT_SFILE		0x7A000
+#endif
 
 #define SEKTOR_SUMBER	25
 #define ALMT_SUMBER		0x7B000
@@ -43,6 +45,11 @@
 
 #define SEKTOR_DT_SET	21
 #define ALMT_DT_SET		0x70000
+
+#ifdef PAKAI_GSM_FTP
+	#define SEKTOR_GSM_FTP	27
+	#define ALMT_GSM_FTP	0x7D000
+#endif
 
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
@@ -223,7 +230,7 @@ struct t_dt_set  {
 	char 	satuan[8];	
 };
 
-#if (PAKAI_FILE_SIMPAN == 1)
+#ifdef PAKAI_FILE_SIMPAN
 struct t_simpan_file {
 	int 	periode;		// periode disimpan dalam MMC
 	int 	set;			// aktif atau tidak
@@ -233,17 +240,22 @@ struct t_simpan_file {
 };
 #endif
 
-#if (PAKAI_GSM_FTP == 1) 
+#ifdef PAKAI_GSM_FTP
 struct t_gsm_ftp {
-	int 	ftp_periode;		// periode disimpan dalam MMC
-	int 	ftp_mode;			// aktif atau tidak mode ftp
-	int		ftp_port;			// portnya ftp
-	int		gsm_mode;			// aktif atau tidak mode gsm
-	char 	ftp_user[16];		// periode data disimpan dalam file
-	char 	ftp_passwd[16];
-	char 	ftp_server[16];
-	char	nama_file[16];		// awalan nama file, misalnya angin
-	char	direktori[16];
+	int 	ftp_periode;		// 1 periode disimpan dalam MMC
+	int 	ftp_mode;			// 2 aktif atau tidak mode ftp
+	int		ftp_port;			// 3 portnya ftp
+	char 	ftp_user[40];		// 4 periode data disimpan dalam file
+	char 	ftp_passwd[16];		// 5
+	char 	ftp_server[40];		// 6
+	char	nama_file[40];		// 7 awalan nama file, misalnya angin
+	char	direktori[40];		// 8
+	int		gsm_mode;			// 9 aktif atau tidak mode gsm
+	char	kartu[15];
+	char	gprs_apn1[16];		// 10
+	char	gprs_apn2[16];		// 11
+	char	gprs_user[16];		// 12
+	char	gprs_passwd[16];	// 13
 };
 #endif
 

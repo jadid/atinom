@@ -96,7 +96,8 @@ THUMB_SOURCE= \
 #		../GPIO/gpio.c \
 
 PM_SOURCE = \
-		pm_server.c \
+		pm.c	\
+#		pm_server.c \
 
 GSM_FTP_SOURCE = \
 		../gsm/system_ftp/kirim_file_ftp.c \

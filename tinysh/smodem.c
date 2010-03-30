@@ -44,16 +44,12 @@ char buf[128];
 
 static int simpan_data_gsm_ftp( struct t_gsm_ftp *pgr);
 
+static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","menampilkan konfigurasi modem","[] nomer",
+                              gsm_ftp,0,0,0};
+
+
 int cek_modem(int argc, char **argv)
 {
-	int i;
-	unsigned char buf[24];
-	int sumb=0;
-	
-	/* jika hanya cek_data
-	 * maka akam ditampilkan semua 
-	 * sekitar 400 items
-	 */
 	if (argc == 1)
 	{
 		struct t_gsm_ftp *p_dt;
@@ -61,7 +57,7 @@ int cek_modem(int argc, char **argv)
 	
 		judul(" Modem GSM FTP Setting\r\n");
 
-		printf("Status FTP    : %s\r\n", (p_dt->ftp_mode>0)?"Aktif [1]":"Mati [0]");
+		printf("Status FTP    : %s\r\n", (p_dt->ftp_mode>0)?"Aktif [1]":"Tidak Aktif [0]");
 		printf("FTP Server    : %s\r\n", p_dt->ftp_server);
 		printf("FTP User      : %s\r\n", p_dt->ftp_user);
 		printf("FTP Password  : %s\r\n\r\n", p_dt->ftp_passwd);
@@ -70,7 +66,7 @@ int cek_modem(int argc, char **argv)
 		printf("Nama File     : %s\r\n", p_dt->nama_file);
 		printf("Direktori     : %s\r\n\r\n", p_dt->direktori);
 		
-		printf("Status GPRS	  : %s\r\n", (p_dt->gsm_mode>0)?"Aktif [1]":"Mati [0]");
+		printf("Status GPRS   : %s\r\n", (p_dt->gsm_mode>0)?"Aktif [1]":"Tidak Aktif [0]");
 		printf("Jenis Kartu   : %s\r\n", p_dt->kartu);
 		printf("GPRS APN1     : %s\r\n", p_dt->gprs_apn1);
 		printf("GPRS APN2     : %s\r\n", p_dt->gprs_apn2);
@@ -85,6 +81,9 @@ int cek_modem(int argc, char **argv)
 				printf(" Perintah untuk menampilkan setting data !\r\n");
 				printf("    cek_modem help  : untuk menampilkan ini.\r\n");
 		}
+	} else {
+		printf(" ERR: perintah tidak benar !\r\n");
+		printf(" coba cek_modem help \r\n");
 	}
 	
 }
@@ -93,8 +92,7 @@ static tinysh_cmd_t cek_modem_cmd={0,"cek_modem","menampilkan konfigurasi modem"
                               cek_modem,0,0,0};
 
 
-static int set_modem_ftp_default(void)
-{
+static int set_modem_ftp_default(void) {
 	int i;
 	struct t_gsm_ftp *p_gr;
 	
@@ -210,12 +208,7 @@ int set_modem_ftp(int argc, char **argv)
 	char	nama_file[40];		// 7 awalan nama file, misalnya angin
 	char	direktori[40];		// 8
 //*/
-	if ( (strcmp(argv[1], "set") == 0) || (strcmp(argv[1], "aktif") == 0) ) {	// 2
-		p_dt->ftp_mode = 1;
-	}
-	else if ( (strcmp(argv[1], "unset") == 0) || (strcmp(argv[1], "mati") == 0) ) {	// 2
-		p_dt->ftp_mode = 0;
-	}
+
 	
 	if (argc>2) {
 		if (strcmp(argv[1], "user") == 0) 	{				// 3	
@@ -224,7 +217,8 @@ int set_modem_ftp(int argc, char **argv)
 				vPortFree( p_dt );
 				return;
 			}
-			sprintf(p_dt->ftp_user, argv[2]);	
+			sprintf(p_dt->ftp_user, argv[2]);
+			printf(" User FTP : %s - %s\r\n", p_dt->ftp_user, argv[2]);
 		}
 		else if (strcmp(argv[1], "password") == 0)	{		// 3
 			if (strlen(argv[2]) > 16) {
@@ -281,10 +275,31 @@ int set_modem_ftp(int argc, char **argv)
 				return;
 			}
 			sprintf(p_dt->nama_file, argv[2]);	
+		} else {
+			printf(" ERR: perintah tidak benar !\r\n");
+			printf(" coba set_modem_ftp help \r\n");
+			vPortFree( p_dt );
+			return;
+		}
+	} else if (argc==2) {
+		if ( (strcmp(argv[1], "set") == 0) || (strcmp(argv[1], "aktif") == 0) ) {	// 2
+			p_dt->ftp_mode = 1;
+			printf(" Sistem FTP diaktifkan !\r\n");
+		}
+		else if ( (strcmp(argv[1], "unset") == 0) || (strcmp(argv[1], "mati") == 0) ) {	// 2
+			p_dt->ftp_mode = 0;
+			printf(" Sistem FTP tidak diaktifkan !\r\n");
+		} else {
+			printf(" ERR: perintah tidak benar / argumen kurang !\r\n");
+			printf(" coba set_modem_ftp help \r\n");
+			vPortFree( p_dt );
+			return;
 		}
 	} else {
 		printf(" ERR: argument kurang !\r\n");
 		printf(" coba set_modem_ftp help \r\n");
+		vPortFree( p_dt );
+		return;
 	}
 	//*/
 	/*
@@ -333,17 +348,20 @@ int set_modem_ftp(int argc, char **argv)
 	*/
 	
 	/* cek apakah pemeriksaan angka valid */
+	/*
 	if (sumb <= 0) {
 		vPortFree( p_dt );
 		return ;	
 	}
-	
+	//*/
+
 	// SEMUA TRUE dan sampai disini
 	if (simpan_data_gsm_ftp( p_dt ) < 0)
 	{
 		vPortFree( p_dt );
 		return -1;
 	}
+	printf(" Data telah tersimpan\r\n");
 	vPortFree( p_dt );
 
 }
@@ -358,14 +376,15 @@ int set_modem_gsm(int argc, char **argv)
 	unsigned int ret_ip;
 	struct t_gsm_ftp *p_dt;
 	
+	if (argc<2) {
+		printf(" ERR: argumen kurang !\r\n");
+		printf(" coba set_modem_gsm help \r\n");
+		return;
+	}
+	
 	judul(" Setting GSM\r\n");
 	
-	if (argc < 3) 
-	{
-		if (argc > 1)
-		{
-			if (strcmp(argv[1], "help") == 0)
-			{
+			if (strcmp(argv[1], "help") == 0) 	{
 				printf(" Perintah untuk setting modem ftp !\r\n");
 				printf(" 1. set_modem_ftp help/default\r\n");
 				printf("    help    : printout keterangan ini\r\n");
@@ -403,13 +422,8 @@ int set_modem_gsm(int argc, char **argv)
 				
 				return;
 			}		
-		}
-		printf(" ERR: argument kurang !\r\n");
-		printf(" coba set_group help \r\n");
-		return;	
-	}
 	
-  	display_args(argc,argv);
+  	//display_args(argc,argv);
 	
 	/* copy dulu yang lama kedalam buffer */
 	p_dt = pvPortMalloc( sizeof (struct t_gsm_ftp) );
@@ -433,60 +447,79 @@ int set_modem_gsm(int argc, char **argv)
 	char	gprs_user[16];		// 12
 	char	gprs_passwd[16];	// 13
 //*/	
-	if (strcmp(argv[1], "user") == 0) 	{		
-		if (strlen(argv[2]) > 16) {
-			printf(" ERR: nama terlalu panjang (Maks 16 karakter)!\r\n");
+	if (argc>2) {
+		if (strcmp(argv[1], "user") == 0) 	{		
+			if (strlen(argv[2]) > 16) {
+				printf(" ERR: nama terlalu panjang (Maks 16 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_user, argv[2]);	
+		}
+		else if (strcmp(argv[1], "password") == 0)	{
+			if (strlen(argv[2]) > 16) {
+				printf(" ERR: password terlalu panjang (Maks 16 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_passwd, argv[2]);	
+		}
+		else if (strcmp(argv[1], "apn1") == 0)	{
+			if (strlen(argv[2]) > 16) {
+				printf(" ERR: nama APN 1 terlalu panjang (Maks 16 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_apn1, argv[2]);	
+		}
+		else if (strcmp(argv[1], "apn2") == 0)	{
+			if (strlen(argv[2]) > 16) {
+				printf(" ERR: nama APN 2 terlalu panjang (Maks 16 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_apn2, argv[2]);	
+		} else {
+			printf(" ERR: perintah tidak benar !\r\n");
+			printf(" coba set_modem_gsm help \r\n");
 			vPortFree( p_dt );
 			return;
 		}
-		sprintf(p_dt->gprs_user, argv[2]);	
-	}
-	else if (strcmp(argv[1], "password") == 0)	{
-		if (strlen(argv[2]) > 16) {
-			printf(" ERR: password terlalu panjang (Maks 16 karakter)!\r\n");
+	} else if (argc==2) {
+		if ( (strcmp(argv[1], "set") == 0) || (strcmp(argv[1], "aktif") == 0) ) {
+			p_dt->gsm_mode = 1;
+		}
+		else if ( (strcmp(argv[1], "unset") == 0) || (strcmp(argv[1], "mati") == 0) ) {
+			p_dt->gsm_mode = 0;
+		} else {
+			printf(" ERR: perintah tidak benar / argumen kurang !\r\n");
+			printf(" coba set_modem_gsm help \r\n");
 			vPortFree( p_dt );
 			return;
 		}
-		sprintf(p_dt->gprs_passwd, argv[2]);	
-	}
-	else if (strcmp(argv[1], "apn1") == 0)	{
-		if (strlen(argv[2]) > 16) {
-			printf(" ERR: nama APN 1 terlalu panjang (Maks 16 karakter)!\r\n");
-			vPortFree( p_dt );
-			return;
-		}
-		sprintf(p_dt->gprs_apn1, argv[2]);	
-	}
-	else if (strcmp(argv[1], "apn2") == 0)	{
-		if (strlen(argv[2]) > 16) {
-			printf(" ERR: nama APN 2 terlalu panjang (Maks 16 karakter)!\r\n");
-			vPortFree( p_dt );
-			return;
-		}
-		sprintf(p_dt->gprs_apn2, argv[2]);	
-	}
-	else if ( (strcmp(argv[1], "set") == 0) || (strcmp(argv[1], "aktif") == 0) ) {
-		p_dt->gsm_mode = 1;
-	}
-	else if ( (strcmp(argv[1], "unset") == 0) || (strcmp(argv[1], "mati") == 0) ) {
-		p_dt->gsm_mode = 0;
+	} else {
+		printf(" ERR: perintah tidak benar !\r\n");
+		printf(" coba set_modem_gsm help \r\n");
+		vPortFree( p_dt );
+		return;
 	}
 	//*/
 	
 	
 	/* cek apakah pemeriksaan angka valid */
-	if (sumb <= 0)
-	{
+	/*
+	if (sumb <= 0) 	{
 		vPortFree( p_dt );
 		return ;	
 	}
+	//*/
 	
 	// SEMUA TRUE dan sampai disini
-	if (simpan_data_gsm_ftp( p_dt ) < 0)
-	{
+	if (simpan_data_gsm_ftp( p_dt ) < 0) 	{
 		vPortFree( p_dt );
 		return -1;
 	}
+	printf(" Data telah tersimpan\r\n");
 	vPortFree( p_dt );
 
 }

@@ -14,12 +14,16 @@ char fAlarm[nALARM];
 
 portTASK_FUNCTION( relay_task, pvParameters ) {
 	int no_nya=0;
+	char *p, c;
 
 	init_selenoid();
 	vTaskDelay(1000);
 	vTaskDelay(1000);
 	
 	ser2_putstring("pake ser 2\r\n");
+	c = 'A';	p = &c;
+	serX_putchar(2, &c);
+	//ser3_putstring("pake serial 3\r\n");
 	
 	reset_flag_alarm();
 	for (;;)

@@ -50,6 +50,8 @@
 
 //#include "../gsm/system_ftp/kirim_file_ftp.c"
 
+#include "pm_server.c"
+
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
 #ifdef TAMPILAN_LPC
@@ -66,8 +68,8 @@
 #endif
 
 xSemaphoreHandle lcd_sem;
-
 xSemaphoreHandle mutex_lcd_sem;
+
 unsigned int loop_idle=0;
 unsigned int idle_lama;
 unsigned int tot_idle;
@@ -128,7 +130,7 @@ int main( void )
 	init_port_lcd();
 	init_lcd();
 	
-	#if (PAKAI_SERIAL_3 == 1)
+	#ifdef PAKAI_SERIAL_3
 	/* PCONP enable UART3 */
 	PCONP |= BIT(25);
 	
@@ -174,8 +176,12 @@ int main( void )
 	xSerialPortInitMinimal( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
 	
 	#ifdef PAKAI_SERIAL_2
-		serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
-		//serial2_init( 19200, configMINIMAL_STACK_SIZE );
+		//serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
+		serial2_init( 19200, configMINIMAL_STACK_SIZE );			// tes PM Server
+	#endif
+
+	#ifdef PAKAI_SERIAL_3
+		serial3_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );		// serial3_init
 	#endif
 
 #if 1
@@ -184,8 +190,9 @@ int main( void )
 	start_ether();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
-//	init_task_pm();			// 10, +1
-
+#ifdef PAKAI_PM
+	init_task_pm();			// 10, +1
+#endif
 
 		init_task_relay();
 

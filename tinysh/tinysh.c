@@ -567,7 +567,8 @@ static void _tinysh_char_in(uchar c)
           cur_buf_index=nextline;
         }
     }
-  else if(c=='?') /* display help */
+/*
+  else if(c=='?') // display help //
     {
       tinysh_cmd_t *cmd;
       cmd=cur_cmd_ctx?cur_cmd_ctx->child:root_cmd;
@@ -576,6 +577,7 @@ static void _tinysh_char_in(uchar c)
       puts(line);
       cur_index=strlen(line);
     }
+//*/
   else if(c==9 || c=='!') /* TAB: autocompletion */
     {
       tinysh_cmd_t *cmd;

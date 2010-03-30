@@ -147,7 +147,8 @@ static void proses_pm(void)
 	st = (char *) &pmod;
 	for (i=0; i< sizeof(pmod); i++)
 	{
-		xSerialPutChar2( 0, *st++, 100 );			
+		xSerialPutChar2( 0, *st++, 100 );
+		//xSerialPutChar( 0, *st++, 100 );
 	}
 	
 	/*
@@ -185,7 +186,8 @@ static void proses_pm(void)
 	//	printw("%X ", buf_rx[i]);	
 
 	taruh_data(0, urut_PM710);
-				
+			
+	printw("asli frek  = %.3f, data frek  = %.3f\r\n", asli_PM710[ 0 ].frek, data_PM710[0].frek);
 	urut_PM710++;
 	if (urut_PM710 > 4) urut_PM710 = 0;
 }

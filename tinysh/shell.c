@@ -103,14 +103,14 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
 
-#ifdef PAKAI_SERIAL_2
-void kirim_serial_2 (int argc, char **argv) {
+#if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
+void kirim_serial (int argc, char **argv) {
 	int sumb=0;
 	unsigned char buf[40];
 	// serial 2 AT\r\n
 	if (argc < 3) 
 	{
-		if (argc > 1)
+		if (argc > 1)	
 		{
 			if (strcmp(argv[1], "help") == 0) {
 				
@@ -121,20 +121,39 @@ void kirim_serial_2 (int argc, char **argv) {
 		return;	
 	}
 	
-	//display_args(argc,argv);
+	display_args(argc,argv);
 	sprintf(buf, "%s", argv[1]);
-	sumb = cek_nomer_valid(buf, 3);
+	sumb = cek_nomer_valid(buf, 5);
 
 	#ifdef PAKAI_SERIAL_2
-	if (sumb == 2) {
+	if (2 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(2, buf);
-		//ser2_putstring(buf);
+
+		//baca_hasil();
 	}
+	
 	#endif
-	baca_hasil();
+	
+	#ifdef PAKAI_SERIAL_3
+	if (3 == sumb) {
+		printf("masuk serial shell 3 !\r\n");
+		ganti_kata(buf, argv[2]);
+		serX_putstring(3, buf);
+		//ser3_putstring(buf);
+		//baca_hasil();
+	}
+	
+	#endif
 	
 }
+
+static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
+                              kirim_serial,0,0,0};
+
+#endif
+
+
 
 int ganti_kata(char *dest, char *src) {
 	//printf ("kalimat: %s, p: %d\r\n",src, strlen(src));
@@ -162,12 +181,6 @@ int ganti_kata(char *dest, char *src) {
 	}
 	dest[i] = '\0';
 }
-
-static tinysh_cmd_t kirim_serial_2_cmd={0,"serial","mengirim string ke serial 2","[args]",
-                              kirim_serial_2,0,0,0};
-
-#endif
-
 
 #ifdef PAKAI_RTC
 void set_date(int argc, char **argv)
@@ -617,6 +630,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_modem_ftp_cmd);
 	tinysh_add_command(&cek_modem_cmd);
 	tinysh_add_command(&set_modem_gsm_cmd);
+	tinysh_add_command(&gsm_ftp_cmd);
 	//tinysh_add_command(&gsm_ftp_cmd);
 #endif	
 
@@ -637,8 +651,8 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif	
 
 
-#ifdef PAKAI_SERIAL_2
-	tinysh_add_command(&kirim_serial_2_cmd);
+#if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
+	tinysh_add_command(&kirim_serial_cmd);
 #endif
 	/* add sub commands
  	*/

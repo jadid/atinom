@@ -54,11 +54,12 @@
 //#define DEBUG_DATA
 
 #define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
-#define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
+//#define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
 
 #define PAKAI_SELENOID		1		/* ULN2803 */
 
-//#define PAKAI_SERIAL_3	"PM_SERVER"
+//#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 3
+#define PAKAI_PM			2		// nyambung ke SERIAL 3
 
 #define TAMPILAN_MALINGPING			1
 

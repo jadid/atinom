@@ -36,7 +36,7 @@ void cek_sumber(void)
 	struct t_sumber *sumber;
 	
 	sumber = (char *) ALMT_SUMBER;
-	printf("  No.    Nama       ipaddr          modul   status\r\n");
+	printf("  No.    Nama              IPaddr       Alamat   status\r\n");
 
 	for (i=0; i<55; i++)
 		printf("-");
@@ -50,20 +50,33 @@ void cek_sumber(void)
 		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
 		
 		/* alamat */
-		printf("%2d : ", sumber[i].alamat);
+		printf("%-2d : ", sumber[i].alamat);
 		
 		/* status */
 		if (sumber[i].status == 0)
-			printf("Tidak Aktif\r\n");
+			printf("%-16s","Tidak Aktif");
 		else if (sumber[i].status == 1)
-			printf("Aktif / Normal\r\n");
+			printf("%-16s","Aktif / Normal");
 		else if (sumber[i].status == 2)
-			printf("TimeOut\r\n");
+			printf("%-16s","TimeOut");
 		else if (sumber[i].status == 5)
-			printf("Aktif / Daytime server\r\n");
+			printf("%-16s","Aktif / Daytime server");
 		else
-			printf("\r\n");
+			printf("%-16s"," ");
+		
+		if (sumber[i].status == 1) {
+			if (sumber[i].alamat>0) {
+				printf("%s\r\n","Power Meter");
+			} else if (sumber[i].alamat==0) {
+				printf("%s\r\n","Modul Monita");
+			} else {
+				printf("%s\r\n","");
+			}		
+		} else {
+			printf("%s\r\n","");
+		}
 	}
+	
 	
 }							 
 
@@ -92,6 +105,7 @@ void set_sumber(int argc, char **argv)
 				printf("   default : load sumber dengan default ip & setting\r\n");
 				printf(" \r\n");
 				printf("   ipaddr : memberikan alamat IP pada sumber tertentu\r\n");
+				printf("     Power Meter tidak dipengaruhi setting ini\r\n");
 				printf("     misalnya : $ set_sumber 4 ipaddr 192.168.1.21\r\n");
 				printf("     artinya set sumber nomer 4 dengan IP tersebut\r\n");
 				printf(" \r\n");
@@ -105,8 +119,10 @@ void set_sumber(int argc, char **argv)
 				printf("     misalnya : $ set_sumber 4 status 1\r\n");
 				printf("     artinya sumber nomer 4 supaya aktif\r\n");	
 				printf(" \r\n");
-				printf("   modul : set nomer modul\r\n");
-				printf("     hal ini berguna misalnya modul memiliki lebih dari 1 modul\r\n");
+				printf("   alamat : set nomer alamat\r\n");
+				printf("     hal ini berguna misalnya modul memiliki lebih dari 1 alamat\r\n");
+				printf("     Alamat digunakan pada Power Meter. Modul monita yang dipanel tidak terpengaruh setting ini.\r\n");
+				printf("     Tiap PM HARUS memiliki alamat yang berbeda.\r\n");
 				printf("     misalnya : $ set_sumber 4 modul 1\r\n");
 				printf("     artinya sumber nomer 4 pada modul nomer 1\r\n");	
 				return;
@@ -174,7 +190,7 @@ void set_sumber(int argc, char **argv)
 		{
 			printf(" sumber = %d : ", sumb);
 			
-			if (strlen(argv[3]) > 10)
+			if (strlen(argv[3]) > 15)
 			{
 				printf("\n ERR: nama terlalu panjang !\r\n");
 				vPortFree( p_sbr );
@@ -217,7 +233,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "modul") == 0)
+	else if (strcmp(argv[2], "alamat") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, 20);
@@ -231,7 +247,7 @@ void set_sumber(int argc, char **argv)
 			if (stat >=0)
 			{
 				p_sbr[sumb-1].alamat = stat;
-				printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
+				//printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 				printf("pd modul = %d\r\n", p_sbr[sumb-1].alamat);
 			}
 		}
@@ -338,7 +354,7 @@ void set_awal_sumber(void)
 	for (i=0; i<JML_SUMBER; i++)
 	{
 		sprintf(p_sbr[i].nama, "-");
-		p_sbr[i].alamat = 1;		/* default alamat = 1, PM = 1, atau board modul tanpa tumpukan / stack */
+		p_sbr[i].alamat = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_sbr[i].status = 0;	
 		
 		p_sbr[i].IP0 = 192;

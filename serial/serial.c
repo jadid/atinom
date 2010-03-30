@@ -335,11 +335,11 @@ void serX_putstring(int no, const signed portCHAR * const pcString) {
 	#endif
 }
 
-void serX_putchar(int no, signed portCHAR * pxNext) {
+void serX_putchar(int no, signed portCHAR * pxNext, portTickType xBlockTime) {
 	#ifdef PAKAI_SERIAL_2
 	if (no==2) {
 		//ser2_putstring(pcString);
-		xSerialPutChar2( 1, *pxNext, 1000 );
+		xSerialPutChar2( 1, *pxNext, xBlockTime );
 	}
 	#endif
 	
@@ -347,22 +347,25 @@ void serX_putchar(int no, signed portCHAR * pxNext) {
 	if (no==3) {
 		printf("masuk serial.c 3 !\r\n");
 		//ser3_putstring(pcString);
-		xSerialPutChar3( 1, *pxNext, 1000 );
+		xSerialPutChar3( 1, *pxNext, xBlockTime );
 	}
 	#endif
 }
 
 
-void serX_getchar(int no, xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime ) {
+void serX_getchar(int no, signed portCHAR *pcRxedChar, portTickType xBlockTime ) {
+//	ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime )	
 	#ifdef PAKAI_SERIAL_2
+	printf("%d\r\n", PAKAI_PM);
 	if (no==2) {
-		ser2_getchar(pxPort, *pcRxedChar, xBlockTime );
+		ser2_getchar(1, *pcRxedChar, xBlockTime );
+		//ser2_getchar(1, &buf_rx[i], 100 )
 	}
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3
 	if (no==3) {
-		ser3_getchar(pxPort, *pcRxedChar, xBlockTime );
+		ser3_getchar(1, *pcRxedChar, xBlockTime );
 	}
 	#endif
 }

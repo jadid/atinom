@@ -96,8 +96,9 @@ THUMB_SOURCE= \
 #		../GPIO/gpio.c \
 
 PM_SOURCE = \
-		pm.c	\
-#		pm_server.c \
+		pm_server.c \
+#		pm.c	\
+
 
 GSM_FTP_SOURCE = \
 		../gsm/system_ftp/kirim_file_ftp.c \
@@ -144,6 +145,7 @@ THUMB_SOURCE += $(MONITA_SOURCE)
 THUMB_SOURCE += $(UIP_SOURCE)
 THUMB_SOURCE += $(GSM_FTP_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
+THUMB_SOURCE += $(PM_SOURCE)
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

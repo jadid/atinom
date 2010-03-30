@@ -15,6 +15,10 @@
 
 #define TIPE_PM710
 #include "../modbus/low_mod.h"
+#include "../monita/monita_uip.h"
+
+extern float data [ (JML_SUMBER * PER_SUMBER) ];
+
 struct d_pmod pmod;
 
 xTaskHandle hdl_proses_pm;
@@ -36,6 +40,7 @@ float satuan_amp;
 #define KIRI_TENGAH		20
 
 /* menampilkan data pada layar */
+/*
 void cetak_pm(void)
 {
 	int nomer_mod = 0;
@@ -108,16 +113,16 @@ void cetak_pm(void)
 	move_ke(2, 23);
 	printw("loop pm %d", ploop);
 }
-
+//*/
 
 static void proses_pm(void)
 {
 	unsigned int jum_balik;
-	int i;
+	int i,j;
 	char *st;
 	int timeout=0;
 
-	//konting2++;
+	konting2++;
 	
 	//goto_xy(1, 7);
 	//printw("Send %1d : %2d :", urut_PM710, konting2);
@@ -147,9 +152,11 @@ static void proses_pm(void)
 	st = (char *) &pmod;
 	for (i=0; i< sizeof(pmod); i++)
 	{
-		xSerialPutChar2( 0, *st++, 100 );
-		//xSerialPutChar( 0, *st++, 100 );
+		//xSerialPutChar2( 0, *st++, 100 );
+		serX_putchar(PAKAI_PM, st++, 100);
 	}
+	
+	//printf("Send %1d : %2d :", urut_PM710, jum_balik);
 	
 	/*
 	st = (char *) &pmod;
@@ -160,14 +167,17 @@ static void proses_pm(void)
 	
 	vTaskDelay(10);
 	i=0;
-	
-	//goto_xy(1,8);
-	//printw("Recv : ");
+
 		
 	while(1)
-	{			
-		if (ser2_getchar(1, &buf_rx[i], 100 ) == pdTRUE)
-		{	
+	{
+		#if (PAKAI_PM == 2) 
+			if (ser2_getchar(1, &buf_rx[i], 100 ) == pdTRUE)
+		#elif (PAKAI_PM == 3)
+			if (ser3_getchar(1, &buf_rx[i], 100 ) == pdTRUE)
+		#endif 
+		//if (serX_getchar(PAKAI_PM, buf_rx[i], 100 ) == pdTRUE)
+		{
 			i++;
 			if (i == jum_balik) break;
 		}
@@ -176,7 +186,7 @@ static void proses_pm(void)
 			timeout++;
 			if (timeout > 20)
 			{
-				printf("%s(): timeout\r\n", __FUNCTION__);
+				//printf("%s(): timeout\r\n", __FUNCTION__);
 				break;
 			}
 		}
@@ -186,8 +196,20 @@ static void proses_pm(void)
 	//	printw("%X ", buf_rx[i]);	
 
 	taruh_data(0, urut_PM710);
+	
+	struct t_sumber *sumber;
+	sumber = (char *) ALMT_SUMBER;
+	
+	
+	// simpan data //
+	for (i=0; i<JML_SUMBER; i++) {
+		if (sumber[i].status == 1 && sumber[i].alamat > 0) {
+			//printf("masuk data SUMBER: %d\r\n",i+1);
+			memcpy( (char *) &data_f[i*PER_SUMBER], (char *) &asli_PM710[0], (PER_SUMBER*sizeof (float)) );
 			
-	printw("asli frek  = %.3f, data frek  = %.3f\r\n", asli_PM710[ 0 ].frek, data_PM710[0].frek);
+		}
+	}
+	
 	urut_PM710++;
 	if (urut_PM710 > 4) urut_PM710 = 0;
 }

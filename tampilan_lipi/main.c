@@ -50,7 +50,6 @@
 
 //#include "../gsm/system_ftp/kirim_file_ftp.c"
 
-#include "pm_server.c"
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 

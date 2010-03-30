@@ -152,14 +152,14 @@ sumber status :
 	2 : normal
 */
 struct t_sumber {
-	char nama[10];
+	char nama[16];
 	//char ID_sumber;
 	char alamat;		/* untuk alamat/modul Power meter atau stack board (jika ada) */
 	char IP0;
 	char IP1;
 	char IP2;
 	char IP3;
-	char status;		// tidak aktif, timeout, dll	
+	char status;		// tidak aktif, timeout, dll
 };
 
 struct t_titik {

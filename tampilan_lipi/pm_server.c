@@ -171,7 +171,9 @@ static void proses_pm(void)
 		
 	while(1)
 	{
-		#if (PAKAI_PM == 2) 
+		#if (PAKAI_PM == 1) 
+			if (ser1_getchar(1, &buf_rx[i], 100 ) == pdTRUE)
+		#elif (PAKAI_PM == 2) 
 			if (ser2_getchar(1, &buf_rx[i], 100 ) == pdTRUE)
 		#elif (PAKAI_PM == 3)
 			if (ser3_getchar(1, &buf_rx[i], 100 ) == pdTRUE)
@@ -228,7 +230,13 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	
 	// flush RX
 	for (i=0; i<100; i++)
-		ser2_getchar(1, &loop, 20 );
+		#ifdef PAKAI_SERIAL_1
+			ser1_getchar(1, &loop, 20 );
+		#elif PAKAI_SERIAL_2
+			ser2_getchar(1, &loop, 20 );
+		#elif PAKAI_SERIAL_3
+			ser3_getchar(1, &loop, 20 );
+		#endif
 	
 	for (;;)
 	{

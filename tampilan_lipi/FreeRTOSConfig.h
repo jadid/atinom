@@ -51,15 +51,20 @@
 #define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
 #define PAKAI_FILE_SIMPAN	1
+#define PAKAI_SELENOID		1		/* ULN2803 */
+
+#define PAKAI_CRON
+
 //#define DEBUG_DATA
 
 #define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
 //#define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
 
-#define PAKAI_SELENOID		1		/* ULN2803 */
-
-//#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 3
-#define PAKAI_PM			2		// nyambung ke SERIAL 3
+#define PAKAI_SERIAL_1				// mendefinisikan aktif serial 3
+#define PAKAI_PM			1		// nyambung ke SERIAL 3
+#ifdef PAKAI_PM
+	#define BAUD_PM			19200
+#endif
 
 #define TAMPILAN_MALINGPING			1
 

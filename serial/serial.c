@@ -127,12 +127,17 @@ char printbuffer[512];
 #else
 char printbuffer[256];
 #endif
-   
+
+#ifdef PAKAI_SERIAL_3 
 void ser3_putstring(const signed portCHAR * const pcString);
 signed portBASE_TYPE ser3_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime );
 signed portBASE_TYPE xSerialPutChar3( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );  
-  
-  
+#endif
+
+#ifdef PAKAI_SERIAL_1
+signed portBASE_TYPE xSerialPutChar1( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );
+#endif
+
 int printf2 (const char *fmt, ...)
 {
    va_list args;
@@ -321,6 +326,12 @@ void uart0GetRxQueue (xQueueHandle *qh)
 //*
 
 void serX_putstring(int no, const signed portCHAR * const pcString) {
+	#ifdef PAKAI_SERIAL_1
+	if (no==1) {
+		ser1_putstring(pcString);
+	}
+	#endif
+	
 	#ifdef PAKAI_SERIAL_2
 	if (no==2) {
 		ser2_putstring(pcString);
@@ -336,6 +347,15 @@ void serX_putstring(int no, const signed portCHAR * const pcString) {
 }
 
 void serX_putchar(int no, signed portCHAR * pxNext, portTickType xBlockTime) {
+	//*
+	#ifdef PAKAI_SERIAL_1
+	if (no==1) {
+		//ser1_putstring(pcString);
+		xSerialPutChar1( 1, *pxNext, xBlockTime );
+	}
+	#endif
+	//*/
+	
 	#ifdef PAKAI_SERIAL_2
 	if (no==2) {
 		//ser2_putstring(pcString);
@@ -688,3 +708,162 @@ signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOu
 	portEXIT_CRITICAL();	
 	return xReturn;
 }#endif
+
+#ifdef PAKAI_SERIAL_1
+/* UART 1 */
+static xQueueHandle Qrx1;
+static xQueueHandle Qtx1;
+static volatile portLONG *plTHREEmpty1;
+
+#define serUART1_VIC_CHANNEL			( ( unsigned portLONG ) 0x0006 )
+#define serUART1_VIC_CHANNEL_BIT		( ( unsigned portLONG ) 0x0040 )
+#define serUART1_VIC_ENABLE				( ( unsigned portLONG ) 0x0020 )
+//#define serCLEAR_VIC_INTERRUPT			( ( unsigned portLONG ) 0 )
+
+xComPortHandle serial1_init( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength )
+{
+	unsigned portLONG ulDivisor, ulWantedClock;
+	xComPortHandle xReturn = serHANDLE;
+	extern void ( vUART1_ISR_Wrapper )( void );
+	
+	//printf("%s(): ", __FUNCTION__);
+	
+	/* The queues are used in the serial ISR routine, so are created from
+	serialISR.c (which is always compiled to ARM mode. */
+	vSerialISRCreateQueues1( uxQueueLength, &Qrx1, &Qtx1, &plTHREEmpty1 );
+
+	if(
+		( Qrx1 != serINVALID_QUEUE ) &&
+		( Qtx1 != serINVALID_QUEUE ) &&
+		( ulWantedBaud != ( unsigned portLONG ) 0 )
+	  )
+	{
+		printf(" buf .................................OK\r\n");
+		portENTER_CRITICAL();
+		{
+			/* Setup the baud rate:  Calculate the divisor value. */
+			ulWantedClock = ulWantedBaud * serWANTED_CLOCK_SCALING;
+			ulDivisor = configCPU_CLOCK_HZ / ulWantedClock;
+			/* Set the DLAB bit so we can access the divisor. */
+			U1LCR |= serDLAB;
+			/* Setup the divisor. */
+			U1DLL = ( unsigned portCHAR ) ( ulDivisor & ( unsigned portLONG ) 0xff );
+			ulDivisor >>= 8;
+			U1DLM = ( unsigned portCHAR ) ( ulDivisor & ( unsigned portLONG ) 0xff );
+			/* Turn on the FIFO's and clear the buffers. */
+			U1FCR = ( serFIFO_ON | serCLEAR_FIFO );
+			/* Setup transmission format. */
+			U1LCR = serNO_PARITY | ser1_STOP_BIT | ser8_BIT_CHARS;
+			//#define serUART0_VIC_CHANNEL			( ( unsigned portLONG ) 0x0006 )
+			//#define serUART0_VIC_CHANNEL_BIT		( ( unsigned portLONG ) 0x0040 )
+			//#define serUART0_VIC_ENABLE				( ( unsigned portLONG ) 0x0020 )
+
+			/* Setup the VIC for the UART. */
+			//VICIntSelect &= ~( serUART0_VIC_CHANNEL_BIT );
+			
+			#if 1
+			VICIntSelect &= ~BIT(7);
+			VICVectAddr7 = ( portLONG ) vUART1_ISR_Wrapper;
+			VICVectCntl7 = (serUART1_VIC_ENABLE | 7);
+		
+			/* Enable UART1 interrupts. */
+			U1IER |= serENABLE_INTERRUPTS;
+			
+			VICIntEnable |= BIT(7);
+			#endif
+			
+		}
+		portEXIT_CRITICAL();
+	}
+	else
+	{
+		printf(" Tidak bisa init !!\r\n");
+		xReturn = ( xComPortHandle ) 0;
+	}
+	return xReturn;
+}
+
+signed portBASE_TYPE ser1_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime )
+{
+	/* The port handle is not required as this driver only supports UART0. */
+	( void ) pxPort;
+	/* Get the next character from the buffer.  Return false if no characters
+	are available, or arrive before xBlockTime expires. */
+	if( xQueueReceive( Qrx1, pcRxedChar, xBlockTime ) )
+	{
+		return pdTRUE;
+	}
+	else
+	{
+		return pdFALSE;
+	}
+}
+
+
+
+
+void ser1_putstring(const signed portCHAR * const pcString)
+{
+	signed portCHAR *pxNext;
+	/* Send each character in the string, one at a time. */
+	pxNext = ( signed portCHAR * ) pcString;
+	while( *pxNext )
+	{		
+		xSerialPutChar1( 1, *pxNext, 1000 );	// 100 OK
+		pxNext++;
+	}
+}
+/*-----------------------------------------------------------*/
+
+signed portBASE_TYPE xSerialPutChar1( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime )
+{
+	signed portBASE_TYPE xReturn;
+	/* This demo driver only supports one port so the parameter is not used. */
+	( void ) pxPort;
+	
+	portENTER_CRITICAL();
+	{
+		/* Is there space to write directly to the UART? */
+		if( *plTHREEmpty1 == ( portLONG ) pdTRUE )
+		{
+			//printf(":...................................... kosong\r\n");
+			
+			//* We wrote the character directly to the UART, so was
+			//successful. 
+			*plTHREEmpty1 = pdFALSE;
+			U1THR = cOutChar;
+			xReturn = pdPASS;
+		}
+		else
+		{
+			//printf("%s(): ....................................aktif\r\n", __FUNCTION__);
+			/* We cannot write directly to the UART, so queue the character.
+			Block for a maximum of xBlockTime if there is no space in the
+			queue. */
+			xReturn = xQueueSend( Qtx1, &cOutChar, xBlockTime );
+			
+			/*
+			if (xReturn == pdPASS)
+				printf("%s(): .................................bs masuk\r\n", __FUNCTION__);
+			else
+				printf("%s(): ...................masih penuh\r\n", __FUNCTION__);
+			//*/
+			
+			#if 0
+			/* Depending on queue sizing and task prioritisation:  While we
+			were blocked waiting to post interrupts were not disabled.  It is
+			possible that the serial ISR has emptied the Tx queue, in which
+			case we need to start the Tx off again. */
+			if( ( *plTHREEmpty1== ( portLONG ) pdTRUE ) && ( xReturn == pdPASS ) )
+			{
+				xQueueReceive( Qtx1, &cOutChar, serNO_BLOCK );
+				*plTHREEmpty1 = pdFALSE;
+				U1THR = cOutChar;
+			}
+			#endif
+		}
+	}
+	portEXIT_CRITICAL();	
+	return xReturn;
+}
+#endif

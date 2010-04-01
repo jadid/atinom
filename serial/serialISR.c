@@ -183,7 +183,7 @@ portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 }
 
 
-#if 0
+#ifdef PAKAI_SERIAL_3
 /* UART 3 */
 /* Queues used to hold received characters, and characters waiting to be
 transmitted. */
@@ -394,18 +394,19 @@ void vUART2_ISR_Wrapper( void )
 
 #endif
 
-#ifdef PAKAI_SERIAL_3
-/* UART 3 */
-/* UART3 interrupt service routine entry point. */
-void vUART3_ISR_Wrapper( void ) __attribute__ ((naked));
+
+#ifdef PAKAI_SERIAL_1
+/* UART 1 */
+/* UART1 interrupt service routine entry point. */
+void vUART1_ISR_Wrapper( void ) __attribute__ ((naked));
 
 /* Queues used to hold received characters, and characters waiting to be
 transmitted. */
-static xQueueHandle xRxedChars3; 
-static xQueueHandle xCharsForTx3; 
-static volatile portLONG lTHREEmpty3;
+static xQueueHandle xRxedChars1; 
+static xQueueHandle xCharsForTx1; 
+static volatile portLONG lTHREEmpty1;
 
-void vSerialISRCreateQueues3(	unsigned portBASE_TYPE uxQueueLength, xQueueHandle *pxRxedChars, 
+void vSerialISRCreateQueues1(	unsigned portBASE_TYPE uxQueueLength, xQueueHandle *pxRxedChars, 
 								xQueueHandle *pxCharsForTx, portLONG volatile **pplTHREEmptyFlag )
 {
 	/* Create the queues used to hold Rx and Tx characters. */
@@ -413,45 +414,45 @@ void vSerialISRCreateQueues3(	unsigned portBASE_TYPE uxQueueLength, xQueueHandle
 	
 	portENTER_CRITICAL();
 	
-	xRxedChars3 = xQueueCreate( uxQueueLength + 1, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
-	xCharsForTx3 = xQueueCreate( uxQueueLength + 1, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
+	xRxedChars1 = xQueueCreate( uxQueueLength + 1, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
+	xCharsForTx1 = xQueueCreate( uxQueueLength + 1, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
 
 	/* Pass back a reference to the queues so the serial API file can 
 	post/receive characters. */
-	*pxRxedChars = xRxedChars3;
-	*pxCharsForTx = xCharsForTx3;
+	*pxRxedChars = xRxedChars1;
+	*pxCharsForTx = xCharsForTx1;
 
 	/* Initialise the THRE empty flag - and pass back a reference. */
-	lTHREEmpty3 = ( portLONG ) pdTRUE;
-	*pplTHREEmptyFlag = &lTHREEmpty3;
+	lTHREEmpty1 = ( portLONG ) pdTRUE;
+	*pplTHREEmptyFlag = &lTHREEmpty1;
 	
 	portEXIT_CRITICAL();
 }
 
-void vUART3_ISR_Handler( void )
+void vUART1_ISR_Handler( void )
 {
 	signed portCHAR cChar;
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
 	/* What caused the interrupt? */
-	switch( U3IIR & serINTERRUPT_SOURCE_MASK )
+	switch( U1IIR & serINTERRUPT_SOURCE_MASK )
 	{
 		case serSOURCE_ERROR :	/* Not handling this, but clear the interrupt. */
-			cChar = U3LSR;
+			cChar = U1LSR;
 			break;
 
 		case serSOURCE_THRE	:	/* The THRE is empty.  If there is another
 								character in the Tx queue, send it now. */
-			if( xQueueReceiveFromISR( xCharsForTx3, &cChar, &xHigherPriorityTaskWoken ) == pdTRUE )
+			if( xQueueReceiveFromISR( xCharsForTx1, &cChar, &xHigherPriorityTaskWoken ) == pdTRUE )
 			{
-				U3THR = cChar;
+				U1THR = cChar;
 			}
 			else
 			{
 									/* There are no further characters 
 									queued to send so we can indicate 
 									that the THRE is available. */
-				lTHREEmpty3 = pdTRUE;
+				lTHREEmpty1 = pdTRUE;
 									
 			}
 		break;
@@ -459,8 +460,8 @@ void vUART3_ISR_Handler( void )
 		case serSOURCE_RX_TIMEOUT :
 		case serSOURCE_RX	:	/* A character was received.  Place it in 
 								the queue of received characters. */
-			cChar = U3RBR;
-			xQueueSendFromISR( xRxedChars3, &cChar, &xHigherPriorityTaskWoken );
+			cChar = U1RBR;
+			xQueueSendFromISR( xRxedChars1, &cChar, &xHigherPriorityTaskWoken );
 		break;
 
 		default				:	/* There is nothing to do, leave the ISR. */
@@ -477,17 +478,20 @@ void vUART3_ISR_Handler( void )
 	VICVectAddr = serCLEAR_VIC_INTERRUPT;
 }
 
-void vUART3_ISR_Wrapper( void )
+void vUART1_ISR_Wrapper( void )
 {
 	/* Save the context of the interrupted task. */
 	portSAVE_CONTEXT();
 
 	/* Call the handler.  This must be a separate function from the wrapper
 	to ensure the correct stack frame is set up. */
-	vUART3_ISR_Handler();
+	vUART1_ISR_Handler();
 
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
 }
 
 #endif
+
+
+

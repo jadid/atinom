@@ -121,5 +121,9 @@ void ser2_putstring(const signed portCHAR * const pcString);
 signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );
 signed portBASE_TYPE ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime );
 
+void ser3_putstring(const signed portCHAR * const pcString);
+signed portBASE_TYPE xSerialPutChar3( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );
+signed portBASE_TYPE ser3_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime );
+
 #endif
 

@@ -259,4 +259,15 @@ struct t_gsm_ftp {
 };
 #endif
 
+#ifdef PAKAI_CRON
+struct t_cron {
+	char 	mnt[5];
+	char 	jam[5];
+	char	tgl[5];
+	char	bln[5];
+	char 	relay;
+	char 	status;
+};
+#endif 
+
 #endif /* MONITA_UIP_H_ */

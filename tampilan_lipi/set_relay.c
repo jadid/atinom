@@ -20,9 +20,12 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	vTaskDelay(1000);
 	vTaskDelay(1000);
 	
-	ser2_putstring("pake ser 2\r\n");
-	c = 'A';	p = &c;
-	serX_putchar(2, &c);
+	//printf("serial default\r\n");
+	ser1_putstring("pake ser 1\r\n");
+	serX_putstring(PAKAI_PM, "pake PM di serial \r\n");
+	//printf("sesudahnya\r\n");
+	//c = 'A';	p = &c;
+	//serX_putchar(2, &c);
 	//ser3_putstring("pake serial 3\r\n");
 	
 	reset_flag_alarm();

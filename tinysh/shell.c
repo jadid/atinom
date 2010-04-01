@@ -125,6 +125,16 @@ void kirim_serial (int argc, char **argv) {
 	sprintf(buf, "%s", argv[1]);
 	sumb = cek_nomer_valid(buf, 5);
 
+	#ifdef PAKAI_SERIAL_1
+	if (1 == sumb) {
+		ganti_kata(buf, argv[2]);
+		serX_putstring(1, buf);
+
+		//baca_hasil();
+	}
+	
+	#endif
+
 	#ifdef PAKAI_SERIAL_2
 	if (2 == sumb) {
 		ganti_kata(buf, argv[2]);

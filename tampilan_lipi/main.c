@@ -138,7 +138,7 @@ int main( void )
 	
 	/* init TX3, RX3 */
 	//PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));
-	PINSEL1 |= (BIT(18) | BIT(19));
+	//PINSEL1 |= (BIT(18) | BIT(19));
 	PINSEL1 |= (BIT(20) | BIT(21));
 	
 	/* TXDE di highkan */
@@ -156,6 +156,20 @@ int main( void )
 	
 	/* init TX2, RX2 */
 	PINSEL0 |= (BIT(20) | BIT(22));
+	#endif
+
+	#ifdef PAKAI_SERIAL_1
+	/* PCONP enable UART1 */
+	PCONP |= BIT(4);
+	
+	/* PCLK UART1, PCLK = CCLK */
+	PCLKSEL0 &= ~(BIT(8) | BIT(9));		// reset dulu
+	PCLKSEL0 |= BIT(8);					// samain aja PCLK = CCLK
+	
+	/* init TX2, RX2 */
+	PINSEL4 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));	// reset dulu
+	PINSEL4 |= (BIT(1) | BIT(3));			// TXD1 & RXD1
+	 
 	#endif
 
 	
@@ -183,6 +197,11 @@ int main( void )
 		serial3_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );		// serial3_init
 	#endif
 
+	#ifdef PAKAI_SERIAL_1
+		serial1_init( BAUD_PM, configMINIMAL_STACK_SIZE );
+		//serial1_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );	// serial 1 init
+	#endif
+
 #if 1
 	init_led_utama();		// 5, -2
 	init_task_lcd();		// 1, +1
@@ -193,11 +212,11 @@ int main( void )
 	init_task_pm();			// 10, +1
 #endif
 
-		init_task_relay();
 
+#ifdef PAKAI_SELENOID
+	init_task_relay();
+#endif
 
-	
-	
 	vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle

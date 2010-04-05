@@ -35,7 +35,7 @@ char buf[30];
 #define HISTORY_DEPTH 4	//16
 #endif
 #ifndef MAX_ARGS
-#define MAX_ARGS 6		//16
+#define MAX_ARGS 9		//16
 #endif
 #ifndef PROMPT_SIZE
 #define PROMPT_SIZE 	16 // 16

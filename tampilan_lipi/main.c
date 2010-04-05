@@ -270,6 +270,8 @@ void togle_led_utama(void)
 	}
 }
 
+//#include "../monita/monita_uip.h"
+
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
 	int i;
@@ -283,6 +285,10 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	
 	vTaskDelay(500);
 	FIO1SET = BACKLIT;
+	
+	set_selenoid(2);
+	vTaskDelay(500);
+	unset_selenoid(2);
 /*	
 	#if (PAKAI_SELENOID == 1)
 	init_selenoid();
@@ -300,6 +306,12 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 			//printf("gsm hidup\r\n");
 			saat_gsm_ftp = 0;
 		}
+		#endif
+		
+		
+		
+		#ifdef PAKAI_CRON
+			baca_cron();
 		#endif
 	}
 }

@@ -58,6 +58,10 @@
 #include "smodem.c"
 #endif
 
+#ifdef PAKAI_CRON
+#include "cron.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
@@ -82,7 +86,7 @@ extern xTaskHandle *hdl_ether;
 	extern xTaskHandle *hdl_relay;
 #endif
 
-#define DIGANTI 2		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
+
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -165,32 +169,7 @@ static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[a
 
 
 
-int ganti_kata(char *dest, char *src) {
-	//printf ("kalimat: %s, p: %d\r\n",src, strlen(src));
-	char *asli[] = {"\\r", "\\n"};
-	char *pengganti[] = {"\r", "\n"};
-	char * pch;
 
-	int i=0, j=0, k=0;
-	for (j=0; src[j] != '\0'; ++j) {
-		dest[i] = src[j];
-		//*
-		for (k=0; k<DIGANTI; k++) {
-			pch = strstr (dest,asli[k]);
-			
-			if (pch) {
-				strncpy (pch,pengganti[k],strlen(pengganti[k]));
-				strcat(dest, pengganti[k]);
-				//printf ("ada pch\r\n");
-				i += strlen(pengganti[k])-strlen(asli[k]);
-			}
-		}
-		//*/	
-		//printf ("kalimat: %s, p: %d\r\n",dest, strlen(dest));
-		++i;
-	}
-	dest[i] = '\0';
-}
 
 #ifdef PAKAI_RTC
 void set_date(int argc, char **argv)
@@ -643,6 +622,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&gsm_ftp_cmd);
 	//tinysh_add_command(&gsm_ftp_cmd);
 #endif	
+
+#ifdef PAKAI_CRON
+	tinysh_add_command(&set_cron_cmd);
+	tinysh_add_command(&cek_cron_cmd);
+#endif
 
 #if (VERSI_KONFIG == 2)
 	tinysh_add_command(&cek_group_cmd);

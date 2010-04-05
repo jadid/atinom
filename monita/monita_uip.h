@@ -51,6 +51,16 @@
 	#define ALMT_GSM_FTP	0x7D000
 #endif
 
+#ifdef PAKAI_CRON				// berlebihan kah ? 32 kB 
+	#define JML_CRON	10
+	#define SEKTOR_CRON	20
+	#define ALMT_CRON	0x68000
+#endif
+
+#ifdef PAKAI_SELENOID
+	#define JML_RELAY 8
+#endif
+
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
 #define 	ISO_nl 			0x0a
@@ -261,12 +271,14 @@ struct t_gsm_ftp {
 
 #ifdef PAKAI_CRON
 struct t_cron {
-	char 	mnt[5];
-	char 	jam[5];
-	char	tgl[5];
-	char	bln[5];
-	char 	relay;
-	char 	status;
+	char 	mnt[8];
+	char 	jam[8];
+	char	tgl[8];
+	char	bln[8];
+	char	cmd[20];
+	char 	alamat;
+	char	status;			// status perintahnya : suruh dihidup ato mati
+	char 	set;			// status cron : aktif atau mati
 };
 #endif 
 

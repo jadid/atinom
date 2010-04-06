@@ -52,8 +52,10 @@
 #endif
 
 #ifdef PAKAI_CRON				// berlebihan kah ? 32 kB 
-	#define JML_CRON	10
-	#define SEKTOR_CRON	20
+	#define JML_CRON	10		// baca_cron() setiap 1/2 detik mulai detik ke 5
+								// ubah mulai baca_cron di tinysh/cron.c
+								// max JML_CRON = 108.
+	#define SEKTOR_CRON	20		// 32 kB/64 = 512.
 	#define ALMT_CRON	0x68000
 #endif
 

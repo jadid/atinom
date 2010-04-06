@@ -5,6 +5,8 @@
 	daun biru engineering
 	
 */
+
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -16,6 +18,8 @@
 #define TIPE_PM710
 #include "../modbus/low_mod.h"
 #include "../monita/monita_uip.h"
+
+#ifdef PAKAI_PM
 
 extern float data [ (JML_SUMBER * PER_SUMBER) ];
 
@@ -226,7 +230,7 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	
 	vTaskDelay(1010);
 	
-	serial2_init( 19200, 64);
+	//serial2_init( 19200, 64);
 	
 	// flush RX
 	for (i=0; i<100; i++)
@@ -252,3 +256,5 @@ void init_task_pm(void)
 	xTaskCreate( pm_task, ( signed portCHAR * ) "PM_S", (configMINIMAL_STACK_SIZE * 10), \
 		NULL, tskIDLE_PRIORITY + 1, &hdl_proses_pm );	
 }
+
+#endif 

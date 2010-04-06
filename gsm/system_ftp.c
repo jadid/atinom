@@ -313,7 +313,7 @@ void cariDino(char *dest) {
 	
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
-	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
+	sprintf(dest,"%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
 		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1);
 	//strcpy(dest,buf);
 }

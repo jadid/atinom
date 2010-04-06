@@ -194,12 +194,16 @@ void baca_cron() {
 				if (strcmp(p_dt[hitung].cmd,"relay")==0) {
 					if (p_dt[hitung].status==1) {
 						set_selenoid((uint) p_dt[hitung].alamat);
-						//set_selenoid(2);
-						printf("...................................NYALA %d\r\n", p_dt[hitung].alamat);
+						#ifdef DEBUG_DATA
+							//set_selenoid(2);
+							printf("...................................NYALA %d\r\n", p_dt[hitung].alamat);
+						#endif
 					} else {
 						unset_selenoid((uint)p_dt[hitung].alamat);
-						//unset_selenoid(2);
-						printf(".......................MATI %d\r\n", p_dt[hitung].alamat);
+						#ifdef DEBUG_DATA
+							//unset_selenoid(2);
+							printf(".......................MATI %d\r\n", p_dt[hitung].alamat);
+						#endif
 					}
 				}
 			}

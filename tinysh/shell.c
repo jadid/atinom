@@ -637,10 +637,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	// simpan file
 	tinysh_add_command(&cek_file_cmd);
 	tinysh_add_command(&set_file_cmd);
+	tinysh_add_command(&del_direktori_cmd);
+	tinysh_add_command(&cari_doku_cmd);
 #endif	
 
 
-#if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
+#if defined(PAKAI_SERIAL_1) || defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
 	tinysh_add_command(&kirim_serial_cmd);
 #endif
 	/* add sub commands

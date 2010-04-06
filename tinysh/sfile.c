@@ -34,7 +34,13 @@
 	- pada awal line akan terdapat tag tanggal	
 	
 	*/
-	
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "../monita/monita_uip.h"
 
 static int set_file_default(void);
@@ -362,24 +368,195 @@ static int set_file_default(void)
 }
 
 //FRESULT scan_files (char* path)
-static int hapus_file(int argc, char **argv) {
+static int hapus_direktori(int argc, char **argv) {
 	DIR dirs;
+	FIL fd2;
 	unsigned int size,oz=0, flag;
 	unsigned int files;
-	unsigned int file_sudah=0;
-	unsigned int file_sukses=0;
 	unsigned int jum_dirs;
 	FILINFO fileInfo;
 	char *nama;
 	
+	unsigned int file_sudah=0;
+	int c, res;
 	
+	unsigned char buf_lfn[255];
+	char abs_path[128];
+	char path[64];
+	char isi[10];
+
+	cari_2jam_lalu(path);
+	printf("Posisi: %s",path);
+	fileInfo.lfname = buf_lfn;
+	fileInfo.lfsize = 255;//sizeof (buf_lfn);
+	
+	if ((res = f_opendir (&dirs, path))) { 
+		printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
+		return 0;
+	}
+	for (size = files = jum_dirs = 0;;) 	{
+		if (((res = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0]) 
+			break;
+
+		if (fileInfo.fattrib & AM_DIR) 
+			jum_dirs++;
+		else 	{
+			files++; 
+			size += fileInfo.fsize;
+			
+			if (fileInfo.lfname[0] == 0)
+				nama = &(fileInfo.fname [0]);
+			else
+				nama = &(fileInfo.lfname[0]);
+				
+			sprintf(abs_path,"%s\\%s", path, nama);
+				
+			if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE)) {
+				printf("%s(): Buka file error %d !\r\n", __FUNCTION__, res);					
+				return 0;
+			}
+				
+				// cek apakah sudah pernah dikirim ke server 
+				// sudah dikirim akan ada tag time dan SEND
+				// dan ini akan berada di akhir file
+				// 
+				// sehingga kira2 begini 
+				// Thu Mar 11 13:27:42 2010SEND
+				// 
+				// kira2 29 karakater dari akhir file
+				// 
+				// sehingga hanya perlu dicek 6 karakter terakhir saja
+				// apakah ada SENDED
+				 
+				
+			f_lseek( &fd2, fd2.fsize - 6 );
+			f_read( &fd2, isi, 6, &res);
+			//printf("CEK %s @@@\r\n", isi);
+				
+			if (strncmp( isi, "SENDED", 6) == 0) {
+				if(f_close( &fd2 )==0) {}
+				// hapus file
+				if (dihapus(abs_path) == 0)  {
+					//printf("................terhapus\r\n");
+				} else {
+					printf("...............%s GAGAL dihapus\r\n", nama);
+				}
+				file_sudah++;
+			} else	{				
+				// kembalikan pointer //
+				f_lseek( &fd2, 0);
+			}
+			
+				
+		}	// file archive //
+		if (dihapus(path) == 0)  {
+			//printf("................direktori terhapus\r\n");
+		} else {
+			printf("..........................direktori......GAGAL\r\n");
+		}
+	}
+	printf("%d File pada direktori %s dihapus.\r\n", file_sudah);
+	vTaskDelay(500);
+}
+
+int dihapus(char *nama) {
+	FRESULT res;
+	int flag=10;
+	//printf("________________NAMANYA : %s\r\n",nama);
+	res = f_unlink(nama);
+	if (res == FR_OK) {
+		printf("......dihapus");
+		return 0;
+	} 
+	if (res == FR_WRITE_PROTECTED) {
+		printf("......FR_WRITE_PROTECTED");
+		flag= -2;
+	}
+	if (res == FR_NO_FILE) {
+		printf("......FR_NO_FILE");
+		flag= -2; 
+	}
+	if (res == FR_NO_PATH) {
+		printf("......FR_NO_PATH");
+		flag= -2; 
+	}
+	if (res == FR_INVALID_NAME) {
+		printf("......FR_INVALID_NAME");
+		flag= -2; 
+	}
+	if (res == FR_DENIED) {
+		printf("......FR_DENIED");
+		flag= -2; 
+	}
+	return flag;
+}
+
+void cari_2jam_lalu(char *dest) {
+	time_t timeval;
+	struct tm tw;
+	get_tm_time( &tw );
+	timeval = mktime( &tw );
+
+	char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+	
+	struct t_gsm_ftp *p_dt;
+	p_dt = (char *) ALMT_GSM_FTP;
+	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
+		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-3);
+	//strcpy(dest,buf);
 }
 
 
-static tinysh_cmd_t del_file_cmd={0,"rm","hapus file","", hapus_file,0,0,0};
 
-static int simpan_sfile( struct t_simpan_file *pgr)
-{
+FRESULT cari_files (char* path) {
+    FRESULT res;
+    FILINFO fno;
+    DIR dir;
+    int i;
+    char *fn;
+#if _USE_LFN
+    static char lfn[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
+    fno.lfname = lfn;
+    fno.lfsize = sizeof(lfn);
+#endif
+
+
+    res = f_opendir(&dir, path);
+    if (res == FR_OK) {
+        i = strlen(path);
+        for (;;) {
+            res = f_readdir(&dir, &fno);
+            if (res != FR_OK || fno.fname[0] == 0) break;
+            if (fno.fname[0] == '.') continue;
+#if _USE_LFN
+            fn = *fno.lfname ? fno.lfname : fno.fname;
+#else
+            fn = fno.fname;
+#endif
+            if (fno.fattrib & AM_DIR) {
+                sprintf(&path[i], "/%s", fn);
+                res = cari_files(path);
+                if (res != FR_OK) break;
+                path[i] = 0;
+            } else {
+                printf("%s/%s\n", path, fn);
+            }
+        }
+    }
+
+    return res;
+}
+
+int cari_doku(int argc, char **argv) {
+	printf("posisi: %s", argv[1]);
+	cari_files(argv[1]);
+}
+
+static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_direktori,0,0,0};
+
+static tinysh_cmd_t cari_doku_cmd={0,"cari","hapus file","", cari_doku,0,0,0};
+
+static int simpan_sfile( struct t_simpan_file *pgr) {
 	printf(" Save struct SIMPAN_FILE ke flash ..");
 	if(prepare_flash(SEKTOR_SFILE, SEKTOR_SFILE)) return -1;
 	printf("..");

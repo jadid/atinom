@@ -4,7 +4,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include <time.h>
+//#include <time.h>
 
 #include "../monita/monita_uip.h" 
 
@@ -168,8 +168,7 @@ int gsm_ftp(int argc, char *argv[])
 		{ 
 			printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
 			return 0;
-		} else {
-		}
+		} 
 		//printf("%s(): Open dir %s OK\r\n", __FUNCTION__, path);
 		//*/
 		// MULAI LOOP DIREKTORI //
@@ -250,7 +249,7 @@ int gsm_ftp(int argc, char *argv[])
 						flag=0;
 						for (oz=0; oz<5; oz++) {
 							if ( flag == 0) {
-								printf("...........send ETX --%d\r\n", oz+1);
+								printf("...........send ETX   %d\r\n", oz+1);
 								if (send_etx() == 0) {
 									flag = 1;
 									continue;
@@ -304,7 +303,7 @@ int gsm_ftp(int argc, char *argv[])
 		return;
 	}
 	//*/
-	sleep(5);
+	vTaskDelay(500);
 	flag=0;
 	for (oz=0; oz<5; oz++) {
 		if ( flag == 0) {
@@ -361,7 +360,8 @@ int cek_awal(void) {
 	serX_putstring(PAKAI_GSM_FTP, "ATE0\r\n");
 	
 	baca_serial(buf, 12, 10);	/* flush ATE0 jika mungkin*/
-	baca_serial(buf, 12, 10);	/* flush OK */
+	printf("cek_awal FTP GSM\r\n");
+	//baca_serial(buf, 12, 10);	/* flush OK */
 	
 	//tulis_serial("AT\r\n", 4, 0);
 	serX_putstring(PAKAI_GSM_FTP, "AT\r\n");
@@ -414,11 +414,11 @@ int cek_awal(void) {
 
 int set_cpin(void) {
 	/* cek dulu apakah pin sudah dimasukkan ? */	
-	printf("masuk set_cpin\r\n");
+	//printf("masuk set_cpin\r\n");
 	sprintf(buf, "AT+CPIN?\r\n");
 	//tulis_serial(buf, strlen(buf), 0);
 	serX_putstring(PAKAI_GSM_FTP, buf);
-	printf("setelah masuk set_cpin\r\n");
+	//printf("setelah masuk set_cpin\r\n");
 	baca_serial(buf, 20, 5);
 	
 	if (strncmp(buf, "+CPIN: READY", 12) == 0 )	
@@ -684,14 +684,12 @@ int create_ftp_sess(void) {
 	// timeout 10 menit jika koneksi buruk //
 	baca_serial(buf, 20, 120);
 	
-	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	
-	{
+	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	 {
 		printf(" %s(): ERR :%s\r\n", __FUNCTION__, buf);
 		return -1;
 	}	
 	
-	if (strncmp(buf, "OK", 2) == 0)
-	{
+	if (strncmp(buf, "OK", 2) == 0) {
 		printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
 		return 0;
 	}

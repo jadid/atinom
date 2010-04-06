@@ -17,7 +17,8 @@ char buf[128];
 #define CTRL_DLE	0x10	/* Data link escape, untuk memagari jika ada karakter ETX yang ikut dikirim */
 FIL fd2;
 
-int gsm_ftp(int argc, char *argv[])
+//int gsm_ftp(int argc, char *argv[])
+int gsm_ftp()
 {
 	int i;
 	int c, res;
@@ -274,7 +275,7 @@ int gsm_ftp(int argc, char *argv[])
 					}
 				}
 				f_close( &fd2 );
-				
+				vTaskDelay(100);
 			}	// file archive //
 			
 		}	// loop direktori //	//*/

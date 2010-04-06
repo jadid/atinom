@@ -65,13 +65,13 @@ int lihat_cron(int argc, char **argv)
 		p_dt = (char *) ALMT_CRON;
 	
 		judul(" Setting Cron\r\n");
-		printf(" no.  :  Cron :   Menit  :    Jam   :    Tgl   :   Bulan  :  Perintah  : Almt : Status\r\n");
+		printf("  no. :  Cron :   Menit  :    Jam   :    Tgl   :   Bulan  :  Perintah  : Almt : Status\r\n");
 		garis_bawah();
 	
 		for (i=0; i<JML_CRON; i++)
 		{
 			printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (i+1), \
-				(p_dt[i].set)?"Aktif":"Mati", p_dt[i].mnt, p_dt[i].jam, p_dt[i].tgl, p_dt[i].bln, p_dt[i].cmd, p_dt[i].alamat, p_dt[i].status?"Aktif [1]":"Mati [0]");	
+				(p_dt[i].set)?"Aktif":"Mati", p_dt[i].mnt, p_dt[i].jam, p_dt[i].tgl, p_dt[i].bln, p_dt[i].cmd, p_dt[i].alamat, p_dt[i].status?"Aktif [1]":"Mati  [0]");	
 		}
 	}
 	else if (argc > 1)
@@ -183,14 +183,16 @@ void baca_cron() {
 		
 			
 		if (cekCron(p_dt[hitung])==1) {	
-			#ifdef PAKAI_SELENOID
+			
 			if (p_dt[hitung].set) {
-				//printf("sekarang:  %d:%d %d-%d\r\n",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon, (timeinfo.tm_year+1900)); //, bulan[], , , 
-				/*
+				//*
+				printf("sekarang:  %d:%d %d-%d\r\n",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon, (timeinfo.tm_year+1900)); //, bulan[], , , 
+				
 				printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
 						p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
 						p_dt[hitung].cmd, p_dt[hitung].alamat, p_dt[hitung].status?"Aktif [1]":"Mati [0]");
 				//*/
+				#ifdef PAKAI_SELENOID
 				if (strcmp(p_dt[hitung].cmd,"relay")==0) {
 					if (p_dt[hitung].status==1) {
 						set_selenoid((uint) p_dt[hitung].alamat);
@@ -206,8 +208,23 @@ void baca_cron() {
 						#endif
 					}
 				}
+				#endif
+				
+				#ifdef PAKAI_GSM_FTP
+				if (strcmp(p_dt[hitung].cmd,"ftp")==0) {
+					printf(".....................................KIRIM ftp\r\n");
+					gsm_ftp();			// kirim ftp : 2 menit untuk 11 file
+				}
+				#endif
+				
+				#ifdef PAKAI_FILE_SIMPAN
+				if (strcmp(p_dt[hitung].cmd,"hapus")==0) {
+					printf(".....................................HAPUS file\r\n");			
+					hapus_direktori();
+				}
+				#endif
 			}
-			#endif
+			
 		}
 		hitung++;
 	}
@@ -355,7 +372,7 @@ int set_cron(int argc, char **argv)
 		
 		sprintf(buf, "%s", argv[2]);			// menit
 		//ganti_kata(buf, buf);
-		if ((strlen(buf) < 7) ) {
+		if ((strlen(buf) < 10) ) {
 			if ((atoi(buf)<0 || atoi(buf)>60) && (buf[0]!='s')) {
 				printf("Input menit salah !\r\n");
 				vPortFree( p_gr );
@@ -368,7 +385,7 @@ int set_cron(int argc, char **argv)
 		}
 		
 		sprintf(buf, "%s", argv[3]);			// jam
-		if ((strlen(buf) < 7) ) {
+		if ((strlen(buf) < 10) ) {
 			if ((atoi(buf)<0 || atoi(buf)>60)  && (buf[0]!='s')) {
 				printf("Input Jam salah !\r\n");
 				vPortFree( p_gr );
@@ -381,7 +398,7 @@ int set_cron(int argc, char **argv)
 		}
 		
 		sprintf(buf, "%s", argv[4]);			// tgl
-		if ((strlen(buf) < 7) ) {
+		if ((strlen(buf) < 10) ) {
 			if ( (atoi(buf)<1 || atoi(buf)>31) && (buf[0]!='s') ) {
 				printf("Input Tanggal salah !\r\n");
 				vPortFree( p_gr );
@@ -394,7 +411,7 @@ int set_cron(int argc, char **argv)
 		}
 		
 		sprintf(buf, "%s", argv[5]);			// bln
-		if ((strlen(buf) < 7) ) {
+		if ((strlen(buf) < 10) ) {
 			if ( (atoi(buf)<1 || atoi(buf)>12) && (buf[0]!='s') ) {
 				printf("Input Bulan salah !\r\n");
 				vPortFree( p_gr );
@@ -407,7 +424,7 @@ int set_cron(int argc, char **argv)
 		}
 		
 		sprintf(buf, "%s", argv[6]);			// cmd
-		if (strcmp(buf, "relay") == 0) {
+		if( (strcmp(buf, "relay") == 0) || (strcmp(buf, "ftp") == 0) || (strcmp(buf, "hapus") == 0) ) {
 			sprintf(p_gr[sumb-1].cmd, argv[6]);
 		} else {
 			printf("Input perintah salah !\r\n");

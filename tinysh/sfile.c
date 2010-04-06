@@ -368,7 +368,8 @@ static int set_file_default(void)
 }
 
 //FRESULT scan_files (char* path)
-static int hapus_direktori(int argc, char **argv) {
+//static int hapus_direktori(int argc, char **argv) {
+int hapus_direktori() {
 	DIR dirs;
 	FIL fd2;
 	unsigned int size,oz=0, flag;
@@ -502,7 +503,7 @@ void cari_2jam_lalu(char *dest) {
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
 	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
-		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-3);
+		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-2);
 	//strcpy(dest,buf);
 }
 

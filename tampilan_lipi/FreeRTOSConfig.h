@@ -60,11 +60,14 @@
 #define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
 #define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
 
+//*
 #define PAKAI_SERIAL_1				// mendefinisikan aktif serial 1
 #define PAKAI_PM			1		// nyambung ke SERIAL 1
 #ifdef PAKAI_PM
 	#define BAUD_PM			19200
 #endif
+//*/
+
 
 #define TAMPILAN_MALINGPING			1
 

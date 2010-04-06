@@ -189,8 +189,8 @@ int main( void )
 	xSerialPortInitMinimal( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
 	
 	#ifdef PAKAI_SERIAL_2
-		//serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
-		serial2_init( 19200, configMINIMAL_STACK_SIZE );			// tes PM Server
+		serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
+		//serial2_init( 19200, configMINIMAL_STACK_SIZE );
 	#endif
 
 	#ifdef PAKAI_SERIAL_3
@@ -211,7 +211,6 @@ int main( void )
 #ifdef PAKAI_PM
 	init_task_pm();			// 10, +1
 #endif
-
 
 #ifdef PAKAI_SELENOID
 	init_task_relay();

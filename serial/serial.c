@@ -340,7 +340,7 @@ void serX_putstring(int no, const signed portCHAR * const pcString) {
 	
 	#ifdef PAKAI_SERIAL_3
 	if (no==3) {
-		printf("masuk serial.c 3 !\r\n");
+		//printf("masuk serial.c 3 !\r\n");
 		ser3_putstring(pcString);
 	}
 	#endif
@@ -376,7 +376,7 @@ void serX_putchar(int no, signed portCHAR * pxNext, portTickType xBlockTime) {
 void serX_getchar(int no, signed portCHAR *pcRxedChar, portTickType xBlockTime ) {
 //	ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime )	
 	#ifdef PAKAI_SERIAL_2
-	printf("%d\r\n", PAKAI_PM);
+	//printf("%d\r\n", PAKAI_PM);
 	if (no==2) {
 		ser2_getchar(1, *pcRxedChar, xBlockTime );
 		//ser2_getchar(1, &buf_rx[i], 100 )

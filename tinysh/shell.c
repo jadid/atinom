@@ -82,7 +82,7 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
-#if (PAKAI_SELENOID == 1)
+#ifdef PAKAI_SELENOID
 	extern xTaskHandle *hdl_relay;
 #endif
 
@@ -107,7 +107,6 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
 
-#if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
 void kirim_serial (int argc, char **argv) {
 	int sumb=0;
 	unsigned char buf[40];
@@ -133,31 +132,28 @@ void kirim_serial (int argc, char **argv) {
 	if (1 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(1, buf);
-
-		//baca_hasil();
+		if	(PAKAI_GSM_FTP == 1)
+			baca_hasil();			// fitur yang perlu jawaban
 	}
-	
 	#endif
 
 	#ifdef PAKAI_SERIAL_2
 	if (2 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(2, buf);
-
-		//baca_hasil();
+		if	(PAKAI_GSM_FTP==2)
+			baca_hasil();			// fitur yang perlu jawaban
 	}
 	
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3
 	if (3 == sumb) {
-		printf("masuk serial shell 3 !\r\n");
 		ganti_kata(buf, argv[2]);
 		serX_putstring(3, buf);
-		//ser3_putstring(buf);
-		//baca_hasil();
+		if	(PAKAI_GSM_FTP==3)
+			baca_hasil();			// fitur yang perlu jawaban
 	}
-	
 	#endif
 	
 }
@@ -165,7 +161,6 @@ void kirim_serial (int argc, char **argv) {
 static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
                               kirim_serial,0,0,0};
 
-#endif
 
 
 

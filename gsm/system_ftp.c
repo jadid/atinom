@@ -192,7 +192,7 @@ int gsm_ftp(int argc, char *argv[])
 					nama = &(fileInfo.lfname[0]);
 				
 				sprintf(abs_path,"%s\\%s", path, nama);
-				printf("_________NAMANYA : %s_________________\r\n",abs_path);
+				//printf("_________NAMANYA : %s_________________\r\n",abs_path);
 				
 				if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE))
 				{
@@ -287,16 +287,41 @@ int gsm_ftp(int argc, char *argv[])
 	sleep(5);
 	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
 	
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if ( flag == 0) {
+			printf("...........stop_gprs()    %d\r\n", oz+1);
+			if (stop_gprs() == 0) {
+				flag = 1;
+				continue;
+			}
+			vTaskDelay(500);
+		}
+	}
+	/*
 	if (stop_gprs() < 0) 	{
 		printf("Stop GPRS error !\r\n");
 		return;
 	}
-	
+	//*/
 	sleep(5);
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if ( flag == 0) {
+			printf("...........stop_tcpip_stack()    %d\r\n", oz+1);
+			if (stop_tcpip_stack() == 0) {
+				flag = 1;
+				continue;
+			}
+			vTaskDelay(500);
+		}
+	}
+	/*
 	if (stop_tcpip_stack() < 0) 	{
 		printf("Stop TCP/IP error !\r\n");
 		return;
 	}
+	//*/
 	
 	
 	/* power off device */
@@ -419,9 +444,9 @@ int set_cpin(void) {
 		if (strncmp(buf, "OK", 2) == 0)
 		{
 			printf(" %s(): OK\r\n", __FUNCTION__);
-			printf(" %s(): Sleep 5\r\n", __FUNCTION__);			// kalo di sini harus diulang
+			printf(" %s(): Sleep 10\r\n", __FUNCTION__);			// kalo di sini harus diulang
 			/* sleep dulu 5 detik, biasanya ada WIND dll */
-			sleep(5);
+			sleep(10);
 			if (!cek_awal())
 				return 0;
 		}
@@ -624,7 +649,7 @@ int stop_gprs(void) {
 	//tulis_serial(buf, strlen(buf), 0);	
 	serX_putstring(PAKAI_GSM_FTP, buf);
 	
-	baca_serial(buf, 20, 5);
+	baca_serial(buf, 20, 10);
 	
 	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	
 	{
@@ -639,6 +664,7 @@ int stop_gprs(void) {
 	}
 	else
 	{
+		printf(buf);
 		printf(" %s(): ERR ??\r\n", __FUNCTION__);
 		return -1;
 	}
@@ -680,7 +706,7 @@ int upload_file(char *nama_file) {
 	//char buf[64];
 	//struct t_gsm_ftp *p_dt;
 	//p_dt = (char *) ALMT_GSM_FTP;
-	printf("Nama file upload_file: %s", nama_file);
+	//printf("Nama file upload_file: %s", nama_file);
 	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", nama_file);
 	//tulis_serial(buf, strlen(buf), 0);	
 	serX_putstring(PAKAI_GSM_FTP, buf);
@@ -724,8 +750,7 @@ int upload_data_file(char *nama_data)
 	send_etx();
 }
 
-int send_etx(void)
-{
+int send_etx(void) {
 	//tulis_char((char) CTRL_ETX );
 	
 	// #define CTRL_ETX	0x03
@@ -782,7 +807,7 @@ int stop_tcpip_stack(void) {
 	//tulis_serial(buf, strlen(buf), 0);	
 	serX_putstring(PAKAI_GSM_FTP, buf);
 	
-	baca_serial(buf, 20, 5);
+	baca_serial(buf, 20, 10);
 	
 	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	
 	{

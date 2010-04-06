@@ -362,45 +362,17 @@ static int set_file_default(void)
 }
 
 //FRESULT scan_files (char* path)
-static int hapus_file(int argc, char **argv) 
-{
-	char *path;
-    FRESULT res;
-    FILINFO fno;
-    DIR dir;
-    int i;
-    char *fn;
-#if _USE_LFN
-    static char lfn[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
-    fno.lfname = lfn;
-    fno.lfsize = sizeof(lfn);
-#endif
-
-
-    res = f_opendir(&dir, path);
-    if (res == FR_OK) {
-        i = strlen(path);
-        for (;;) {
-            res = f_readdir(&dir, &fno);
-            if (res != FR_OK || fno.fname[0] == 0) break;
-            if (fno.fname[0] == '.') continue;
-#if _USE_LFN
-            fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-            fn = fno.fname;
-#endif
-            if (fno.fattrib & AM_DIR) {
-                sprintf(&path[i], "/%s", fn);
-                //res = scan_files(path);
-                if (res != FR_OK) break;
-                path[i] = 0;
-            } else {
-                printf("%s/%s\n", path, fn);
-            }
-        }
-    }
-
-    return res;
+static int hapus_file(int argc, char **argv) {
+	DIR dirs;
+	unsigned int size,oz=0, flag;
+	unsigned int files;
+	unsigned int file_sudah=0;
+	unsigned int file_sukses=0;
+	unsigned int jum_dirs;
+	FILINFO fileInfo;
+	char *nama;
+	
+	
 }
 
 

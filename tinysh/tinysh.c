@@ -22,6 +22,11 @@
 
 #include "tinysh.h"
 
+//#include <stdio.h>
+//#include <stdlib.h>
+
+char buf[30];
+
 #ifndef BUFFER_SIZE
 //#define BUFFER_SIZE 256
 #define BUFFER_SIZE 128
@@ -30,7 +35,7 @@
 #define HISTORY_DEPTH 4	//16
 #endif
 #ifndef MAX_ARGS
-#define MAX_ARGS 6		//16
+#define MAX_ARGS 9		//16
 #endif
 #ifndef PROMPT_SIZE
 #define PROMPT_SIZE 	16 // 16
@@ -476,6 +481,7 @@ static void start_of_line()
 {
   /* display start of new line */
   puts(prompt);
+
   if(cur_context)
     {
       puts(context_buffer);
@@ -561,7 +567,8 @@ static void _tinysh_char_in(uchar c)
           cur_buf_index=nextline;
         }
     }
-  else if(c=='?') /* display help */
+/*
+  else if(c=='?') // display help //
     {
       tinysh_cmd_t *cmd;
       cmd=cur_cmd_ctx?cur_cmd_ctx->child:root_cmd;
@@ -570,16 +577,21 @@ static void _tinysh_char_in(uchar c)
       puts(line);
       cur_index=strlen(line);
     }
+//*/
   else if(c==9 || c=='!') /* TAB: autocompletion */
     {
       tinysh_cmd_t *cmd;
       cmd=cur_cmd_ctx?cur_cmd_ctx->child:root_cmd;
+      //puts(cur_cmd_ctx);puts("--\r\n");
       if(complete_command_line(cmd,line))
         {
           start_of_line();
           puts(line);
         }
       cur_index=strlen(line);
+      //sprintf(buf, "cur_index: %d--\r\n", cur_index);
+      //puts(buf);
+      //puts("cur index:--");puts(cur_index);puts("--\r\n");
     }
   else /* any input character */
     {

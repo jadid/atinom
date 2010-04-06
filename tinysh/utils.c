@@ -13,33 +13,45 @@
 static char passin[16];
 static int  passc;
 
+#define DIGANTI 5		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
+
 int proses_passwd(char *c)
 {
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );
-	printf("*");	
-	if ( *c == 0x0D || *c == 0x0A )
+		
+	if ( *c == 0x0D || *c == 0x0A )			// enter !!
 	{
 		//printf("dicocokkan %s !\r\n", passin);
 		passc = 0;
 				
 		if (strncmp(passin, "diesel", 6) == 0)
 		{
-			printf("%s(): OK\r\n", __FUNCTION__);
+			printf("\r\n%s(): OK\r\n", __FUNCTION__);
 			passc = 0;
 			memset(passin, 0, sizeof (passin));
 			return 1;
 		}
 		else
 		{
-			printf(" Passwd salah !\r\n");
+			printf(" Passwd salah\t!\r\n");
 			memset(passin, 0, sizeof (passin));
 			return 0;
 		}
+	} else if (*c==8 || *c==127) {
+		if(passc>0)
+        {
+          printf("\b \b");
+          passc--;
+          passin[passc]=0;
+        }
 	}
-	else
+	else {
+		printf("*");
+		//printf("%c",*c);
 		passin[ passc ] = (unsigned char) *c;
+		passc++;
+	}
 	
-	passc++;
 	if (passc > sizeof (passin))
 	{
 		passc = 0;
@@ -91,4 +103,31 @@ void judul(char *s)
 	garis_bawah2();
 	printf(s);
 	garis_bawah2();
+}
+
+int ganti_kata(char *dest, char *src) {
+	//printf ("kalimat: %s, p: %d\r\n",src, strlen(src));
+	char *asli[] = {"\\r", "\\n", "s/", "s\%",  "s%%"};
+	char *pengganti[] = {"\r", "\n", "", "", ""};
+	char * pch;
+
+	int i=0, j=0, k=0;
+	for (j=0; src[j] != '\0'; ++j) {
+		dest[i] = src[j];
+		//*
+		for (k=0; k<DIGANTI; k++) {
+			pch = strstr (dest,asli[k]);
+			
+			if (pch) {
+				strncpy (pch,pengganti[k],strlen(pengganti[k]));
+				strcat(dest, pengganti[k]);
+				//printf ("ada pch\r\n");
+				i += strlen(pengganti[k])-strlen(asli[k]);
+			}
+		}
+		//*/	
+		//printf ("kalimat: %s, p: %d\r\n",dest, strlen(dest));
+		++i;
+	}
+	dest[i] = '\0';
 }

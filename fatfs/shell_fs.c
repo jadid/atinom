@@ -332,7 +332,7 @@ static void util_mkdir(int argc, char **argv)
 	{
 		printf("%s(): ERR: Argument kurang !\r\n", __FUNCTION__);	
 		printf("%s(): Untuk membuat direktori dalam direktori, gunakan bakslash !\r\n", __FUNCTION__);
-		printf("%s(): Misalnya mkdir dua\dalam_dua\r\n", __FUNCTION__);
+		printf("%s(): Misalnya mkdir dua\\dalam_dua\r\n", __FUNCTION__);
 	}
 	else
 	{

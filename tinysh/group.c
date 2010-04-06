@@ -77,7 +77,7 @@ static int cek_group(int argc, char **argv)
 			for (y = 0; y<40; y++)
 				if ( pgroup[i].no_data[y] != 0 ) sumb++;
 			
-			printf(" (%2d): %10s :    %d   : %10s : %8d : (%X)\r\n", pgroup[i].ID_group, \
+			printf(" (%2d): %-10s :    %d   : %-10s : %8d : (%X)\r\n", pgroup[i].ID_group, \
 				pgroup[i].nama, pgroup[i].stat, pgroup[i].ket, sumb, &pgroup[i]);	
 		}
 	}

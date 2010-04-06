@@ -84,13 +84,13 @@ int cek_data(int argc, char **argv)
 	
 		judul(" Data Setting\r\n");
 	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-		printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
 		garis_bawah();
 	
 		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
 		{
-			printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-				p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+			printf(" (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 				p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 		}
 	}
@@ -114,7 +114,7 @@ int cek_data(int argc, char **argv)
 		
 				judul(" Data Setting\r\n");
 				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-				printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+				printf(" no.  : Nama       :  Data  : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
 				garis_bawah();
 				
 				sumb--;
@@ -123,8 +123,8 @@ int cek_data(int argc, char **argv)
 				{
 					if (i >= (JML_SUMBER * PER_SUMBER)) break;
 					
-					printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-						p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 					
 				}
@@ -202,19 +202,22 @@ int set_data(int argc, char **argv)
 				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
-				printf("    nama     : memberikan nama group yang akan ditampilkan\r\n");
-				printf("    misalnya : $ set_group 2 nama GMT_#4\r\n");
-				printf("    artinya memberikan nama group 1 dengan GMT_#4\r\n");
+				printf("    nama     : memberikan nama data yang akan ditampilkan\r\n");
+				printf("    misalnya : $ set_data 2 nama GMT_#4\r\n");
+				printf("    artinya memberikan nama data 1 dengan GMT_#4\r\n");
 				printf("\r\n");
-				printf("    set/aktif : mengaktif/nonaktifkan group di display\r\n");
-				printf("    misalnya  : $ set_group 4 aktif 1\r\n");
-				printf("    artinya mengaktifkan group 4\r\n");
-				printf("    misalnya  : $ set_group 4 aktif 0\r\n");
-				printf("    artinya me-nonaktifkan group 4\r\n");
+				printf("    alarm    : memberikan setting batasan alarm data\r\n");
+				printf("    misalnya : $ set_data 2 alarmH 84.3\r\n");
+				printf("    artinya memberikan setting batasan alarm tinggi data 2 dengan nilai 84.3\r\n");
+				printf("    misalnya : $ set_data 5 alarmL 1.25\r\n");
+				printf("    artinya memberikan setting batasan alarm rendah data 5 dengan nilai 1.25\r\n");
 				printf("\r\n");
-				printf("    desc/ket  : memberikan keterangan/deskripsi pada group\r\n");
-				printf("    misalnya  : $ set_group 7 ket ini_milik_Sulzer\r\n");
-				printf("    catatan   : jangan ada spasi pada keterangannya !\r\n");
+				printf("    relay : mengaktif/nonaktifkan relay pada kanal tertentu\r\n");
+				printf("    misalnya  : $ set_data 4 relay [1|aktif|hidup] 7 \r\n");
+				printf("    artinya mengaktifkan relay untuk data ke 4 pada kanal 7\r\n");
+				printf("    misalnya  : $ set_group 8 relay [0|mati] 2\r\n");
+				printf("    artinya me-nonaktifkan relay untuk data ke 8 pada kanal 2\r\n");
+				printf("\r\n");
 				
 				return ;
 			}
@@ -286,16 +289,10 @@ int set_data(int argc, char **argv)
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm high : %s\r\n", sumb, argv[3]);			
-			/*
-			if (strlen(argv[3]) > 8)
-			{
-				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
-				vPortFree( p_dt );
-				return;
-			}
-			//*/
-			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
 			p_dt[sumb-1].alarm_H = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
 		}
 	}
 	else if (strcmp(argv[2], "alarmL") == 0)
@@ -315,6 +312,41 @@ int set_data(int argc, char **argv)
 			//*/
 			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
 			p_dt[sumb-1].alarm_L = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
+	else if (strcmp(argv[2], "relay") == 0)		// 	set_data 4 relay [1|aktif] 7
+	{
+		int slot=0;
+		sprintf(buf, "%s", argv[1]);	sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		
+		if (sumb > 0)		
+		{
+			if (argc == 5) {
+				sprintf(buf, "%s", argv[4]);	slot = cek_nomer_valid(buf, 8);
+				p_dt[sumb-1].relay = slot;
+			}
+			
+			printf(" Data %d : Status Relay : %s pada %d\r\n", sumb, argv[3]);			
+			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
+				p_dt[sumb - 1].aktif = (argv[3][0] - '0');
+			} 
+			else if ( strcmp(argv[3], "aktif")==0 || strcmp(argv[3], "hidup")==0 ) {
+				p_dt[sumb - 1].aktif = 1;
+			}
+			else if ( strcmp(argv[3], "mati")==0 ) 	{
+				p_dt[sumb - 1].aktif = 0;
+			} else {
+				printf(" Setting relay masih salah\r\n");	
+				printf(" Format : set_data [no_data] relay [1|aktif|hidup|0|mati] [no_kanal]\r\n");	
+				vPortFree( p_dt );
+				return;
+			}	
+		} else {
+			vPortFree( p_dt );
+			return;
 		}
 	}
 	/*

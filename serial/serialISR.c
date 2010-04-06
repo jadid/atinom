@@ -183,7 +183,7 @@ portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 }
 
 
-#if 0
+#ifdef PAKAI_SERIAL_3
 /* UART 3 */
 /* Queues used to hold received characters, and characters waiting to be
 transmitted. */
@@ -296,7 +296,7 @@ void vUART3_ISR_Wrapper( void )
 #endif
 
 
-#if (PAKAI_SERIAL_2 == 1)
+#ifdef PAKAI_SERIAL_2
 /* UART 2 */
 /* UART0 interrupt service routine entry point. */
 void vUART2_ISR_Wrapper( void ) __attribute__ ((naked));
@@ -394,4 +394,104 @@ void vUART2_ISR_Wrapper( void )
 
 #endif
 
+
+#ifdef PAKAI_SERIAL_1
+/* UART 1 */
+/* UART1 interrupt service routine entry point. */
+void vUART1_ISR_Wrapper( void ) __attribute__ ((naked));
+
+/* Queues used to hold received characters, and characters waiting to be
+transmitted. */
+static xQueueHandle xRxedChars1; 
+static xQueueHandle xCharsForTx1; 
+static volatile portLONG lTHREEmpty1;
+
+void vSerialISRCreateQueues1(	unsigned portBASE_TYPE uxQueueLength, xQueueHandle *pxRxedChars, 
+								xQueueHandle *pxCharsForTx, portLONG volatile **pplTHREEmptyFlag )
+{
+	/* Create the queues used to hold Rx and Tx characters. */
+	//xRxedChars = xQueueCreate( uxQueueLength, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
 	
+	portENTER_CRITICAL();
+	
+	xRxedChars1 = xQueueCreate( uxQueueLength + 1, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
+	xCharsForTx1 = xQueueCreate( uxQueueLength + 1, ( unsigned portBASE_TYPE ) sizeof( signed portCHAR ) );
+
+	/* Pass back a reference to the queues so the serial API file can 
+	post/receive characters. */
+	*pxRxedChars = xRxedChars1;
+	*pxCharsForTx = xCharsForTx1;
+
+	/* Initialise the THRE empty flag - and pass back a reference. */
+	lTHREEmpty1 = ( portLONG ) pdTRUE;
+	*pplTHREEmptyFlag = &lTHREEmpty1;
+	
+	portEXIT_CRITICAL();
+}
+
+void vUART1_ISR_Handler( void )
+{
+	signed portCHAR cChar;
+	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+
+	/* What caused the interrupt? */
+	switch( U1IIR & serINTERRUPT_SOURCE_MASK )
+	{
+		case serSOURCE_ERROR :	/* Not handling this, but clear the interrupt. */
+			cChar = U1LSR;
+			break;
+
+		case serSOURCE_THRE	:	/* The THRE is empty.  If there is another
+								character in the Tx queue, send it now. */
+			if( xQueueReceiveFromISR( xCharsForTx1, &cChar, &xHigherPriorityTaskWoken ) == pdTRUE )
+			{
+				U1THR = cChar;
+			}
+			else
+			{
+									/* There are no further characters 
+									queued to send so we can indicate 
+									that the THRE is available. */
+				lTHREEmpty1 = pdTRUE;
+									
+			}
+		break;
+
+		case serSOURCE_RX_TIMEOUT :
+		case serSOURCE_RX	:	/* A character was received.  Place it in 
+								the queue of received characters. */
+			cChar = U1RBR;
+			xQueueSendFromISR( xRxedChars1, &cChar, &xHigherPriorityTaskWoken );
+		break;
+
+		default				:	/* There is nothing to do, leave the ISR. */
+			break;
+	}
+	
+	
+	if( xHigherPriorityTaskWoken )
+	{
+		portYIELD_FROM_ISR();
+	}
+
+	/* Clear the ISR in the VIC. */
+	VICVectAddr = serCLEAR_VIC_INTERRUPT;
+}
+
+void vUART1_ISR_Wrapper( void )
+{
+	/* Save the context of the interrupted task. */
+	portSAVE_CONTEXT();
+
+	/* Call the handler.  This must be a separate function from the wrapper
+	to ensure the correct stack frame is set up. */
+	vUART1_ISR_Handler();
+
+	/* Restore the context of whichever task is going to run next. */
+	portRESTORE_CONTEXT();
+}
+
+#endif
+
+
+

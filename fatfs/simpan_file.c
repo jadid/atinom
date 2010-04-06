@@ -55,6 +55,8 @@ int proses_simpan_file(void)
 	ts = (char *) ALMT_SFILE;
 	dt = (char *) ALMT_DT_SET;
 	
+	//printf("\tts->set: %d, sudah_buka: %d\r\n", ts->set, sudah_buka);
+	
 	if (ts->set == 1)
 	{
 		/* jika sepuluh menit lewat */

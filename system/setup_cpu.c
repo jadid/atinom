@@ -158,6 +158,8 @@ static void lowInit(void)
 
 	PCLKSEL0 = 0x55555555;	/* PCLK is the same as CCLK */
 	PCLKSEL1 = 0x55555555;
+	
+	//PCLKSEL4 = 0x55555555;
 
 	return;
 }

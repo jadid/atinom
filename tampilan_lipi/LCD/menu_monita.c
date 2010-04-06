@@ -26,7 +26,7 @@
 
 
 extern struct t_sumber sumber[];
-extern struct t_mesin	mesin[];
+//extern struct t_mesin	mesin[];
 extern struct t_titik	titik[];
 extern struct t_status status[];
 extern struct t_data_hitung data_hitung[];
@@ -111,13 +111,13 @@ void menu_monita(unsigned char p)
 		update_lcd_layer2();
 	}
    	
-   	
+/*   	
 	teks_layar(mesin_kiri, mesin_top, mesin[0].nama);	
 	teks_layar(mesin_kiri+(mesin_width), mesin_top, mesin[1].nama);
 	teks_layar(mesin_kiri+(mesin_width*2), mesin_top, mesin[2].nama);	
 	teks_layar(mesin_kiri+(mesin_width*3), mesin_top, mesin[3].nama);
 	teks_layar(mesin_kiri+(mesin_width*4), mesin_top, mesin[4].nama);	
-	
+//*/
 }
 
 void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2)
@@ -175,7 +175,7 @@ void menu_pilih(unsigned char p, unsigned char grop, unsigned char flag)
 		sprintf(tek, "Penduduk");
 	if (grop == 5)
 		sprintf(tek, "Baterai");
-	*/
+	//*/
 	struct t_group *pg;
 	pg = (char *) ALMT_GROUP;
 	len = strlen( pg[ grop ].nama );

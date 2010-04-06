@@ -48,6 +48,9 @@
 #include "queue.h"
 #include "semphr.h"
 
+//#include "../gsm/system_ftp/kirim_file_ftp.c"
+
+
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
 #ifdef TAMPILAN_LPC
@@ -64,8 +67,8 @@
 #endif
 
 xSemaphoreHandle lcd_sem;
-
 xSemaphoreHandle mutex_lcd_sem;
+
 unsigned int loop_idle=0;
 unsigned int idle_lama;
 unsigned int tot_idle;
@@ -79,6 +82,10 @@ xTaskHandle hdl_led;
 xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
+
+
+xTaskHandle hdl_relay;
+
 
 
 #define TXDE	BIT(24)
@@ -122,7 +129,7 @@ int main( void )
 	init_port_lcd();
 	init_lcd();
 	
-	#if 0
+	#ifdef PAKAI_SERIAL_3
 	/* PCONP enable UART3 */
 	PCONP |= BIT(25);
 	
@@ -131,7 +138,7 @@ int main( void )
 	
 	/* init TX3, RX3 */
 	//PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));
-	PINSEL1 |= (BIT(18) | BIT(19));
+	//PINSEL1 |= (BIT(18) | BIT(19));
 	PINSEL1 |= (BIT(20) | BIT(21));
 	
 	/* TXDE di highkan */
@@ -139,7 +146,7 @@ int main( void )
 	FIO0SET = TXDE;
 	#endif
 	
-	#if (PAKAI_SERIAL_2 == 1)
+	#ifdef PAKAI_SERIAL_2
 	/* PCONP enable UART2 */
 	PCONP |= BIT(24);
 	
@@ -149,8 +156,22 @@ int main( void )
 	
 	/* init TX2, RX2 */
 	PINSEL0 |= (BIT(20) | BIT(22));
-	
 	#endif
+
+	#ifdef PAKAI_SERIAL_1
+	/* PCONP enable UART1 */
+	PCONP |= BIT(4);
+	
+	/* PCLK UART1, PCLK = CCLK */
+	PCLKSEL0 &= ~(BIT(8) | BIT(9));		// reset dulu
+	PCLKSEL0 |= BIT(8);					// samain aja PCLK = CCLK
+	
+	/* init TX2, RX2 */
+	PINSEL4 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));	// reset dulu
+	PINSEL4 |= (BIT(1) | BIT(3));			// TXD1 & RXD1
+	 
+	#endif
+
 	
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -166,8 +187,20 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
-	//serial2_init( BAUD_RATE, 32 );
-	//serial2_init( 19200, configMINIMAL_STACK_SIZE );
+	
+	#ifdef PAKAI_SERIAL_2
+		//serial2_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );
+		serial2_init( 19200, configMINIMAL_STACK_SIZE );			// tes PM Server
+	#endif
+
+	#ifdef PAKAI_SERIAL_3
+		serial3_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );		// serial3_init
+	#endif
+
+	#ifdef PAKAI_SERIAL_1
+		serial1_init( BAUD_PM, configMINIMAL_STACK_SIZE );
+		//serial1_init( BAUD_RATE, (1 * configMINIMAL_STACK_SIZE) );	// serial 1 init
+	#endif
 
 #if 1
 	init_led_utama();		// 5, -2
@@ -175,7 +208,14 @@ int main( void )
 	start_ether();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
-	//init_task_pm();			// 10, +1
+#ifdef PAKAI_PM
+	init_task_pm();			// 10, +1
+#endif
+
+
+#ifdef PAKAI_SELENOID
+	init_task_relay();
+#endif
 
 	vTaskStartScheduler();
 
@@ -206,14 +246,15 @@ void togle_led_utama(void)
 		
 		/* timer_saat_gsm diclock setiap detik */
 		timer_saat_gsm++;
-		if (timer_saat_gsm > (60 * 10))
+		//if (timer_saat_gsm > (60 * 10))
+		if (timer_saat_gsm > (30))
 		{
 			saat_gsm_ftp = 1;
 			timer_saat_gsm = 0;
 		}
 		
 		#if (PAKAI_SELENOID == 1)
-		set_selenoid( 1 );
+		//set_selenoid( 1 );
 		#endif
 	
 	}
@@ -224,10 +265,12 @@ void togle_led_utama(void)
 		tog = 1;
 		
 		#if (PAKAI_SELENOID == 1)
-		unset_selenoid( 1 );
+		//unset_selenoid( 1 );
 		#endif
 	}
 }
+
+//#include "../monita/monita_uip.h"
 
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
@@ -240,13 +283,17 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	idle_lama = 0;
 	timer_saat_gsm = 0;
 	
-	vTaskDelay(1000);
+	vTaskDelay(500);
 	FIO1SET = BACKLIT;
 	
+	set_selenoid(2);
+	vTaskDelay(500);
+	unset_selenoid(2);
+/*	
 	#if (PAKAI_SELENOID == 1)
 	init_selenoid();
 	#endif
-	
+//*/	
 	for (;;)
 	{
 		togle_led_utama();
@@ -255,9 +302,16 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		#if (PAKAI_GSM_FTP == 1)
 		if (saat_gsm_ftp == 1)
 		{
-			gsm_ftp(0, "asas");
+			//gsm_ftp(0, "asas");
+			//printf("gsm hidup\r\n");
 			saat_gsm_ftp = 0;
 		}
+		#endif
+		
+		
+		
+		#ifdef PAKAI_CRON
+			baca_cron();
 		#endif
 	}
 }
@@ -301,6 +355,7 @@ void init_task_lcd(void)
 	xTaskCreate( LCD_task, ( signed portCHAR * ) "LCD", (configMINIMAL_STACK_SIZE * 1), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
 }
+
 
 #if 0
 /* UART3 dan Modbus */

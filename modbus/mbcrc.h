@@ -30,8 +30,8 @@
 
 #ifndef _MB_CRC_H
 #define _MB_CRC_H
-typedef unsigned char UCHAR;
-typedef unsigned short USHORT;
+//typedef unsigned char UCHAR;
+//typedef unsigned short USHORT;
 
 USHORT          usMBCRC16( UCHAR * pucFrame, USHORT usLen );
 

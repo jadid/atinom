@@ -26,11 +26,10 @@
 #define JML_KANAL	20
 #define PER_SUMBER	20
 
-//#define SEKTOR_SFILE	24
-//#define ALMT_SFILE		0x7A000
-
-#define SEKTOR_SFILE	27				// dipindah karena bentrok ma data
-#define ALMT_SFILE		0x7D000
+#ifdef PAKAI_FILE_SIMPAN
+	#define SEKTOR_SFILE	24
+	#define ALMT_SFILE		0x7A000
+#endif
 
 #define SEKTOR_SUMBER	25
 #define ALMT_SUMBER		0x7B000
@@ -46,6 +45,21 @@
 
 #define SEKTOR_DT_SET	21
 #define ALMT_DT_SET		0x70000
+
+#ifdef PAKAI_GSM_FTP
+	#define SEKTOR_GSM_FTP	27
+	#define ALMT_GSM_FTP	0x7D000
+#endif
+
+#ifdef PAKAI_CRON				// berlebihan kah ? 32 kB 
+	#define JML_CRON	10
+	#define SEKTOR_CRON	20
+	#define ALMT_CRON	0x68000
+#endif
+
+#ifdef PAKAI_SELENOID
+	#define JML_RELAY 8
+#endif
 
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
@@ -112,6 +126,9 @@
 #define OFFSET_VOLT		53	- 1
 #define OFFSET_AMP		54	- 1
 
+
+float data_f [ (JML_SUMBER * PER_SUMBER) ];
+
 struct t_data_float {
 	float data[20];
 };
@@ -145,14 +162,14 @@ sumber status :
 	2 : normal
 */
 struct t_sumber {
-	char nama[10];
+	char nama[16];
 	//char ID_sumber;
 	char alamat;		/* untuk alamat/modul Power meter atau stack board (jika ada) */
 	char IP0;
 	char IP1;
 	char IP2;
 	char IP3;
-	char status;		// tidak aktif, timeout, dll	
+	char status;		// tidak aktif, timeout, dll
 };
 
 struct t_titik {
@@ -223,6 +240,7 @@ struct t_dt_set  {
 	char 	satuan[8];	
 };
 
+#ifdef PAKAI_FILE_SIMPAN
 struct t_simpan_file {
 	int 	periode;		// periode disimpan dalam MMC
 	int 	set;			// aktif atau tidak
@@ -230,5 +248,38 @@ struct t_simpan_file {
 	short 	no_data[ JML_SUMBER * PER_SUMBER ];
 	char	nama_file[16];	// awalan nama file, misalnya angin
 };
+#endif
+
+#ifdef PAKAI_GSM_FTP
+struct t_gsm_ftp {
+	int 	ftp_periode;		// 1 periode disimpan dalam MMC
+	int 	ftp_mode;			// 2 aktif atau tidak mode ftp
+	int		ftp_port;			// 3 portnya ftp
+	char 	ftp_user[40];		// 4 periode data disimpan dalam file
+	char 	ftp_passwd[16];		// 5
+	char 	ftp_server[40];		// 6
+	char	nama_file[40];		// 7 awalan nama file, misalnya angin
+	char	direktori[40];		// 8
+	int		gsm_mode;			// 9 aktif atau tidak mode gsm
+	char	kartu[15];
+	char	gprs_apn1[16];		// 10
+	char	gprs_apn2[16];		// 11
+	char	gprs_user[16];		// 12
+	char	gprs_passwd[16];	// 13
+};
+#endif
+
+#ifdef PAKAI_CRON
+struct t_cron {
+	char 	mnt[8];
+	char 	jam[8];
+	char	tgl[8];
+	char	bln[8];
+	char	cmd[20];
+	char 	alamat;
+	char	status;			// status perintahnya : suruh dihidup ato mati
+	char 	set;			// status cron : aktif atau mati
+};
+#endif 
 
 #endif /* MONITA_UIP_H_ */

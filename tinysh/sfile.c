@@ -57,10 +57,10 @@ static int cek_file(int argc, char **argv)
 	{
 		judul(" Setting Simpan File\r\n");
 		
-		printf("  Nama    = %s\r\n", psfile->nama_file);
-		printf("  Periode = %d\r\n", psfile->periode);
-		printf("  Set     = %d\r\n", psfile->set);
-		printf("  Detik   = %d\r\n", psfile->detik);
+		printf("  Nama     = %s\r\n", psfile->nama_file);
+		printf("  Periode  = %d menit\r\n", psfile->periode);
+		printf("  Set      = %s\r\n", ((psfile->set)?"Aktif [1]":"Mati [0]"));
+		printf("  Detik ke = %d\r\n", psfile->detik);
 				
 		garis_bawah();
 		sumb= 0;
@@ -73,7 +73,7 @@ static int cek_file(int argc, char **argv)
 			if ( y != 0) 
 			{
 				sumb++;
-				printf(" %2d  : %7d : %16s : %8s\r\n", sumb, y, dt[y - 1].nama, dt[y - 1].satuan );
+				printf(" %2d  : %7d : %-16s : %-8s\r\n", sumb, y, dt[y - 1].nama, dt[y - 1].satuan );
 			}
 		}
 		
@@ -82,10 +82,8 @@ static int cek_file(int argc, char **argv)
 	{
 		if (strcmp(argv[1], "help") == 0)
 		{
-				printf(" Perintah untuk menampilkan setting group !\r\n");
-				printf("    cek_group help  : untuk menampilkan ini.\r\n");
-				printf("    cek_group       : menampilkan setting global group\r\n");
-				printf("    cek_group 2     : manampikan setting group 2.\r\n"); 
+			printf(" Perintah untuk menampilkan setting group !\r\n");
+			printf("    cek_file help  : untuk menampilkan ini.\r\n");
 		}		
 		else
 		{
@@ -137,41 +135,43 @@ int set_file(int argc, char **argv)
 	int i;
 	int y;
 	
+	if(argc<2) {
+		printf(" ERR: argument kurang !\r\n");
+		printf(" coba set_modem_ftp help \r\n");
+		return;
+	}
+	
 	judul(" Setting Simpan File\r\n");
 	
-	if (argc < 3) 
-	{
-		if (argc > 1)
-		{
-			if (strcmp(argv[1], "help") == 0)
-			{
+			if (strcmp(argv[1], "help") == 0)	{
 				printf(" Perintah untuk setting SIMPAN_FILE !\r\n");
 				printf(" 1. set_file help/default\r\n");
 				printf("    help    : printout keterangan ini\r\n");
 				printf("    default : memberikan default setting simpan file\r\n");
 				printf("\r\n");
 				
-				/*
-				printf(" 2. set_group x [opt1] [opt2]\r\n");
-				printf("    x    : nomer group\r\n");
-				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
+				//*
+				printf(" 2. set_file [opt1] [opt2]\r\n");
+				printf("    set_file [nama|set|periode] [opt2]\r\n");
+				printf("    opt1 : nama, set/aktif, periode, data\r\n");
+				printf("    opt2 : nilai dari opt 1 yang tepat\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
-				printf("    nama     : memberikan nama group yang akan ditampilkan\r\n");
-				printf("    misalnya : $ set_group 2 nama GMT_#4\r\n");
-				printf("    artinya memberikan nama group 1 dengan GMT_#4\r\n");
+				printf("    nama      : memberikan nama file yang akan ditampilkan\r\n");
+				printf("    misalnya  : $ set_file nama MonitaFile. Nama Max 16 karakter.\r\n");
+				printf("    artinya memberikan nama file dengan nilai MonitaFile\r\n");
 				printf("\r\n");
-				printf("    set/aktif : mengaktif/nonaktifkan group di display\r\n");
-				printf("    misalnya  : $ set_group 4 aktif 1\r\n");
-				printf("    artinya mengaktifkan group 4\r\n");
-				printf("    misalnya  : $ set_group 4 aktif 0\r\n");
-				printf("    artinya me-nonaktifkan group 4\r\n");
+				printf("    set/aktif : mengaktif/nonaktifkan penyimpanan file ke memori MMC\r\n");
+				printf("    misalnya  : $ set_file [set|aktif]\r\n");
+				printf("    artinya mengaktifkan penyimpanan file\r\n");
+				printf("    misalnya  : $ set_file [unset|mati]\r\n");
+				printf("    artinya me-nonaktifkan penyimpanan file\r\n");
 				printf("\r\n");
-				printf("    desc/ket  : memberikan keterangan/deskripsi pada group\r\n");
-				printf("    misalnya  : $ set_group 7 ket ini_milik_Sulzer\r\n");
-				printf("    catatan   : jangan ada spasi pada keterangannya !\r\n");
-				*/
-				
+				printf("    periode   : memberikan nilai periode penyimpanan file dalam MMC\r\n");
+				printf("    misalnya  : $ set_file periode 10\r\n");
+				printf("    artinya   : file disimpan dalam MMC setiap 10 menit\r\n");
+				//*/
+
 				return ;
 			}
 			else if (strcmp(argv[1], "default") == 0)
@@ -180,14 +180,9 @@ int set_file(int argc, char **argv)
 				set_file_default();
 				
 				return;
-			}		
-		}
-		printf(" ERR: argument kurang !\r\n");
-		printf(" coba set_file help \r\n");
-		return;	
-	}
+			}
 	
-  	display_args(argc,argv);
+  	//display_args(argc,argv);
 	
 	/* copy dulu yang lama kedalam buffer */
 	p_gr = pvPortMalloc( sizeof (struct t_simpan_file) );
@@ -201,124 +196,123 @@ int set_file(int argc, char **argv)
 	
 	memcpy((char *) p_gr, (char *) ALMT_SFILE, (sizeof (struct t_simpan_file)));
 	
-	if (strcmp(argv[1], "nama") == 0)
-	{
-		sprintf(buf, "%s", argv[2]);
-		sumb = strlen(buf);
-		
-		if (sumb > 16)
-		{
-			printf(" ERR: Nama (%s) terlalu panjang !\r\n", buf);
-			vPortFree( p_gr );
-			return;			
-		}
-		
-		sprintf( p_gr->nama_file, "%s", buf);
-		
-	}
-	else if (strcmp(argv[1], "periode") == 0)
-	{
-		sprintf(buf, "%s", argv[2]);	
-		sumb = cek_nomer_valid(buf, 60);
-		if (sumb > 0)		
-		{
-			p_gr->periode = sumb;
-			printf(" Setting perioder = %d\r\n", sumb);	
-		}
-	}
-	else if (strcmp(argv[1], "set") == 0)
-	{
-		sprintf(buf, "%s", argv[2]);	
-		sumb = cek_nomer_valid(buf, 1);
-		if (sumb >= 0)		
-		{
-			p_gr->set = sumb;
-			 
-			if ( sumb == 1 )
-				printf(" Sistem simpan diaktifkan !\r\n");
-			else if (sumb == 0)
-				printf(" Sistem simpan tidak diaktifkan !\r\n");
-		}
-	}
-	else if (strcmp(argv[1], "detik") == 0)
-	{
-		sprintf(buf, "%s", argv[2]);	
-		sumb = cek_nomer_valid(buf, 60);
-		if (sumb > 0)		
-		{
-			p_gr->detik = sumb;
-			printf(" Setting detik = %d\r\n", sumb);	
-		}
-	}
 	
-	else if (strcmp(argv[1], "data") == 0)
-	{
-		if (strcmp( argv[2], "clear") == 0 )
-		{
-			for (i=0; i< (JML_SUMBER * PER_SUMBER) ; i++)
-				p_gr->no_data[i] = 0;
+	
+	if (argc>2) {
+		if (strcmp(argv[1], "nama") == 0)	{	// set_file nama monita 3
+			sprintf(buf, "%s", argv[2]);
+			sumb = strlen(buf);
 			
-			printf(" Semua data yang berkontribusi pada file dibersihkan !\r\n");
-			sumb = 2; // supaya true
+			if (sumb > 16)
+			{
+				printf(" ERR: Nama (%s) terlalu panjang !\r\n", buf);
+				vPortFree( p_gr );
+				return;			
+			}	
+			sprintf( p_gr->nama_file, "%s", buf);
+
 		}
-		else
-		{		
+		else if (strcmp(argv[1], "periode") == 0)	{	// set_file periode 10 (simpan file tiap 10 menit ke MMC) 3
 			sprintf(buf, "%s", argv[2]);	
-			sumb = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
+			sumb = cek_nomer_valid(buf, 60);
 			if (sumb > 0)		
-			{				
-					/* jika argument terakhir masih ada unset maka hanya pada 
-					* nomer data itu saja yang dihapus */
-					if ( argc > 3)
-					{
-						if (strcmp(argv[3], "unset") == 0 )
+			{
+				p_gr->periode = sumb;
+				printf(" Setting periodenya = %d\r\n", sumb);	
+			}
+		}
+		else if (strcmp(argv[1], "detik") == 0) 	{	// set_file detik 10		3
+			sprintf(buf, "%s", argv[2]);	
+			sumb = cek_nomer_valid(buf, 60);
+			if (sumb > 0)		
+			{
+				p_gr->detik = sumb;
+				printf(" Setting detik = %d\r\n", sumb);	
+			}
+		}
+		else if (strcmp(argv[1], "data") == 0) 	{
+			if (strcmp( argv[2], "clear") == 0 )	{
+				for (i=0; i< (JML_SUMBER * PER_SUMBER) ; i++)
+					p_gr->no_data[i] = 0;
+				
+				printf(" Semua data yang berkontribusi pada file dibersihkan !\r\n");
+				sumb = 2; // supaya true
+			} else	{		
+				sprintf(buf, "%s", argv[2]);	
+				sumb = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
+				if (sumb > 0)		
+				{				
+						/* jika argument terakhir masih ada unset maka hanya pada 
+						* nomer data itu saja yang dihapus */
+						if ( argc > 3)
 						{
-						printf(" Unset koneksi data %d dari setting SIMPAN_FILE !\r\n", sumb);
-						for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
-						{
-							if ( p_gr->no_data[i] == sumb )
+							if (strcmp(argv[3], "unset") == 0 )		// set_file data x unset
 							{
-								p_gr->no_data[i] = 0;
-								break;
+							printf(" Unset koneksi data %d dari setting SIMPAN_FILE !\r\n", sumb);
+							for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
+							{
+								if ( p_gr->no_data[i] == sumb )
+								{
+									p_gr->no_data[i] = 0;
+									break;
+								}
 							}
-						}
-						if (i == (JML_SUMBER * PER_SUMBER))
-							printf(" nomer data dimaksud tidak ada !\r\n");
+							if (i == (JML_SUMBER * PER_SUMBER))
+								printf(" nomer data dimaksud tidak ada !\r\n");
+							}
+							else
+								printf(" ERR: Perintah salah !\r\n");
+								
 						}
 						else
-							printf(" ERR: Perintah salah !\r\n");
-							
-					}
-					else
-					{
-						printf(" Set koneksi data %d ke SIMPAN_FILE !\r\n", sumb);
-						/* cari slot no_data yang masih nol */
-						for (i=0; i<(JML_SUMBER * PER_SUMBER); i++)
 						{
-							if ( p_gr->no_data[i] == 0 )
+							printf(" Set koneksi data %d ke SIMPAN_FILE !\r\n", sumb);
+							/* cari slot no_data yang masih nol */
+							for (i=0; i<(JML_SUMBER * PER_SUMBER); i++)
 							{
-								p_gr->no_data[i] = sumb;
-								break;
+								if ( p_gr->no_data[i] == 0 )
+								{
+									p_gr->no_data[i] = sumb;
+									break;
+								}
 							}
 						}
-					}
-			}
-		} /* nomer group valid */
-	}
-	else
-	{
-		printf(" ERR: perintah tidak benar !\r\n");
-		printf(" coba set_mesin help \r\n");
+				}
+			} /* nomer group valid */
+		} else {
+			printf(" ERR: perintah tidak benar !\r\n");
+			printf(" coba set_file help \r\n");
+			vPortFree( p_gr );
+			return;
+		}
+	} else if (argc==2) {
+		if ( (strcmp(argv[1], "set") == 0) || (strcmp(argv[1], "aktif") == 0) ) {	// 2
+			p_gr->set = (int) 1;
+			printf(" Sistem simpan diaktifkan !\r\n");
+		} else if ( (strcmp(argv[1], "unset") == 0) || (strcmp(argv[1], "mati") == 0) ) {	// 2
+			p_gr->set = (int) 0;
+			printf(" Sistem simpan tidak diaktifkan !\r\n");
+		} else {
+			printf(" ERR: perintah tidak benar / argumen kurang !\r\n");
+			printf(" coba set_file help \r\n");
+			vPortFree( p_gr );
+			return;
+		}
+	} else {
+		printf(" ERR: argument kurang !\r\n");
+		printf(" coba set_file help \r\n");
 		vPortFree( p_gr );
 		return;
 	}
 	
 	/* cek apakah pemeriksaan angka valid */
+	/*
 	if (sumb <= 0)
 	{
 		vPortFree( p_gr );
 		return ;	
 	}
+	//*/
 	
 	// SEMUA TRUE dan sampai disini
 	if (simpan_sfile( p_gr ) < 0)

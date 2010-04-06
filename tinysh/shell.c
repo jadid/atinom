@@ -54,6 +54,14 @@
 #include "../system/rtc.h"
 #endif
 
+#ifdef PAKAI_GSM_FTP
+#include "smodem.c"
+#endif
+
+#ifdef PAKAI_CRON
+#include "cron.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
@@ -74,6 +82,12 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
+#if (PAKAI_SELENOID == 1)
+	extern xTaskHandle *hdl_relay;
+#endif
+
+
+
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
 
@@ -92,6 +106,70 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 							  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
+
+#if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
+void kirim_serial (int argc, char **argv) {
+	int sumb=0;
+	unsigned char buf[40];
+	// serial 2 AT\r\n
+	if (argc < 3) 
+	{
+		if (argc > 1)	
+		{
+			if (strcmp(argv[1], "help") == 0) {
+				
+			}
+		}
+		printf(" ERR: argument kurang !\r\n");
+		//printf(" coba set_group help \r\n");
+		return;	
+	}
+	
+	display_args(argc,argv);
+	sprintf(buf, "%s", argv[1]);
+	sumb = cek_nomer_valid(buf, 5);
+
+	#ifdef PAKAI_SERIAL_1
+	if (1 == sumb) {
+		ganti_kata(buf, argv[2]);
+		serX_putstring(1, buf);
+
+		//baca_hasil();
+	}
+	
+	#endif
+
+	#ifdef PAKAI_SERIAL_2
+	if (2 == sumb) {
+		ganti_kata(buf, argv[2]);
+		serX_putstring(2, buf);
+
+		//baca_hasil();
+	}
+	
+	#endif
+	
+	#ifdef PAKAI_SERIAL_3
+	if (3 == sumb) {
+		printf("masuk serial shell 3 !\r\n");
+		ganti_kata(buf, argv[2]);
+		serX_putstring(3, buf);
+		//ser3_putstring(buf);
+		//baca_hasil();
+	}
+	
+	#endif
+	
+}
+
+static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
+                              kirim_serial,0,0,0};
+
+#endif
+
+
+
+
 
 #ifdef PAKAI_RTC
 void set_date(int argc, char **argv)
@@ -185,6 +263,9 @@ void cek_stack(void)
 	#endif
 	
 	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#if (PAKAI_SELENOID == 1)
+		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
+	#endif
 	
 }							 
 
@@ -534,9 +615,18 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&matikan_telnet_cmd);
 #endif
 
-#if (PAKAI_GSM_FTP == 1)
+#ifdef PAKAI_GSM_FTP
+	tinysh_add_command(&set_modem_ftp_cmd);
+	tinysh_add_command(&cek_modem_cmd);
+	tinysh_add_command(&set_modem_gsm_cmd);
 	tinysh_add_command(&gsm_ftp_cmd);
+	//tinysh_add_command(&gsm_ftp_cmd);
 #endif	
+
+#ifdef PAKAI_CRON
+	tinysh_add_command(&set_cron_cmd);
+	tinysh_add_command(&cek_cron_cmd);
+#endif
 
 #if (VERSI_KONFIG == 2)
 	tinysh_add_command(&cek_group_cmd);
@@ -554,6 +644,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_file_cmd);
 #endif	
 
+
+#if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
+	tinysh_add_command(&kirim_serial_cmd);
+#endif
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);

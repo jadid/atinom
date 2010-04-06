@@ -24,9 +24,9 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	//ser2_putstring("pake ser 2\r\n");
 	//serX_putstring(2, "pake PM di serial \r\n");
 	//printf("sesudahnya\r\n");
-	//c = 'A';	p = &c;
-	//serX_putchar(2, &c);
-	//ser3_putstring("pake serial 3\r\n");
+	c = 'A';	p = &c;
+	serX_putchar(2, &c, 1000);
+	serX_putstring(2, "pake serial 2\r\n");
 	
 	reset_flag_alarm();
 	for (;;)

@@ -35,6 +35,7 @@ int gsm_ftp(int argc, char *argv[])
 	#if ( DEBUG == 1)				
 		printf(" enable debug out !!\n");
 	#endif
+
 	
 	// power on modem //
 	// cek wind //
@@ -127,7 +128,7 @@ int gsm_ftp(int argc, char *argv[])
 	}
 	
 	DIR dirs;
-	unsigned int size;
+	unsigned int size,oz=0, flag;
 	unsigned int files;
 	unsigned int file_sudah=0;
 	unsigned int file_sukses=0;
@@ -145,9 +146,9 @@ int gsm_ftp(int argc, char *argv[])
 		get_tm_time( &tw );
 		timeval = mktime( &tw );
 		
-		printf("waktu %d-%d-%d %d:%d:%d\r\n", tw.tm_mday, tw.tm_mon+1, tw.tm_year+1900, tw.tm_hour, tw.tm_min, tw.tm_sec);	
+		//printf("waktu %d-%d-%d %d:%d:%d\r\n", tw.tm_mday, tw.tm_mon+1, tw.tm_year+1900, tw.tm_hour, tw.tm_min, tw.tm_sec);	
 		cariDino(path);
-		printf("path: %s\r\n", path);	
+		//printf("path: %s\r\n", path);	
 		///sprintf( path, "%s", cari_sejam_lalu( timeval ));		
 		//sprintf(buf_nama, "file_%d.chc", timeval);		
 		
@@ -169,7 +170,7 @@ int gsm_ftp(int argc, char *argv[])
 			return 0;
 		} else {
 		}
-		printf("%s(): Open dir %s OK\r\n", __FUNCTION__, path);
+		//printf("%s(): Open dir %s OK\r\n", __FUNCTION__, path);
 		//*/
 		// MULAI LOOP DIREKTORI //
 		//*//
@@ -191,7 +192,7 @@ int gsm_ftp(int argc, char *argv[])
 					nama = &(fileInfo.lfname[0]);
 				
 				sprintf(abs_path,"%s\\%s", path, nama);
-				printf("%s\r\n",abs_path);
+				printf("_________NAMANYA : %s_________________\r\n",abs_path);
 				
 				if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE))
 				{
@@ -238,17 +239,26 @@ int gsm_ftp(int argc, char *argv[])
 							{
 								
 								//tulis_char( abs_path[i] );
-								serX_putchar(PAKAI_GSM_FTP, &abs_path[i]);
+								serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 1000);
 							}	
-							printf("loop res\r\n");
+							//printf("loop res\r\n");
 							if ( res < size ) break; 
 						}
 						
 						// untuk mengakhiri data ftp //
-						if ( send_etx() < 0)
-						{
-							break;
+						//*
+						flag=0;
+						for (oz=0; oz<5; oz++) {
+							if ( flag == 0) {
+								printf("...........send ETX --%d\r\n", oz+1);
+								if (send_etx() == 0) {
+									flag = 1;
+									continue;
+								}
+								vTaskDelay(500);
+							}
 						}
+						//*/
 						
 						// tulis SENDED pada akhir file //
 						sprintf(abs_path, "%s", ctime( &timeval ));	
@@ -270,9 +280,9 @@ int gsm_ftp(int argc, char *argv[])
 			
 		}	// loop direktori //	//*/
 	}
-	else
+	else {
 		printf("Create FTP sesssion error !\r\n");
-	
+	}
 	
 	sleep(5);
 	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
@@ -409,11 +419,11 @@ int set_cpin(void) {
 		if (strncmp(buf, "OK", 2) == 0)
 		{
 			printf(" %s(): OK\r\n", __FUNCTION__);
-			printf(" %s(): Sleep 10\r\n", __FUNCTION__);
-			/* sleep dulu 10 detik, biasanya ada WIND dll */
-			sleep(10);
-			
-			return 0;
+			printf(" %s(): Sleep 5\r\n", __FUNCTION__);			// kalo di sini harus diulang
+			/* sleep dulu 5 detik, biasanya ada WIND dll */
+			sleep(5);
+			if (!cek_awal())
+				return 0;
 		}
 		else
 		{
@@ -668,10 +678,10 @@ int create_ftp_sess(void) {
 //*/
 int upload_file(char *nama_file) {
 	//char buf[64];
-	struct t_gsm_ftp *p_dt;
-	p_dt = (char *) ALMT_GSM_FTP;
-	
-	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s\"\r\n", p_dt->nama_file);
+	//struct t_gsm_ftp *p_dt;
+	//p_dt = (char *) ALMT_GSM_FTP;
+	printf("Nama file upload_file: %s", nama_file);
+	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", nama_file);
 	//tulis_serial(buf, strlen(buf), 0);	
 	serX_putstring(PAKAI_GSM_FTP, buf);
 	
@@ -698,13 +708,17 @@ int upload_file(char *nama_file) {
 int upload_data_file(char *nama_data)
 {
 	int i;
-	
+	char* ch;
+	/*
 	while( *nama_data != 0)
 	{
 		// apa ini ???
 		//tulis_char( *nama_data++);
-		serX_putchar(PAKAI_GSM_FTP, nama_data++);
+		ch++ = nama_data++;
+		//serX_putchar(PAKAI_GSM_FTP, &ch++, 1000);
 	}
+	//*/
+	serX_putstring(PAKAI_GSM_FTP, nama_data);
 	
 	/* untuk mengakhiri data ftp */
 	send_etx();
@@ -714,15 +728,21 @@ int send_etx(void)
 {
 	//tulis_char((char) CTRL_ETX );
 	
+	// #define CTRL_ETX	0x03
+	char ch = 0x03, *p;
+	p = &ch;
+	//printf();
+	//sprintf(buf, "%c", CTRL_ETX);
+	//serX_putstring(PAKAI_GSM_FTP, buf);
+	serX_putchar(PAKAI_GSM_FTP, p, 1000);
 	
-	sprintf(buf, "%c", CTRL_ETX);
-	serX_putstring(PAKAI_GSM_FTP, buf);
 	
-	baca_serial(buf, 20, 5);
+	baca_serial(buf, 20, 10);
 	if (strncmp(buf, "OK", 2) == 0) 	{
 		printf(" %s(): OK\r\n", __FUNCTION__);
 		return 0;
 	} 	else	{
+		printf(buf);
 		printf(" %s(): ERR ??\r\n", __FUNCTION__);
 		return -1;
 	}
@@ -750,6 +770,7 @@ int close_ftp_sess(void) {
 	}
 	else
 	{
+		printf(buf);
 		printf(" %s(): ERR ??\r\n", __FUNCTION__);
 		return -1;
 	}

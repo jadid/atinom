@@ -318,7 +318,7 @@ void menu_group(unsigned char p, unsigned char grop)
 	teks_layar ( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK, "Nama" );
 	teks_layar ( DATA_KIRI_KOMIK + 120, DATA_ATAS_KOMIK, "Data" );
 	teks_layar ( DATA_KIRI_KOMIK + 180, DATA_ATAS_KOMIK, "Satuan" );
-	teks_layar ( DATA_KIRI_KOMIK + 220, DATA_ATAS_KOMIK, "Alarm L / H" );
+	teks_layar ( DATA_KIRI_KOMIK + 220, DATA_ATAS_KOMIK, "Alarm H / HH" );
 //*	
 	for (i=0; i<40; i++)
 	{
@@ -340,10 +340,12 @@ void menu_group(unsigned char p, unsigned char grop)
 			teks_layar( DATA_KIRI_KOMIK + 180, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			
 			// Batas ALARM //
-			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
+			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
+			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
 			teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			
-			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
+			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
+			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_HH );
 			teks_layar( DATA_KIRI_KOMIK + 255, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			//teks_komik( DATA_KIRI_KOMIK + 240, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			

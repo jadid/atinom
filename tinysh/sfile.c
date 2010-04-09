@@ -369,7 +369,7 @@ static int set_file_default(void)
 
 //FRESULT scan_files (char* path)
 //static int hapus_direktori(int argc, char **argv) {
-int hapus_direktori() {
+int hapus_SENDED() {
 	DIR dirs;
 	FIL fd2;
 	unsigned int size,oz=0, flag;
@@ -386,8 +386,9 @@ int hapus_direktori() {
 	char path[64];
 	char isi[10];
 
-	cari_2jam_lalu(path);
-	printf("Posisi: %s",path);
+	//cari_2jam_lalu(path);
+	cari_waktu(path, "J-2");
+	//printf("Posisi: %s\r\n",path);
 	fileInfo.lfname = buf_lfn;
 	fileInfo.lfsize = 255;//sizeof (buf_lfn);
 	
@@ -395,15 +396,35 @@ int hapus_direktori() {
 		printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
 		return 0;
 	}
-	for (size = files = jum_dirs = 0;;) 	{
-		if (((res = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0]) 
-			break;
 
+	for (size = files = jum_dirs = 0;;) 	{
+		if (((res = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0]) {
+			printf("***************  gak ada file lagi, jml file: %d, terhapus: %d!!\r\n", files, file_sudah);
+			
+			// hapus direktori //
+			// cek dulu apakah direktorinya kosong //
+			//*
+			if (files == file_sudah) {		// direktori kosong, tanpa file
+				printf("+++++++++++++++++++ hapus direktori\r\n");
+				if (dihapus(path) == 0)  {
+					//printf("................direktori terhapus\r\n");
+				} else {
+					printf("..........................direktori......GAGAL\r\n");
+				}
+			} else {
+				printf("ada %d file di direktori%s\r\n", files, path);
+			}
+			//*/
+			break;
+		} else {
+			
+		}
 		if (fileInfo.fattrib & AM_DIR) 
 			jum_dirs++;
 		else 	{
 			files++; 
 			size += fileInfo.fsize;
+			
 			
 			if (fileInfo.lfname[0] == 0)
 				nama = &(fileInfo.fname [0]);
@@ -411,7 +432,7 @@ int hapus_direktori() {
 				nama = &(fileInfo.lfname[0]);
 				
 			sprintf(abs_path,"%s\\%s", path, nama);
-				
+			printf("________________mcari file, ke-%d = %s \r\n", files, nama);
 			if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE)) {
 				printf("%s(): Buka file error %d !\r\n", __FUNCTION__, res);					
 				return 0;
@@ -438,75 +459,249 @@ int hapus_direktori() {
 				if(f_close( &fd2 )==0) {}
 				// hapus file
 				if (dihapus(abs_path) == 0)  {
-					//printf("................terhapus\r\n");
+					printf("................terhapus\r\n");
 				} else {
 					printf("...............%s GAGAL dihapus\r\n", nama);
+					break;
 				}
 				file_sudah++;
 			} else	{				
 				// kembalikan pointer //
 				f_lseek( &fd2, 0);
+				printf("...........................................tidak SENDED !!!\r\n");
 			}
-			
-				
-		}	// file archive //
-		if (dihapus(path) == 0)  {
-			//printf("................direktori terhapus\r\n");
-		} else {
-			printf("..........................direktori......GAGAL\r\n");
-		}
+			vTaskDelay(10);
+		}	
+		
 	}
-	printf("%d File pada direktori %s dihapus.\r\n", file_sudah);
+	printf("%d File pada direktori %s dihapus.\r\n", file_sudah, path);
 	vTaskDelay(500);
 }
 
 int dihapus(char *nama) {
 	FRESULT res;
 	int flag=10;
-	//printf("________________NAMANYA : %s\r\n",nama);
+	printf("________________NAMANYA : %s",nama);
 	res = f_unlink(nama);
 	if (res == FR_OK) {
-		printf("......dihapus");
+		printf("......dihapus\r\n");
 		return 0;
 	} 
 	if (res == FR_WRITE_PROTECTED) {
-		printf("......FR_WRITE_PROTECTED");
+		printf("......FR_WRITE_PROTECTED\r\n");
 		flag= -2;
 	}
 	if (res == FR_NO_FILE) {
-		printf("......FR_NO_FILE");
+		printf("......FR_NO_FILE\r\n");
 		flag= -2; 
 	}
 	if (res == FR_NO_PATH) {
-		printf("......FR_NO_PATH");
+		printf("......FR_NO_PATH\r\n");
 		flag= -2; 
 	}
 	if (res == FR_INVALID_NAME) {
-		printf("......FR_INVALID_NAME");
+		printf("......FR_INVALID_NAME\r\n");
 		flag= -2; 
 	}
 	if (res == FR_DENIED) {
-		printf("......FR_DENIED");
-		flag= -2; 
+		printf("......FR_DENIED\r\n");
+		flag= -1; 
 	}
 	return flag;
 }
-
+/*
 void cari_2jam_lalu(char *dest) {
-	time_t timeval;
+	//time_t timeval;
 	struct tm tw;
 	get_tm_time( &tw );
-	timeval = mktime( &tw );
+	//timeval = mktime( &tw );
 
 	char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 	
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
-	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
+	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", \ 
 		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-2);
 	//strcpy(dest,buf);
 }
+//*/
+/*
+	posisi 
+		H-7	: 7 hari sebelumnya
+		J-2 : 2 jam sebelumnya
+		B-1 : 1 bulan sebelumnya
+//*/
 
+	char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+	char tgl[]    ={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	char kabisat[]={31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+void cari_waktu(char *dest, char *posisi) {
+	
+	if ((posisi[0]!='H') && (posisi[0]!='h') && (posisi[0]!='J') && (posisi[0]!='j') && (posisi[0]!='B') && (posisi[0]!='b') ) {
+		printf("Argumen tidak benar !!\r\n");
+		printf("Contoh : H-7, J-2, B-1\r\n");
+		sprintf(dest,"\\");
+		return;
+	}
+
+	struct t_gsm_ftp *p_dt;
+	p_dt = (char *) ALMT_GSM_FTP;
+	
+	time_t timeval;
+	struct tm timeinfo;
+	get_tm_time( &timeinfo );
+	timeval = mktime( &timeinfo );
+	
+	char *pch, str[10];
+	int tmp, tmpx;
+	int ijam, itgl, ibulan, ithn, count;
+
+	printf("%s sekarang: %d:%d %d-%d[%s]-%d\r\n", posisi, timeinfo.tm_hour, timeinfo.tm_min, \ 
+			timeinfo.tm_mday, timeinfo.tm_mon+1, bulan[timeinfo.tm_mon], timeinfo.tm_year+1900);
+	
+	pch=strstr(posisi,"-");
+  	if (pch!=NULL)
+  		strcpy(str, pch+1);
+  	else
+  		return 0;
+
+	itgl = timeinfo.tm_mday;
+	ibulan = timeinfo.tm_mon;
+	ithn = timeinfo.tm_year+1900;
+
+	if ( (posisi[0]=='H') || (posisi[0]=='h') ) {
+		printf("%d Hari sebelumnya: %d\r\n", atoi(str), timeinfo.tm_mday-atoi(str));
+		tmp = timeinfo.tm_mday-atoi(str);
+		
+		if ( tmp<0 ) {		// kalo 50 jam sebelumnya ???
+			printf("masuk kurang: %d hari sebelumnya: %d\r\n", atoi(str), tmp);
+			tmp = abs(tmp);
+			ibulan = cek_waktu(&tmp, 2);
+			//printf("nilai ibulan: %d\r\n", ibulan);
+			tmpx = timeinfo.tm_mday-ibulan;
+
+		} else {
+			printf("%d Jam sebelumnya: %d\r\n", atoi(str), tmp);
+			sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", "data", timeinfo.tm_year+1900, bulan[timeinfo.tm_mon], \
+					timeinfo.tm_mday, tmp);
+		}
+	} else if ( (posisi[0]=='J') || (posisi[0]=='j') ) {
+
+
+		tmp = atoi(str);
+		count = cek_waktu(&tmp, 1);					// x tgl sebelumnya, count = 2
+		ijam = tmp;
+
+		tmp = count;
+		if (count>0) {
+			count = cek_waktu(&tmp, 2);
+			itgl = tmp;
+		}
+		
+		tmp = count;
+		if (count>0) {
+			count = cek_waktu(&tmp, 3);
+			ibulan = tmp;
+		}
+		
+		tmp = count;
+		if (count>0) {
+			count = cek_waktu(&tmp, 4);
+			ithn = tmp;
+		}
+		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", p_dt->direktori,  \ 
+				ithn, bulan[ibulan], itgl, ijam);
+	} else if ( (posisi[0]=='B') || (posisi[0]=='b') ) {
+		printf("%d Bulan sebelumnya: %d\r\n", atoi(str), timeinfo.tm_mon+1-atoi(str));
+	} else {
+		printf("Input salah\r\n");
+	}
+}
+
+int cek_kabisat(int tahun) {
+	if (tahun%400==0) {
+		return 1;
+	} else if( (tahun%400!=0) && (tahun%100!=0) && (tahun%4==0) ) {
+		return 1;
+	} else 
+		return 0;
+}
+
+// opsi 1: jam 
+// opsi 2: tgl
+// opsi 3: bulan
+// opsi 4: tahun
+// return: count
+int cek_waktu(int *waktu, int opsi) {		
+	time_t timeval;
+	struct tm timeinfo;
+	get_tm_time( &timeinfo );
+	timeval = mktime( &timeinfo );
+	
+	int count=0, flag;
+	int tglnya_1;
+	int tmp, tmpx;
+	if (opsi<0 || opsi>4) {
+		return -1;
+	}
+	//printf("_____________________awal: %d\r\n", *waktu);
+	if (opsi==1) {		// jam
+		tmp = timeinfo.tm_hour;		// tmp = 13
+		tmp -= *waktu;				// tmp = 13-13
+		
+		while(tmp<0) { 				// tmp = 13-55
+			tmp += 24;
+			count++;
+		}
+		*waktu = tmp;
+		return count;
+	} else if(opsi==2) {	// tgl
+		tmp = timeinfo.tm_mday;	// tmp = 1
+		tmpx = timeinfo.tm_mon;	// tmpx= 1
+		tmp -= *waktu;		// tmp = 1-1=0
+
+		while(tmp<1) {
+			if (cek_kabisat(timeinfo.tm_year+1900))	{	// tahun kabisat
+				tglnya_1 = (int)kabisat[tmpx-count-1];// [1-0-1] = 0 : januari
+			} else {
+				tglnya_1 = (int)tgl[tmpx-count-1];
+			}
+
+			if(tmp<1) {	
+				count++;					// count = 1
+				tmp += tglnya_1;			// tmp = 0+31
+				// jika lintas tahun //
+				if (count>=tmpx) {			// 1, 1
+					tmpx=count+12;
+				}
+			}
+		}
+
+		*waktu = tmp;
+		return count;
+	} else if (opsi==3) {
+		tmp = timeinfo.tm_mon;
+		tmpx = tmp-*waktu;
+		tmp-=*waktu;
+		
+		while (tmp<0) {			// bulan bisa = 0 karena array. bulan[0] = januari.
+			tmp += 12;
+			count++;			// 1 th sebelumnya
+		}
+		*waktu = tmp;
+		return count;
+	} else if (opsi==4) {
+		tmp = timeinfo.tm_year+1900;
+		tmp-=*waktu;
+		*waktu = tmp;
+		return count;
+	}
+}
+
+int hapus_paksa() {
+	
+}
 
 
 FRESULT cari_files (char* path) {
@@ -549,11 +744,15 @@ FRESULT cari_files (char* path) {
 }
 
 int cari_doku(int argc, char **argv) {
-	printf("posisi: %s", argv[1]);
-	cari_files(argv[1]);
+	char path[127];
+	
+	printf("posisi: %s\r\n", argv[1]);
+	cari_waktu(path, argv[1]);
+	printf("Path: %s\r\n", path);
+	//cari_files(argv[1]);
 }
 
-static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_direktori,0,0,0};
+static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_SENDED,0,0,0};
 
 static tinysh_cmd_t cari_doku_cmd={0,"cari","hapus file","", cari_doku,0,0,0};
 

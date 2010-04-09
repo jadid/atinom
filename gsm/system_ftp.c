@@ -20,7 +20,7 @@ FIL fd2;
 //int gsm_ftp(int argc, char *argv[])
 int gsm_ftp()
 {
-	int i;
+	int i,flag,oz;
 	int c, res;
 	int tout;
 	//time_t rawtime;
@@ -123,13 +123,27 @@ int gsm_ftp()
 		return;
 	}
 	
+	/*
 	if (start_gprs() < 0) 	{
 		printf("Start GPRS error !\r\n");
 		return;
 	}
+	//*/
+	
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........start gprs()   %d\r\n", oz+1);
+			if (start_gprs() == 0) {
+				flag = 1;
+				continue;
+			}
+			vTaskDelay(500);
+		}
+	}
 	
 	DIR dirs;
-	unsigned int size,oz=0, flag;
+	unsigned int size;
 	unsigned int files;
 	unsigned int file_sudah=0;
 	unsigned int file_sukses=0;
@@ -148,7 +162,8 @@ int gsm_ftp()
 		timeval = mktime( &tw );
 		
 		//printf("waktu %d-%d-%d %d:%d:%d\r\n", tw.tm_mday, tw.tm_mon+1, tw.tm_year+1900, tw.tm_hour, tw.tm_min, tw.tm_sec);	
-		cariDino(path);
+		//cariDino(path);
+		cari_waktu(path, "J-1");
 		//printf("path: %s\r\n", path);	
 		///sprintf( path, "%s", cari_sejam_lalu( timeval ));		
 		//sprintf(buf_nama, "file_%d.chc", timeval);		
@@ -275,7 +290,7 @@ int gsm_ftp()
 					}
 				}
 				f_close( &fd2 );
-				vTaskDelay(100);
+				vTaskDelay(100);		// kasih waktu buat proses yg lain.
 			}	// file archive //
 			
 		}	// loop direktori //	//*/
@@ -337,7 +352,7 @@ int gsm_ftp()
 	
 	return;
 }
-
+/*
 void cariDino(char *dest) {
 	time_t timeval;
 	struct tm tw;
@@ -348,11 +363,11 @@ void cariDino(char *dest) {
 	
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
-	sprintf(dest,"%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
+	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", \ 
 		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1);
 	//strcpy(dest,buf);
 }
-
+//*/
 
 int cek_awal(void) {
 	//char buf[32];

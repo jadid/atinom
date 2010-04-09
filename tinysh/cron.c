@@ -186,11 +186,11 @@ void baca_cron() {
 			
 			if (p_dt[hitung].set) {
 				//*
-				printf("sekarang:  %d:%d %d-%d\r\n",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon, (timeinfo.tm_year+1900)); //, bulan[], , , 
+				printf("sekarang:  %d:%d %d-%d\r\n",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
 				
-				printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
-						p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
-						p_dt[hitung].cmd, p_dt[hitung].alamat, p_dt[hitung].status?"Aktif [1]":"Mati [0]");
+				//printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
+				//		p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
+				//		p_dt[hitung].cmd, p_dt[hitung].alamat, p_dt[hitung].status?"Aktif [1]":"Mati [0]");
 				//*/
 				#ifdef PAKAI_SELENOID
 				if (strcmp(p_dt[hitung].cmd,"relay")==0) {
@@ -220,7 +220,8 @@ void baca_cron() {
 				#ifdef PAKAI_FILE_SIMPAN
 				if (strcmp(p_dt[hitung].cmd,"hapus")==0) {
 					printf(".....................................HAPUS file\r\n");			
-					hapus_direktori();
+					//sleep(10);
+					hapus_SENDED();
 				}
 				#endif
 			}

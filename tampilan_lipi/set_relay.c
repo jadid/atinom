@@ -4,6 +4,8 @@
 #include "../monita/monita_uip.h"
 #include "../GPIO/selenoid.c"
 
+#include <stdio.h>
+#include <stdlib.h>
 
 extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
 extern xTaskHandle hdl_relay;
@@ -20,6 +22,7 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	vTaskDelay(1000);
 	vTaskDelay(1000);
 	
+
 	//printf("serial default\r\n");
 	//ser2_putstring("pake ser 2\r\n");
 	//serX_putstring(2, "pake PM di serial \r\n");
@@ -63,6 +66,18 @@ void cek_alarm_relay(no_sumber) {
 			
 			//printf("%s data: %.2f, alarmL: %.2f, alarmH: %.2f\r\n", \ 
 			//	 p_dt[index].nama, data_f[index], p_dt[index].alarm_L, p_dt[index].alarm_H);
+			
+			if ((data_f[index]>p_dt[index].alarm_HH) ) {
+				set_selenoid(p_dt[index].relay);
+				fAlarm[p_dt[index].relay] = 1;
+			}
+			
+			if ( (fAlarm[p_dt[index].relay] != 1) && ((data_f[index]<p_dt[index].alarm_H) ) ) {
+				unset_selenoid(p_dt[index].relay);
+				fAlarm[p_dt[index].relay] = 0;
+			}
+			
+			/*
 			if ((data_f[index]<p_dt[index].alarm_L) || (data_f[index]>p_dt[index].alarm_H) ) {
 				set_selenoid(p_dt[index].relay);
 				fAlarm[p_dt[index].relay] = 1;
@@ -71,6 +86,7 @@ void cek_alarm_relay(no_sumber) {
 				unset_selenoid(p_dt[index].relay);
 				fAlarm[p_dt[index].relay] = 0;
 			}
+			//*/
 		}
 	}
 	//*/

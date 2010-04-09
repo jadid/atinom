@@ -233,13 +233,15 @@ struct t_group {
 };
 
 struct t_dt_set  {
-	float 	alarm_H;
-	float 	alarm_L;
+	float 	alarm_HH;
+	//float 	alarm_LL;
 	char	relay;
 	char 	aktif;
 	//char	ket[32];	
 	char	nama[16];
-	char 	satuan[8];	
+	char 	satuan[8];
+	float 	alarm_H;
+	//float 	alarm_L;
 };
 
 #ifdef PAKAI_FILE_SIMPAN
@@ -249,6 +251,7 @@ struct t_simpan_file {
 	int 	detik;			// periode data disimpan dalam file
 	short 	no_data[ JML_SUMBER * PER_SUMBER ];
 	char	nama_file[16];	// awalan nama file, misalnya angin
+	char	flag[80];
 };
 #endif
 

@@ -84,14 +84,14 @@ int cek_data(int argc, char **argv)
 	
 		judul(" Data Setting\r\n");
 	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_H : Alr_HH : Rly : &Memory\r\n");
 		garis_bawah();
 	
 		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
 		{
 			printf(" (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
-				p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
+				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
+				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 		}
 	}
 	else if (argc > 1)
@@ -114,7 +114,7 @@ int cek_data(int argc, char **argv)
 		
 				judul(" Data Setting\r\n");
 				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-				printf(" no.  : Nama       :  Data  : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
+				printf(" no.  : Nama       :  Data  : Stat : Satuan : Alr_H : Alr_HH : Rly : &Memory\r\n");
 				garis_bawah();
 				
 				sumb--;
@@ -122,11 +122,14 @@ int cek_data(int argc, char **argv)
 				for (i = sumb; i< (sumb + 20); i++)
 				{
 					if (i >= (JML_SUMBER * PER_SUMBER)) break;
-					
+					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
+						p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
+					/*
 					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
 						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
-					
+					//*/
 				}
 			}
 			else
@@ -162,8 +165,10 @@ static int set_data_default(void)
 		//sprintf(p_gr[i].ket, "--");
 		sprintf(p_gr[i].satuan, "-");
 		p_gr[i].relay = 0;
-		p_gr[i].alarm_L = 0;
-		p_gr[i].alarm_H = 10.0;
+		//p_gr[i].alarm_LL = 0;
+		//p_gr[i].alarm_L = 0;
+		p_gr[i].alarm_HH = 10.0;
+		p_gr[i].alarm_H = 9.0;
 		p_gr[i].aktif = 0;
 	}
 	
@@ -238,7 +243,7 @@ int set_data(int argc, char **argv)
 	
 	/* copy dulu yang lama kedalam buffer */
 	p_dt = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
-	//printf("Jml alikasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
+	printf("Jml alokasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
 	if (p_dt == NULL)
 	{
@@ -282,6 +287,19 @@ int set_data(int argc, char **argv)
 			sprintf(p_dt[sumb-1].satuan, argv[3]);	
 		}
 	}
+	else if (strcmp(argv[2], "alarmHH") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		if (sumb > 0)		
+		{
+			printf(" Data %d : Alarm high high : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].alarm_HH = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
 	else if (strcmp(argv[2], "alarmH") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
@@ -295,6 +313,7 @@ int set_data(int argc, char **argv)
 			return;
 		}
 	}
+	/*
 	else if (strcmp(argv[2], "alarmL") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
@@ -302,21 +321,26 @@ int set_data(int argc, char **argv)
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm low : %s\r\n", sumb, argv[3]);			
-			/*
-			if (strlen(argv[3]) > 8)
-			{
-				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
-				vPortFree( p_dt );
-				return;
-			}
-			//*/
-			//sprintf(p_dt[sumb-1].alarm_H, atof(argv[3]));	
 			p_dt[sumb-1].alarm_L = atof(argv[3]);
 		} else {
 			vPortFree( p_dt );
 			return;
 		}
 	}
+	else if (strcmp(argv[2], "alarmLL") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		if (sumb > 0)		
+		{
+			printf(" Data %d : Alarm low low : %s\r\n", sumb, argv[3]);				
+			p_dt[sumb-1].alarm_LL = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
+	//*/
 	else if (strcmp(argv[2], "relay") == 0)		// 	set_data 4 relay [1|aktif] 7
 	{
 		int slot=0;

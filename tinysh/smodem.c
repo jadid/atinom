@@ -594,7 +594,7 @@ int baca_serial(char *buf, int len, int timeout)
 		}
 		else
 		{
-			printf(" %s(): %d :timeout\r\n", __FUNCTION__, tout);
+			//printf(" %s(): %d :timeout\r\n", __FUNCTION__, tout);
 			len++;
 			tout++;
 			if ( tout > timeout) 

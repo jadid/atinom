@@ -115,7 +115,7 @@ static int cek_group(int argc, char **argv)
 					{
 						y++;
 						printf("  %d. data dari --> %d, %s\r\n", y, pgroup[ sumb - 1 ].no_data[i],\
-						p_dt[ (pgroup[ sumb - 1 ].no_data[i] - 1)].nama );
+							p_dt[ (pgroup[ sumb - 1 ].no_data[i] - 1)].nama );
 					}
 				}
 			}
@@ -259,53 +259,43 @@ int set_group(int argc, char **argv)
 		if (sumb > 0)		
 		{
 			// cek jika argumen selanjutnya adalah clear, maka direset
-			if (strcmp(argv[3], "clear") == 0)
-			{
+			if (strcmp(argv[3], "clear") == 0)	{
 				printf(" Reset koneksi data dari group %d !\r\n", sumb);
 				
 				for ( i = 0; i<40; i++)
 					p_gr[ sumb - 1 ].no_data[i] = 0;
 				
 			}
-			else
-			{
+			else 	{
 				/* cek jika ini bilangan nomer data */
 				sprintf(buf, "%s", argv[3]);	
 				ndata = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
-				
-				if (ndata > 0)
-				{
-				
+
+				if (ndata > 0) 		{
 					/* jika argument terakhir masih ada unset maka hanya pada 
 					* nomer data itu saja yang dihapus */
-					if (strcmp(argv[4], "unset") == 0)
-					{
-						printf(" Unset koneksi data %d dari group %d !\r\n", ndata, sumb);
-						for (i=0; i<40; i++)
+		
+					if (argc>4) {
+						if (strcmp(argv[4], "unset") == 0)		
 						{
-							if ( p_gr[ sumb - 1 ].no_data[i] == ndata )
-							{
-								p_gr[ sumb - 1 ].no_data[i] = 0;
-								break;
+							printf(" Unset koneksi data %d dari group %d !\r\n", ndata, sumb);
+							for (i=0; i<40; i++)	{
+								if ( p_gr[ sumb - 1 ].no_data[i] == ndata )		{
+									p_gr[ sumb - 1 ].no_data[i] = 0;
+									break;
+								}
 							}
 						}
-					}
-					else
-					{
-						printf(" Set koneksi data %d ke group %d !\r\n", ndata, sumb);
-						/* cari slot no_data yang masih nol */
-						for (i=0; i<40; i++)
-						{
-							if ( p_gr[ sumb - 1 ].no_data[i] == 0 )
-							{
+					} else {
+						printf(" Set data ke group \r\n");
+						for (i=0; i<40; i++) 	{
+							if ( p_gr[ sumb - 1 ].no_data[i] == 0 ) {
 								p_gr[ sumb - 1 ].no_data[i] = ndata;
 								break;
 							}
 						}
 					}
-				}
-				else
-				{
+				}  else 	{
 					printf(" ERR: nomer data tidak sesuai !\r\n");
 					vPortFree( p_gr );
 					return;

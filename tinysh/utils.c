@@ -131,3 +131,5 @@ int ganti_kata(char *dest, char *src) {
 	}
 	dest[i] = '\0';
 }
+
+

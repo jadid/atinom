@@ -509,22 +509,7 @@ int dihapus(char *nama) {
 	}
 	return flag;
 }
-/*
-void cari_2jam_lalu(char *dest) {
-	//time_t timeval;
-	struct tm tw;
-	get_tm_time( &tw );
-	//timeval = mktime( &tw );
 
-	char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-	
-	struct t_gsm_ftp *p_dt;
-	p_dt = (char *) ALMT_GSM_FTP;
-	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", \ 
-		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-2);
-	//strcpy(dest,buf);
-}
-//*/
 /*
 	posisi 
 		H-7	: 7 hari sebelumnya
@@ -532,9 +517,9 @@ void cari_2jam_lalu(char *dest) {
 		B-1 : 1 bulan sebelumnya
 //*/
 
-	char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-	char tgl[]    ={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	char kabisat[]={31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+char tgl[]    ={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+char kabisat[]={31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 void cari_waktu(char *dest, char *posisi) {
 	
@@ -571,24 +556,25 @@ void cari_waktu(char *dest, char *posisi) {
 	ithn = timeinfo.tm_year+1900;
 
 	if ( (posisi[0]=='H') || (posisi[0]=='h') ) {
-		printf("%d Hari sebelumnya: %d\r\n", atoi(str), timeinfo.tm_mday-atoi(str));
-		tmp = timeinfo.tm_mday-atoi(str);
+		tmp = atoi(str);
 		
-		if ( tmp<0 ) {		// kalo 50 jam sebelumnya ???
-			printf("masuk kurang: %d hari sebelumnya: %d\r\n", atoi(str), tmp);
-			tmp = abs(tmp);
-			ibulan = cek_waktu(&tmp, 2);
-			//printf("nilai ibulan: %d\r\n", ibulan);
-			tmpx = timeinfo.tm_mday-ibulan;
-
-		} else {
-			printf("%d Jam sebelumnya: %d\r\n", atoi(str), tmp);
-			sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", "data", timeinfo.tm_year+1900, bulan[timeinfo.tm_mon], \
-					timeinfo.tm_mday, tmp);
+		count = cek_waktu(&tmp, 2);
+		itgl = tmp;
+		
+		tmp = count;
+		if (count>0) {
+			count = cek_waktu(&tmp, 3);
+			ibulan = tmp;
 		}
+		
+		tmp = count;
+		if (count>0) {
+			count = cek_waktu(&tmp, 4);
+			ithn = tmp;
+		}
+		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", p_dt->direktori,  \ 
+				ithn, bulan[ibulan], itgl);
 	} else if ( (posisi[0]=='J') || (posisi[0]=='j') ) {
-
-
 		tmp = atoi(str);
 		count = cek_waktu(&tmp, 1);					// x tgl sebelumnya, count = 2
 		ijam = tmp;
@@ -704,12 +690,13 @@ int hapus_paksa() {
 }
 
 
-FRESULT cari_files (char* path) {
+FRESULT cari_files (char* path, char *aksi) {
     FRESULT res;
     FILINFO fno;
     DIR dir;
     int i;
     char *fn;
+    char abs_path[128];
 #if _USE_LFN
     static char lfn[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
     fno.lfname = lfn;
@@ -730,12 +717,17 @@ FRESULT cari_files (char* path) {
             fn = fno.fname;
 #endif
             if (fno.fattrib & AM_DIR) {
-                sprintf(&path[i], "/%s", fn);
-                res = cari_files(path);
+                sprintf(&path[i], "\\%s", fn);
+                res = cari_files(path, aksi);
                 if (res != FR_OK) break;
                 path[i] = 0;
             } else {
-                printf("%s/%s\n", path, fn);
+				if (strcmp(aksi,"kirim_ftp")==0) {
+					sprintf(abs_path, "%s\\%s", path, fn);
+					kirim_file_ke_ftp(abs_path);
+					//printf("kirim_ftpnya: %s\\%s\r\n", path, fn);
+				} else
+	                printf("%s\\%s\r\n", path, fn);
             }
         }
     }
@@ -744,12 +736,72 @@ FRESULT cari_files (char* path) {
 }
 
 int cari_doku(int argc, char **argv) {
-	char path[127];
+
+	if (argc>2) {
+		printf("Argumen terlalu banyak.\r\n");
+		return -1;
+	}
+	char buf[127];
+	sprintf(buf, "%s", argv[1]);
+	if ((buf[0]!='H') && (buf[0]!='h') && (buf[0]!='J') && (buf[0]!='j') && (buf[0]!='B') && (buf[0]!='b') ) {
+		printf("Argumen tidak benar !!\r\n");
+		printf("Contoh : H-7, J-2, B-1\r\n");
+		return -1;
+	}
 	
-	printf("posisi: %s\r\n", argv[1]);
-	cari_waktu(path, argv[1]);
-	printf("Path: %s\r\n", path);
-	//cari_files(argv[1]);
+	cari_berkas(buf);
+/*	
+	char path[127];
+	char *pch, str[10];
+	int i=0;
+	sprintf(buf, "%s", argv[1]);
+	printf("Awalnya posisi: %s\r\n",buf);
+	
+	pch=strstr(buf,"-");
+  	if (pch!=NULL)
+  		strcpy(str, pch+1);
+
+  	for(i=atoi(str); i>0; i--) {
+		sprintf(buf, "%c-%d", buf[0],i);
+		cari_waktu(path, buf);
+		//printf("_____________--path: %s\r\n",path);
+		cari_files(path);
+	}
+//*/
+  	//printf("isi: %d\r\n", atoi(str));
+	//	cari_waktu(path, buf);
+	//	printf("Path: %s\r\n", path);
+	//cari_files(path);
+}
+
+int cari_berkas(char *buf, char *aksi) {
+	if ((buf[0]!='H') && (buf[0]!='h') && (buf[0]!='J') && (buf[0]!='j') && (buf[0]!='B') && (buf[0]!='b') ) {
+		printf("Argumen tidak benar !!\r\n");
+		printf("Contoh : H-7, J-2, B-1\r\n");
+		return -1;
+	}
+	
+	char path[127];
+	char *pch, str[10], waktu[10], aksinya[20];
+	int i=0;
+	strcpy(waktu,buf);
+	strcpy(aksinya, aksi);
+	//printf("Awalnya posisi: %s\r\n",waktu);
+	
+	
+	pch=strstr(waktu,"-");
+  	if (pch!=NULL)
+  		strcpy(str, pch+1);
+	//printf("______aksinya: %s, waktu: %s, str: %s_________\r\n\r\n", aksinya, waktu, str);
+	//*
+  	for(i=atoi(str); i>0; i--) {
+		sprintf(waktu, "%c-%d", waktu[0],i);
+		cari_waktu(path, waktu);
+		//printf("_______________path: %s\r\n",path);
+		cari_files(path, aksinya);
+	}
+	
+	//*/
 }
 
 static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_SENDED,0,0,0};

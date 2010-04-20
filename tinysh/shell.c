@@ -615,6 +615,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_modem_cmd);
 	tinysh_add_command(&set_modem_gsm_cmd);
 	tinysh_add_command(&gsm_ftp_cmd);
+	tinysh_add_command(&cek_ftp_cmd);
 	//tinysh_add_command(&gsm_ftp_cmd);
 #endif	
 

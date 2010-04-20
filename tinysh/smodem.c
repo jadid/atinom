@@ -369,6 +369,10 @@ int set_modem_ftp(int argc, char **argv)
 static tinysh_cmd_t set_modem_ftp_cmd={0,"set_modem_ftp","mengubah konfigurasi modem ftp",
 		"help default user password periode server direktori",set_modem_ftp,0,0,0};
 
+static tinysh_cmd_t cek_ftp_cmd={0,"cek_ftp","mengecek koneksi modem: gprs dan ftp",
+		"",cek_ftp,0,0,0};
+
+
 int set_modem_gsm(int argc, char **argv)
 {
 	unsigned char buf[24];

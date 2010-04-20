@@ -15,7 +15,12 @@ char buf[128];
 
 #define CTRL_ETX	0x03	/* END of TEXT lihat ascii code http://en.wikipedia.org/wiki/ASCII */
 #define CTRL_DLE	0x10	/* Data link escape, untuk memagari jika ada karakter ETX yang ikut dikirim */
+
 FIL fd2;
+unsigned int files;
+unsigned int file_sudah=0;
+unsigned int file_sukses=0;
+
 
 //int gsm_ftp(int argc, char *argv[])
 int gsm_ftp()
@@ -23,172 +28,52 @@ int gsm_ftp()
 	int i,flag,oz;
 	int c, res;
 	int tout;
-	//time_t rawtime;
-	//struct tm * timeinfo;
 	
 	time_t timeval;
 	struct tm tw;
 	
 	char abs_path[128];
 	char path[64];
-	
-	printf("Program kirim file lewat FTP GSM\r\n");
-	#if ( DEBUG == 1)				
-		printf(" enable debug out !!\n");
-	#endif
-
-	
-	// power on modem //
-	// cek wind //
-	// masukkan pin (jika ada) //
-	
-	// cek argumen
-	/*
-    for (i=0; i<argc; i++)
+//*
+	if (konek_ftp_awal()==0) 
 	{
-		if (argv[i][0] == '-')
-		{
-			if (argv[i][1] == 'd')
-			{
-				sprintf(MODEMDEVICE, "%s", argv[i+1]);				
-				#if ( DEBUG == 1)					
-					printf(" dev = %s\n", MODEMDEVICE);
-				#endif
-			}
-			if (argv[i][1] == 'f')
-			{
-				sprintf(NAMA_FILE, "%s", argv[i+1]);
-				#if ( DEBUG == 1)	
-					printf(" file = %s\n", NAMA_FILE);
-				#endif
-				
-			}
-		}
+		printf("Koneksi GPRS gagal !!!\r\n");
+		printf("Create FTP sesssion error !\r\n");
+		return 0;
 	}
+//*/
 	
-	
-	buka_serial( MODEMDEVICE );
-	//*/
-	
-	#if ( DEBUG == 1)
-	printf(" Flush serial !\r\n");
-	#endif
-	
-	/* flush sekaligus cek jika masih +WIND */
-	ulang:
-	memset(buf, 0, sizeof (buf));
-	baca_serial(buf, 100, 0);
-	if ( strncmp(buf, "+WIND", 5) == 0)
-	{
-		goto ulang;
-	}
-	
-	//baca_serial(buf, 100, 0);
-	
-	if (cek_awal() < 0) 	{
-		printf("Modem tidak terdeteksi !\r\n");
-		return;
-	}
-	
-	if ( set_cpin() < 0) 	{
-		printf("Setting CPIN error !\r\n");
-		return;
-	}
-	
-	if (set_wipcfg() < 0)	{
-		printf("Set wipcfg error !\r\n");
-		return;
-	}
-	/* sleep dulu satu detik supaya siap2 */
-	printf(" Sleep dulu 1 detik\r\n");
-	sleep(1);
-	
-	if (set_wipbr() < 0)	{
-		printf("Set wipbr error !\r\n");
-		return;
-	}
-	
-	if (set_wipbr_apn() < 0) 	{
-		printf("Set wipbr_apn error !\r\n");
-		return;
-	}
-	
-	if (set_wipbr_user() < 0)	{
-		printf("Set wipbr_user error !\r\n");
-		return;
-	}
-	
-	if (set_wipbr_passwd() < 0) 	{
-		printf("Set wipbr_passwd error !\r\n");
-		return;
-	}
-	
-	/*
-	if (start_gprs() < 0) 	{
-		printf("Start GPRS error !\r\n");
-		return;
-	}
-	//*/
-	
-	flag=0;
-	for (oz=0; oz<5; oz++) {
-		if (flag == 0) {
-			printf("...........start gprs()   %d\r\n", oz+1);
-			if (start_gprs() == 0) {
-				flag = 1;
-				continue;
-			}
-			vTaskDelay(500);
-		}
-	}
 	
 	DIR dirs;
 	unsigned int size;
-	unsigned int files;
-	unsigned int file_sudah=0;
-	unsigned int file_sukses=0;
+//	unsigned int files;
+//	unsigned int file_sudah=0;
+//	unsigned int file_sukses=0;
 	unsigned int jum_dirs;
 	FILINFO fileInfo;
 	char *nama;
 		
-	if (create_ftp_sess() == 0)
+	if (TRUE)
 	{
-		printf("Create FTP session OK !\r\n");		// nyampe sini !!!
 		
-		
-		//time(&rawtime); 
-		//timeinfo = localtime ( &rawtime );
-		get_tm_time( &tw );
-		timeval = mktime( &tw );
-		
-		//printf("waktu %d-%d-%d %d:%d:%d\r\n", tw.tm_mday, tw.tm_mon+1, tw.tm_year+1900, tw.tm_hour, tw.tm_min, tw.tm_sec);	
-		//cariDino(path);
-		cari_waktu(path, "J-1");
+
+		//cari_waktu(path, "j-1");
+		cari_berkas("H-3", "kirim_ftp");
+	}	
 		//printf("path: %s\r\n", path);	
-		///sprintf( path, "%s", cari_sejam_lalu( timeval ));		
-		//sprintf(buf_nama, "file_%d.chc", timeval);		
 		
+/*		
 		fileInfo.lfname = buf_lfn;
 		fileInfo.lfsize = 255;//sizeof (buf_lfn);
-		
-		/*
-		if ((res = f_opendir (&dirs, "\data\tahun_2010")))
-		{ 
-			printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
-			return 0;
-		} else {
-			printf("OKE!\r\n");
-		}//*/
-		//*
+
 		if ((res = f_opendir (&dirs, path)))
 		{ 
 			printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
 			return 0;
 		} 
 		//printf("%s(): Open dir %s OK\r\n", __FUNCTION__, path);
-		//*/
+
 		// MULAI LOOP DIREKTORI //
-		//*//
 		for (size = files = jum_dirs = 0;;)
 		{
 			if (((res = f_readdir (&dirs, &fileInfo)) != FR_OK) || !fileInfo.fname [0]) 
@@ -242,7 +127,8 @@ int gsm_ftp()
 					// kembalikan pointer //
 					f_lseek( &fd2, 0);
 					
-					if ( upload_file(nama) == 0)
+					//if ( upload_file(nama) == 0)
+					if (TRUE)
 					{
 						//upload_data_file("AAAAAAAAABBBBBBBB");
 						size = sizeof (abs_path);
@@ -261,19 +147,20 @@ int gsm_ftp()
 						}
 						
 						// untuk mengakhiri data ftp //
-						//*
+						//
 						flag=0;
 						for (oz=0; oz<5; oz++) {
 							if ( flag == 0) {
 								printf("...........send ETX   %d\r\n", oz+1);
-								if (send_etx() == 0) {
+								//if (send_etx() == 0) {
+								if (TRUE) {
 									flag = 1;
 									continue;
 								}
 								vTaskDelay(500);
 							}
 						}
-						//*/
+
 						
 						// tulis SENDED pada akhir file //
 						sprintf(abs_path, "%s", ctime( &timeval ));	
@@ -293,15 +180,200 @@ int gsm_ftp()
 				vTaskDelay(100);		// kasih waktu buat proses yg lain.
 			}	// file archive //
 			
-		}	// loop direktori //	//*/
+		}	// loop direktori //	
 	}
-	else {
-		printf("Create FTP sesssion error !\r\n");
-	}
-	
-	sleep(5);
+//*/	
+	sleep(1);
 	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
 	
+	//tutup_koneksi_ftp();
+
+	return;
+}
+
+int kirim_file_ke_ftp(char *abs_path) {
+	int c, res, i, flag, oz;
+	unsigned int size;
+	unsigned int files;
+	unsigned int file_sudah=0;
+	unsigned int file_sukses=0;
+	unsigned int jum_dirs;
+	FILINFO fileInfo;
+	char *nama;
+	
+	time_t timeval;
+	struct tm tw;
+	
+	if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE)) {
+		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, res);					
+		return 0;
+	}
+	
+	f_lseek( &fd2, fd2.fsize - 6 );
+	f_read( &fd2, abs_path, 6, &res);
+	printf("CEK %s @@@\r\n", abs_path);
+				
+	if (strncmp( abs_path, "SENDED", 6) == 0)  {
+		printf("file %s sudah dikirim !\r\n", nama);
+//			file_sudah++;
+	}
+	else	{
+		// kembalikan pointer //
+		f_lseek( &fd2, 0);
+					
+		if ( upload_file(nama) == 0)
+		//if (TRUE)
+		{
+						//upload_data_file("AAAAAAAAABBBBBBBB");
+			size = sizeof (abs_path);
+			for (;;)
+			{
+				f_read( &fd2, abs_path, size, &res);
+							
+				for (i=0; i<res; i++)
+				{								
+					//tulis_char( abs_path[i] );
+					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 1000);
+				}	
+		
+				if ( res < size ) break; 
+			}
+						
+			// untuk mengakhiri data ftp //
+			flag=0;
+			for (oz=0; oz<5; oz++) {
+				if ( flag == 0) {
+					printf("...........send ETX   %d\r\n", oz+1);
+					if (send_etx() == 0) {
+					//if (TRUE) {
+						flag = 1;
+						continue;
+					}
+					vTaskDelay(500);
+				}
+			}
+						
+			// tulis SENDED pada akhir file //
+			sprintf(abs_path, "%s", ctime( &timeval ));	
+			sprintf( &abs_path[24], "SENDED");	
+			printf("TULIS %s \r\n", abs_path);
+									
+			f_write( &fd2, abs_path, strlen(abs_path), &res);
+			//file_sukses++;
+		}
+		else
+		{
+			printf("Upload %s file ERROR !\r\n", nama);
+			//break;
+		}
+	}
+	f_close( &fd2 );
+	vTaskDelay(100);		// kasih waktu buat proses yg lain.	
+}
+
+int cek_ftp() {
+	if (konek_ftp_awal()) {
+		printf("_________Konek ke ftp_________\r\n");
+		tutup_koneksi_ftp();
+	} else {
+		printf("Gagal konek\r\n");
+	}
+}
+
+int konek_ftp_awal() {
+	char abs_path[128];
+	char path[64];
+	int i,flag,oz;
+	printf("Program kirim file lewat FTP GSM\r\n");
+	#if ( DEBUG == 1)				
+		printf(" enable debug out !!\n");
+	#endif
+	
+	/* flush sekaligus cek jika masih +WIND */
+	ulang:
+	memset(buf, 0, sizeof (buf));
+	baca_serial(buf, 100, 0);
+	if ( strncmp(buf, "+WIND", 5) == 0) 	{
+		goto ulang;
+	}
+	
+	//baca_serial(buf, 100, 0);
+	
+	if (cek_awal() < 0) 	{
+		printf("Modem tidak terdeteksi !\r\n");
+		return;
+	}
+	
+	if (set_cpin() < 0) 	{
+		printf("Setting CPIN error !\r\n");
+		return;
+	}
+	
+	if (set_wipcfg() < 0)	{
+		printf("Set wipcfg error !\r\n");
+		return;
+	}
+	/* sleep dulu satu detik supaya siap2 */
+	printf(" Sleep dulu 1 detik\r\n");
+	sleep(1);
+	
+	if (set_wipbr() < 0)	{
+		printf("Set wipbr error !\r\n");
+		return;
+	}
+	
+	if (set_wipbr_apn() < 0) 	{
+		printf("Set wipbr_apn error !\r\n");
+		return;
+	}
+	
+	if (set_wipbr_user() < 0)	{
+		printf("Set wipbr_user error !\r\n");
+		return;
+	}
+	
+	if (set_wipbr_passwd() < 0) 	{
+		printf("Set wipbr_passwd error !\r\n");
+		return;
+	}
+	
+	/*
+	if (start_gprs() < 0) 	{
+		printf("Start GPRS error !\r\n");
+		return;
+	}
+	//*/
+	
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........start gprs()   %d\r\n", oz+1);
+			if (start_gprs() == 0) {
+				flag = 1;
+				continue;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
+	
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........bikin sesi ftp()   %d\r\n", oz+1);
+			if (create_ftp_sess() == 0) {
+				flag = 1;
+				printf("Create FTP session OK !\r\n");		// nyampe sini !!!
+				continue;
+			}
+			vTaskDelay(500);
+		}
+	}
+	return flag;
+}
+
+int tutup_koneksi_ftp() {
+	int flag,oz;
 	flag=0;
 	for (oz=0; oz<5; oz++) {
 		if ( flag == 0) {
@@ -337,37 +409,7 @@ int gsm_ftp()
 		return;
 	}
 	//*/
-	
-	
-	/* power off device */
-	
-	//printf("Modem OK");
-	
-	/*
-	tulis_serial( "AT\r", 3, 100);
-	baca_serial( buf, 10, 10);
-	printf("didapat = %s\r\n", buf);
-	*/
-	//tutup_serial();
-	
-	return;
 }
-/*
-void cariDino(char *dest) {
-	time_t timeval;
-	struct tm tw;
-	get_tm_time( &tw );
-	timeval = mktime( &tw );
-
-	char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-	
-	struct t_gsm_ftp *p_dt;
-	p_dt = (char *) ALMT_GSM_FTP;
-	sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", \ 
-		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1);
-	//strcpy(dest,buf);
-}
-//*/
 
 int cek_awal(void) {
 	//char buf[32];

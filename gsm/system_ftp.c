@@ -58,7 +58,9 @@ int gsm_ftp()
 		
 
 		//cari_waktu(path, "j-1");
+		#ifdef PAKAI_FILE_SIMPAN
 		cari_berkas("H-3", "kirim_ftp");
+		#endif
 	}	
 		//printf("path: %s\r\n", path);	
 		

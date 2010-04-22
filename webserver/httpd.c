@@ -78,6 +78,7 @@
 static unsigned short
 generate_part_of_file(void *state)
 {
+	#ifdef PAKAI_FILE_SIMPAN		// benerkah ?? ato def MMC ???
   struct httpd_state *s = (struct httpd_state *)state;
 	int terbaca;
 
@@ -113,13 +114,14 @@ generate_part_of_file(void *state)
 	}
   
   return s->len;
+  #endif
 }
 /*---------------------------------------------------------------------------*/
 static
 PT_THREAD(send_file(struct httpd_state *s))
 {
   PSOCK_BEGIN(&s->sout);
-  
+  #ifdef PAKAI_FILE_SIMPAN		// benerkah ?? ato def MMC ???
   do {
     PSOCK_GENERATOR_SEND(&s->sout, generate_part_of_file, s);
     s->file.len -= s->len;
@@ -131,7 +133,7 @@ PT_THREAD(send_file(struct httpd_state *s))
 		printf(" Close file\r\n");
 		f_close( s->file.fd );
     }
-	
+	#endif
   PSOCK_END(&s->sout);
 }
 /*-------------------- INI dipanggil oleh script ---------------------------*/

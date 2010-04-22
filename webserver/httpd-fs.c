@@ -90,6 +90,7 @@ static void mundurkan_path2(char *bf)
 
 int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 {
+	#ifdef PAKAI_FILE_SIMPAN		// ato pake MMC ???
 	int ret;
 	char *nama;
 	char temp[256];
@@ -183,7 +184,7 @@ int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 	s->len = strlen(buf);	/* pjg yang harus ditransmit */
 	*pjg = s->len;
 	return 1;				/* masih harus dipanggil lagi */
-		
+	#endif
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -238,7 +239,7 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 		
 	printf(" Slot file %d kosong\r\n", ret);
 	#endif
-	
+	#ifdef PAKAI_FILE_SIMPAN		// benerkah ?? ato def MMC ???
 	if (ret = f_open( pfd, name, FA_READ | FA_WRITE))
 	{
 		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, ret);
@@ -270,7 +271,7 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 	
 	printf(" len = %d\r\n", file->len);
 	return 1;
-	
+	#endif		// benerkah ?? ato def MMC ???
 	#if 0
 	printf2("%s(): %s\r\n", __FUNCTION__, name);
 	

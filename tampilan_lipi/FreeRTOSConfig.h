@@ -54,6 +54,7 @@
 #define PAKAI_SELENOID		1		/* ULN2803 */
 
 #define PAKAI_CRON
+#define PAKAI_WEB_CLIENT		// utk kamera CCTV
 
 //#define DEBUG_DATA
 //#define PAKAI_SERIAL_2		1

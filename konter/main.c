@@ -27,6 +27,7 @@
 #include "queue.h"
 #include "semphr.h"
 
+
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
 #ifdef TAMPILAN_LPC
@@ -44,7 +45,24 @@
 #ifdef DEBUG_KONTER
 #define LED_DEBUG	BIT(19)		// P1.19
 #endif
-
+//*
+#ifdef PAKAI_CYWUSB
+	#define CYWM_LED	BIT(25)
+	#define CYWM_nRESET	BIT(19)
+	#define CYWM_nSS	BIT(21)
+	#define CYWM_nPD	BIT(22)
+	
+	#define PCSSP0		BIT(21)
+	#define DSS			0x07		// data 8 bit
+	
+	#define SSP_data	SSP0DR
+	
+	#define SSP0TNF	0x02
+	#define SSP0BSY	0x10
+	#define SSP0RNE	0x04
+	
+#endif
+//*/
 xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -98,12 +116,14 @@ extern unsigned int loop_kirim;
 unsigned int mati_total = 0;
 
 /* konektor P8 */
+/*
 #define P8_1		BIT(19)
 #define P8_2		BIT(20)
 #define P8_3		BIT(21)
 #define P8_4		BIT(22)
 #define P8_5		BIT(23)
 #define P8_6		BIT(24)
+#define P8_7		BIT(25)
 
 #define PCADC		BIT(12)
 #define ADC_CLKDIV	(250 << 8)
@@ -112,11 +132,16 @@ unsigned int mati_total = 0;
 #define ADC_1		BIT(0)
 #define ADC_2		BIT(1)
 #define ADC_DONE	BIT(31)
+//*/
 
+
+
+/*
 void init_gpio_relay(void)
 {
-	FIO1DIR = FIO1DIR | P8_1 | P8_2 | P8_3 | P8_4 | P8_5 | P8_6;
+	FIO1DIR = FIO1DIR | P8_1 | P8_2 | P8_3 | P8_4 | P8_5 | P8_6 | P8_7;
 }
+
 
 void blok_1_up(void)
 {
@@ -150,12 +175,12 @@ void blok_3_down(void)
 
 void setup_adc(void)
 {
-	/* 19 Juni 2009, ADC power dinyalakan */
+	// 19 Juni 2009, ADC power dinyalakan //
 	PCONP |= PCADC;
 	
-	/* PCLK ADC pakai default (00) atau CCLK / 4 */
+	// PCLK ADC pakai default (00) atau CCLK / 4 //
 	
-	/* setup PINSEL1 utk AD0 & AD1 */
+	// setup PINSEL1 utk AD0 & AD1 //
 	PINSEL1 |= (BIT(14) | BIT(16));
 }
 
@@ -168,11 +193,11 @@ void start_adc_2(void)
 {
 	AD0CR = (ADC_CLKDIV | ADC_PDN | ADC_START | ADC_2);
 }
-
+//*/
 unsigned short read_adc_1(void)
 {
 	unsigned int stat;
-	/*
+	/* memang dimatikan
 	stat = AD0STAT;
 	
 	if (stat & 0x01)
@@ -183,7 +208,7 @@ unsigned short read_adc_1(void)
 	else
 		return 0;
 	*/
-	
+	/*
 	stat = AD0DR0;
 	if (stat & ADC_DONE)
 	{
@@ -191,8 +216,9 @@ unsigned short read_adc_1(void)
 	}
 	else
 		return 0;
+	//*/
 }
-
+/*
 unsigned short read_adc_2(void)
 {
 	unsigned int stat;
@@ -205,11 +231,11 @@ unsigned short read_adc_2(void)
 	else
 		return 0;
 }
-
+//*/
 /*-----------------------------------------------------------*/
 #define jalankan
 
-
+#define CEK_BLINK
 
 int main( void )
 {
@@ -219,7 +245,8 @@ int main( void )
 	PCONP |= 0x80000000; 
 	
 	FIO0DIR = LED_UTAMA;
-	FIO0CLR = LED_UTAMA;	
+	FIO0CLR = LED_UTAMA;
+
 	
 	#if ( DEBUG_KONTER == 1) 
 	FIO1DIR = FIO0DIR | LED_DEBUG;
@@ -246,14 +273,20 @@ int main( void )
 #ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
-	init_gpio_relay();
-	setup_adc();
-
+	
+	
+	//setup_adc();
+	//FIO1SET = LED_CYWYSB;
+	
 #ifdef jalankan
 	init_led_utama();
 	start_ether();
 	init_shell();
-	init_task_adc();
+	//init_task_adc();
+
+#ifdef PAKAI_CYWUSB
+	init_modul_cywusb();
+#endif
 
 	vTaskStartScheduler();
 
@@ -265,9 +298,11 @@ int main( void )
 
 void togle_led_utama(void)
 {
+	//FIO1SET = LED_CYWYSB;
 	if (tog)
 	{
 		FIO0SET = LED_UTAMA;
+		LED_cywusb_on();
 		tog = 0;
 		
 		/* kalkulasi idle loop */
@@ -281,22 +316,22 @@ void togle_led_utama(void)
 		//blok_2_down();
 		//blok_3_up();
 		
-		/* wdog malimping */
+		// wdog malimping //
 		dog_menit++;
 		if (dog_menit > (60 * 5)) /* 5 menit */
 		//if (dog_menit > 10) /* 5 menit */
 		{
-			/* 	jika 5 menit tidak ada perubahan jumlah request
-			 	berarti server ngehang */
+			// 	jika 5 menit tidak ada perubahan jumlah request
+			// 	berarti server ngehang */
 			 	
 			if (dog_lama == loop_kirim)
 			{
-				/* 
-					normally close, sehingga jadi open
-					supply tegangan ke server putus, jadi hard reset */
+				// 
+				//	normally close, sehingga jadi open
+				//	supply tegangan ke server putus, jadi hard reset //
 				
 				if (mati_total == 0)	
-					blok_2_up();						
+					//blok_2_up();						
 				
 				dog_hang = 1;
 			}
@@ -308,12 +343,12 @@ void togle_led_utama(void)
 			dog_menit = 0;
 		}
 		
-		/* tunggu sekitar 10 detik baru release relaynya */
+		// tunggu sekitar 10 detik baru release relaynya //
 		if (dog_hang == 1 && dog_menit > 5)
 		{
-			/* release relay, sehingga close lagi */
+			// release relay, sehingga close lagi //
 			if (mati_total == 0)
-				blok_2_down();
+				//blok_2_down();
 			
 			dog_hang = 0;
 		}
@@ -323,6 +358,7 @@ void togle_led_utama(void)
 	else
 	{
 		FIO0CLR = LED_UTAMA;
+		LED_cywusb_off();
 		tog = 1;
 		
 		//blok_1_down();
@@ -334,18 +370,44 @@ void togle_led_utama(void)
 	}
 }
 
+
+
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
 	unsigned int muter=0;
-	
+	unsigned int x=0;
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
+	//unsigned char tes=41;
 	
-	vTaskDelay(2000);
 	
+	vTaskDelay(500);
+	#ifdef PAKAI_CYWUSB
+		konfig_WUSB('b');
+	#endif
+	vTaskDelay(500);
 	for (;;)
-	{		
+	{	
+		
+		#ifdef PAKAI_CYWUSB
+			portENTER_CRITICAL();
+			unsigned char tes;
+				tes = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
+				//printf("read reg: 0x%x___",tes);
+				if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
+					CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
+					//printf("write reg: 0x%x___",tes);
+					if (tes & 0x08) { // Valid A
+						tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
+						//wusb_in(tes);
+						printf("%c",tes);
+					}
+					//data = CYWM_ReadReg( REG_RX_VALID_A );
+				}
+			portEXIT_CRITICAL();
+		#endif
+			
 		/* 
 			setiap 100 ms, cek apakah rpm masih jalan,
 			dicek satu per satu, supaya tidak balapan 
@@ -356,16 +418,18 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 			
 			*/
 		
-		hitung_rpm();
+		//hitung_rpm();
 		
 		muter++;		
-		if (muter > 5)
+		if (muter > 50)
 		{
 			togle_led_utama();
+			//printf("Reg ID         : 0x%x\r\n", CYWM_ReadReg(0x00));	// REG_ID
+
 			muter = 0;
 		}	
 		
-		vTaskDelay(100);
+		vTaskDelay(10);
 	}
 }
 void init_led_utama(void)
@@ -396,9 +460,9 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 	
 	for (;;)
 	{
-		start_adc_1();
+//		start_adc_1();
 		vTaskDelay(2);
-		tot = tot + read_adc_1();
+//		tot = tot + read_adc_1();
 		
 		loop++;
 		if (loop > 500)
@@ -427,13 +491,13 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 			{
 				if (loop_mati > (60 * 2))
 				{
-					blok_1_up();
+//					blok_1_up();
 					
 					/* server juga nyala */
-					blok_2_down();
+//					blok_2_down();
 					
 					/* ke penduduk nyala */
-					blok_3_up();
+//					blok_3_up();
 					
 					mati_total = 0;
 				}
@@ -445,13 +509,13 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 			//if (volt_supply < 2.77) /* line < 22 Volt */
 			if (volt_supply < 2.52)   /* line <  20.286 */	
 			{
-				blok_1_down();
+//				blok_1_down();
 				
 				/* server juga harus ikutan mati */
-				blok_2_up();
+//				blok_2_up();
 				
 				/* ke penduduk mati */
-				blok_3_down();
+//				blok_3_down();
 				
 				mati_total = 1;				
 				loop_mati=0;

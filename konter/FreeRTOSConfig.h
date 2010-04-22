@@ -38,11 +38,14 @@
 
 //#define BOARD_TAMPILAN
 #define BOARD_KOMON
+//#define KOMON_KONTER
 #define BOARD_KOMON_KONTER
 #define VERSI_KOMON		"1.45"
-#define KONTER_MALINGPING	1
+//#define KONTER_MALINGPING	1
 
-#define DEBUG_KONTER	0
+#define PAKAI_CYWUSB
+
+#define DEBUG_KONTER	1
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2

@@ -128,9 +128,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	mul = 0;
 #endif
 
-
+#ifdef PAKAI_WEB_CLIENT
 	webclient_init();
 	printf("webclient inited !\r\n");
+#endif
 
 	/*  Initialise the local timers */
 	xStartTime = xTaskGetTickCount ();
@@ -146,6 +147,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		vTaskDelay(1);
 		//portYIELD();
 		
+		#ifdef PAKAI_WEB_CLIENT
 		wclient++;
 		if (wclient == 30000)	/* 30 detik */
 		{
@@ -153,7 +155,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			webclient_get("192.168.1.105", 80, "/frame.jpg");
 			//printf("GET mulai !\r\n");
 		}
-		
+		#endif
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
 		#ifdef CARI_SUMBER
 		loop++;
@@ -337,11 +339,12 @@ void dispatch_tcp_appcall (void)
 #endif
 
 	/* webclient */
+#ifdef PAKAI_WEB_CLIENT
 	if (uip_conn->rport == HTONS(80))
 	{
 		webclient_appcall();
 	}	  
-	
+#endif	
 	//printf("%s(): port = %d\r\n", __FUNCTION__, uip_conn->rport);
 }
 

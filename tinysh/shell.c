@@ -62,6 +62,10 @@
 #include "cron.c"
 #endif
 
+#ifdef PAKAI_CYWUSB
+	#include "../ext/cywsub/cywusb.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
@@ -310,6 +314,8 @@ void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned in
 	
 	*thn = detik / (8640 * 365);
 	
+	
+	
 }
 
 static void cek_uptime(int argc, char **argv)
@@ -349,6 +355,11 @@ static void cek_uptime(int argc, char **argv)
 	wt = rtc_get_time();
 	printf(" Now = %02d:%02d:%02d  %d-%d-%d\r\n", wt.RTC_Hour, wt.RTC_Min, wt.RTC_Sec, \
 			wt.RTC_Mday, wt.RTC_Mon, wt.RTC_Year);
+	#endif
+	
+	#ifdef PAKAI_CYWUSB
+		sec = CYWM_ReadReg(0x22);		// REG_RSSI
+		printf("[%sValid] RSSI: %d\r\n", (sec&0x20)?"":"Tak ",sec&0x1F);
 	#endif
 		
 	return ;
@@ -636,12 +647,27 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_data_cmd);
 	
 	// simpan file
+#ifdef PAKAI_FILE_SIMPAN
 	tinysh_add_command(&cek_file_cmd);
 	tinysh_add_command(&set_file_cmd);
 	tinysh_add_command(&del_direktori_cmd);
 	tinysh_add_command(&cari_doku_cmd);
+#endif
 #endif	
 
+#ifdef PAKAI_CYWUSB
+	static tinysh_cmd_t konfig_cywusb_cmd={0,"konfig_wusb","lihat konfig cywusb","[args]",
+                              lihatKonfig,0,0,0};
+                              
+	tinysh_add_command(&konfig_cywusb_cmd);
+	
+	static tinysh_cmd_t kirim_wusb_cmd={0,"wusb","lihat konfig cywusb","[args]", kirim_wusb,0,0,0};            
+	tinysh_add_command(&kirim_wusb_cmd);
+	
+	static tinysh_cmd_t reboot_wusb_cmd={0,"wusb_reset","reset cywusb","[args]", reboot_wusb,0,0,0};            
+	tinysh_add_command(&reboot_wusb_cmd);
+	
+#endif
 
 #if defined(PAKAI_SERIAL_1) || defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
 	tinysh_add_command(&kirim_serial_cmd);

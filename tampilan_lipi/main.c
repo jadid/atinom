@@ -166,7 +166,7 @@ int main( void )
 	PCLKSEL0 &= ~(BIT(8) | BIT(9));		// reset dulu
 	PCLKSEL0 |= BIT(8);					// samain aja PCLK = CCLK
 	
-	/* init TX2, RX2 */
+	/* init TX1, RX1 */
 	PINSEL4 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));	// reset dulu
 	PINSEL4 |= (BIT(1) | BIT(3));			// TXD1 & RXD1
 	 

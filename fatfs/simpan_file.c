@@ -39,6 +39,7 @@ static FIL fd;
 extern float data_f[];
 static FIL fd_foto;
 
+#ifdef PAKAI_FILE_SIMPAN
 int proses_simpan_file(void)
 {
 	time_t timeval;
@@ -198,6 +199,7 @@ int proses_simpan_file(void)
 		}
 	} /* jika set simpan = 1 */
 }
+#endif
 
 static char * buat_direktori(char *base, time_t timeval, int menit)
 {

@@ -287,7 +287,7 @@ int enc28j60Init (void)
 
   encBankSelect (BANK3);
 
-	#if 1
+	#if 0
 	printf("\r\nDebug MAC address :\r\n");
 	printf("  (%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X) ", \
 		uip_ethaddr.addr [0], uip_ethaddr.addr [1],	\
@@ -551,7 +551,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 
 unsigned int cek_paket(void)
 {
-	#if 1
+	#if  0		// awalnya 1. kudu dicari FIO_CEK_PAKET & INT_ENC ada dimana ?
 	if (FIO_CEK_PAKET & INT_ENC)
 	{
 		return 0;

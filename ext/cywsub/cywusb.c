@@ -63,14 +63,14 @@ void init_modul_cywusb() {
 	//konfig_WUSB('b');
 }
 
-void reboot_wusb(int flag) {
+void reboot_wusb() {
 	mati_cywusb();
 	vTaskDelay(10);
 	init_cywusb();
 	vTaskDelay(10);
 	konfig_WUSB('b');
 	vTaskDelay(100);
-	if(flag)
+	//if(flag)
 		lihatKonfig();
 }
 
@@ -81,7 +81,7 @@ void init_SSP0(void) {		// sbg SPI
 	// 2		// Set clock SCK Cywusb min 475 ns ~ 500 ns ~ f= 2Mhz
 	PCLKSEL1 &= ~(BIT(10) | BIT(11));		// reset dulu saja	P_CLK=CCLK/4
 	PCLKSEL1 |= BIT(10);	// =0 << CCLK/1
-	SSP0CPSR  = 20;				// CPSDVSR = 2   PCLK/(20)
+	SSP0CPSR  = 20;				// CPSDVSR = 2   PCLK/(20)	// genap 2 < CPSDVSR < 254		// 60/(80*3)
 	
 	// 3
 	PINSEL3 &= ~( BIT(8) | BIT(9) | BIT(14) | BIT(15) | BIT(16) | BIT(17) );	// reset dulu
@@ -96,7 +96,7 @@ void init_SSP0(void) {		// sbg SPI
 	// 5
 	SSP0CR0 = 0x00;		// reset dulu
 	SSP0CR0 = 0x0200 | 0x07;			// 	PCLK / (CPSDVSR × [SCR+1]). = CCLK/(20*3) = 60/60 Mhz = 1Mhz, 1us
-	//SSP0CR0 = 0x0400 | 0x07;			// 	PCLK / (CPSDVSR × [SCR+1]). = CCLK/(20*5) = 60/60 Mhz = 1Mhz, 1us
+	//SSP0CR0 = 0x0200 | 0x07;			// 	PCLK / (CPSDVSR × [SCR+1]). = CCLK/(20*5) = 60/60 Mhz = 1Mhz, 1us
 	//SSP0CR0 |= DSS;			// DSS:7 = 8 bit, FRF:0 = SPI CPOL=0 CPHA=0
 	SSP0CR1 = 0x02;		// LBM normal, enable SSP, SSP sudah master
 	SSP0IMSC = 0x00;

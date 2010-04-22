@@ -45,24 +45,7 @@
 #ifdef DEBUG_KONTER
 #define LED_DEBUG	BIT(19)		// P1.19
 #endif
-//*
-#ifdef PAKAI_CYWUSB
-	#define CYWM_LED	BIT(25)
-	#define CYWM_nRESET	BIT(19)
-	#define CYWM_nSS	BIT(21)
-	#define CYWM_nPD	BIT(22)
-	
-	#define PCSSP0		BIT(21)
-	#define DSS			0x07		// data 8 bit
-	
-	#define SSP_data	SSP0DR
-	
-	#define SSP0TNF	0x02
-	#define SSP0BSY	0x10
-	#define SSP0RNE	0x04
-	
-#endif
-//*/
+
 xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -77,6 +60,9 @@ xTaskHandle hdl_led;
 xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
+//#ifdef PAKAI_CYWUSB
+xTaskHandle hdl_cyswusb;
+//#endif
 
 #if (DEBUG_KONTER == 1)
 void dele(int dd)
@@ -274,9 +260,7 @@ int main( void )
 	init_gpio();
 #endif
 	
-	
 	//setup_adc();
-	//FIO1SET = LED_CYWYSB;
 	
 #ifdef jalankan
 	init_led_utama();
@@ -285,24 +269,26 @@ int main( void )
 	//init_task_adc();
 
 #ifdef PAKAI_CYWUSB
+	//init_task_cywusb();
 	init_modul_cywusb();
 #endif
 
 	vTaskStartScheduler();
 
-    /* Will only get here if there was insufficient memory to create the idle
-    task. */
+    /* 
+     Will only get here if there was insufficient memory to create the idle task. 
+    */
 	return 0;
 #endif
 }
 
-void togle_led_utama(void)
-{
-	//FIO1SET = LED_CYWYSB;
+void togle_led_utama(void) {
 	if (tog)
 	{
 		FIO0SET = LED_UTAMA;
+		#ifdef PAKAI_CYWUSB
 		LED_cywusb_on();
+		#endif
 		tog = 0;
 		
 		/* kalkulasi idle loop */
@@ -358,7 +344,9 @@ void togle_led_utama(void)
 	else
 	{
 		FIO0CLR = LED_UTAMA;
+		#ifdef PAKAI_CYWUSB
 		LED_cywusb_off();
+		#endif
 		tog = 1;
 		
 		//blok_1_down();
@@ -381,15 +369,25 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	idle_lama = 0;
 	//unsigned char tes=41;
 	
-	
+	//*
 	vTaskDelay(500);
 	#ifdef PAKAI_CYWUSB
 		konfig_WUSB('b');
 	#endif
+	//*/
+	
 	vTaskDelay(500);
 	for (;;)
 	{	
+		/*
+		portENTER_CRITICAL();
+		for(x=0; x<100000; x++) {
+			CYWM_WriteReg(0xA5, 0xA5);
+		}
+		portEXIT_CRITICAL();
+		//*/
 		
+		//*
 		#ifdef PAKAI_CYWUSB
 			portENTER_CRITICAL();
 			unsigned char tes;
@@ -407,7 +405,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 				}
 			portEXIT_CRITICAL();
 		#endif
-			
+		//*/	
 		/* 
 			setiap 100 ms, cek apakah rpm masih jalan,
 			dicek satu per satu, supaya tidak balapan 
@@ -424,8 +422,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		if (muter > 50)
 		{
 			togle_led_utama();
-			//printf("Reg ID         : 0x%x\r\n", CYWM_ReadReg(0x00));	// REG_ID
-
+			//printf("%4d___Reg ID         : 0x%x\r\n", x++, CYWM_ReadReg(0x00));	// REG_ID
 			muter = 0;
 		}	
 		
@@ -536,3 +533,63 @@ void init_task_adc(void)
 
 #endif
 
+#ifdef PAKAI_CYWUSB
+static portTASK_FUNCTION(task_cywusb, pvParameters )  {
+	unsigned int muterx=0;
+	unsigned int x=0;
+	//init_modul_cywusb();
+	
+	vTaskDelay(500);
+	//konfig_WUSB('b');
+	
+	//vTaskDelay(500);
+	//lihatKonfig();
+	for (;;)
+	{	
+		/*
+		portENTER_CRITICAL();
+		for(x=0; x<1000000; x++) {
+			kirim_SSP0(0xA5);
+			//CYWM_WriteReg(0xA5,0xA5);
+		}
+		portEXIT_CRITICAL();
+		//*/
+		
+		/*
+		#ifdef PAKAI_CYWUSBxxx
+			portENTER_CRITICAL();
+			unsigned char tes;
+				tes = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
+				//printf("read reg: 0x%x___",tes);
+				if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
+					CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
+					//printf("write reg: 0x%x___",tes);
+					if (tes & 0x08) { // Valid A
+						tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
+						//wusb_in(tes);
+						printf("%c",tes);
+					}
+					//data = CYWM_ReadReg( REG_RX_VALID_A );
+				}
+			portEXIT_CRITICAL();
+		#endif
+		//*/
+		
+		muterx++;		
+		if (muterx > 50)
+		{
+			//togle_led_utama();
+			//printf("%4d___Reg ID         : 0x%x\r\n", x++, CYWM_ReadReg(0x00));	// REG_ID
+
+			muterx = 0;
+		}	
+		
+		vTaskDelay(100);
+	}
+}
+
+void init_task_cywusb(void)  {
+	xTaskCreate(task_cywusb, ( signed portCHAR * ) "cyswusb",  (configMINIMAL_STACK_SIZE * 4) , NULL, \
+		tskIDLE_PRIORITY - 3, ( xTaskHandle * ) &hdl_cyswusb );
+}
+#endif

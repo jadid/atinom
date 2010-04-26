@@ -83,6 +83,7 @@ THUMB_SOURCE= \
 		../tinysh/tinysh.c \
 		../tinysh/shell.c \
 		../tinysh/enviro.c \
+		../tinysh/utils.c \
 		../GPIO/gpio.c \
 		../spi/spi.c \
 		../uip/hardware/enc28j60.c	\

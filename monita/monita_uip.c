@@ -130,12 +130,17 @@ void monita_appcall(void)
 				#endif
 				
 				#ifdef BOARD_KOMON_420_SAJA
+				/*
 				hitung_data_float();
 				
 				for (i=0; i<20;i++)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
-				}		
+				}
+				//*/ 
+					extern int rpmnya;
+					data_float.data[0] = (float) rpmnya;
+					printf("data monita_uip rpmnya: %.0f\r\n", data_float.data[0]);
 				#endif
 				
 				#ifdef BOARD_KOMON_B_THERMO
@@ -170,6 +175,7 @@ void monita_appcall(void)
 					
 					t++;
 				}
+				
 					#if (KONTER_MALINGPING == 1)
 					/* data kanal 1 adalah adc1 (adc0 internal) */
 						extern float volt_supply;

@@ -83,10 +83,10 @@
 #define configUSE_TICK_HOOK         0
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */
 #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 60000000 )
-#define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
+#define configTICK_RATE_HZ          ( ( portTickType ) 1000 )		// 1000
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 30 * configMINIMAL_STACK_SIZE * 4) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 50 * configMINIMAL_STACK_SIZE * 4) )		// awal 30
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0
@@ -95,7 +95,7 @@
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 		0
-#define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
+#define configMAX_CO_ROUTINE_PRIORITIES ( 5 )		// 2
 
 
 /* Set the following definitions to 1 to include the API function, or zero

@@ -48,7 +48,7 @@ char buf[30];
 typedef unsigned char uchar;
 /* redefine some useful and maybe missing utilities to avoid conflicts */
 #define strlen tinysh_strlen
-#define putchar(c) xSerialPutChar(1, c, 10000);
+#define putchar(c) telnetdPutChar(c) 		//xSerialPutChar(1, c, 10000);
 
 
 static void help_fnt(int argc, char **argv);

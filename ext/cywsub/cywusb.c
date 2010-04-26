@@ -31,6 +31,7 @@
 #define SSP0RNE	0x04
 
 unsigned char x [50];
+//static int kirimkan(char *);
 
 void init_gpio_cywusb(void) {
 	FIO1DIR = FIO1DIR | CYWM_LED | CYWM_nRESET | CYWM_nPD | CYWM_nSS;
@@ -81,8 +82,8 @@ void init_SSP0(void) {		// sbg SPI
 	// 2		// Set clock SCK Cywusb min 475 ns ~ 500 ns ~ f= 2Mhz
 	PCLKSEL1 &= ~(BIT(10) | BIT(11));		// reset dulu saja	P_CLK=CCLK/4
 	PCLKSEL1 |= BIT(10);	// =0 << CCLK/1
-	SSP0CPSR  = 20;				// CPSDVSR = 2   PCLK/(20)	// genap 2 < CPSDVSR < 254		// 60/(80*3)
-	
+	SSP0CPSR  = 10;				// CPSDVSR = 2   PCLK/(20)	// genap 2 < CPSDVSR < 254		// 60/(80*3)
+						// 60/(80*3) = 40 kHz, 60/(10*3) = 2 MHz
 	// 3
 	PINSEL3 &= ~( BIT(8) | BIT(9) | BIT(14) | BIT(15) | BIT(16) | BIT(17) );	// reset dulu
 	PINSEL3 |= (BIT(8) | BIT(9));		// set SCK0
@@ -96,6 +97,8 @@ void init_SSP0(void) {		// sbg SPI
 	// 5
 	SSP0CR0 = 0x00;		// reset dulu
 	SSP0CR0 = 0x0200 | 0x07;			// 	PCLK / (CPSDVSR × [SCR+1]). = CCLK/(20*3) = 60/60 Mhz = 1Mhz, 1us
+	//SSP0CR0 |= 0x0080 | 0x0040;			// CPHA=1;
+	//SSP0CR0 |= 0x40;
 	//SSP0CR0 = 0x0200 | 0x07;			// 	PCLK / (CPSDVSR × [SCR+1]). = CCLK/(20*5) = 60/60 Mhz = 1Mhz, 1us
 	//SSP0CR0 |= DSS;			// DSS:7 = 8 bit, FRF:0 = SPI CPOL=0 CPHA=0
 	SSP0CR1 = 0x02;		// LBM normal, enable SSP, SSP sudah master
@@ -133,6 +136,7 @@ unsigned char ambil_SSP0(void) {
 }
 
 void CYWM_WriteReg(unsigned char which, unsigned char data)	{
+	portENTER_CRITICAL();
 	//low(PORTC, wCS);		// CYWM_nSS
 	FIO1CLR = CYWM_nSS;
 	kirim_SSP0(REG_WRITE | which);
@@ -140,10 +144,12 @@ void CYWM_WriteReg(unsigned char which, unsigned char data)	{
 	FIO1SET = CYWM_nSS;
 	//high(PORTC, wCS);
 	//_delay_ms(1);
+	portEXIT_CRITICAL();
 }
 
 unsigned char CYWM_ReadReg(unsigned char which) {
 	unsigned char hasil;
+	portENTER_CRITICAL();
 	//low(PORTC, wCS);
 	FIO1CLR = CYWM_nSS;
 	kirim_SSP0(which);
@@ -151,6 +157,7 @@ unsigned char CYWM_ReadReg(unsigned char which) {
 	//kirim_SSP0(which);
 	FIO1SET = CYWM_nSS;
 	//high(PORTC, wCS);
+	portEXIT_CRITICAL();
 	return hasil;
 }
 
@@ -165,14 +172,14 @@ void konfig_WUSB(char tipe) {
 			data = CYWM_ReadReg( REG_ID );
 			if (data == 0x07) {
 				flag = 1;
-				printf("REG_ID: %x oz: %d!\n\r", data, oz);
+				//printf("REG_ID: %x oz: %d!\n\r", data, oz);
 				continue;
 			}
 		}
 	}
 	if (!flag) {
 		//sprintf(x, "REG_ID: %x: GAGAL!\n\r", data);
-		printf("REG_ID: %x: GAGAL!\n\r", data);
+		//printf("REG_ID: %x: GAGAL!\n\r", data);
 		//return;
 	}
 
@@ -300,7 +307,9 @@ void paket_rpm(char * data) {
 	}
 }
 
+/*
 static int kirim_wusb(int argc, char **argv) {
+//static int kirim_wusb() {
 	if (argc < 2)	{
 		printf(" ERR:  argument kurang !\r\n");
 		printf(" coba: wusb help \r\n");
@@ -322,6 +331,20 @@ static int kirim_wusb(int argc, char **argv) {
 		}	
 	}
 }
+//*/
+void kirim_wusb(char *data) {
+//int kirimkan(char *data) {
+	unsigned char rssi = CYWM_ReadReg(REG_RSSI);
+	if ( (rssi&0x20)  ) {		// && (rssi&0x1F)>10
+		CYWM_WriteReg( REG_CONTROL, 0x40 );		// mode kirim
+//		sprintf(x, "wusb %s", argv[1]);
+		wireless_puts(data); wireless_putc('\n');
+		printf("%s\r\n",data);
+		CYWM_WriteReg( REG_CONTROL, 0x80 );		// mode terima
+	}
+}
+
+
 
 #ifdef PAKAI_REMOTE_RELAY
 void motor_mati(void) {

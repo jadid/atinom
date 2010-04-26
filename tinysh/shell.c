@@ -90,7 +90,9 @@ extern xTaskHandle *hdl_ether;
 	extern xTaskHandle *hdl_relay;
 #endif
 
-
+#ifdef PAKAI_CYWUSB
+	extern xTaskHandle *hdl_cyswusb;
+#endif
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -266,6 +268,9 @@ void cek_stack(void)
 		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
 	
+	#ifdef PAKAI_CYWUSB
+		printf(" Cywusb   : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cyswusb));
+	#endif
 }							 
 
 static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",

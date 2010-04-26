@@ -221,7 +221,7 @@ unsigned short read_adc_2(void)
 /*-----------------------------------------------------------*/
 #define jalankan
 
-#define CEK_BLINK
+//#define CEK_BLINK
 
 int main( void )
 {
@@ -270,7 +270,7 @@ int main( void )
 
 #ifdef PAKAI_CYWUSB
 	//init_task_cywusb();
-	init_modul_cywusb();
+	//init_modul_cywusb();
 #endif
 
 	vTaskStartScheduler();
@@ -369,7 +369,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	idle_lama = 0;
 	//unsigned char tes=41;
 	
-	//*
+	/*
 	vTaskDelay(500);
 	#ifdef PAKAI_CYWUSB
 		konfig_WUSB('b');
@@ -387,7 +387,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		portEXIT_CRITICAL();
 		//*/
 		
-		//*
+		/*
 		#ifdef PAKAI_CYWUSB
 			portENTER_CRITICAL();
 			unsigned char tes;
@@ -406,6 +406,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 			portEXIT_CRITICAL();
 		#endif
 		//*/	
+		
 		/* 
 			setiap 100 ms, cek apakah rpm masih jalan,
 			dicek satu per satu, supaya tidak balapan 
@@ -419,16 +420,17 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		//hitung_rpm();
 		
 		muter++;		
-		if (muter > 50)
+		if (muter > 5)
 		{
 			togle_led_utama();
 			//printf("%4d___Reg ID         : 0x%x\r\n", x++, CYWM_ReadReg(0x00));	// REG_ID
 			muter = 0;
 		}	
 		
-		vTaskDelay(10);
+		vTaskDelay(100);
 	}
 }
+
 void init_led_utama(void)
 {
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
@@ -534,15 +536,20 @@ void init_task_adc(void)
 #endif
 
 #ifdef PAKAI_CYWUSB
+ unsigned char x [50];
+
 static portTASK_FUNCTION(task_cywusb, pvParameters )  {
 	unsigned int muterx=0;
 	unsigned int x=0;
-	//init_modul_cywusb();
+	unsigned int qq=0;
 	
-	vTaskDelay(500);
-	//konfig_WUSB('b');
-	
+	unsigned char tes;
+	unsigned char status;
 	//vTaskDelay(500);
+	init_modul_cywusb();
+	vTaskDelay(1000);
+	konfig_WUSB('b');
+	vTaskDelay(3000);
 	//lihatKonfig();
 	for (;;)
 	{	
@@ -556,40 +563,84 @@ static portTASK_FUNCTION(task_cywusb, pvParameters )  {
 		//*/
 		
 		/*
-		#ifdef PAKAI_CYWUSBxxx
+		#ifdef PAKAI_CYWUSB
 			portENTER_CRITICAL();
 			unsigned char tes;
 				tes = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
 				//printf("read reg: 0x%x___",tes);
 				if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
-					CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
-					//printf("write reg: 0x%x___",tes);
-					if (tes & 0x08) { // Valid A
-						tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
-						//wusb_in(tes);
-						printf("%c",tes);
-					}
-					//data = CYWM_ReadReg( REG_RX_VALID_A );
+				//while(tes & 0x01 || tes & 0x02) {
+				//	if (tes & 0x01) {
+						CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
+						//printf("write reg: 0x%x___",tes);
+						if (tes & 0x08) { // Valid A
+							tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
+							//wusb_in(tes);
+							printf("%c",tes);
+						}
+				//	}
 				}
 			portEXIT_CRITICAL();
 		#endif
 		//*/
 		
+		//*
+		#ifdef PAKAI_CYWUSB
+			status = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
+			//printf("read reg: 0x%x___",tes);
+			//if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
+			//while(tes & 0x01 || tes & 0x02) {
+			//	if (tes & 0x01) {
+					//CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
+					if(status & 0x08) {
+					//	printf("*");
+					}
+					//if ((status & 0x08) && (status & 0x02)) 
+					if (status & 0x08)
+					{ // Valid A
+						tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
+						//wusb_in(tes);
+						printf("%c",tes);
+					}
+					//if (status & 0x04)
+					//	printf("_^");
+					CYWM_WriteReg( 0x07, 0x03);
+			//	}
+			//}
+		#endif
+		//*/
+		//*
 		muterx++;		
-		if (muterx > 50)
+		if (muterx > 1000)
 		{
+			//sprintf(x, "data %d\r\n", qq);
+			//printf(x);
+			//kirim_wusb("^data_");
+			
+			//if(CYWM_ReadReg(0x00)!=0x07)		// cek ID cywusb tiap detik
+			//	reboot_wusb();
+			
+			/*
+			CYWM_WriteReg( 0x0F, qq);
+			printf("tulis: 0x%x\________",qq);
+			vTaskDelay(1000);
+			printf("baca: 0x%x\r\n", CYWM_ReadReg(0x0F));	
+			//*/
+			
+			//vTaskDelay(100);
 			//togle_led_utama();
 			//printf("%4d___Reg ID         : 0x%x\r\n", x++, CYWM_ReadReg(0x00));	// REG_ID
-
+			//printf("%4d__REG_RX_INT_STAT: 0x%2x dataA: %c REG_RX_INT_STAT: 0x%2x dataA: %d\r\n", x++, CYWM_ReadReg(0x08), CYWM_ReadReg(0x09), CYWM_ReadReg(0x08), CYWM_ReadReg(0x09));	// REG_RX_INT_STAT
 			muterx = 0;
+			qq++;
 		}	
 		
-		vTaskDelay(100);
+		vTaskDelay(1);
 	}
 }
 
 void init_task_cywusb(void)  {
-	xTaskCreate(task_cywusb, ( signed portCHAR * ) "cyswusb",  (configMINIMAL_STACK_SIZE * 4) , NULL, \
+	xTaskCreate(task_cywusb, ( signed portCHAR * ) "cyswusb",  (configMINIMAL_STACK_SIZE * 10) , NULL, \
 		tskIDLE_PRIORITY - 3, ( xTaskHandle * ) &hdl_cyswusb );
 }
 #endif

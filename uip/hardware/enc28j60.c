@@ -551,7 +551,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 
 unsigned int cek_paket(void)
 {
-	#if  0		// awalnya 1. kudu dicari FIO_CEK_PAKET & INT_ENC ada dimana ?
+	#if  1		// awalnya 1. kudu dicari FIO_CEK_PAKET & INT_ENC ada dimana ?
 	if (FIO_CEK_PAKET & INT_ENC)
 	{
 		return 0;

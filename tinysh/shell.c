@@ -134,7 +134,8 @@ void kirim_serial (int argc, char **argv) {
 	sprintf(buf, "%s", argv[1]);
 	sumb = cek_nomer_valid(buf, 5);
 
-	#ifdef PAKAI_SERIAL_1
+	//#ifdef PAKAI_SERIAL_1
+	#if defined(PAKAI_SERIAL_1) && defined(PAKAI_GSM_FTP)
 	if (1 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(1, buf);
@@ -143,17 +144,24 @@ void kirim_serial (int argc, char **argv) {
 	}
 	#endif
 
-	#ifdef PAKAI_SERIAL_2
+	#if defined(PAKAI_SERIAL_2) && defined(PAKAI_GSM_FTP)
 	if (2 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(2, buf);
 		if	(PAKAI_GSM_FTP==2)
 			baca_hasil();			// fitur yang perlu jawaban
 	}
-	
 	#endif
 	
-	#ifdef PAKAI_SERIAL_3
+	#if defined(PAKAI_SERIAL_2) && defined(PAKAI_CYWUSB)
+	if (2 == sumb) {
+		ganti_kata(buf, argv[2]);
+		serX_putstring(2, buf);
+	}
+	#endif
+	
+	//#ifdef PAKAI_SERIAL_3
+	#if defined(PAKAI_SERIAL_3) && defined(PAKAI_GSM_FTP)
 	if (3 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(3, buf);
@@ -613,8 +621,8 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA
-	tinysh_add_command(&cek_adc_cmd);
-	tinysh_add_command(&set_kanal_cmd);
+	//tinysh_add_command(&cek_adc_cmd);
+	//tinysh_add_command(&set_kanal_cmd);
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO
@@ -672,6 +680,18 @@ portTASK_FUNCTION(shell, pvParameters )
 	static tinysh_cmd_t reboot_wusb_cmd={0,"wusb_reset","reset cywusb","[args]", reboot_wusb,0,0,0};            
 	tinysh_add_command(&reboot_wusb_cmd);
 	
+	static tinysh_cmd_t mtrA_cmd={0,"mtrA","menjalankan motorA","[args]", mtrA,0,0,0};            
+	tinysh_add_command(&mtrA_cmd);
+	
+	static tinysh_cmd_t mtrB_cmd={0,"mtrB","menjalankan motorB","[args]", mtrB,0,0,0};            
+	tinysh_add_command(&mtrB_cmd);
+	
+	static tinysh_cmd_t mtrmati_cmd={0,"mtrmati","mematikan motor","[args]", mtrmati,0,0,0};            
+	tinysh_add_command(&mtrmati_cmd);
+	
+	static tinysh_cmd_t wrpm_cmd={0,"w_rpm","kirim data rpm","[args]", w_rpm,0,0,0};            
+	tinysh_add_command(&wrpm_cmd);
+	
 #endif
 
 #if defined(PAKAI_SERIAL_1) || defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
@@ -718,9 +738,9 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	#ifdef BOARD_KOMON_420_SAJA
-	kalibrasi_adc1();
+	//kalibrasi_adc1();
 	vTaskDelay(100);
-	start_adc_1();
+	//start_adc_1();
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD

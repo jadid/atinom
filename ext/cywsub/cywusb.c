@@ -13,7 +13,7 @@
 #ifdef PAKAI_CYWUSB
 
 #include "CYWUSB693x.h"
-
+int rpmnya=0;
 //#define PAKAI_REMOTE_RELAY
 
 #define CYWM_LED	BIT(25)
@@ -65,6 +65,8 @@ void init_modul_cywusb() {
 }
 
 void reboot_wusb() {
+	ser2_putstring("reset\r\n");
+/*
 	mati_cywusb();
 	vTaskDelay(10);
 	init_cywusb();
@@ -73,6 +75,7 @@ void reboot_wusb() {
 	vTaskDelay(100);
 	//if(flag)
 		lihatKonfig();
+//*/
 }
 
 void init_SSP0(void) {		// sbg SPI
@@ -203,7 +206,25 @@ void konfig_WUSB(char tipe) {
 	portEXIT_CRITICAL();
 }
 
+void mtrA() {
+	ser2_putstring("wusb mtrA\r\n");
+}
+
+void mtrB() {
+	ser2_putstring("wusb mtrB\r\n");
+}
+
+void mtrmati() {
+	ser2_putstring("wusb mtrmati\r\n");
+}
+
+void resetKincir() {
+	ser2_putstring("wusb reset\r\n");
+}
+
 void lihatKonfig() {
+	ser2_putstring("konfig\r\n");
+/*
 	//buang_watchdog();
 	printf("Konfig Wireless "); 
 	#ifdef ATAS
@@ -228,6 +249,7 @@ void lihatKonfig() {
 	} else {
 		printf("kirim [Transmitter]\r\n"); 
 	}
+//*/
 }
 
 
@@ -303,7 +325,12 @@ void paket_rpm(char * data) {
 	char *pch;
 	pch=strstr(data," ");
 	if (pch!=NULL) {
-		printf("RPM kincir: %d\r\n", atoi(pch+1));
+		
+		rpmnya = cek_nomer_valid((pch+1), 2000);
+		#ifdef DEBUG_CYWUSB
+		printf("RPM kincir: %d\r\n", rpmnya);
+		#endif
+		//printf("RPM kincir: %d\r\n", atoi(pch+1));
 	}
 }
 
@@ -344,7 +371,17 @@ void kirim_wusb(char *data) {
 	}
 }
 
-
+void w_rpm(int argc, char **argv)  {
+	
+	if (argc<2) {
+		//printf("salah perintah\r\n");
+	} else {
+		// kirim ke server
+		rpmnya = cek_nomer_valid(argv[1], 2000);
+		printf("datanya: %d\r\n", rpmnya);
+		//rpmnya++;
+	}
+}
 
 #ifdef PAKAI_REMOTE_RELAY
 void motor_mati(void) {

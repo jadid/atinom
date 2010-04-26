@@ -170,15 +170,18 @@ void monita_appcall(void)
 					
 					t++;
 				}
-				#if (KONTER_MALINGPING == 1)
-				/* data kanal 1 adalah adc1 (adc0 internal) */
-				extern float volt_supply;
-				
-				data_float.data[0] = (float) ((volt_supply * env2.kalib[0].m) + env2.kalib[0].C);
-				
-				
-				#endif
-				
+					#if (KONTER_MALINGPING == 1)
+					/* data kanal 1 adalah adc1 (adc0 internal) */
+						extern float volt_supply;
+						data_float.data[0] = (float) ((volt_supply * env2.kalib[0].m) + env2.kalib[0].C);
+					#endif
+					
+					
+					#ifdef PAKAI_CYWUSB
+						extern int rpmnya;
+						data_float.data[0] = (float) rpmnya;
+						printf("data monita_uip rpmnya: %.0f, p: %d\r\n", data_float.data[0], sizeof (data_float));
+					#endif
 				#endif
 				
 				xdata.nomer = loop_kirim;

@@ -140,7 +140,7 @@ void monita_appcall(void)
 				//*/ 
 					extern int rpmnya;
 					data_float.data[0] = (float) rpmnya;
-					printf("data monita_uip rpmnya: %.0f\r\n", data_float.data[0]);
+					//printf("data monita_uip rpmnya: %.0f\r\n", data_float.data[0]);
 				#endif
 				
 				#ifdef BOARD_KOMON_B_THERMO

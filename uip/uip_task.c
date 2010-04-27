@@ -133,6 +133,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("webclient inited !\r\n");
 #endif
 
+#ifdef PAKAI_TERIMA_BALIK
+	terima_balik_init();
+	printf("terima balik inited !\r\n");
+#endif
+
 	/*  Initialise the local timers */
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
@@ -169,6 +174,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			if (mul > JML_SUMBER) mul = 0;
 			
 		}
+		#endif
+	
+		#ifdef PAKAI_TERIMA_BALIK
+		
 		#endif
 	
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
@@ -345,6 +354,11 @@ void dispatch_tcp_appcall (void)
 		webclient_appcall();
 	}	  
 #endif	
+
+#ifdef PAKAI_TERIMA_BALIK
+	if (uip_conn->lport == HTONS(PORT_KIRIM_BALIK))
+		monita_appcall();
+#endif
 	//printf("%s(): port = %d\r\n", __FUNCTION__, uip_conn->rport);
 }
 

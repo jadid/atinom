@@ -620,3 +620,122 @@ void daytime_appcall(void)
 
 #endif // TAMPILAN
 
+#ifdef PAKAI_TERIMA_BALIK
+void terima_balik_init(void)
+{
+	loop_kirim = 0;
+	uip_listen(HTONS(PORT_KIRIM_BALIK));
+}
+
+void terima_balik_appcall(void)
+{
+	int len;
+	unsigned char buf[32];
+	float temp_rpm;
+	int i;
+	int t;
+	unsigned char ipne[32];
+	
+#if 0	
+			sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+	loop_kirim++;
+	printf("\n * %d:", loop_kirim);
+	if (uip_connected())
+	{
+		printf("konek %s\n", ipne);
+	}
+	if (uip_closed())
+	{
+		printf("close %s\n", ipne);
+	}
+	if (uip_aborted())
+	{
+		printf("abort %s\n", ipne);
+	}
+	if (uip_timedout())
+	{
+		printf("timeout %s\n", ipne);
+	}	
+	if(uip_acked()) 
+	{
+		printf("ack %s\n", ipne);
+	}
+	if (uip_poll())
+	{
+		printf("poll %s\n", ipne);	
+	}
+#endif
+	
+	if (uip_newdata())
+	{
+		len = uip_datalen();
+		//printf("newdata = %d %s\n", len, ipne);
+		
+		if (len >= 10)
+		{
+			portENTER_CRITICAL();
+			memcpy(buf, (char *) uip_appdata, 10);
+			portEXIT_CRITICAL();
+			
+			if (strncmp(buf, "balikm1", 10) == 0)
+			{
+				loop_kirim++;
+				
+				//#ifdef BOARD_KOMON_420_SAJA
+				#ifdef PAKAI_CYWUSB
+				/*
+				hitung_data_float();
+				
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = st_adc.flt_data[i];
+				}
+				//*/ 
+					extern int rpmnya;
+					data_float.data[0] = (float) rpmnya;
+					//printf("data monita_uip rpmnya: %.0f\r\n", data_float.data[0]);
+				#endif
+
+				
+				
+				
+				xdata.nomer = loop_kirim;
+				//xdata.flag = 30;		//pulsa
+				xdata.flag = 10;
+				xdata.alamat = 1;		// stacking board nomer 1
+				strcpy(xdata.mon, "monita1");
+				
+				portENTER_CRITICAL();
+				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
+				portEXIT_CRITICAL();
+				
+				//send data ke network
+				uip_send((char *) &xdata, sizeof (xdata));
+			}
+			//printf("\n");	
+		}
+		else 
+		{
+			sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+			printf("Unknown request dari %s\n", ipne);
+			uip_close();	
+		}	
+	}
+	
+	if (uip_poll())
+	{
+		sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+		printf("Invalid pool %s\n", ipne);
+		uip_close();	
+	}
+}	
+#endif

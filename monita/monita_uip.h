@@ -67,7 +67,7 @@
 #define 	PORT_DAYTIME	13
 #define 	ISO_nl 			0x0a
 #define		PORT_KONTROL	7235
-
+#define		PORT_KIRIM_BALIK	6543
 
 /* offset masing2 data pada array */
 #define OFFSET_CAP_L	1	- 1

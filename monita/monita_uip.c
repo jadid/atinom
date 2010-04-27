@@ -29,6 +29,7 @@ struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 
 #ifdef PAKAI_CYWUSB
 	struct t_xdata 			temp_data;		/*__attribute__ ((section (".eth_test")));*/	
+	struct t_data_float 	data_tetangga  ;/*__attribute__ ((section (".eth_test")));*/
 #endif 
 
 //extern struct t_data_float s_data[JML_SUMBER];
@@ -677,7 +678,7 @@ void terima_balik_appcall(void)
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		printf("newdata = %d %s\n", len, ipne);
+		//printf("newdata = %d %s\n", len, ipne);
 		
 		if (len >= 17)
 		{
@@ -688,13 +689,14 @@ void terima_balik_appcall(void)
 			
 			if (strncmp(temp_data.mon, "balikm1", 7) == 0)	{
 				loop_kirim++;
-				printf("Masuk newdata balikm cocok: %d  ", loop_kirim);
+				//printf("Masuk newdata balikm cocok: %d  ", loop_kirim);
 				//#ifdef BOARD_KOMON_420_SAJA
 				#ifdef PAKAI_CYWUSB
 				
 					//status[nomer_sambung].reply++;
-					memcpy( (char *) &ada_nilai, temp_data.buf, (sizeof (float)) );
-					printf("nilai: %f \r\n", ada_nilai);
+					memcpy( (char *) &data_tetangga, temp_data.buf, (PER_SUMBER*sizeof (float)) );
+					//printf("nilai: %f, nilai2: %f\r\n", data_tetangga.data[1], data_tetangga.data[2]);
+					//printf("nilai: %f = %.0f, nilai2: %.0f\r\n", ada_nilai, temp_data.buf[0], temp_data.buf[1]);
 				#endif
 			}
 			//*/

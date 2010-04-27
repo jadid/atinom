@@ -6,6 +6,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include "../../monita/monita_uip.h"
 
 #ifndef __CYWUSB__
 #define __CYWUSB__
@@ -14,6 +15,7 @@
 
 #include "CYWUSB693x.h"
 int rpmnya=0;
+extern struct t_data_float 	data_tetangga;
 //#define PAKAI_REMOTE_RELAY
 
 #define CYWM_LED	BIT(25)
@@ -326,9 +328,10 @@ void paket_rpm(char * data) {
 	pch=strstr(data," ");
 	if (pch!=NULL) {
 		
-		rpmnya = cek_nomer_valid((pch+1), 2000);
+		//rpmnya = cek_nomer_valid((pch+1), 2000);
+		rpmnya = atoi(pch+1);
 		#ifdef DEBUG_CYWUSB
-		printf("RPM kincir: %d\r\n", rpmnya);
+			printf("RPM kincir: %d\r\n", rpmnya);
 		#endif
 		//printf("RPM kincir: %d\r\n", atoi(pch+1));
 	}
@@ -372,15 +375,37 @@ void kirim_wusb(char *data) {
 }
 
 void w_rpm(int argc, char **argv)  {
-	
-	if (argc<2) {
-		//printf("salah perintah\r\n");
-	} else {
-		// kirim ke server
-		rpmnya = cek_nomer_valid(argv[1], 2000);
-		printf("datanya: %d\r\n", rpmnya);
-		//rpmnya++;
+	printf("RPM putaran kincir: %d \r\n", rpmnya);
+}
+
+int flag_aksi;
+int jml_perintah;
+int pindah;
+
+void kontrol_target(void) {
+	// hati-hati !!! bentrok dengan data dari kincir //
+	if (data_tetangga.data[1] > 100) {
+		if (jml_perintah<3 && flag_aksi==1 || pindah==1) {
+			mtrA();
+			jml_perintah++;
+			flag_aksi = 1;
+		} else {
+			jml_perintah=0;
+			flag_aksi = 0;
+		}
+		pindah=2;
+	} else if ((data_tetangga.data[1]<50)) {
+		if (jml_perintah<3 && flag_aksi==1 || pindah==2) {
+			mtrmati();
+			jml_perintah++;
+			flag_aksi = 1;
+		} else {
+			jml_perintah=0;
+			flag_aksi = 0;
+		}
+		pindah=1;
 	}
+	//printf("data tetangga: %.2f flag_aksi: %d perintah: %d, pindah: %d\r\n", data_tetangga.data[1], flag_aksi, jml_perintah, pindah);
 }
 
 #ifdef PAKAI_REMOTE_RELAY

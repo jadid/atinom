@@ -357,7 +357,7 @@ void dispatch_tcp_appcall (void)
 
 #ifdef PAKAI_TERIMA_BALIK
 	if (uip_conn->lport == HTONS(PORT_KIRIM_BALIK))
-		monita_appcall();
+		terima_balik_appcall();
 #endif
 	//printf("%s(): port = %d\r\n", __FUNCTION__, uip_conn->rport);
 }

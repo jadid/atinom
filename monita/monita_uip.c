@@ -27,6 +27,10 @@
 struct t_xdata 			xdata  		;/*__attribute__ ((section (".eth_test")));*/
 struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 
+#ifdef PAKAI_CYWUSB
+	struct t_xdata 			temp_data;		/*__attribute__ ((section (".eth_test")));*/	
+#endif 
+
 //extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;
@@ -635,6 +639,7 @@ void terima_balik_appcall(void)
 	int i;
 	int t;
 	unsigned char ipne[32];
+	float ada_nilai;
 	
 #if 0	
 			sprintf(ipne, " :%d.%d.%d.%d", \
@@ -672,49 +677,36 @@ void terima_balik_appcall(void)
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		//printf("newdata = %d %s\n", len, ipne);
+		printf("newdata = %d %s\n", len, ipne);
 		
-		if (len >= 10)
+		if (len >= 17)
 		{
+			//*
 			portENTER_CRITICAL();
-			memcpy(buf, (char *) uip_appdata, 10);
+			memcpy((char *) &temp_data, uip_appdata, len);
 			portEXIT_CRITICAL();
 			
-			if (strncmp(buf, "balikm1", 10) == 0)
-			{
+			if (strncmp(temp_data.mon, "balikm1", 7) == 0)	{
 				loop_kirim++;
-				
+				printf("Masuk newdata balikm cocok: %d  ", loop_kirim);
 				//#ifdef BOARD_KOMON_420_SAJA
 				#ifdef PAKAI_CYWUSB
-				/*
-				hitung_data_float();
 				
-				for (i=0; i<20;i++)
-				{
-					data_float.data[i] = st_adc.flt_data[i];
-				}
-				//*/ 
-					extern int rpmnya;
-					data_float.data[0] = (float) rpmnya;
-					//printf("data monita_uip rpmnya: %.0f\r\n", data_float.data[0]);
+					//status[nomer_sambung].reply++;
+					memcpy( (char *) &ada_nilai, temp_data.buf, (sizeof (float)) );
+					printf("nilai: %f \r\n", ada_nilai);
 				#endif
-
+			}
+			//*/
+			strcpy(temp_data.mon, "OKdata");
 				
-				
-				
-				xdata.nomer = loop_kirim;
-				//xdata.flag = 30;		//pulsa
-				xdata.flag = 10;
-				xdata.alamat = 1;		// stacking board nomer 1
-				strcpy(xdata.mon, "monita1");
-				
-				portENTER_CRITICAL();
-				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
-				portEXIT_CRITICAL();
+			//portENTER_CRITICAL();
+			//memcpy(xdata.buf, (char *) &data_float, sizeof (temp_data.mon));
+			//portEXIT_CRITICAL();
 				
 				//send data ke network
-				uip_send((char *) &xdata, sizeof (xdata));
-			}
+			uip_send((char *) &temp_data.mon, sizeof (temp_data.mon));
+			
 			//printf("\n");	
 		}
 		else 
@@ -724,8 +716,8 @@ void terima_balik_appcall(void)
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 			printf("Unknown request dari %s\n", ipne);
-			uip_close();	
-		}	
+		}
+		uip_close();	
 	}
 	
 	if (uip_poll())

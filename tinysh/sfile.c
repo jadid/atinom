@@ -736,9 +736,11 @@ FRESULT cari_files (char* path, char *aksi) {
 }
 
 int cari_doku(int argc, char **argv) {
-
-	if (argc>2) {
-		printf("Argumen terlalu banyak.\r\n");
+	display_args(argc,argv);
+	printf("Jml arg: %d\r\n", argc);
+	if (argc<2) {
+		printf("Argumen kurang.\r\n");
+		printf("cari [x-y: H-3 | J-1] [aksinya: ftp | lihat]\r\n");
 		return -1;
 	}
 	char buf[127];
@@ -749,7 +751,27 @@ int cari_doku(int argc, char **argv) {
 		return -1;
 	}
 	
-	cari_berkas(buf);
+	//printf("isi buf: %s\r\n");
+	
+	if (strcmp(argv[2], "ftp") == 0) {
+		if (konek_ftp_awal()==0) 
+		{
+			printf("Koneksi GPRS gagal !!!\r\n");
+			printf("Create FTP sesssion error !\r\n");
+			return 0;
+		} else {
+			printf("Create FTP sesssion !\r\n");
+		}
+		
+		cari_berkas(buf, "kirim_ftp");
+		
+		tutup_koneksi_ftp();
+	} else if (strcmp(argv[2], "lihat") == 0) {
+		cari_berkas(buf, "lihat");
+	} else {
+		printf("Perintah salah\r\n");
+		printf("cari [x-y: H-3 | J-1] [aksinya: ftp | lihat]\r\n");
+	}
 /*	
 	char path[127];
 	char *pch, str[10];
@@ -806,7 +828,7 @@ int cari_berkas(char *buf, char *aksi) {
 
 static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_SENDED,0,0,0};
 
-static tinysh_cmd_t cari_doku_cmd={0,"cari","hapus file","", cari_doku,0,0,0};
+static tinysh_cmd_t cari_doku_cmd={0,"cari","cari file","", cari_doku,0,0,0};
 
 static int simpan_sfile( struct t_simpan_file *pgr) {
 	printf(" Save struct SIMPAN_FILE ke flash ..");

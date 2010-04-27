@@ -36,48 +36,27 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
+#define PAKE_TELNETD
 
+//#define PAKAI_SERIAL_1
+#define PAKAI_SERIAL_2
+//#define PAKAI_SERIAL_3
+
+
+#define PAKAI_CYWUSB
+
+//#define BOARD_KOMON_A_RTD
+
+#define BOARD_KOMON_420_SAJA
+#define VERSI_KOMON		"1.42"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 #define _printf	printf2
 #define printf	printf2
 
-//#define PAKE_TELNETD
-
-#define CARI_SUMBER						// untuk mencari data sumber via Ethernet
-#define PAKAI_HTTP
-#define PAKAI_RTC
-#define PAKAI_MMC
-#define TAMPILAN_LPC_43
-#define PAKAI_FONT_KOMIK	1
-#define PAKAI_FILE_SIMPAN	1
-#define PAKAI_SELENOID		1		/* ULN2803 */
-
-#define PAKAI_CRON
-#define PAKAI_KIRIM_BALIK
-//#define DEBUG_DATA
-//#define PAKAI_SERIAL_2		1
-//#define PAKAI_SELENOID		1		/* ULN2803 */
-
-#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
-#define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
-
-//*
-#define PAKAI_SERIAL_1				// mendefinisikan aktif serial 1
-#define PAKAI_PM			1		// nyambung ke SERIAL 1
-#ifdef PAKAI_PM
-	#define BAUD_PM			19200
-#endif
-//*/
-//#define PAKAI_WEBCLIENT
-
-#define TAMPILAN_MALINGPING			1
-
-#define VERSI_KONFIG	2
-
-#define VERSI_KOMON		"1.43"
-#define PROMPT 		"Tamp_LIPI $ "
-#define NAMA_BOARD	"Tampilan"
+#define PROMPT 		"Komon_420 $ "
+#define NAMA_BOARD	"Babelan Komon-420 (4-20mA Saja)"
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -104,12 +83,12 @@
 #define configUSE_PREEMPTION		0
 #define configUSE_IDLE_HOOK         1
 #define configUSE_TICK_HOOK         0
+//#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */
 #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 60000000 )
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 32 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 100 * configMINIMAL_STACK_SIZE * 4) )		// ditambahkan untuk set alarmHH dan alarmLL
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 50 * configMINIMAL_STACK_SIZE * 4) )
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

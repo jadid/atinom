@@ -128,9 +128,17 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	mul = 0;
 #endif
 
-
+#ifdef PAKAI_WEBCLIENT
 	webclient_init();
 	printf("webclient inited !\r\n");
+	int wclient = 0;
+#endif
+
+#ifdef PAKAI_KIRIM_BALIK
+	int anginkecil=0;
+	int giliran;
+	giliran=4-1;
+#endif
 
 	/*  Initialise the local timers */
 	xStartTime = xTaskGetTickCount ();
@@ -138,7 +146,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	/* supaya cukup waktu buat siap2 */
 	loop = -1000;
-	int wclient = 0;
+	
 	
 
 	for (;;)
@@ -146,6 +154,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		vTaskDelay(1);
 		//portYIELD();
 		
+		#ifdef PAKAI_WEBCLIENT
 		wclient++;
 		if (wclient == 30000)	/* 30 detik */
 		{
@@ -153,6 +162,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			webclient_get("192.168.1.105", 80, "/frame.jpg");
 			//printf("GET mulai !\r\n");
 		}
+		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
 		#ifdef CARI_SUMBER
@@ -168,7 +178,19 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			
 		}
 		#endif
-	
+		
+		#ifdef PAKAI_KIRIM_BALIK
+			anginkecil++;
+			if (anginkecil > 2000) {	/* tiap detik */
+				
+				kirim_balik_connect(giliran);
+				
+				anginkecil=0;
+				//giliran++;
+				//if (giliran > JML_SUMBER) mul = 0;
+			}
+		#endif
+		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())
 		{
@@ -336,14 +358,25 @@ void dispatch_tcp_appcall (void)
 	}
 #endif
 
+#ifdef PAKAI_WEBCLIENT
 	/* webclient */
 	if (uip_conn->rport == HTONS(80))
 	{
 		webclient_appcall();
 	}	  
-	
+#endif
+
+#ifdef PAKAI_KIRIM_BALIK
+	//*
+	if (uip_conn->rport == HTONS(PORT_KIRIM_BALIK))	{
+		kirim_balik_appcall();
+	}
+	//*/	  
+#endif
 	//printf("%s(): port = %d\r\n", __FUNCTION__, uip_conn->rport);
 }
+
+
 
 void dispatch_udp_appcall (void)
 {

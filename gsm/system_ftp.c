@@ -18,8 +18,8 @@ char buf[128];
 
 FIL fd2;
 unsigned int files;
-unsigned int file_sudah=0;
-unsigned int file_sukses=0;
+unsigned int file_sudah;
+unsigned int file_sukses;
 
 
 //int gsm_ftp(int argc, char *argv[])
@@ -40,6 +40,8 @@ int gsm_ftp()
 		printf("Koneksi GPRS gagal !!!\r\n");
 		printf("Create FTP sesssion error !\r\n");
 		return 0;
+	} else {
+		printf("Create FTP sesssion !\r\n");
 	}
 //*/
 	
@@ -55,10 +57,12 @@ int gsm_ftp()
 		
 	if (TRUE)
 	{
-		
+		file_sudah=0;
+		file_sukses=0;
+		files=0;
 
 		//cari_waktu(path, "j-1");
-		cari_berkas("H-3", "kirim_ftp");
+		cari_berkas("J-1", "kirim_ftp");
 	}	
 		//printf("path: %s\r\n", path);	
 		
@@ -186,7 +190,7 @@ int gsm_ftp()
 	sleep(1);
 	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
 	
-	//tutup_koneksi_ftp();
+	tutup_koneksi_ftp();
 
 	return;
 }
@@ -194,9 +198,9 @@ int gsm_ftp()
 int kirim_file_ke_ftp(char *abs_path) {
 	int c, res, i, flag, oz;
 	unsigned int size;
-	unsigned int files;
-	unsigned int file_sudah=0;
-	unsigned int file_sukses=0;
+//	unsigned int files;
+//	unsigned int file_sudah=0;
+//	unsigned int file_sukses=0;
 	unsigned int jum_dirs;
 	FILINFO fileInfo;
 	char *nama;
@@ -212,16 +216,17 @@ int kirim_file_ke_ftp(char *abs_path) {
 	f_lseek( &fd2, fd2.fsize - 6 );
 	f_read( &fd2, abs_path, 6, &res);
 	printf("CEK %s @@@\r\n", abs_path);
-				
+	files++;
 	if (strncmp( abs_path, "SENDED", 6) == 0)  {
-		printf("file %s sudah dikirim !\r\n", nama);
-//			file_sudah++;
+		printf("file %s sudah dikirim !\r\n", abs_path);
+			file_sudah++;
 	}
 	else	{
 		// kembalikan pointer //
 		f_lseek( &fd2, 0);
 					
-		if ( upload_file(nama) == 0)
+		//if ( upload_file(nama) == 0)
+		if ( upload_file(abs_path) == 0)
 		//if (TRUE)
 		{
 						//upload_data_file("AAAAAAAAABBBBBBBB");
@@ -241,7 +246,7 @@ int kirim_file_ke_ftp(char *abs_path) {
 						
 			// untuk mengakhiri data ftp //
 			flag=0;
-			for (oz=0; oz<5; oz++) {
+			for (oz=0; oz<10; oz++) {
 				if ( flag == 0) {
 					printf("...........send ETX   %d\r\n", oz+1);
 					if (send_etx() == 0) {
@@ -259,7 +264,7 @@ int kirim_file_ke_ftp(char *abs_path) {
 			printf("TULIS %s \r\n", abs_path);
 									
 			f_write( &fd2, abs_path, strlen(abs_path), &res);
-			//file_sukses++;
+			file_sukses++;
 		}
 		else
 		{
@@ -298,43 +303,141 @@ int konek_ftp_awal() {
 	}
 	
 	//baca_serial(buf, 100, 0);
-	
+	/*
 	if (cek_awal() < 0) 	{
 		printf("Modem tidak terdeteksi !\r\n");
 		return;
 	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........cek_awal()   %d\r\n", oz+1);
+			if (cek_awal() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
 	
+	
+	/*
 	if (set_cpin() < 0) 	{
 		printf("Setting CPIN error !\r\n");
 		return;
 	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........set_cpin()   %d\r\n", oz+1);
+			if (set_cpin() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
 	
+	/*
 	if (set_wipcfg() < 0)	{
 		printf("Set wipcfg error !\r\n");
 		return;
 	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........set_wipcfg()   %d\r\n", oz+1);
+			if (set_wipcfg() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
+	
 	/* sleep dulu satu detik supaya siap2 */
 	printf(" Sleep dulu 1 detik\r\n");
 	sleep(1);
-	
+	/*
 	if (set_wipbr() < 0)	{
 		printf("Set wipbr error !\r\n");
 		return;
 	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........set_wipbr()   %d\r\n", oz+1);
+			if (set_wipbr() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
 	
+	/*
 	if (set_wipbr_apn() < 0) 	{
 		printf("Set wipbr_apn error !\r\n");
 		return;
 	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........set_wipbr_apn()   %d\r\n", oz+1);
+			if (set_wipbr_apn() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
 	
+	/*
 	if (set_wipbr_user() < 0)	{
 		printf("Set wipbr_user error !\r\n");
 		return;
 	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........set_wipbr_user()   %d\r\n", oz+1);
+			if (set_wipbr_user() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
+	}
 	
+	/*
 	if (set_wipbr_passwd() < 0) 	{
 		printf("Set wipbr_passwd error !\r\n");
 		return;
+	}
+	//*/
+	flag=0;
+	for (oz=0; oz<5; oz++) {
+		if (flag == 0) {
+			printf("...........set_wipbr_passwd()   %d\r\n", oz+1);
+			if (set_wipbr_passwd() == 0) {
+				flag = 1;
+				break;
+			}
+			vTaskDelay(500);
+		}
+		return flag;
 	}
 	
 	/*
@@ -350,7 +453,7 @@ int konek_ftp_awal() {
 			printf("...........start gprs()   %d\r\n", oz+1);
 			if (start_gprs() == 0) {
 				flag = 1;
-				continue;
+				break;
 			}
 			vTaskDelay(500);
 		}
@@ -764,6 +867,7 @@ int upload_file(char *nama_file) {
 	//p_dt = (char *) ALMT_GSM_FTP;
 	//printf("Nama file upload_file: %s", nama_file);
 	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", nama_file);
+	//printf(buf);
 	//tulis_serial(buf, strlen(buf), 0);	
 	serX_putstring(PAKAI_GSM_FTP, buf);
 	

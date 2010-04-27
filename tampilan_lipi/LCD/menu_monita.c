@@ -341,11 +341,11 @@ void menu_group(unsigned char p, unsigned char grop)
 			
 			// Batas ALARM //
 			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
-			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
+			sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_H );
 			teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			
 			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
-			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_HH );
+			sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_HH );
 			teks_layar( DATA_KIRI_KOMIK + 255, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			//teks_komik( DATA_KIRI_KOMIK + 240, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			

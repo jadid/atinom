@@ -626,6 +626,8 @@ struct t_xdata 		in_buf;				/* __attribute__ ((section (".eth_test"))); */
 
 //int wer = 0;
 
+
+
 void kirim_balik_init(void)
 {
 	int i;
@@ -648,9 +650,10 @@ void kirim_balik_init(void)
  * 
  * no : mulai dari nol sampai (JML_SUMBER - 1)
  */
+int target_kirim;
+int sumber_datanya;
 
-
-void kirim_balik_connect(int no)
+void kirim_balik_connect(int no)		// sumber_datanya, target_kirim
 {
 	struct uip_conn *conn;
 	struct sambungan_state *samb3;
@@ -770,7 +773,7 @@ void kirim_balik_connect(int no)
 
 /* 
  * kirim_balik_appcall yang akan dipanggil ketika uip 
- * menemukan paket untuk port 5001
+ * menemukan paket untuk port 6543
  */
 
 void kirim_balik_appcall(void) {
@@ -827,14 +830,14 @@ void kirim_balik_appcall(void) {
 			
 			for (i=0; i<20;i++)	{
 				//memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
-				data_float.data[i] = data_f[nomer_sambung*PER_SUMBER+i];
+				data_float.data[i] = data_f[sumber_datanya*PER_SUMBER+i];
 			}
 			
 			
 			portENTER_CRITICAL();
 				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
 			portEXIT_CRITICAL();
-			printf("isi buf: %s, data[1]: %f\r\n", xdata.buf, data_float.data[1]);
+			//printf("isi buf: %s, data[1]: %f\r\n", xdata.buf, data_float.data[1]);
 			
 			uip_send((char *) &xdata, sizeof (xdata));
 			//uip_send((char *) buf, 11);		// 10
@@ -908,14 +911,14 @@ void kirim_balik_appcall(void) {
 			memcpy((char *) &in_buf, uip_appdata, len);
 			portEXIT_CRITICAL();
 			
-			if (strncmp(in_buf.mon, "monita1", 7) == 0)
+			if (strncmp(in_buf.mon, "OKdata", 6) == 0)
 			{
-				//printf("Data MOMON\n");	
+				printf("Data MOMON\n");	
 				status[nomer_sambung].reply++;
 				//memcpy((char *) &s_data[nomer_sambung].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, sizeof (data_float));
-				memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
+				//memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
 				
 				debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
 				
@@ -927,20 +930,7 @@ void kirim_balik_appcall(void) {
 				}
 				printf("\n");
 				#endif
-				
-				//cari titik pemilik data ini 
-				/*
-				for (i=0; i<(TIAP_MESIN * JML_MESIN); i++)
-				{
-					if (titik[i].ID_sumber == (nomer_sambung + 1))
-					{
-						titik[i].data = s_data[nomer_sambung].data[titik[i].kanal -1];	
-					}	
-				}
-				//*/
-				//for (i=0; i<(PER_SUMBER); i++) {
-				//	data_f[nomer_sambung*PER_SUMBER+i] = ;
-				//}
+
 			}
 			
 			uip_close();

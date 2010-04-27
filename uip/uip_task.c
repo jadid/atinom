@@ -135,9 +135,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
+	
 	int anginkecil=0;
 	int giliran;
-	giliran=4-1;
+	extern int sumber_datanya;
+	extern int target_kirim;
+	target_kirim = 4-1;
+	sumber_datanya=1-1;
+	//giliran=1-1;
+	printf("Kirim Balik inited, Target: sumber %d!\r\n", sumber_datanya+1);
 #endif
 
 	/*  Initialise the local timers */
@@ -181,9 +187,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		#ifdef PAKAI_KIRIM_BALIK
 			anginkecil++;
-			if (anginkecil > 2000) {	/* tiap detik */
+			if (anginkecil > 2000) {	/* tiap 2 detik */
 				
-				kirim_balik_connect(giliran);
+				kirim_balik_connect(target_kirim);
 				
 				anginkecil=0;
 				//giliran++;

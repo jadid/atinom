@@ -724,8 +724,8 @@ FRESULT cari_files (char* path, char *aksi) {
             } else {
 				if (strcmp(aksi,"kirim_ftp")==0) {
 					sprintf(abs_path, "%s\\%s", path, fn);
-					kirim_file_ke_ftp(abs_path);
-					//printf("kirim_ftpnya: %s\\%s\r\n", path, fn);
+					kirim_file_ke_ftp(abs_path, fn);
+					printf("kirim_ftpnya nama file: %s  %s\r\n", abs_path, fn);
 				} else
 	                printf("%s\\%s\r\n", path, fn);
             }

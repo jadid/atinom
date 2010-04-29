@@ -42,6 +42,10 @@ void init_selenoid(void)
 
 void set_selenoid( unsigned int no )
 {
+	if (no>0 && no<JML_RELAY) {
+		data_f[JML_SUMBER*PER_SUMBER+no-2] = 1;
+	}
+	
 	if (no == 1)
 		FIO3SET = RLY_1;
 	else if (no == 2)
@@ -60,10 +64,16 @@ void set_selenoid( unsigned int no )
 		FIO2SET = RLY_2;
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
+		
+	
 }
 
 void unset_selenoid(unsigned int no )
 {
+	if (no>0 && no<JML_RELAY) {
+		data_f[JML_SUMBER*PER_SUMBER+no-2] = 0;
+	}
+	
 	if (no == 1)
 		FIO3CLR = RLY_1;
 	else if (no == 2)
@@ -82,6 +92,8 @@ void unset_selenoid(unsigned int no )
 		FIO2CLR = RLY_2;
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
+		
+	
 }
 
 void set_relay(int argc, char **argv) {

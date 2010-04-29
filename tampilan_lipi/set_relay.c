@@ -9,7 +9,7 @@
 
 #ifdef PAKAI_SELENOID
 
-//extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
+extern float data_f [ (JML_SUMBER * PER_SUMBER)+JML_RELAY ];
 extern xTaskHandle hdl_relay;
 
 void cek_alarm_relay(no_sumber);
@@ -43,13 +43,15 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 		no_nya++;
 		if (no_nya>JML_SUMBER) no_nya=0;
 		
-		if(loopnya>20) {
-			printf("jam sekarang: %d", jam_sekarang());
+		/*
+		if(loopnya>50) {
+			//printf("jam sekarang: %d", jam_sekarang());
+			
+			cek_penduduk();
 			loopnya=0;
 		}
-		
+		//*/
 		cek_penduduk();
-		cek_fuel_cell();
 		
 		loopnya++;
 	}
@@ -77,19 +79,18 @@ void cek_alarm_relay(no_sumber) {
 		index = JML_SUMBER*no_sumber+j;
 		if (p_dt[index].aktif == 1) {
 			
-			//printf("%s data: %.2f, alarmL: %.2f, alarmH: %.2f\r\n", \ 
-			//	 p_dt[index].nama, data_f[index], p_dt[index].alarm_L, p_dt[index].alarm_H);
+			//printf("%d. %s data: %.2f, alarmH: %.2f, alarmHH: %.2f", \ 
+				 index, p_dt[index].nama, data_f[index], p_dt[index].alarm_H, p_dt[index].alarm_HH);
 			
 			if ((data_f[index]>p_dt[index].alarm_HH) ) {
 				set_selenoid(p_dt[index].relay);
-				data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay] = 1;
-				
+				//printf("__%d___%d\r\n", (PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2, data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2]);
 				fAlarm[p_dt[index].relay] = 1;
 			}
 			
 			if ( (fAlarm[p_dt[index].relay] != 1) && ((data_f[index]<p_dt[index].alarm_H) ) ) {
 				unset_selenoid(p_dt[index].relay);
-				data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay] = 0;
+				//printf("__%d___%d\r\n", (PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2, data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2]);
 				fAlarm[p_dt[index].relay] = 0;
 			}
 			
@@ -111,12 +112,43 @@ void cek_alarm_relay(no_sumber) {
 int jam_sekarang() {
 	time_t timeval;
 	struct tm timeinfo;
-
+	get_tm_time( &timeinfo );
 	return timeinfo.tm_hour;	
 }
 
+
+// fuel cell jalan ketika malam, mem-back-up batere cadangan
+// fuel cell menggantikan solar cell yg bekerja pada siang
+
 void cek_penduduk() {
+	int jam = jam_sekarang();
+	int teg_batere = (int) data_f[25];		// solar_volt
+	int i=0;
 	
+	if(i>20) {
+		printf("jam: %d, teg_batere: %d\r\n", jam, teg_batere);
+		i=0;
+	}
+	i++;
+	
+	if (jam>18 || jam<5) 
+	{
+		// penduduk hidup
+		if (teg_batere>125) {
+			set_selenoid(1);		// listrik penduduk hidup, relay1 NO - normally open - BUKA
+			unset_selenoid(7);		// fuel cell mati, relay1 NC - normally close - NYAMBUNG
+		} else if (teg_batere<120) {
+			printf("_____________________________ masuk sini\r\n");
+			unset_selenoid(1);		// listrik penduduk mati
+			set_selenoid(7);		// fuel cell hidup
+		}
+		//printf("jam: %d, volt: %f, %d, %f, relay1: %f\r\n", jam, data_f[25], (int) data_f[25], data_f[27], data_f[PER_SUMBER*JML_SUMBER]);
+	} 
+	else {		// diluar jam / sistem kontrol masalah
+		// set default setting
+		unset_selenoid(1);	// listrik penduduk mati
+		unset_selenoid(7);	// fuel cell mati
+	}
 	
 }
 

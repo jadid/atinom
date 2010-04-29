@@ -195,7 +195,7 @@ int gsm_ftp()
 	return;
 }
 
-int kirim_file_ke_ftp(char *abs_path) {
+int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	int c, res, i, flag, oz;
 	unsigned int size;
 //	unsigned int files;
@@ -226,7 +226,7 @@ int kirim_file_ke_ftp(char *abs_path) {
 		f_lseek( &fd2, 0);
 					
 		//if ( upload_file(nama) == 0)
-		if ( upload_file(abs_path) == 0)
+		if ( upload_file(nf) == 0)
 		//if (TRUE)
 		{
 						//upload_data_file("AAAAAAAAABBBBBBBB");
@@ -866,7 +866,7 @@ int upload_file(char *nama_file) {
 	//struct t_gsm_ftp *p_dt;
 	//p_dt = (char *) ALMT_GSM_FTP;
 	//printf("Nama file upload_file: %s", nama_file);
-	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", nama_file);
+	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s.xls\"\r\n", nama_file);
 	//printf(buf);
 	//tulis_serial(buf, strlen(buf), 0);	
 	serX_putstring(PAKAI_GSM_FTP, buf);

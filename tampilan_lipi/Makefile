@@ -71,7 +71,6 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
-		../GPIO/selenoid.c \
 		../system/setup_cpu.c \
 		../system/syscall.c \
 		../system/reset_cpu.c \

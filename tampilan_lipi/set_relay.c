@@ -2,7 +2,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "../monita/monita_uip.h"
-#include "../GPIO/selenoid.c"
+//#include "../GPIO/selenoid.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +19,7 @@ char fAlarm[nALARM];
 portTASK_FUNCTION( relay_task, pvParameters ) {
 	int no_nya=0;
 	char *p, c;
+	int loopnya=0;
 
 	init_selenoid();
 	vTaskDelay(1000);
@@ -41,6 +42,16 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 		cek_alarm_relay(no_nya);
 		no_nya++;
 		if (no_nya>JML_SUMBER) no_nya=0;
+		
+		if(loopnya>20) {
+			printf("jam sekarang: %d", jam_sekarang());
+			loopnya=0;
+		}
+		
+		cek_penduduk();
+		cek_fuel_cell();
+		
+		loopnya++;
 	}
 }
 
@@ -95,6 +106,18 @@ void cek_alarm_relay(no_sumber) {
 		}
 	}
 	//*/
+}
+
+int jam_sekarang() {
+	time_t timeval;
+	struct tm timeinfo;
+
+	return timeinfo.tm_hour;	
+}
+
+void cek_penduduk() {
+	
+	
 }
 
 #endif

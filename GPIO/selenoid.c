@@ -10,9 +10,15 @@
 	
 	*/
 	
+#include "FreeRTOS.h"
+//#include "task.h"
+#include "../monita/monita_uip.h"
+	
+
+	
 #if (PAKAI_SELENOID == 1)
 
-#include "FreeRTOS.h"	
+
 
 #define RLY_1	BIT(26)			/* P3 */
 #define RLY_2	BIT(25)
@@ -77,5 +83,31 @@ void unset_selenoid(unsigned int no )
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
 }
+
+void set_relay(int argc, char **argv) {
+	int sumb=0;
+	unsigned char buf[24];
+	
+	if (argc < 3) {
+		printf("Perintah salah atau Parameter kurang !!\r\n");
+		return;
+	} else {
+		sprintf(buf, "%s", argv[1]);			// no cron
+		sumb = cek_nomer_valid(buf, JML_RELAY);
+		if (sumb <= 0)	{
+			printf("No relay salah !\r\n");
+			return;	
+		}
+		
+		sprintf(buf, "%s", argv[2]);
+		if ( (strcmp(buf, "aktif") == 0) || (buf[0]=='1') || (strcmp(buf, "hidup") == 0) )	{
+			set_selenoid(sumb);
+		} else if ( (strcmp(buf, "mati")  == 0) || (buf[0]=='0') ) {
+			unset_selenoid(sumb);
+		}
+	}
+}
+
+
 
 #endif

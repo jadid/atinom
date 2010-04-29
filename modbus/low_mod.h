@@ -90,16 +90,16 @@ struct d_pmod {
 
 
 struct d_PM710 {
-   unsigned int kwh;
+   unsigned int kwh;		// 41
    unsigned int kvah;
-   unsigned int kvarh;
+   unsigned int kvarh;		// 43
    unsigned short kw;
-   unsigned short kva;
+   unsigned short kva;		// 45
    unsigned short kvar;
-   unsigned short pf;
+   unsigned short pf;		// 47
    unsigned short volt1;   // volt rata2 fasa - fasa
    unsigned short volt2;   // volt fasa - netral
-   unsigned short amp;
+   unsigned short amp;		// 50
    unsigned short frek;
 
    unsigned short ampA;

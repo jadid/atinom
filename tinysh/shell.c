@@ -62,6 +62,10 @@
 #include "cron.c"
 #endif
 
+#ifdef PAKAI_SELENOID
+#include "../GPIO/selenoid.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
@@ -677,6 +681,12 @@ portTASK_FUNCTION(shell, pvParameters )
   	#else
   	vTaskDelay(450);
   	#endif
+
+	#ifdef PAKAI_SELENOID
+		static tinysh_cmd_t set_relay_cmd={0,"set_relay","setting relay", "help default ",set_relay,0,0,0};
+		tinysh_add_command(&set_relay_cmd);
+	#endif
+	
 
 	#ifdef BOARD_TAMPILAN	
 	// cek ukuran struk

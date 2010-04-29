@@ -225,7 +225,7 @@ void monita_appcall(void)
 
 //extern struct t_sumber sumber[];
 //extern struct t_titik titik[];
-extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
+//extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
 extern unsigned char daytime[32];
 
 //struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));
@@ -617,7 +617,7 @@ void daytime_appcall(void)
 
 //extern struct t_sumber sumber[];
 //extern struct t_titik titik[];
-extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
+//extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
 extern unsigned char daytime[32];
 
 //struct t_status status[JML_MODUL] __attribute__ ((section (".usb_text")));

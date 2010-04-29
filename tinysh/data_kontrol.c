@@ -52,7 +52,7 @@
 
 
 //float data_sumber[ JML_SUMBER ][ PER_SUMBER ];
-float data_f [ (JML_SUMBER * PER_SUMBER) ];
+//float data_f [ (JML_SUMBER * PER_SUMBER) ];
 
 static int simpan_data( struct t_dt_set *pgr);
 /*	

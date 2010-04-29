@@ -7,7 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
+#ifdef PAKAI_SELENOID
+
+//extern float data_f [ (JML_SUMBER * PER_SUMBER) ];
 extern xTaskHandle hdl_relay;
 
 void cek_alarm_relay(no_sumber);
@@ -69,11 +71,14 @@ void cek_alarm_relay(no_sumber) {
 			
 			if ((data_f[index]>p_dt[index].alarm_HH) ) {
 				set_selenoid(p_dt[index].relay);
+				data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay] = 1;
+				
 				fAlarm[p_dt[index].relay] = 1;
 			}
 			
 			if ( (fAlarm[p_dt[index].relay] != 1) && ((data_f[index]<p_dt[index].alarm_H) ) ) {
 				unset_selenoid(p_dt[index].relay);
+				data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay] = 0;
 				fAlarm[p_dt[index].relay] = 0;
 			}
 			
@@ -91,3 +96,5 @@ void cek_alarm_relay(no_sumber) {
 	}
 	//*/
 }
+
+#endif

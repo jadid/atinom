@@ -128,8 +128,13 @@
 #define OFFSET_VOLT		53	- 1
 #define OFFSET_AMP		54	- 1
 
-
+//#ifdef  PAKAI_SELENOID
+float data_f [ (JML_SUMBER * PER_SUMBER)+JML_RELAY ];
+/*
+#else
 float data_f [ (JML_SUMBER * PER_SUMBER) ];
+#endif
+//*/
 
 struct t_data_float {
 	float data[20];

@@ -269,7 +269,7 @@ int set_group(int argc, char **argv)
 			else 	{
 				/* cek jika ini bilangan nomer data */
 				sprintf(buf, "%s", argv[3]);	
-				ndata = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
+				ndata = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
 
 				if (ndata > 0) 		{
 					/* jika argument terakhir masih ada unset maka hanya pada 

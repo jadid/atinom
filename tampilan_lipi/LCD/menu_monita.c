@@ -326,6 +326,7 @@ void menu_group(unsigned char p, unsigned char grop)
 		if (  temp != 0 )
 		{
 			jml++;
+			//printf("nilai temp: %d\r\n", temp);
 			//temp--;		// array dimulai dari nol
 			
 			//sprintf(tek, "nomer data %d, %s", temp, p_dt[ temp - 1)].nama );
@@ -333,22 +334,27 @@ void menu_group(unsigned char p, unsigned char grop)
 			teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);  // 14 terlalu mepet
 			
 			//data_f[ temp - 1 ] = (float) ((rand() % 100) * 0.10);
-			sprintf(tek, "%.2f", data_f[ temp - 1] );
+			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
+				sprintf(tek, "%.2f", data_f[ temp - 1] );
+			} else {
+				sprintf(tek, "%s", (int) data_f[ temp - 1]?"Aktif":"Mati" );
+			}
 			teks_komik( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek); 
 			
-			sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
-			teks_layar( DATA_KIRI_KOMIK + 180, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
-			
-			// Batas ALARM //
-			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
-			sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_H );
-			teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
-			
-			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
-			sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_HH );
-			teks_layar( DATA_KIRI_KOMIK + 255, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
-			//teks_komik( DATA_KIRI_KOMIK + 240, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
-			
+			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
+				sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
+				teks_layar( DATA_KIRI_KOMIK + 180, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				
+				// Batas ALARM //
+				//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
+				sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_H );
+				teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				
+				//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
+				sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_HH );
+				teks_layar( DATA_KIRI_KOMIK + 255, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				//teks_komik( DATA_KIRI_KOMIK + 240, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+			}
 			if (jml > 8) break;
 		}
 	}

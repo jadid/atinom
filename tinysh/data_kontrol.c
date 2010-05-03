@@ -121,7 +121,8 @@ int cek_data(int argc, char **argv)
 		
 				for (i = sumb; i< (sumb + 20); i++)
 				{
-					if (i >= (JML_SUMBER * PER_SUMBER)) break;
+					//if (i >= (JML_SUMBER * PER_SUMBER)) break;
+					if (i >= (sizeof(data_f)/sizeof(float))) break;
 					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 						p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
@@ -149,7 +150,7 @@ static int set_data_default(void)
 	
 	judul(" Set Data ke Default\r\n");
 	
-	p_gr = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
+	p_gr = pvPortMalloc( (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set) );
 	//p_gr = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
 	if (p_gr == NULL)
 	{
@@ -157,7 +158,7 @@ static int set_data_default(void)
 		return -1;
 	}
 	
-	for (i=0; i< (JML_SUMBER * PER_SUMBER) ; i++)
+	for (i=0; i< (sizeof(data_f)/sizeof(float)) ; i++)
 	{
 		sprintf(p_gr[i].nama, "data_%d", (i+1));
 		//p_gr[i].ID_group = (i+1);
@@ -242,8 +243,8 @@ int set_data(int argc, char **argv)
   	display_args(argc,argv);
 	
 	/* copy dulu yang lama kedalam buffer */
-	p_dt = pvPortMalloc( (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set) );
-	printf("Jml alokasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
+	p_dt = pvPortMalloc( (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set) );
+	printf("Jml alokasi : %d, p_dt: %d, isi: %d\r\n", (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
 	if (p_dt == NULL)
 	{
@@ -252,13 +253,13 @@ int set_data(int argc, char **argv)
 	}
 	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_dt);
 	
-	memcpy((char *) p_dt, (char *) ALMT_DT_SET, ((PER_SUMBER * JML_SUMBER) * sizeof (struct t_dt_set)));
+	memcpy((char *) p_dt, (char *) ALMT_DT_SET, ((sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set)));
 	
 	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
 	if (strcmp(argv[2], "nama") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
 		if (sumb > 0)		
 		{
 			printf(" Data %d : nama : %s\r\n", sumb, argv[3]);			
@@ -274,7 +275,7 @@ int set_data(int argc, char **argv)
 	else if (strcmp(argv[2], "satuan") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
 		if (sumb > 0)		
 		{
 			printf(" Data %d : satuan : %s\r\n", sumb, argv[3]);			
@@ -290,7 +291,7 @@ int set_data(int argc, char **argv)
 	else if (strcmp(argv[2], "alarmHH") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm high high : %s\r\n", sumb, argv[3]);			
@@ -303,7 +304,7 @@ int set_data(int argc, char **argv)
 	else if (strcmp(argv[2], "alarmH") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm high : %s\r\n", sumb, argv[3]);			

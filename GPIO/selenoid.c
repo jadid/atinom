@@ -42,8 +42,8 @@ void init_selenoid(void)
 
 void set_selenoid( unsigned int no )
 {
-	if (no>0 && no<JML_RELAY) {
-		data_f[JML_SUMBER*PER_SUMBER+no-2] = 1;
+	if (no>0 && no<=JML_RELAY) {		// 1-8 
+		data_f[JML_SUMBER*PER_SUMBER+no-1] = 1;
 	}
 	
 	if (no == 1)
@@ -61,7 +61,7 @@ void set_selenoid( unsigned int no )
 	else if (no == 7)
 		FIO4SET = RLY_7;
 	else if (no == 8)
-		FIO2SET = RLY_2;
+		FIO2SET = RLY_8;
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
 		
@@ -70,8 +70,8 @@ void set_selenoid( unsigned int no )
 
 void unset_selenoid(unsigned int no )
 {
-	if (no>0 && no<JML_RELAY) {
-		data_f[JML_SUMBER*PER_SUMBER+no-2] = 0;
+	if (no>0 && no<=JML_RELAY) {
+		data_f[JML_SUMBER*PER_SUMBER+no-1] = 0;
 	}
 	
 	if (no == 1)
@@ -89,7 +89,7 @@ void unset_selenoid(unsigned int no )
 	else if (no == 7)
 		FIO4CLR = RLY_7;
 	else if (no == 8)
-		FIO2CLR = RLY_2;
+		FIO2CLR = RLY_8;
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
 		

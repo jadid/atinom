@@ -87,7 +87,7 @@ int cek_data(int argc, char **argv)
 		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_H : Alr_HH : Rly : &Memory\r\n");
 		garis_bawah();
 	
-		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
+		for (i=0; i< (sizeof(data_f)/sizeof(float)); i++)
 		{
 			printf(" (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
@@ -106,8 +106,8 @@ int cek_data(int argc, char **argv)
 		else
 		{
 			sprintf(buf, "%s", argv[1]);	
-			sumb = cek_nomer_valid(buf, 400);
-			if (sumb > 0 && sumb < 400)		
+			sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
+			if (sumb > 0 && sumb < (sizeof(data_f)/sizeof(float)))		
 			{
 				struct t_dt_set *p_dt;
 				p_dt = (char *) ALMT_DT_SET;
@@ -145,7 +145,7 @@ static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","
 
 static int set_data_default(void)
 {
-	int i;
+	int i,j=0;
 	struct t_dt_set *p_gr;
 	
 	judul(" Set Data ke Default\r\n");
@@ -158,7 +158,7 @@ static int set_data_default(void)
 		return -1;
 	}
 	
-	for (i=0; i< (sizeof(data_f)/sizeof(float)) ; i++)
+	for (i=0; i< (JML_SUMBER*PER_SUMBER); i++)
 	{
 		sprintf(p_gr[i].nama, "data_%d", (i+1));
 		//p_gr[i].ID_group = (i+1);
@@ -172,6 +172,25 @@ static int set_data_default(void)
 		p_gr[i].alarm_H = 9.0;
 		p_gr[i].aktif = 0;
 	}
+	
+	for (i=JML_SUMBER*PER_SUMBER; i< (sizeof(data_f)/sizeof(float)) ; i++)
+	{
+		
+		sprintf(p_gr[i].nama, "relay_%d", (j+1));
+		//p_gr[i].ID_group = (i+1);
+		//p_gr[i].stat = 0;			// pasif/unset
+		//sprintf(p_gr[i].ket, "--");
+		sprintf(p_gr[i].satuan, "-");
+		p_gr[i].relay = 0;
+		//p_gr[i].alarm_LL = 0;
+		//p_gr[i].alarm_L = 0;
+		p_gr[i].alarm_HH = 10.0;
+		p_gr[i].alarm_H = 9.0;
+		p_gr[i].aktif = 0;
+		j++;
+	}
+	
+	
 	
 	if (simpan_data( p_gr ) < 0)
 	{

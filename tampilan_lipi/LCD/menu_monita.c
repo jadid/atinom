@@ -337,7 +337,7 @@ void menu_group(unsigned char p, unsigned char grop)
 			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
 				sprintf(tek, "%.2f", data_f[ temp - 1] );
 			} else {
-				sprintf(tek, "%s", (int) data_f[ temp - 1]?"Aktif":"Mati" );
+				sprintf(tek, "%s", (int) data_f[temp-1]?"Aktif":"Mati" );
 			}
 			teks_komik( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek); 
 			

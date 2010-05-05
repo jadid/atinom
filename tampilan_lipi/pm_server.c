@@ -150,8 +150,16 @@ static void proses_pm(void)
 	else if (urut_PM710 == 4)
 	{
 	   jum_balik = get_PM710(reg_kwh, 6);  //kWh, kVAh, & kVArh
-	   
-	}	
+	}
+	else if (urut_PM710 == 5)
+	{
+		jum_balik = get_KTA(reg_KTA, 9);
+	}
+	else if (urut_PM710 == 6)
+	{
+		jum_balik = get_KTA(reg_satuan_KTA, 6);
+	}
+
 	
 	st = (char *) &pmod;
 	for (i=0; i< sizeof(pmod); i++)
@@ -258,3 +266,45 @@ void init_task_pm(void)
 }
 
 #endif 
+
+
+#ifdef PAKAI_KTA
+unsigned short 	wind_dir;
+float 			f_wind_speed;
+
+unsigned short wind_satuan;
+unsigned short wind_speed_tr;		// retransmision value
+unsigned short wind_dir_tr;
+
+unsigned char addr_KTA;
+
+unsigned short get_KTA(unsigned short reg, unsigned char uk)
+{
+   unsigned short dcrc;
+   int i;
+
+   reg_flag = reg;
+
+   if (reg != reg_kwh)
+   reg = reg - 1;
+
+   pmod.addr = (unsigned char)   addr_KTA;
+   pmod.command = (unsigned char) command_baca;
+   pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
+   pmod.reg_lo = (unsigned char) (reg & 0x00FF);
+   pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);;
+
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2);
+   pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);;
+
+   	return (1 + 1 + 1 + (uk * 2) + 2);
+}
+
+
+#endif
+
+
+
+

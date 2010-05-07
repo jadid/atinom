@@ -103,8 +103,8 @@ struct d_PM710 {
    unsigned short frek;
 
    unsigned short ampA;
-   unsigned short ampB;
-   unsigned short ampC;
+   unsigned short ampB;		//  53. wind_speed
+   unsigned short ampC;		//  54. wind_dir
    unsigned short ampN;
 
 #ifdef PAKAI_KTA
@@ -115,9 +115,9 @@ struct d_PM710 {
    unsigned short voltB_C;		// 57
 #endif
 
-   unsigned short voltA_C;
-   unsigned short voltA_N;
-   unsigned short voltB_N;
+   unsigned short voltA_C;	// 58
+   unsigned short voltA_N;	// 59
+   unsigned short voltB_N;	// 60
    unsigned short voltC_N;
 
    unsigned short kwA;

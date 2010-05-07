@@ -81,11 +81,11 @@ unsigned short cek_PM()
 	pmod.reg_hi = (unsigned char) 0x40;
 	pmod.reg_lo = (unsigned char) 0x00;
 	pmod.jum_hi = (unsigned char) ((5 & 0xFF00) >> 8);
-	pmod.jum_lo = (unsigned char) (5 & 0x00FF);;
+	pmod.jum_lo = (unsigned char) (5 & 0x00FF);
 
 	dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2);
 	pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
-	pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);;
+	pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
 
 	return 7;	// respon harusnya 7 byte
 	//return (1 + 1 + 1 + (uk * 2) + 2);		
@@ -255,6 +255,7 @@ void taruh_data(int no_slave, int urt)
 		else
 			asli_PM710[no_slave].voltA_B = data_PM710[no_slave].voltA_B * satuan_volt;
 
+		/*
 		data_PM710[no_slave].voltB_C = buf[5];
 		data_PM710[no_slave].voltB_C = (data_PM710[no_slave].voltB_C << 8) | buf[6];
 		if (data_PM710[no_slave].voltB_C == 32768)
@@ -268,7 +269,8 @@ void taruh_data(int no_slave, int urt)
 			asli_PM710[no_slave].voltA_C = 0;
 		else
 			asli_PM710[no_slave].voltA_C = data_PM710[no_slave].voltA_C * satuan_volt;
-
+		//*/
+			
 		data_PM710[no_slave].voltA_N = buf[9];
 		data_PM710[no_slave].voltA_N = (data_PM710[no_slave].voltA_N << 8) | buf[10];
 		if (data_PM710[no_slave].voltA_N == 32768)
@@ -337,8 +339,8 @@ void taruh_data(int no_slave, int urt)
 		wind_dir = buf[5];
 		wind_dir = (wind_dir << 8) | buf[6];	
 		
-		//asli_PM710[no_slave].ampB = wind_speed;
-		//sli_PM710[no_slave].ampC = wind_dir;
+		asli_PM710[no_slave].voltB_C = wind_speed;
+		asli_PM710[no_slave].voltA_C = wind_dir;
 	}
 	else if (urt == 6)
 	{
@@ -375,11 +377,11 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
    pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
    pmod.reg_lo = (unsigned char) (reg & 0x00FF);
    pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
-   pmod.jum_lo = (unsigned char) (uk & 0x00FF);;
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
 
    dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2);
    pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
-   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);;
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
 
    	return (1 + 1 + 1 + (uk * 2) + 2);
 }

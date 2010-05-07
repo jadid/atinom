@@ -159,11 +159,14 @@ static void proses_pm(void)
 	}
 	else if (urut_PM710 == 5)
 	{
-		jum_balik = get_KTA(reg_KTA, 9);
+		
+		jum_balik = get_KTA(reg_KTA, 9);			// 30, 9
+		//printf("_________masuk  urut 5, jmlBalik: %d\r\n", jum_balik );
 	}
 	else if (urut_PM710 == 6)
 	{
 		jum_balik = get_KTA(reg_satuan_KTA, 6);
+		//printf("_________masuk  urut 6, jmlBalik: %d\r\n", jum_balik );
 	}
 
 	
@@ -214,7 +217,23 @@ static void proses_pm(void)
 	
 	//for (i=0; i<jum_balik; i++)
 	//	printw("%X ", buf_rx[i]);	
-
+	/*
+	if (urut_PM710==5) {
+		printf("Nilai KTA   : ");
+		for (i=0; i<jum_balik; i++) {
+			printf("%02hhX ", buf_rx[i]);	
+		}
+		printf("\r\n");
+	}
+	if (urut_PM710==6) {
+		printf("Satuan  KTA : ");
+		for (i=0; i<jum_balik; i++) {
+			printf("%02hhX ", buf_rx[i]);	
+		}
+		printf("\r\n");
+	}
+	//*/
+	
 	taruh_data(0, urut_PM710);
 	
 	struct t_sumber *sumber;
@@ -264,13 +283,13 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	{
 		vTaskDelay(95);
 		proses_pm();
-		
+		/*
 		if (muternya>5) {
-			printf("data V: %f, V: %d, angin: %.2f, %d\r\n", data_f[6], asli_PM710[7], f_wind_speed, wind_speed);
+			printf("__________data V_f: %f, angin: %.2f, %d, arah: %e\r\n", asli_PM710[0].frek, f_wind_speed, wind_speed, wind_dir_tr);
 			muternya=0;
 		}
 		muternya++;
-		
+		//*/
 		loop++;
 	}
 		

@@ -67,7 +67,7 @@
 #define PAKAI_SERIAL_1				// mendefinisikan aktif serial 1
 #define PAKAI_PM			1		// nyambung ke SERIAL 1
 #ifdef PAKAI_PM
-	#define BAUD_PM			19200
+	#define BAUD_PM			9600	//19200
 #endif
 //*/
 //#define PAKAI_WEBCLIENT

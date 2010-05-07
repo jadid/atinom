@@ -107,8 +107,14 @@ struct d_PM710 {
    unsigned short ampC;
    unsigned short ampN;
 
-   unsigned short voltA_B;
-   unsigned short voltB_C;
+#ifdef PAKAI_KTA
+	unsigned short voltA_B;		// 56
+	unsigned short voltB_C;		// 57
+#else
+   unsigned short voltA_B;		// 56
+   unsigned short voltB_C;		// 57
+#endif
+
    unsigned short voltA_C;
    unsigned short voltA_N;
    unsigned short voltB_N;

@@ -55,6 +55,7 @@
 
 #define PAKAI_CRON
 #define PAKAI_KIRIM_BALIK
+#define PAKAI_KTA
 //#define DEBUG_DATA
 //#define PAKAI_SERIAL_2		1
 //#define PAKAI_SELENOID		1		/* ULN2803 */

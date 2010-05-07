@@ -517,7 +517,7 @@ int dihapus(char *nama) {
 		B-1 : 1 bulan sebelumnya
 //*/
 
-char * bulan[]={"Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+char * bulan[]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 char tgl[]    ={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 char kabisat[]={31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 

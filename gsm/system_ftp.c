@@ -62,7 +62,7 @@ int gsm_ftp()
 		files=0;
 
 		//cari_waktu(path, "j-1");
-		cari_berkas("J-1", "kirim_ftp");
+		cari_berkas("J-24", "kirim_ftp");
 	}	
 		//printf("path: %s\r\n", path);	
 		
@@ -315,11 +315,14 @@ int konek_ftp_awal() {
 			printf("...........cek_awal()   %d\r\n", oz+1);
 			if (cek_awal() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		if (!flag)
+			return flag;
+		else
+			continue; 
 	}
 	
 	
@@ -330,16 +333,17 @@ int konek_ftp_awal() {
 	}
 	//*/
 	flag=0;
-	for (oz=0; oz<5; oz++) {
+	for (oz=0; oz<10; oz++) {
 		if (flag == 0) {
 			printf("...........set_cpin()   %d\r\n", oz+1);
 			if (set_cpin() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	/*
@@ -349,16 +353,17 @@ int konek_ftp_awal() {
 	}
 	//*/
 	flag=0;
-	for (oz=0; oz<5; oz++) {
+	for (oz=0; oz<10; oz++) {
 		if (flag == 0) {
 			printf("...........set_wipcfg()   %d\r\n", oz+1);
 			if (set_wipcfg() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	/* sleep dulu satu detik supaya siap2 */
@@ -376,11 +381,12 @@ int konek_ftp_awal() {
 			printf("...........set_wipbr()   %d\r\n", oz+1);
 			if (set_wipbr() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	/*
@@ -395,11 +401,12 @@ int konek_ftp_awal() {
 			printf("...........set_wipbr_apn()   %d\r\n", oz+1);
 			if (set_wipbr_apn() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	/*
@@ -414,11 +421,12 @@ int konek_ftp_awal() {
 			printf("...........set_wipbr_user()   %d\r\n", oz+1);
 			if (set_wipbr_user() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	/*
@@ -433,11 +441,12 @@ int konek_ftp_awal() {
 			printf("...........set_wipbr_passwd()   %d\r\n", oz+1);
 			if (set_wipbr_passwd() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	/*
@@ -448,16 +457,17 @@ int konek_ftp_awal() {
 	//*/
 	
 	flag=0;
-	for (oz=0; oz<5; oz++) {
+	for (oz=0; oz<10; oz++) {
 		if (flag == 0) {
 			printf("...........start gprs()   %d\r\n", oz+1);
 			if (start_gprs() == 0) {
 				flag = 1;
-				break;
+				continue;
 			}
 			vTaskDelay(500);
 		}
-		return flag;
+		//if (!flag)
+		//	return flag;
 	}
 	
 	flag=0;

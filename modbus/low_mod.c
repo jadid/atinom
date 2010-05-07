@@ -358,7 +358,7 @@ void taruh_data(int no_slave, int urt)
 	
 }
 
-/*
+//*
 // 22 Jan 09
 unsigned short get_KTA(unsigned short reg, unsigned char uk)
 {
@@ -382,7 +382,8 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
    pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);;
 
    	return (1 + 1 + 1 + (uk * 2) + 2);
-}*/
+}
+//*/
 #endif
 
 //---------------------------------------------------------------------------

@@ -19,6 +19,11 @@
 #include "../modbus/low_mod.h"
 #include "../monita/monita_uip.h"
 
+#ifdef PAKAI_KTA
+	unsigned char addr_KTA;
+//unsigned short get_KTA(unsigned short reg, unsigned char uk);
+#endif
+
 #ifdef PAKAI_PM
 
 extern float data [ (JML_SUMBER * PER_SUMBER) ];
@@ -125,6 +130,7 @@ static void proses_pm(void)
 	int i,j;
 	char *st;
 	int timeout=0;
+	int muternya=0;
 
 	konting2++;
 	
@@ -225,7 +231,9 @@ static void proses_pm(void)
 	}
 	
 	urut_PM710++;
-	if (urut_PM710 > 4) urut_PM710 = 0;
+	if (urut_PM710 > 6) urut_PM710 = 0;
+	
+	
 }
 
 
@@ -235,6 +243,8 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	
 	urut_PM710 = 0;
 	konting2 = 0;
+	addr_KTA = 1;
+	int muternya=0;
 	
 	vTaskDelay(1010);
 	
@@ -253,7 +263,14 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	for (;;)
 	{
 		vTaskDelay(95);
-		proses_pm();	
+		proses_pm();
+		
+		if (muternya>5) {
+			printf("data V: %f, V: %d, angin: %.2f, %d\r\n", data_f[6], asli_PM710[7], f_wind_speed, wind_speed);
+			muternya=0;
+		}
+		muternya++;
+		
 		loop++;
 	}
 		
@@ -267,19 +284,18 @@ void init_task_pm(void)
 
 #endif 
 
-
+/*
 #ifdef PAKAI_KTA
-unsigned short 	wind_dir;
-float 			f_wind_speed;
+//unsigned short 	wind_dir;
+//float 			f_wind_speed;
 
-unsigned short wind_satuan;
-unsigned short wind_speed_tr;		// retransmision value
-unsigned short wind_dir_tr;
+//unsigned short wind_satuan;
+//unsigned short wind_speed_tr;		// retransmision value
+//unsigned short wind_dir_tr;
 
-unsigned char addr_KTA;
 
-unsigned short get_KTA(unsigned short reg, unsigned char uk)
-{
+
+unsigned short get_KTA(unsigned short reg, unsigned char uk) {
    unsigned short dcrc;
    int i;
 
@@ -304,7 +320,7 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 
 
 #endif
-
+//*/
 
 
 

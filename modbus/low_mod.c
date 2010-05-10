@@ -339,7 +339,7 @@ void taruh_data(int no_slave, int urt)
 		wind_dir = buf[5];
 		wind_dir = (wind_dir << 8) | buf[6];	
 		
-		asli_PM710[no_slave].voltB_C = wind_speed;
+		asli_PM710[no_slave].voltB_C = f_wind_speed;
 		asli_PM710[no_slave].voltA_C = wind_dir;
 	}
 	else if (urt == 6)

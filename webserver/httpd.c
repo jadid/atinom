@@ -75,6 +75,7 @@
 #define ISO_colon   0x3a
 
 /*---------------------------------------------------------------------------*/
+
 static unsigned short
 generate_part_of_file(void *state)
 {
@@ -94,17 +95,17 @@ generate_part_of_file(void *state)
 		{
 			if (http_fs_baca_dir( uip_appdata, &terbaca, s) == 0)
 			{
-				s->file.len = 0; /* supaya tidak dipanggil lagi ! */
+				s->file.len = 0; // supaya tidak dipanggil lagi ! //
 			}			
 		}
 		//else		
 		//	memcpy(uip_appdata, s->file.data, s->len);
   }
   else
-  {		/* baca langsung ke MMC / file system */
+  {		// baca langsung ke MMC / file system //
 		f_read( s->file.fd, uip_appdata, s->len, &terbaca);
 		
-		/* jika sudah habis (EOF) */
+		// jika sudah habis (EOF) //
 		//if (terbaca <= s->file.len)
 		{
 			//printf(" Close file\r\n");
@@ -114,6 +115,7 @@ generate_part_of_file(void *state)
   
   return s->len;
 }
+
 /*---------------------------------------------------------------------------*/
 static
 PT_THREAD(send_file(struct httpd_state *s))
@@ -328,8 +330,7 @@ handle_connection(struct httpd_state *s)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
-httpd_appcall(void)
+void httpd_appcall(void)
 {
   struct httpd_state *s = (struct httpd_state *)&(uip_conn->appstate2);
 

@@ -99,13 +99,12 @@ THUMB_SOURCE= \
 		../uip/uip_task.c \
 		../monita/monita_uip.c \
 		../webserver/httpd.c \
-		../webserver/httpd-fs.c \
 		../webserver/http-strings.c \
 		../webserver/httpd-cgi.c \
 		../system/idle_hook.c \
 		../uip/apps/telnetd/telnetd.c	\
 #		../ext/cywsub/cywusb.c \
-
+#		../webserver/httpd-fs.c \
 #		LCD/lcd_320.c \
 #		tampilan.c \
 #		LCD/menu_monita.c \

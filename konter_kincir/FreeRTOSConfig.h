@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-//#define BOARD_TAMPILAN
+
 #define BOARD_KOMON
 //#define KOMON_KONTER
 #define BOARD_KOMON_KONTER

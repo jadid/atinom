@@ -38,6 +38,7 @@
 
 /* untuk hardware / board komon counter */
 #ifdef KOMON_KONTER
+//#ifdef BOARD_KOMON_KONTER
 #define CS_ENC	BIT(18)
 #define INT_ENC	BIT(17)
 

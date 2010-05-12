@@ -43,7 +43,7 @@
 #define VERSI_KOMON		"1.45"
 //#define KONTER_MALINGPING	1
 
-#define PAKAI_CYWUSB
+//#define PAKAI_CYWUSB
 
 #define DEBUG_KONTER	1
 

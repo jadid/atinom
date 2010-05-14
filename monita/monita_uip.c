@@ -32,6 +32,12 @@ struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 	struct t_data_float 	data_tetangga  ;/*__attribute__ ((section (".eth_test")));*/
 #endif 
 
+
+#ifdef PAKAI_KINCIR
+//	struct t_xdata 			temp_data;		/*__attribute__ ((section (".eth_test")));*/	
+//	struct t_data_float 	data_tetangga  ;/*__attribute__ ((section (".eth_test")));*/
+#endif 
+
 //extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;

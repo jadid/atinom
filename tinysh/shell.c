@@ -392,6 +392,10 @@ unsigned int is_angka(float a)
 	return (a == a);
 }
 
+#ifdef PAKAI_KINCIR
+	extern float rpmnya[10];
+#endif
+
 static void cek_rpm(int argc, char **argv)
 {
 	unsigned int i;
@@ -408,7 +412,9 @@ static void cek_rpm(int argc, char **argv)
 			// cari frekuensi
 			temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 			// rpm
-			temp_rpm = temp_f * 60;
+			temp_rpm = temp_f * 60 * env2.kalib[i].m;
+			//data_float.data[t] = (unsigned int) (data_hit[i] * env2.kalib[i].m);
+			
 		}
 		else
 		{

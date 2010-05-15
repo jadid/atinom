@@ -34,8 +34,8 @@ struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 
 
 #ifdef PAKAI_KINCIR
-//	struct t_xdata 			temp_data;		/*__attribute__ ((section (".eth_test")));*/	
-//	struct t_data_float 	data_tetangga  ;/*__attribute__ ((section (".eth_test")));*/
+	struct t_xdata 			temp_data;		/*__attribute__ ((section (".eth_test")));*/	
+	struct t_data_float 	data_tetangga  ;/*__attribute__ ((section (".eth_test")));*/
 #endif 
 
 //extern struct t_data_float s_data[JML_SUMBER];
@@ -171,6 +171,8 @@ void monita_appcall(void)
 				for (i=0; i<10;i++)
 				{
 					//data_float.data[t] = data_hit[i];
+
+					
 					data_float.data[t] = (unsigned int) (data_hit[i] * env2.kalib[i].m);
 					t++;
 					
@@ -180,6 +182,10 @@ void monita_appcall(void)
 						temp_rpm = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 						// rpm
 						data_float.data[t] = temp_rpm * 60;
+						
+						if (i==8 || i==9) {
+							printf("nilai m: %f, data: %f\r\n", env2.kalib[i].m, data_float.data[t]);
+						}
 					}
 					else
 						data_float.data[t] = 0;

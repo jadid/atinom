@@ -181,11 +181,12 @@ void monita_appcall(void)
 						// cari frekuensi
 						temp_rpm = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 						// rpm
-						data_float.data[t] = temp_rpm * 60;
-						
+						data_float.data[t] = temp_rpm * 60 * env2.kalib[i].m;
+						/*
 						if (i==8 || i==9) {
 							printf("nilai m: %f, data: %f\r\n", env2.kalib[i].m, data_float.data[t]);
 						}
+						//*/
 					}
 					else
 						data_float.data[t] = 0;
@@ -703,13 +704,13 @@ void terima_balik_appcall(void)
 				loop_kirim++;
 				//printf("Masuk newdata balikm cocok: %d  ", loop_kirim);
 				//#ifdef BOARD_KOMON_420_SAJA
-				#ifdef PAKAI_CYWUSB
+				//#ifdef PAKAI_CYWUSB
 				
 					//status[nomer_sambung].reply++;
 					memcpy( (char *) &data_tetangga, temp_data.buf, (PER_SUMBER*sizeof (float)) );
 					//printf("nilai: %f, nilai2: %f\r\n", data_tetangga.data[1], data_tetangga.data[2]);
-					//printf("nilai: %f = %.0f, nilai2: %.0f\r\n", ada_nilai, temp_data.buf[0], temp_data.buf[1]);
-				#endif
+					//printf("nilai: %f = %.2f, nilai2: %.2f\r\n", ada_nilai, temp_data.buf[0], temp_data.buf[1]);
+				//#endif
 			}
 			//*/
 			strcpy(temp_data.mon, "OKdata");

@@ -807,7 +807,7 @@ void kirim_balik_appcall(void) {
 	//*/
 	if (uip_connected())
 	{
-		printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
+		//printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
 		if (status[nomer_sambung].stat == 1)
 		{
 			status[nomer_sambung].stat = 2;
@@ -837,7 +837,7 @@ void kirim_balik_appcall(void) {
 			portENTER_CRITICAL();
 				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
 			portEXIT_CRITICAL();
-			printf("isi buf: %s, data[1]: %f\r\n", xdata.buf, data_float.data[1]);
+			//printf("isi buf: %s, data[1]: %f\r\n", xdata.buf, data_float.data[1]);
 			
 			uip_send((char *) &xdata, sizeof (xdata));
 			//uip_send((char *) buf, 11);		// 10

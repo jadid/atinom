@@ -141,7 +141,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	extern int sumber_datanya;
 	extern int target_kirim;
 	target_kirim = 4-1;
-	sumber_datanya=2-1;
+	sumber_datanya=3-1;
 	//giliran=1-1;
 	printf("Kirim Balik inited, Target data: sumber %d, target kirim: %d !\r\n", sumber_datanya+1, target_kirim+1);
 #endif

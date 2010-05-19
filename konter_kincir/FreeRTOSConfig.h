@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-
+//#define BOARD_TAMPILAN
 #define BOARD_KOMON
 //#define KOMON_KONTER
 #define BOARD_KOMON_KONTER
@@ -44,8 +44,9 @@
 //#define KONTER_MALINGPING	1
 
 //#define PAKAI_CYWUSB
-
-#define DEBUG_KONTER	1
+#define PAKAI_KINCIR
+#define PAKAI_TERIMA_BALIK
+//#define DEBUG_KONTER	1
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2
@@ -86,7 +87,7 @@
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )		// 1000
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 50 * configMINIMAL_STACK_SIZE * 4) )		// awal 30
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 60 * configMINIMAL_STACK_SIZE * 4) )		// awal 30
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

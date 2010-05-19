@@ -238,14 +238,15 @@ int set_file(int argc, char **argv)
 		}
 		else if (strcmp(argv[1], "data") == 0) 	{
 			if (strcmp( argv[2], "clear") == 0 )	{
-				for (i=0; i< (JML_SUMBER * PER_SUMBER) ; i++)
+				for (i=0; i< ((sizeof(data_f)/sizeof(float))) ; i++)
 					p_gr->no_data[i] = 0;
 				
 				printf(" Semua data yang berkontribusi pada file dibersihkan !\r\n");
 				sumb = 2; // supaya true
 			} else	{		
 				sprintf(buf, "%s", argv[2]);	
-				sumb = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
+				sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
+				//sumb = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
 				if (sumb > 0)		
 				{				
 						/* jika argument terakhir masih ada unset maka hanya pada 
@@ -255,7 +256,7 @@ int set_file(int argc, char **argv)
 							if (strcmp(argv[3], "unset") == 0 )		// set_file data x unset
 							{
 							printf(" Unset koneksi data %d dari setting SIMPAN_FILE !\r\n", sumb);
-							for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
+							for (i=0; i< ((sizeof(data_f)/sizeof(float))); i++)
 							{
 								if ( p_gr->no_data[i] == sumb )
 								{
@@ -263,7 +264,7 @@ int set_file(int argc, char **argv)
 									break;
 								}
 							}
-							if (i == (JML_SUMBER * PER_SUMBER))
+							if (i == ((sizeof(data_f)/sizeof(float))))
 								printf(" nomer data dimaksud tidak ada !\r\n");
 							}
 							else
@@ -274,7 +275,7 @@ int set_file(int argc, char **argv)
 						{
 							printf(" Set koneksi data %d ke SIMPAN_FILE !\r\n", sumb);
 							/* cari slot no_data yang masih nol */
-							for (i=0; i<(JML_SUMBER * PER_SUMBER); i++)
+							for (i=0; i<((sizeof(data_f)/sizeof(float))); i++)
 							{
 								if ( p_gr->no_data[i] == 0 )
 								{

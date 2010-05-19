@@ -26,7 +26,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-
+#include "../monita/monita_uip.h"
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
@@ -61,7 +61,7 @@ xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 //#ifdef PAKAI_CYWUSB
-xTaskHandle hdl_cyswusb;
+xTaskHandle hdl_kincir;
 //#endif
 
 #if (DEBUG_KONTER == 1)
@@ -102,15 +102,20 @@ extern unsigned int loop_kirim;
 unsigned int mati_total = 0;
 
 /* konektor P8 */
-/*
+
 #define P8_1		BIT(19)
 #define P8_2		BIT(20)
 #define P8_3		BIT(21)
 #define P8_4		BIT(22)
 #define P8_5		BIT(23)
-#define P8_6		BIT(24)
-#define P8_7		BIT(25)
 
+#define TEST_LED	BIT(24)
+#define RELAY_2		BIT(25)
+#define RELAY_1		BIT(26)
+
+
+
+/*
 #define PCADC		BIT(12)
 #define ADC_CLKDIV	(250 << 8)
 #define ADC_PDN		BIT(21)
@@ -120,15 +125,28 @@ unsigned int mati_total = 0;
 #define ADC_DONE	BIT(31)
 //*/
 
+#define OPTO1	BIT(0)		// P1
+#define OPTO2	BIT(1)		// P1
+#define OPTO3	BIT(4)		// P1
+#define OPTO4	BIT(8)		// P1
+#define OPTO5	BIT(9)		// P1
 
 
-/*
 void init_gpio_relay(void)
 {
-	FIO1DIR = FIO1DIR | P8_1 | P8_2 | P8_3 | P8_4 | P8_5 | P8_6 | P8_7;
+	FIO1DIR = FIO1DIR | TEST_LED | RELAY_1 | RELAY_2 | P8_4;
+	FIO1CLR = P8_4;
 }
 
+void LED_Relay_on() {
+	FIO1SET = TEST_LED;
+}
 
+void LED_Relay_off() {
+	FIO1CLR = TEST_LED;
+}
+
+/*
 void blok_1_up(void)
 {
 	FIO1SET = (P8_1 | P8_2);
@@ -221,7 +239,49 @@ unsigned short read_adc_2(void)
 /*-----------------------------------------------------------*/
 #define jalankan
 
+void init_kincir(void) {
+	FIO1DIR &= ~(OPTO1 | OPTO2 | OPTO3 | OPTO4 | OPTO5);		// set sebagai input
+}
+//*
+void motor_1() {
+	motor_mati();
+	FIO1SET = RELAY_1;
+}
+
+void motor_2() {
+	motor_mati();
+	FIO1SET = RELAY_2;
+}
+
+void motor_mati() {
+	FIO1CLR = RELAY_1;
+	FIO1CLR = RELAY_2;
+}
+//*/
+int nOPTO1() {
+	return (FIO1PIN & OPTO1);		// aktif high, aktif low jika tanda cacing dihilangkan
+}
+
+int nOPTO2() {
+	return (FIO1PIN & OPTO2);
+}
+
+int nOPTO3() {
+	return (FIO1PIN & OPTO3);
+}
+
+int nOPTO4() {
+	return (FIO1PIN & OPTO4);
+}
+
+int nOPTO5() {
+	return (FIO1PIN & OPTO5);
+}
+
 //#define CEK_BLINK
+
+extern unsigned int data_putaran[];
+extern unsigned int data_hit[];	
 
 int main( void )
 {
@@ -255,24 +315,24 @@ int main( void )
 #endif
 
 	//xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
-	xSerialPortInitMinimal( 38400, configMINIMAL_STACK_SIZE  );
+	xSerialPortInitMinimal( 115200, configMINIMAL_STACK_SIZE  );
 
 #ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
 	
 	//setup_adc();
-	
+	init_kincir();
+	init_gpio_relay();
 #ifdef jalankan
+	init_task_kincir();
 	init_led_utama();
 	start_ether();
 	init_shell();
+	//init_task_motor();
 	//init_task_adc();
+	
 
-#ifdef PAKAI_CYWUSB
-	//init_task_cywusb();
-	//init_modul_cywusb();
-#endif
 
 	vTaskStartScheduler();
 
@@ -283,13 +343,26 @@ int main( void )
 #endif
 }
 
+float rpmnya[20], KTAnya=0;
+int posisi_PU=0;		// posisi tidak dikenali atau start up
+#define RPM_MAX 300
+#define RPM_BAND 10
+#define KTA_MAX 12
+#define KTA_MIN 8
+
+#define motor_gulung() motor_2()
+#define motor_ulur() motor_1()
+
+extern struct t_data_float 	data_tetangga;
+//float RPM_MAX = 300;
+//float RPM_BAND = 10;
+
 void togle_led_utama(void) {
 	if (tog)
 	{
 		FIO0SET = LED_UTAMA;
-		#ifdef PAKAI_CYWUSB
-		LED_cywusb_on();
-		#endif
+		LED_Relay_on();
+		//motor_1();
 		tog = 0;
 		
 		/* kalkulasi idle loop */
@@ -345,9 +418,8 @@ void togle_led_utama(void) {
 	else
 	{
 		FIO0CLR = LED_UTAMA;
-		#ifdef PAKAI_CYWUSB
-		LED_cywusb_off();
-		#endif
+		LED_Relay_off();
+		//motor_2();
 		tog = 1;
 		
 		//blok_1_down();
@@ -360,288 +432,193 @@ void togle_led_utama(void) {
 }
 
 
-
 static portTASK_FUNCTION(task_led2, pvParameters )
 {
-	unsigned int muter=0;
+	unsigned int muter=0, muterlagi=0;
 	unsigned int x=0;
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
 	//unsigned char tes=41;
 	
-	/*
-	vTaskDelay(500);
-	#ifdef PAKAI_CYWUSB
-		konfig_WUSB('b');
-	#endif
-	//*/
-	
+
 	vTaskDelay(500);
 	for (;;)
 	{	
-		/*
-		portENTER_CRITICAL();
-		for(x=0; x<100000; x++) {
-			CYWM_WriteReg(0xA5, 0xA5);
-		}
-		portEXIT_CRITICAL();
-		//*/
-		
-		/*
-		#ifdef PAKAI_CYWUSB
-			portENTER_CRITICAL();
-			unsigned char tes;
-				tes = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
-				//printf("read reg: 0x%x___",tes);
-				if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
-					CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
-					//printf("write reg: 0x%x___",tes);
-					if (tes & 0x08) { // Valid A
-						tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
-						//wusb_in(tes);
-						printf("%c",tes);
-					}
-					//data = CYWM_ReadReg( REG_RX_VALID_A );
-				}
-			portEXIT_CRITICAL();
-		#endif
-		//*/	
-		
-		/* 
-			setiap 100 ms, cek apakah rpm masih jalan,
-			dicek satu per satu, supaya tidak balapan 
-			(race condition)
-			
-			kemudian setiap 500 jalankan togle led
-			seperti biasa
-			
-			*/
-		
-		//hitung_rpm();
-		
+		hitung_rpm();
+		//printf("_____________OPTO 1: %s, OPTO 2: %s, OPTO 3: %s, OPTO 4: %s,\r\n", nOPTO1()?"mati":"hidup", nOPTO2()?"mati":"hidup", nOPTO3()?"mati":"hidup", nOPTO4()?"mati":"hidup");
 		muter++;		
 		if (muter > 5)
 		{
 			togle_led_utama();
-			//printf("%4d___Reg ID         : 0x%x\r\n", x++, CYWM_ReadReg(0x00));	// REG_ID
+			//printf("__rpmnya: %4.2f, posisi_PU: %d, KTAnya: %f\r\n", rpmnya[9], posisi_PU, KTAnya);
 			muter = 0;
 		}	
-		
+		if (muter>100) {
+			printf("__rpmnya: %4.2f, posisi_PU: %d, KTAnya: %f\r\n", rpmnya[9], posisi_PU, KTAnya);
+			muterlagi=0;
+		}
 		vTaskDelay(100);
 	}
 }
 
-void init_led_utama(void)
-{
+void init_led_utama(void) {
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
 		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
-/* task untuk adc, setiap 2 ms */
 
-#if (KONTER_MALINGPING == 1)
+#ifdef PAKAI_KINCIR
+//unsigned char x [50];
 
-float volt_supply;
+void cari_rpmnya() {
+	unsigned int i;
+	float temp_f;
+	float temp_rpm;
 
-static portTASK_FUNCTION( task_adc , pvParameters )
-{
-	int loop=0;
-	unsigned long tot=0;
-	int loop_mati = 1000;
-	mati_total = 1;
-	
-	/* 	saat awal, server tidak usah mati dulu
-		sehingga jika supply kurang maka akan 
-		mati dengan sendirinya */
-		
-	vTaskDelay(3000);
-	
-	
-	for (;;)
-	{
-//		start_adc_1();
-		vTaskDelay(2);
-//		tot = tot + read_adc_1();
-		
-		loop++;
-		if (loop > 500)
-		{			
-			tot = (tot / 500);
+	for (i=0; i<10; i++)
+	{	
+		if (data_putaran[i])
+		{
+			// cari frekuensi
+			temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
+			// rpm
+			temp_rpm = temp_f * 60 * 0.333;
+			rpmnya[i] = temp_rpm;
+			//data_float.data[t] = (unsigned int) (data_hit[i] * env2.kalib[i].m);
 			
-			volt_supply = (float) (tot * 3.3 / 0xFFFF);	
-			//printf("ADC 1 = 0x%4X = %.3f\r\n", tot, volt_supply );
-			
-			/* 	cek jika diatas setting, maka relay diaktifkan !
-				relay normaly open.
-				
-				pertimbangkan juga saat waktunya on (histerisis ?)
-				jangan sampai malah hidup/mati hidup/mati
-				terlalu sering.
-				
-				beri jarak setiap 2 menit. 
-				
-				atau, mati pada < 22 Volt
-				dan nyala jika > 22.5 Volt atau 23 Volt sekalian
-			*/
-			
-			//if (volt_supply > 2.86) /* line > 22.5 Volt */
-			//if (volt_supply > 2.83) /* line > 22.5 Volt */
-			if (volt_supply > 2.65) /* line > 22.5 Volt */
-			{
-				if (loop_mati > (60 * 2))
-				{
-//					blok_1_up();
-					
-					/* server juga nyala */
-//					blok_2_down();
-					
-					/* ke penduduk nyala */
-//					blok_3_up();
-					
-					mati_total = 0;
-				}
-				else
-					loop_mati++;
-			}
-			
-			//if (volt_supply < 2.80) /* line < 22 Volt */
-			//if (volt_supply < 2.77) /* line < 22 Volt */
-			if (volt_supply < 2.52)   /* line <  20.286 */	
-			{
-//				blok_1_down();
-				
-				/* server juga harus ikutan mati */
-//				blok_2_up();
-				
-				/* ke penduduk mati */
-//				blok_3_down();
-				
-				mati_total = 1;				
-				loop_mati=0;
-			}
-				
-			
-			tot = 0;
-			loop = 0;
 		}
+		else
+		{
+			temp_f = 0;
+			temp_rpm = 0;
+		}	
+		
+		//printf(" %2d : F = %4.2f Hz, rpm = %4.2f\n", (i+1), temp_f, temp_rpm);
+
 	}
+	
 }
 
-void init_task_adc(void)
-{
-	xTaskCreate(task_adc, ( signed portCHAR * ) "on_adc",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
-		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+void cek_posisi_awal() {
+	printf("posisi PU: %d\r\n", posisi_PU);
+	motor_gulung();			// ganti pada gerakan motor yg sesuai
+	do {
+		KTAnya = data_tetangga.data[16];
+		vTaskDelay(10);
+		if (nOPTO1()==0) {
+			posisi_PU=1;
+		} else if (nOPTO2()==0) {
+			posisi_PU=2;
+		} else if (nOPTO3()==0) {
+			posisi_PU=3;
+		} else if (nOPTO4()==0) {
+			posisi_PU=4;
+		}
+	} while(posisi_PU==0);
+	motor_mati();
 }
 
-#endif
-
-#ifdef PAKAI_CYWUSB
- unsigned char x [50];
-
-static portTASK_FUNCTION(task_cywusb, pvParameters )  {
+static portTASK_FUNCTION(task_kincir, pvParameters )  {
 	unsigned int muterx=0;
 	unsigned int x=0;
 	unsigned int qq=0;
 	
 	unsigned char tes;
 	unsigned char status;
-	//vTaskDelay(500);
-	init_modul_cywusb();
-	vTaskDelay(1000);
-	konfig_WUSB('b');
-	vTaskDelay(3000);
-	//lihatKonfig();
-	for (;;)
-	{	
-		/*
-		portENTER_CRITICAL();
-		for(x=0; x<1000000; x++) {
-			kirim_SSP0(0xA5);
-			//CYWM_WriteReg(0xA5,0xA5);
+	vTaskDelay(2000);
+	
+	cari_rpmnya();
+	printf("posisi awal PU: %d\r\n", posisi_PU);
+	if (posisi_PU==0 || posisi_PU==4) {		// 4: tergulung penuh
+		cek_posisi_awal();		// posisi akan cenderung mingkup 
+	}
+	//printf("posisi PU: %d\r\n", posisi_PU);
+	
+	//printf("nilai: %f, nilai2: %f\r\n", data_tetangga.data[1], data_tetangga.data[2]);
+	for (;;)	{	
+		cari_rpmnya();
+		KTAnya = data_tetangga.data[16];
+		
+		if (rpmnya[9] > RPM_MAX || KTAnya>KTA_MAX) {
+			//printf("^^^^^^^^^^ posisi awal: %d, rpm: %4.2f, RPM_MAX: %d\r\n", posisi_PU, rpmnya[9], RPM_MAX);
+			if (posisi_PU==1) {
+				motor_gulung();
+				do {
+					cari_rpmnya();
+					vTaskDelay(10);
+					if(nOPTO2()==0) {
+						posisi_PU=2;
+					}
+				} while(posisi_PU==1);
+			} else if (posisi_PU==2) {
+				motor_gulung();
+				do {
+					cari_rpmnya();
+					vTaskDelay(10);
+					if(nOPTO3()==0) {
+						posisi_PU=3;
+					}
+				} while(posisi_PU==2);
+			} else if (posisi_PU==3) {
+				motor_gulung();
+				do {
+					cari_rpmnya();
+					vTaskDelay(10);
+					if(nOPTO4()==0) {
+						posisi_PU=4;
+					}
+				} while(posisi_PU==3);
+			}
+			//printf("^^^^^^^^^^ posisi akhir: %d\r\n", posisi_PU);
 		}
-		portEXIT_CRITICAL();
-		//*/
 		
-		/*
-		#ifdef PAKAI_CYWUSB
-			portENTER_CRITICAL();
-			unsigned char tes;
-				tes = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
-				//printf("read reg: 0x%x___",tes);
-				if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
-				//while(tes & 0x01 || tes & 0x02) {
-				//	if (tes & 0x01) {
-						CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
-						//printf("write reg: 0x%x___",tes);
-						if (tes & 0x08) { // Valid A
-							tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
-							//wusb_in(tes);
-							printf("%c",tes);
-						}
-				//	}
-				}
-			portEXIT_CRITICAL();
-		#endif
-		//*/
-		
-		//*
-		#ifdef PAKAI_CYWUSB
-			status = CYWM_ReadReg( 0x08 );		// REG_RX_INT_STAT
-			//printf("read reg: 0x%x___",tes);
-			//if (tes & 0x01 || tes & 0x02) { // FULL A || EOF A
-			//while(tes & 0x01 || tes & 0x02) {
-			//	if (tes & 0x01) {
-					//CYWM_WriteReg( 0x07, 0x03 );	// REG_RX_INT_EN Enable EOF and FULL interrupts for channel A
-					if(status & 0x08) {
-					//	printf("*");
-					}
-					//if ((status & 0x08) && (status & 0x02)) 
-					if (status & 0x08)
-					{ // Valid A
-						tes = CYWM_ReadReg( 0x09 );	//REG_RX_DATA_A
-						//wusb_in(tes);
-						printf("%c",tes);
-					}
-					//if (status & 0x04)
-					//	printf("_^");
-					CYWM_WriteReg( 0x07, 0x03);
-			//	}
-			//}
-		#endif
-		//*/
-		//*
-		muterx++;		
-		if (muterx > 1000)
+		else if (rpmnya[9]<(RPM_MAX-RPM_BAND) || KTAnya<KTA_MIN)
 		{
-			//sprintf(x, "data %d\r\n", qq);
-			//printf(x);
-			//kirim_wusb("^data_");
-			
-			//if(CYWM_ReadReg(0x00)!=0x07)		// cek ID cywusb tiap detik
-			//	reboot_wusb();
-			
-			/*
-			CYWM_WriteReg( 0x0F, qq);
-			printf("tulis: 0x%x\________",qq);
-			vTaskDelay(1000);
-			printf("baca: 0x%x\r\n", CYWM_ReadReg(0x0F));	
-			//*/
-			
-			//vTaskDelay(100);
-			//togle_led_utama();
-			//printf("%4d___Reg ID         : 0x%x\r\n", x++, CYWM_ReadReg(0x00));	// REG_ID
-			//printf("%4d__REG_RX_INT_STAT: 0x%2x dataA: %c REG_RX_INT_STAT: 0x%2x dataA: %d\r\n", x++, CYWM_ReadReg(0x08), CYWM_ReadReg(0x09), CYWM_ReadReg(0x08), CYWM_ReadReg(0x09));	// REG_RX_INT_STAT
-			muterx = 0;
-			qq++;
-		}	
+			//printf("_________ posisi awal balik: %d\r\n", posisi_PU);
+			if (posisi_PU==2) {
+				motor_ulur();
+				do {
+					cari_rpmnya();
+					vTaskDelay(10);
+					if(nOPTO1()==0) {
+						posisi_PU=1;
+					}
+				} while(posisi_PU==2);
+			} else if (posisi_PU==3) {
+				motor_ulur();
+				do {
+					cari_rpmnya();
+					vTaskDelay(10);
+					if(nOPTO2()==0) {
+						posisi_PU=2;
+					}
+				} while(posisi_PU==3);
+			} else if (posisi_PU==4) {
+				motor_ulur();
+				do {
+					cari_rpmnya();
+					vTaskDelay(10);
+					if(nOPTO3()==0) {
+						posisi_PU=3;
+					}
+				} while(posisi_PU==4);
+			}
+			//printf("_________ posisi akhir balik: %d\r\n", posisi_PU);
+		} else {
+			printf("BINGUNG_______________: %d\r\n", posisi_PU);
+		}
 		
-		vTaskDelay(1);
+		motor_mati();
+		vTaskDelay(100);
 	}
 }
 
-void init_task_cywusb(void)  {
-	xTaskCreate(task_cywusb, ( signed portCHAR * ) "cyswusb",  (configMINIMAL_STACK_SIZE * 10) , NULL, \
-		tskIDLE_PRIORITY - 3, ( xTaskHandle * ) &hdl_cyswusb );
+void init_task_kincir(void)  {
+	xTaskCreate(task_kincir, ( signed portCHAR * ) "kincir",  (configMINIMAL_STACK_SIZE * 10) , NULL, \
+		tskIDLE_PRIORITY - 3, ( xTaskHandle * ) &hdl_kincir );
 }
 #endif
+
+
+

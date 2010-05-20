@@ -436,12 +436,14 @@ int set_cron(int argc, char **argv)
 		}
 		//*
 		sprintf(buf, "%s", argv[7]);			// alamat
+		#ifdef PAKAI_SELENOID
 		alamat = cek_nomer_valid(buf, JML_RELAY);
 		if (alamat <= 0)	{
 			printf("Alamat salah. Range Relay 1 s/d %d !\r\n", JML_RELAY);
 			vPortFree( p_gr );
 			return 0;	
 		}
+		#endif
 		//*/
 		sprintf(buf, "%s", argv[8]);			// status
 		if ( (strcmp(buf, "aktif") == 0) || (buf[0]=='1') || (strcmp(buf, "hidup") == 0) )	{

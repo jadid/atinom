@@ -136,8 +136,10 @@ void kirim_serial (int argc, char **argv) {
 	if (1 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(1, buf);
+		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP == 1)
 			baca_hasil();			// fitur yang perlu jawaban
+		#endif
 	}
 	#endif
 
@@ -145,8 +147,10 @@ void kirim_serial (int argc, char **argv) {
 	if (2 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(2, buf);
+		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP==2)
 			baca_hasil();			// fitur yang perlu jawaban
+		#endif
 	}
 	
 	#endif
@@ -155,9 +159,12 @@ void kirim_serial (int argc, char **argv) {
 	if (3 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(3, buf);
+		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP==3)
 			baca_hasil();			// fitur yang perlu jawaban
+		#endif
 	}
+	
 	#endif
 	
 }

@@ -573,8 +573,7 @@ void cari_waktu(char *dest, char *posisi) {
 			count = cek_waktu(&tmp, 4);
 			ithn = tmp;
 		}
-		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", p_dt->direktori,  \ 
-				ithn, bulan[ibulan], itgl);
+		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", p_dt->direktori, ithn, bulan[ibulan], itgl);
 	} else if ( (posisi[0]=='J') || (posisi[0]=='j') ) {
 		tmp = atoi(str);
 		count = cek_waktu(&tmp, 1);					// x tgl sebelumnya, count = 2
@@ -597,8 +596,7 @@ void cari_waktu(char *dest, char *posisi) {
 			count = cek_waktu(&tmp, 4);
 			ithn = tmp;
 		}
-		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", p_dt->direktori,  \ 
-				ithn, bulan[ibulan], itgl, ijam);
+		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", p_dt->direktori, ithn, bulan[ibulan], itgl, ijam);
 	} else if ( (posisi[0]=='B') || (posisi[0]=='b') ) {
 		printf("%d Bulan sebelumnya: %d\r\n", atoi(str), timeinfo.tm_mon+1-atoi(str));
 	} else {

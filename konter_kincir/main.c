@@ -454,7 +454,8 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 			//printf("__rpmnya: %4.2f, posisi_PU: %d, KTAnya: %f\r\n", rpmnya[9], posisi_PU, KTAnya);
 			muter = 0;
 		}	
-		if (muter>100) {
+		muterlagi++;
+		if (muterlagi>100) {
 			printf("__rpmnya: %4.2f, posisi_PU: %d, KTAnya: %f\r\n", rpmnya[9], posisi_PU, KTAnya);
 			muterlagi=0;
 		}

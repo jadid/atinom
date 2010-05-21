@@ -507,6 +507,8 @@ void cek_posisi_awal() {
 	do {
 		KTAnya = data_tetangga.data[16];
 		vTaskDelay(10);
+		cari_posisinya();
+		/*
 		if (nOPTO1()==0) {
 			posisi_PU=1;
 		} else if (nOPTO2()==0) {
@@ -516,8 +518,22 @@ void cek_posisi_awal() {
 		} else if (nOPTO4()==0) {
 			posisi_PU=4;
 		}
+		//*/
 	} while(posisi_PU==0);
 	motor_mati();
+	printf("posisi PU now: %d\r\n", posisi_PU);
+}
+
+void cari_posisinya() {
+	if (nOPTO1()==0) {
+		posisi_PU=1;
+	} else if (nOPTO2()==0) {
+		posisi_PU=2;
+	} else if (nOPTO3()==0) {
+		posisi_PU=3;
+	} else if (nOPTO4()==0) {
+		posisi_PU=4;
+	}
 }
 
 static portTASK_FUNCTION(task_kincir, pvParameters )  {
@@ -531,7 +547,7 @@ static portTASK_FUNCTION(task_kincir, pvParameters )  {
 	
 	cari_rpmnya();
 	printf("posisi awal PU: %d\r\n", posisi_PU);
-	if (posisi_PU==0 || posisi_PU==4) {		// 4: tergulung penuh
+	if (posisi_PU==0) {
 		cek_posisi_awal();		// posisi akan cenderung mingkup 
 	}
 	//printf("posisi PU: %d\r\n", posisi_PU);
@@ -548,27 +564,36 @@ static portTASK_FUNCTION(task_kincir, pvParameters )  {
 				do {
 					cari_rpmnya();
 					vTaskDelay(10);
+					cari_posisinya();
+					/*
 					if(nOPTO2()==0) {
 						posisi_PU=2;
 					}
+					//*/
 				} while(posisi_PU==1);
 			} else if (posisi_PU==2) {
 				motor_gulung();
 				do {
 					cari_rpmnya();
 					vTaskDelay(10);
+					cari_posisinya();
+					/*
 					if(nOPTO3()==0) {
 						posisi_PU=3;
 					}
+					//*/
 				} while(posisi_PU==2);
 			} else if (posisi_PU==3) {
 				motor_gulung();
 				do {
 					cari_rpmnya();
 					vTaskDelay(10);
+					cari_posisinya();
+					/*
 					if(nOPTO4()==0) {
 						posisi_PU=4;
 					}
+					//*/
 				} while(posisi_PU==3);
 			}
 			//printf("^^^^^^^^^^ posisi akhir: %d\r\n", posisi_PU);
@@ -582,27 +607,36 @@ static portTASK_FUNCTION(task_kincir, pvParameters )  {
 				do {
 					cari_rpmnya();
 					vTaskDelay(10);
+					cari_posisinya();
+					/*
 					if(nOPTO1()==0) {
 						posisi_PU=1;
 					}
+					//*/
 				} while(posisi_PU==2);
 			} else if (posisi_PU==3) {
 				motor_ulur();
 				do {
 					cari_rpmnya();
 					vTaskDelay(10);
+					cari_posisinya();
+					/*
 					if(nOPTO2()==0) {
 						posisi_PU=2;
 					}
+					//*/
 				} while(posisi_PU==3);
 			} else if (posisi_PU==4) {
 				motor_ulur();
 				do {
 					cari_rpmnya();
 					vTaskDelay(10);
+					cari_posisinya();
+					/*
 					if(nOPTO3()==0) {
 						posisi_PU=3;
 					}
+					//*/
 				} while(posisi_PU==4);
 			}
 			//printf("_________ posisi akhir balik: %d\r\n", posisi_PU);

@@ -41,6 +41,9 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 		reset_flag_alarm();
 		cek_alarm_relay(no_nya);
 		no_nya++;
+		//if (flagnya_modem_buat_SMS) {
+		//	fungsi_SMS();
+		//}
 		if (no_nya>JML_SUMBER) no_nya=0;
 		
 		/*

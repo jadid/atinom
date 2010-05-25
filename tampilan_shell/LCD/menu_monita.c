@@ -292,8 +292,9 @@ void cetak_data( unsigned char grop, int idx )
 	teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( 14 * idx ), tek);
 }
 
-void menu_group(unsigned char p, unsigned char grop)
-{
+extern char titiknya[10][50];
+
+void menu_group(unsigned char p, unsigned char grop) {
 	int i;
 	struct t_group *p_gr;
 	struct t_dt_set *p_dt;
@@ -312,6 +313,9 @@ void menu_group(unsigned char p, unsigned char grop)
 	{
 		cetak_data( grop, i );
 	}*/
+
+
+/*
 	p_gr = (char *) ALMT_GROUP;
 	p_dt = (char *) ALMT_DT_SET;
 	
@@ -319,7 +323,46 @@ void menu_group(unsigned char p, unsigned char grop)
 	teks_layar ( DATA_KIRI_KOMIK + 120, DATA_ATAS_KOMIK, "Data" );
 	teks_layar ( DATA_KIRI_KOMIK + 180, DATA_ATAS_KOMIK, "Satuan" );
 	teks_layar ( DATA_KIRI_KOMIK + 220, DATA_ATAS_KOMIK, "Alarm H / HH" );
-//*	
+//*/
+	// reset tampilan //
+	for (i=0; i<10; i++)	{
+		sprintf(tek, "                                ");
+		teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+	}
+
+	for (i=0; i<10; i++)
+	{
+		temp = strlen(titiknya[i]);
+		if (  temp != 0 )
+		{
+			jml++;
+			//temp--;		// array dimulai dari nol
+			
+			//sprintf(tek, "nomer data %d, %s", temp, p_dt[ temp - 1)].nama );
+			sprintf(tek, "%2d. %s", jml, titiknya[i] );
+			teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);  // 14 terlalu mepet
+/*		
+			//data_f[ temp - 1 ] = (float) ((rand() % 100) * 0.10);
+			sprintf(tek, "%.2f", data_f[ temp - 1] );
+			teks_komik( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek); 
+			
+			sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
+			teks_layar( DATA_KIRI_KOMIK + 180, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+			
+			// Batas ALARM //
+			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
+			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
+			teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+			
+			//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
+			sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_HH );
+			teks_layar( DATA_KIRI_KOMIK + 255, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+			//teks_komik( DATA_KIRI_KOMIK + 240, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+//*/			
+			if (jml > 10) break;
+		}
+	}
+/*	
 	for (i=0; i<40; i++)
 	{
 		temp = p_gr[grop].no_data[i];

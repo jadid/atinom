@@ -42,7 +42,7 @@ CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
-PENULIS= ../../Penulis/./lpc_dbe
+PENULIS=../Penulis/./lpc_dbe
 
 NAMA_FILE=tampilan_lipi
 

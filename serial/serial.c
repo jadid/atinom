@@ -628,6 +628,7 @@ signed portBASE_TYPE ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxe
 	( void ) pxPort;
 	/* Get the next character from the buffer.  Return false if no characters
 	are available, or arrive before xBlockTime expires. */
+	portENTER_CRITICAL();
 	if( xQueueReceive( Qrx2, pcRxedChar, xBlockTime ) )
 	{
 		return pdTRUE;
@@ -636,6 +637,7 @@ signed portBASE_TYPE ser2_getchar( xComPortHandle pxPort, signed portCHAR *pcRxe
 	{
 		return pdFALSE;
 	}
+	portEXIT_CRITICAL();
 }
 
 signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOutChar, portTickType xBlockTime );

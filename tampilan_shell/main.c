@@ -84,8 +84,8 @@ xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
 
-xTaskHandle hdl_relay;
-
+//xTaskHandle hdl_relay;
+xTaskHandle hdl_muncrat;
 
 
 #define TXDE	BIT(24)
@@ -206,11 +206,12 @@ int main( void )
 	init_led_utama();		// 5, -2
 	init_task_lcd();		// 1, +1
 //	start_ether();
+	init_muncrat();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
 
 #ifdef PAKAI_SELENOID
-	init_task_relay();
+	//init_task_relay();
 #endif
 
 	vTaskStartScheduler();
@@ -349,3 +350,99 @@ void init_task_lcd(void)
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_lcd );	
 }
 
+
+char titiknya[10][50];
+
+char * trim(char *katanya) {
+	char *pch;
+	pch = katanya;
+	int p=strlen(katanya);
+	int j=0;
+	
+	while(p>j) {
+		if (*pch!=' ') {
+			break;
+		}
+		pch++;
+		j++;
+	}
+
+	return pch;
+	//printf("________isi: %s\r\n", pch);
+}
+
+int pisah_titik(char * str) {
+	int awal=0, akhir=0;
+	//char str[] = "  RPM 523.54,   Tot 42   ,BB 53.1234563 ,T Exh 346.43, P Exh 6.43";
+	char kata[50];
+	char * pch, *chrx;
+	chrx = str;
+	int titik=0;
+
+	pch=strchr(str,',');
+	//printf("%s, p: %d, di %d\r\n",str, strlen(chrx), pch-str+1);
+
+	if (pch!=NULL) {
+		while (pch!=NULL)  {
+			//printf("%s, panjang chrx %d, pch %d\r\n", pch, strlen(chrx), strlen(pch));
+			akhir = strlen(chrx)-strlen(pch);
+			
+			memcpy( (char *) &kata, chrx+awal, akhir-awal );
+			//printf("________isi: %s, awal: %d akhir: %d, chrx %s, pch\r\n", kata, awal, akhir, chrx);
+			kata[akhir-awal]='\0';
+			//printf("%s\r\n", trim(kata));
+			sprintf(titiknya[titik], "%s",trim(kata));
+			//printf("%s\r\n", titiknya[titik]);
+			awal = akhir+1;
+			pch=strchr(pch+1,',');
+			titik++;
+		}
+		// sisanya
+		//printf("%s\r\n", trim(chrx+awal));
+		//strcpy(titiknya[titik], trim(chrx+awal));
+		sprintf(titiknya[titik], "%s",trim(chrx+awal));
+	} else {
+		//printf("%s\r\n",str);
+		//strcpy(titiknya[titik], trim(kata));
+		sprintf(titiknya[titik], "%s",trim(kata));
+		//printf("isinya: %s\r\n", titiknya[titik]);
+	}
+	if (strlen(str)>5)
+		titik++;
+	return titik;
+}
+
+portTASK_FUNCTION( muncrat_task, pvParameters )  {
+	char buf[200];
+	int titik=0;
+	int j=0;
+	
+	vTaskDelay(2000);
+	for(;;) {
+		
+		serX_putstring(2,"s\r");
+		baca_serial(buf, 200, 2);
+		
+		//printf("isi: %s\r\n", buf);
+		
+		for(j=0; j<titik; j++) {
+			sprintf(titiknya[j], "");
+		}
+		titik = pisah_titik(buf);
+		
+		//*
+		printf("Titik ukur: %d\r\n", titik);
+		for(j=0; j<titik; j++) {
+			printf("isinya: %s\r\n", titiknya[j]);
+		}
+		//*/
+		vTaskDelay(1000);
+	}
+}
+
+
+
+void init_muncrat(void) {
+	xTaskCreate( muncrat_task, ( signed portCHAR * ) "muncrat", (configMINIMAL_STACK_SIZE * 10), \
+		NULL, tskIDLE_PRIORITY + 3, (xTaskHandle *) &hdl_muncrat );	
+}

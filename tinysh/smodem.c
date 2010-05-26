@@ -554,7 +554,7 @@ void cetak_tulisan(char *isi) {
 }
 
 void baca_hasil() {
-	baca_serial(buf, 12, 10);
+	baca_serial(buf, 120, 10);
 	printf(" MODEM: %s\r\n",buf);
 }
 

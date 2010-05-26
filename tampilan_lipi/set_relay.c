@@ -9,7 +9,7 @@
 
 #ifdef PAKAI_SELENOID
 
-extern float data_f [ (JML_SUMBER * PER_SUMBER)+JML_RELAY ];
+extern float data_f [ (JML_SUMBER * PER_SUMBER)+JML_RELAY ];		// variable ini nyimpan semua data modul monita 
 extern xTaskHandle hdl_relay;
 
 void cek_alarm_relay(no_sumber);
@@ -27,27 +27,43 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	
 
 	//printf("serial default\r\n");
-	//ser2_putstring("pake ser 2\r\n");
+	// CONTOH pakai serial 2  <<<<< untuk modem GSM
+	
+	//ser2_putstring("pake ser 2\r\n");		// atau
 	//serX_putstring(2, "pake PM di serial \r\n");
-	//printf("sesudahnya\r\n");
-	//c = 'A';	p = &c;
-	//serX_putchar(2, &c, 1000);
-	//serX_putstring(2, "pake serial 2\r\n");
+
+//*
+	ser2_putstring("AT\r\n");		// atau
+	serX_putstring(2, "AT+CMGF=0\r\n");				// set mode PDU
+	serX_putstring(2, "AT+CUSD=1,*888#\"\r\n");		// cek pulsa
+	
+	
+	char buf[128];
+	baca_serial(buf, 3, 10);
+	if (strncmp(buf,"OK",2)==0) {
+		//lihat_isi_pulsa_nya(buf);
+	}
+	// Tampilan ini punya fasilitas command shell ke serial 2 (modem)
+	// coba ketik: serial 2 AT\r\n
+	// harusnya ada balasan OK
+	// ketik: serial 2 AT+CMGF=0\r\n 
+	// lihat hasilnya
+//*/
 	
 	reset_flag_alarm();
 	for (;;)
 	{
-		vTaskDelay(50);
+		vTaskDelay(200);
 		reset_flag_alarm();
 		cek_alarm_relay(no_nya);
 		no_nya++;
 		if (no_nya>JML_SUMBER) no_nya=0;
 		
-		/*
+		//*
 		if(loopnya>50) {
 			//printf("jam sekarang: %d", jam_sekarang());
-			
-			cek_penduduk();
+			//cek_penduduk();
+			printf("Solar volt: %f, Solar cur: %f, relay1: %f\r\n", data_f[26-1], data_f[28-1], data_f[PER_SUMBER*JML_SUMBER]);
 			loopnya=0;
 		}
 		//*/

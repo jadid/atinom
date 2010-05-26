@@ -10,7 +10,7 @@
 #define P_HIDUP "hidup!"
 #define P_MATI  "mati!"
 #define P_TES   "tes!"
-#define PORT	"/dev/ttyUSB2"
+#define PORT	"/dev/ttyUSB1"
 
 void help() {
 	printf("%s untuk mengontrol ALARM rotasi.\n",program);

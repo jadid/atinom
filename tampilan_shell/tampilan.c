@@ -44,6 +44,13 @@ unsigned char daytime[32];
 
 xSemaphoreHandle keypad_sem;
 
+
+void judulnya() {
+	teks_komik(70, 5, "MOBIL \"C I K A L\" ITB");
+	teks_h(82, 21, "Shell Echo Marathon 2010");
+	teks_h(90, 31, "Daun Biru Engineering");
+}
+
 portTASK_FUNCTION( tampilan_task, pvParameters )
 {
 	unsigned int key_press;
@@ -83,28 +90,22 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	sprintf(tek, "ARM-GCC %s : %s : %s", __VERSION__, __DATE__, __TIME__);
 	teks_h(14, 56, tek);
 	
-	teks_arial(22, 70, "Monita");
+	teks_arial(22, 70, "Shell Eco Marathon");
 	
 	#if (PAKAI_FONT_KOMIK == 1)
-	teks_komik(18, 87, "Online Monitoring System");
+	teks_arial(18, 90, "Monita System");
 	#else
 	teks_arial(18, 87, "Performance Monitoring");
 	#endif
-	
+	teks_arial(18, 110, "Daun Biru Engineering");
 	update_lcd();
-	vTaskDelay(100);
+	vTaskDelay(2000);
 	teks_h(14, 110, "Loading setting ...");
 	
-	//set_awal_mesin();
-	//set_awal_sumber();
-	//set_awal_titik();
-	
-	read_sumber();
-	//read_mesin();
-	//read_titik();
+
 	
 	cls_layar();
-	vTaskDelay(500);
+	vTaskDelay(200);
 	update_lcd();
 	vTaskDelay(100);
 	update_lcd_layer2();
@@ -117,13 +118,14 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 		teks_h(20, 30 + (i*9), tek);
 	}
 //*/
+/*
 	cls_layar();
 	vTaskDelay(800);
 	update_lcd();
 	vTaskDelay(100);
 	update_lcd_layer2();
 	vTaskDelay(10);
-	
+//*/	
 	/*
 	teks_h(14, 20, "Data Sumber Data :");
 	for (i=0; i<JML_SUMBER; i++)
@@ -156,29 +158,31 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	// test depth
 	//fill_layar(0x0F);
 	vTaskDelay(100);		// 800
+	judulnya();
 	update_lcd_layer2();
-	
+	vTaskDelay(100);
 	//cls_layar();
 	//kotak(10, 10, 300, 220);
 	//update_lcd_layer3();
 	
 	loop = 0;
-	/*
+	//*
 	for (;;)
 	{
-		vTaskDelay(201);
+		vTaskDelay(500);
 		
 		cls_layar();
-		cetak_pm();
+		//judulnya();
 		
 		loop++;
-		sprintf(tek, "loop tampilan = %d", loop);
-		teks_layar(10, 20, tek);
+		menu_group(key_index, mesin_index);
 		
 		update_lcd();	
-	}*/
 	
-	#if 1	
+	}
+	//*/
+	
+	#if 0	
 	
 	key_index = 0;
 	mesin_index = 0;
@@ -343,3 +347,7 @@ void hitung_data_hitung(void)
 			data_hitung[i].sfc = 0;
 	}
 }
+
+
+
+

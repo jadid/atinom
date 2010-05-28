@@ -29,7 +29,9 @@ struct t_sumber *sumber;
 int cek_nomer_sumber(char *arg, int maks);
 void set_awal_sumber(void);
 static int simpan_sumber( struct t_sumber *pgr);
-							  
+
+#ifndef UNTUK_SHELL_ECO
+					  
 void cek_sumber(void)
 {
 	int i;
@@ -396,3 +398,6 @@ static int simpan_sumber( struct t_sumber *pgr)
 	printf(".. OK\r\n");
 	return 0;
 }
+
+
+#endif

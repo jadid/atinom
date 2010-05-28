@@ -17,6 +17,9 @@
 #include "semphr.h"
 #include "../monita/monita_uip.h"
 #include "tampilan.h"
+#include "gambar/cikal.c"
+//#include "gambar/pim.c"
+
 
 /* 
  * struct berikut harus ditaruh di ram utama supaya bisa baca
@@ -49,7 +52,49 @@ void judulnya() {
 	teks_komik(70, 5, "MOBIL \"C I K A L\" ITB");
 	teks_h(82, 21, "Shell Echo Marathon 2010");
 	teks_h(90, 31, "Daun Biru Engineering");
+	
+	//logo_client(20,100);
 }
+
+extern const int cikalkecilBitmap[];
+extern const int cikalkecilBitmapWidthPages;
+extern const int cikalkecilBitmapHeightPixels;
+
+char mask[] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+
+
+//*
+void logo_client(int x, int y) {
+	int k=0, j=0, i=0;
+	
+	for(k=cikalkecilBitmapHeightPixels-1; k>=0; k--) {
+		for (j=0; j<cikalkecilBitmapWidthPages; j++) {		
+			for (i=0; i<8; i++) {	// 1100 1100
+				if (cikalkecilBitmap[k*cikalkecilBitmapHeightPixels+j] & mask[i]) 	
+					pixel( x+(k*1), y+(j*8*1)+(i*1) );
+			}
+		}
+	}
+}
+//*/
+/*
+void logo_client(int x, int y) {
+	int k=0, j=0, i=0;
+	
+	for(k=pim_BitmapWidthBits-1; k>=0; k--) {
+		for (j=0; j<pim_BitmapHeightPages; j++) {		
+			for (i=0; i<8; i++) {	// 1100 1100
+
+				if (pim_Bitmap[k*pim_BitmapHeightPages+j] & mask[i]) 	
+					pixel( x+(k*1), y+(j*8*1)+(i*1) );
+					//nggambar.drawPie(QRect((k*1), (j*8*1)+(i*1), 1, 0), 0, 16*360);
+			}
+			//nggambar.drawText(10, (100+j*10), tr("nilai = ") + pim_hpBitmap[j]);
+		}
+	}
+}
+//*/ 
+ 
 
 portTASK_FUNCTION( tampilan_task, pvParameters )
 {
@@ -170,13 +215,10 @@ portTASK_FUNCTION( tampilan_task, pvParameters )
 	for (;;)
 	{
 		vTaskDelay(500);
-		
 		cls_layar();
-		//judulnya();
 		
 		loop++;
 		menu_group(key_index, mesin_index);
-		
 		update_lcd();	
 	
 	}
@@ -290,7 +332,7 @@ void init_task_tampilan(void)
 	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 10), \
 		NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
-
+#if 0
 int cek_keypad(void)
 {
 	//portENTER_CRITICAL();
@@ -348,6 +390,6 @@ void hitung_data_hitung(void)
 	}
 }
 
-
+#endif
 
 

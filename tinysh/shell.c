@@ -622,12 +622,14 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif
 
 #ifdef PAKAI_GSM_FTP
+#ifndef UNTUK_SHELL_ECO
 	tinysh_add_command(&set_modem_ftp_cmd);
 	tinysh_add_command(&cek_modem_cmd);
 	tinysh_add_command(&set_modem_gsm_cmd);
 	tinysh_add_command(&gsm_ftp_cmd);
 	tinysh_add_command(&cek_ftp_cmd);
 	//tinysh_add_command(&gsm_ftp_cmd);
+#endif
 #endif	
 
 #ifdef PAKAI_CRON
@@ -636,6 +638,7 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif
 
 #if (VERSI_KONFIG == 2)
+#ifndef UNTUK_SHELL_ECO
 	tinysh_add_command(&cek_group_cmd);
 	tinysh_add_command(&set_group_cmd);
 	
@@ -651,6 +654,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_file_cmd);
 	tinysh_add_command(&del_direktori_cmd);
 	tinysh_add_command(&cari_doku_cmd);
+#endif
 #endif	
 
 

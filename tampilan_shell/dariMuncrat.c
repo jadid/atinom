@@ -12,15 +12,6 @@
 #define P_TES   "tes!"
 #define PORT	"/dev/ttyUSB1"
 
-void help() {
-	printf("%s untuk mengontrol ALARM rotasi.\n",program);
-	printf("Command : %s [perintah]\n", program);
-	printf("Perintah\n");
-	printf("   %s hidup! << untuk menyalakan ALARM\n", program);
-	printf("   %s mati!  << untuk membungkam ALARM\n", program);
-	printf("   %s tes!   << untuk melihat koneksi ALARM\n", program);
-}
-
 //float RPM=0.0, BB=0.0;
 int tot=0;
 float BB=0.0;
@@ -51,6 +42,7 @@ int main(int argc, char *argv[]) {
 			printf("blabnskas\r\n");
 			if (fd>0) {
 			sprintf(perintah, "RPM %.2f, BB %.1f us, Tot %d\r\n", nilai_RPM(), nilai_BB(), tot++);
+			printf("%s",perintah);
 			//strcpy(perintah,"masuk dong");
 			iOut = write(fd,perintah, strlen(perintah));
 		}

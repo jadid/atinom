@@ -424,16 +424,23 @@ portTASK_FUNCTION( muncrat_task, pvParameters )  {
 		baca_serial(buf, 200, 2);
 		
 		//printf("isi: %s\r\n", buf);
-		
-		for(j=0; j<titik; j++) {
-			sprintf(titiknya[j], "");
-		}
-		titik = pisah_titik(buf);
-		
-		//*
-		printf("Titik ukur: %d\r\n", titik);
-		for(j=0; j<titik; j++) {
-			printf("isinya: %s\r\n", titiknya[j]);
+		if (strncmp(buf,"ERR",3)==0) {
+			printf("isi ERR: %s\r\n", buf);
+		} else {
+			if (strlen(buf)>5) {
+				/*
+				for(j=0; j<titik; j++) {
+					sprintf(titiknya[j], "");
+				}
+				//*/
+				titik = pisah_titik(buf);
+				
+				//*
+				printf("Titik ukur: %d\r\n", titik);
+				for(j=0; j<titik; j++) {
+					printf("isinya: %s\r\n", titiknya[j]);
+				}
+			}
 		}
 		//*/
 		vTaskDelay(1000);

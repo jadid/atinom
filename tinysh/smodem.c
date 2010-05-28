@@ -41,7 +41,8 @@ char buf[128];
 #define read(a, b, c) ser2_getchar(a, b, 1000);	\
 		tendang_wdog();
 
-
+#ifdef PAKAI_GSM_FTP
+#ifndef UNTUK_SHELL_ECO
 static int simpan_data_gsm_ftp( struct t_gsm_ftp *pgr);
 
 static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","menampilkan konfigurasi modem","[] nomer",
@@ -548,6 +549,8 @@ static int simpan_data_gsm_ftp( struct t_gsm_ftp *pgr)
 	printf(".. OK\r\n");
 	return 0;
 }
+#endif
+#endif
 
 void cetak_tulisan(char *isi) {
 	printf("%s", isi);

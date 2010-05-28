@@ -325,11 +325,12 @@ void menu_group(unsigned char p, unsigned char grop) {
 	teks_layar ( DATA_KIRI_KOMIK + 220, DATA_ATAS_KOMIK, "Alarm H / HH" );
 //*/
 	// reset tampilan //
+/*
 	for (i=0; i<10; i++)	{
 		sprintf(tek, "                                ");
 		teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 	}
-
+//*/
 	for (i=0; i<10; i++)
 	{
 		temp = strlen(titiknya[i]);

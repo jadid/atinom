@@ -63,6 +63,7 @@
 
 #define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
 #define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
+//#define PAKAI_MUNCRAT		2		// nyambung ke SERIAL 2
 
 //*
 #define PAKAI_SERIAL_1				// mendefinisikan aktif serial 1
@@ -73,6 +74,9 @@
 #endif
 //*/
 
+
+#define SEKTOR_DT_SET	20		// 32 kB/64 = 512.
+#define ALMT_DT_SET		0x68000
 
 //#define TAMPILAN_MALINGPING			1
 

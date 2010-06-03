@@ -13,7 +13,7 @@
 static char passin[16];
 static int  passc;
 
-#define DIGANTI 5		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
+
 
 int proses_passwd(char *c)
 {
@@ -105,31 +105,6 @@ void judul(char *s)
 	garis_bawah2();
 }
 
-int ganti_kata(char *dest, char *src) {
-	//printf ("kalimat: %s, p: %d\r\n",src, strlen(src));
-	char *asli[] = {"\\r", "\\n", "s/", "s\%",  "s%%"};
-	char *pengganti[] = {"\r", "\n", "", "", ""};
-	char * pch;
 
-	int i=0, j=0, k=0;
-	for (j=0; src[j] != '\0'; ++j) {
-		dest[i] = src[j];
-		//*
-		for (k=0; k<DIGANTI; k++) {
-			pch = strstr (dest,asli[k]);
-			
-			if (pch) {
-				strncpy (pch,pengganti[k],strlen(pengganti[k]));
-				strcat(dest, pengganti[k]);
-				//printf ("ada pch\r\n");
-				i += strlen(pengganti[k])-strlen(asli[k]);
-			}
-		}
-		//*/	
-		//printf ("kalimat: %s, p: %d\r\n",dest, strlen(dest));
-		++i;
-	}
-	dest[i] = '\0';
-}
 
 

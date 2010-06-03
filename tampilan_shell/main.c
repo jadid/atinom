@@ -58,10 +58,10 @@
 #endif
 
 #ifdef TAMPILAN_LPC_43
-#define LED_UTAMA	BIT(27)
+#define LED_UTAMA	(1 << 26)			//BIT(27)
 
 /* led di keypad */
-#define LED_PICKUP	BIT(14)
+#define LED_PICKUP	BIT(14)			//BIT(14)
 
 #define BACKLIT		BIT(20)	// PF15, P1.20
 #endif

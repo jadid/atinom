@@ -43,7 +43,7 @@
 #define printf	printf2
 
 #define PAKAI_BABELAN 2
-
+#define UNTUK_SHELL_ECO
 //#define PAKE_TELNETD
 
 //#define CARI_SUMBER						// untuk mencari data sumber via Ethernet
@@ -63,7 +63,9 @@
 //#define PAKAI_SERIAL_2		1
 //#define PAKAI_SELENOID		1		/* ULN2803 */
 
-//#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
+#define PAKAI_SERIAL_2
+#define PAKAI_SERIAL_2_P2				// mendefinisikan aktif serial 2
+#define PAKAI_SHEEL			2		 
 //#define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
 //#define SHELL
 //#define PAKAI_MUNCRAT		2		// nyambung ke SERIAL 2
@@ -81,11 +83,11 @@
 
 
 //#define TAMPILAN_MALINGPING			1
-
-#define VERSI_KONFIG	2
+//#define BOARD_KOMON
+//#define VERSI_KONFIG	2
 
 #define VERSI_KOMON		"1.43"
-#define PROMPT 		"Tamp_LIPI $ "
+#define PROMPT 		"Irit $ "
 #define NAMA_BOARD	"Tampilan"
 
 /*-----------------------------------------------------------
@@ -117,8 +119,8 @@
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 32 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 100 * configMINIMAL_STACK_SIZE * 4) )		// ditambahkan untuk set alarmHH dan alarmLL
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 48 * configMINIMAL_STACK_SIZE * 4) )			// total task stack = 25
+//#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 100 * configMINIMAL_STACK_SIZE * 4) )		// ditambahkan untuk set alarmHH dan alarmLL
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0

@@ -82,10 +82,10 @@ THUMB_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
 		../tinysh/tinysh.c \
 		../tinysh/shell.c \
-		../tinysh/enviro.c \
 		../spi/spi.c \
 		../system/idle_hook.c \
-		../system/rtc.c			\
+#		../tinysh/enviro.c \
+#		../system/rtc.c			\
 #		LCD/lcd_320.c \
 #		LCD/printw.c	\
 #		tampilan.c \
@@ -103,8 +103,8 @@ GSM_FTP_SOURCE = \
 #		../gsm/system_ftp/kirim_file_ftp.c \
 
 MONITA_SOURCE = \
-		../monita/monita_uip.c \
-		LCD/menu_monita.c \
+#		../monita/monita_uip.c \
+#		LCD/menu_monita.c \
 #		LCD/menu_popup.c \
 #		../monita/monita_kontrol_2.c
 
@@ -131,20 +131,20 @@ WEBCLIENT_SOURCE = \
 #		../webserver/webclient/webclient-strings.c
 
 FATFS_SOURCE = \
-		../fatfs/ff.c	\
-		../fatfs/spi_mmc.c	\
-		../fatfs/option/ccsbcs.c	\
-		../spi/low_ss1.c	\
-		../spi/gmmc.c	\
-		../fatfs/simpan_file.c
+#		../fatfs/ff.c	\
+#		../fatfs/spi_mmc.c	\
+#		../fatfs/option/ccsbcs.c	\
+#		../spi/low_ss1.c	\
+#		../spi/gmmc.c	\
+#		../fatfs/simpan_file.c
 			
 
 #THUMB_SOURCE += $(FATFS_SOURCE)
 #THUMB_SOURCE += $(MONITA_SOURCE)
-THUMB_SOURCE += $(UIP_SOURCE)
-THUMB_SOURCE += $(GSM_FTP_SOURCE)
-THUMB_SOURCE += $(WEBCLIENT_SOURCE)
-THUMB_SOURCE += $(PM_SOURCE)
+#THUMB_SOURCE += $(UIP_SOURCE)
+#THUMB_SOURCE += $(GSM_FTP_SOURCE)
+#THUMB_SOURCE += $(WEBCLIENT_SOURCE)
+#THUMB_SOURCE += $(PM_SOURCE)
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

@@ -1,17 +1,20 @@
 #include <stdio.h>
 #include <errno.h>
 #include <float.h>
-#include <math.h>
+//#include <math.h>
 
 #include "tinysh.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
 
+#ifndef UNTUK_SHELL_ECO
 #include "rw_flash.c"
-#include "set_ipaddr.c"
 
+	#include "set_ipaddr.c"
+#endif
 #define debug_printf printf
+
 
 #if (VERSI_KONFIG == 2)
 #include "utils.c"
@@ -66,22 +69,24 @@
 #include "../GPIO/selenoid.c"
 #endif
 
+#ifndef UNTUK_SHELL_ECO
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 #include "../monita/monita_uip.h"
+#endif
 
 #include <stdlib.h>
 
 void reset_cpu(void);
 
-extern struct t_mesin mesin[];
-extern struct t_titik titik[];
+//extern struct t_mesin mesin[];
+//extern struct t_titik titik[];
 //extern struct t_sumber sumber[];
-
+#ifdef PAKAI_ETH
 extern struct sambungan_state samb;
+#endif
 
 extern xTaskHandle *hdl_shell;
-
 extern xTaskHandle *hdl_led;
 
 #ifdef PAKAI_LCD
@@ -105,7 +110,7 @@ extern xTaskHandle *hdl_ether;
 #define per_oflow (0xFFFFFFFF * 0.050) / (1000 * 1000 * 60)
 #define per_tik		0.050 / (1000 * 1000 * 60)
 
-
+#ifndef UNTUK_SHELL_ECO
 static tinysh_cmd_t save_env_cmd={0,"save_env","menyimpan environment","[args]",
                               save_env,0,0,0};
 							  
@@ -114,9 +119,38 @@ static tinysh_cmd_t printenv_cmd={0,"cek_env","menampilkan environment","[args]"
 							  
 static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
                               reset_cpu,0,0,0};
-							  
+#endif				  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
+
+#define DIGANTI 5		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
+
+int ganti_kata(char *dest, char *src) {
+	//printf ("kalimat: %s, p: %d\r\n",src, strlen(src));
+	char *asli[] = {"\\r", "\\n", "s/", "s\%",  "s%%"};
+	char *pengganti[] = {"\r", "\n", "", "", ""};
+	char * pch;
+
+	int i=0, j=0, k=0;
+	for (j=0; src[j] != '\0'; ++j) {
+		dest[i] = src[j];
+		//*
+		for (k=0; k<DIGANTI; k++) {
+			pch = strstr (dest,asli[k]);
+			
+			if (pch) {
+				strncpy (pch,pengganti[k],strlen(pengganti[k]));
+				strcat(dest, pengganti[k]);
+				//printf ("ada pch\r\n");
+				i += strlen(pengganti[k])-strlen(asli[k]);
+			}
+		}
+		//*/	
+		//printf ("kalimat: %s, p: %d\r\n",dest, strlen(dest));
+		++i;
+	}
+	dest[i] = '\0';
+}
 
 void kirim_serial (int argc, char **argv) {
 	int sumb=0;
@@ -137,7 +171,10 @@ void kirim_serial (int argc, char **argv) {
 	
 	display_args(argc,argv);
 	sprintf(buf, "%s", argv[1]);
-	sumb = cek_nomer_valid(buf, 5);
+	
+	
+	//sumb = cek_nomer_valid(buf, 5);
+	sumb = atoi(buf);
 
 	#ifdef PAKAI_SERIAL_1
 	if (1 == sumb) {
@@ -178,9 +215,6 @@ void kirim_serial (int argc, char **argv) {
 
 static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
                               kirim_serial,0,0,0};
-
-
-
 
 
 
@@ -258,7 +292,7 @@ static tinysh_cmd_t set_date_cmd={0,"set_date","Mengeset waktu","thn bulan tgl j
 void cek_stack(void)
 {
 	printf("Sisa stack masing2 task (bytes)\r\n");
-	garis_bawah();
+	//garis_bawah();
 	printf(" Shell    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
 	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
@@ -586,14 +620,17 @@ portTASK_FUNCTION(shell, pvParameters )
 	 * add command
 	 */
   	//tinysh_add_command(&myfoocmd);
+  	#ifndef UNTUK_SHELL_ECO 
   	tinysh_add_command(&printenv_cmd);
 	tinysh_add_command(&setenv_cmd);
 	tinysh_add_command(&save_env_cmd);
+	
+	
 	tinysh_add_command(&reset_cmd);
 	tinysh_add_command(&cek_stack_cmd);
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
-	
+	#endif
 #ifdef BOARD_KOMON_KONTER
 	tinysh_add_command(&cek_rpm_cmd);
 	tinysh_add_command(&set_kanal_cmd);
@@ -775,6 +812,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
+	  /*
 	  if (lop > 60)
 	  {
 			lop = 0;
@@ -792,7 +830,7 @@ portTASK_FUNCTION(shell, pvParameters )
 				#endif
 			}
 	  }
-	  
+	  //*/
 	  #ifdef PAKAI_MMC
 	  #if (PAKAI_FILE_SIMPAN == 1)
 	  proses_simpan_file();

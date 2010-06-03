@@ -40,7 +40,7 @@ void getdef_env(int argc, char **argv)
 void save_env(int argc, char **argv)
 {
 	printf(" Saving environtment\r\n");
-	garis_bawah();
+	//garis_bawah();
 
 	tulis_env();
 	
@@ -138,7 +138,7 @@ int baca_env(char tampil)
 	if (tampil == 1)
 	{
 		printf(" Data Environtment \r\n");
-		garis_bawah();
+		//garis_bawah();
 	}
 	else
 	{

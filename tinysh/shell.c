@@ -8,16 +8,19 @@
 #include "task.h"
 #include "semphr.h"
 
-#ifndef UNTUK_SHELL_ECO
 #include "rw_flash.c"
+#include "utils.c"
+#include "set_ipaddr.c"
+#ifndef UNTUK_SHELL_ECO
 
-	#include "set_ipaddr.c"
+
+	
 #endif
 #define debug_printf printf
 
 
 #if (VERSI_KONFIG == 2)
-#include "utils.c"
+
 #include "group.c"
 #include "sumber.c"
 //#include "../monita/monita_kontrol_2.c"

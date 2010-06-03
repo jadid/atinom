@@ -43,9 +43,10 @@
 
 #include "../monita/monita_uip.h"
 
+
 static int set_file_default(void);
 static int simpan_sfile( struct t_simpan_file *pgr);
-
+#ifdef PAKAI_FILE_SIMPAN
 static int cek_file(int argc, char **argv)
 {
 	int i;
@@ -845,3 +846,4 @@ static int simpan_sfile( struct t_simpan_file *pgr) {
 	printf(".. OK\r\n");
 	return 0;
 }
+#endif

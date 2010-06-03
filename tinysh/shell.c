@@ -81,10 +81,17 @@ extern struct t_titik titik[];
 extern struct sambungan_state samb;
 
 extern xTaskHandle *hdl_shell;
-extern xTaskHandle *hdl_lcd;
+
 extern xTaskHandle *hdl_led;
+
+#ifdef PAKAI_LCD
+extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_tampilan;
+#endif
+
+#ifdef PAKAI_ETH
 extern xTaskHandle *hdl_ether;
+#endif
 
 #ifdef PAKAI_SELENOID
 	extern xTaskHandle *hdl_relay;
@@ -268,7 +275,10 @@ void cek_stack(void)
 	//printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
 	#endif
 	
-	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#ifdef PAKAI_ETH
+		printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#endif
+	
 	#if (PAKAI_SELENOID == 1)
 		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
@@ -650,10 +660,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_data_cmd);
 	
 	// simpan file
+	#ifdef PAKAI_FILE_SIMPAN
 	tinysh_add_command(&cek_file_cmd);
 	tinysh_add_command(&set_file_cmd);
 	tinysh_add_command(&del_direktori_cmd);
 	tinysh_add_command(&cari_doku_cmd);
+	#endif
 #endif
 #endif	
 

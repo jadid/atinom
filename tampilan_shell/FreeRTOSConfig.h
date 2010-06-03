@@ -63,9 +63,10 @@
 
 #define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
 #define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
+//#define SHELL
 //#define PAKAI_MUNCRAT		2		// nyambung ke SERIAL 2
 
-//*
+/*
 #define PAKAI_SERIAL_1				// mendefinisikan aktif serial 1
 #define PAKAI_PM			1		// nyambung ke SERIAL 1
 //*

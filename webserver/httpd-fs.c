@@ -64,8 +64,9 @@ static unsigned int size;
 static unsigned int files;
 static unsigned int jum_dirs;
 static char link_asli[128];
-	
+
 extern unsigned char buf_lfn[255];
+
 
 #include "FreeRTOS.h"
 
@@ -95,7 +96,7 @@ int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 	char temp[256];
 	char temp2[256];
 	char *name = s->filename;
-	
+	#ifdef PAKAI_FILE_SIMPAN
 	if ( s->file.nomer == 0 ) /* awal baca direktori */
 	{
 		fileInfo.lfname = buf_lfn;
@@ -142,6 +143,8 @@ int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 		return 0;				/* sudah habis, tidak perlu dipanggil lagi */
 	}
 	
+	
+	
 	if (fileInfo.fattrib & AM_DIR) 
 		   jum_dirs++;
 	else 
@@ -183,7 +186,8 @@ int http_fs_baca_dir(char *buf, int *pjg, struct httpd_state *s)
 	s->len = strlen(buf);	/* pjg yang harus ditransmit */
 	*pjg = s->len;
 	return 1;				/* masih harus dipanggil lagi */
-		
+	
+	#endif
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -239,6 +243,8 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 	printf(" Slot file %d kosong\r\n", ret);
 	#endif
 	
+	#ifdef PAKAI_FILE_SIMPAN
+	
 	if (ret = f_open( pfd, name, FA_READ | FA_WRITE))
 	{
 		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, ret);
@@ -271,6 +277,7 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
 	printf(" len = %d\r\n", file->len);
 	return 1;
 	
+	#endif
 	#if 0
 	printf2("%s(): %s\r\n", __FUNCTION__, name);
 	

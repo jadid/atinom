@@ -32,6 +32,10 @@
 #include "set_kanal.c"
 #endif
 
+#ifdef  BOARD_KOMON_420_SABANG
+	#include "utils.c"
+#endif 
+
 #ifdef BOARD_KOMON_A_RTD
 #include "../adc/command_adc.c"
 #include "set_kanal.c"
@@ -763,17 +767,17 @@ portTASK_FUNCTION(shell, pvParameters )
 					if (proses_passwd( &c ) == 1) break;
 				}
 				#ifdef PAKAI_MMC
-				#if (PAKAI_FILE_SIMPAN == 1)
-				proses_simpan_file();
-				#endif
+					#if (PAKAI_FILE_SIMPAN == 1)
+						proses_simpan_file();
+					#endif
 				#endif
 			}
 	  }
 	  
 	  #ifdef PAKAI_MMC
-	  #if (PAKAI_FILE_SIMPAN == 1)
-	  proses_simpan_file();
-	  #endif
+		  #if (PAKAI_FILE_SIMPAN == 1)
+		  	proses_simpan_file();
+		  #endif
 	  #endif
 	  
 	  #ifdef USB_TEST

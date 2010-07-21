@@ -711,7 +711,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	#ifdef BOARD_KOMON_420_SABANG
-	vTaskDelay(1000);
+	//vTaskDelay(1000);
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD

@@ -42,13 +42,20 @@
 
 //#define BOARD_KOMON_420_SAJA
 #define BOARD_KOMON_420_SABANG
-#define UNTUK_PM
-#define VERSI_KOMON		"1.42"
+#define VERSI_KOMON		"1.50"
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
 #define _printf	printf2
 #define printf	printf2
+
+
+#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 1
+#define PAKAI_PM			2		// nyambung ke SERIAL 1
+#ifdef PAKAI_PM
+	#define BAUD_PM			19200
+#endif
+
 
 #define PROMPT 		"Komon_420_I_PM $ "
 #define NAMA_BOARD	"Babelan Komon-420"

@@ -59,11 +59,11 @@ unsigned int get_PM710(unsigned short reg, unsigned char uk)
    pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
    pmod.reg_lo = (unsigned char) (reg & 0x00FF);
    pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
-   pmod.jum_lo = (unsigned char) (uk & 0x00FF);;
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
 
    dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2);
    pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
-   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);;
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
 
    	return (1 + 1 + 1 + (uk * 2) + 2);
 }
@@ -362,6 +362,7 @@ void taruh_data(int no_slave, int urt)
 
 //*
 // 22 Jan 09
+#ifdef PAKAI_KTA
 unsigned short get_KTA(unsigned short reg, unsigned char uk)
 {
    unsigned short dcrc;
@@ -385,6 +386,8 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 
    	return (1 + 1 + 1 + (uk * 2) + 2);
 }
+#endif
+
 //*/
 #endif
 

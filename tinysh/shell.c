@@ -140,8 +140,10 @@ void kirim_serial (int argc, char **argv) {
 	if (1 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(1, buf);
+		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP == 1)
 			baca_hasil();			// fitur yang perlu jawaban
+		#endif
 	}
 	#endif
 
@@ -149,8 +151,10 @@ void kirim_serial (int argc, char **argv) {
 	if (2 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(2, buf);
+		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP==2)
 			baca_hasil();			// fitur yang perlu jawaban
+		#endif
 	}
 	
 	#endif
@@ -706,6 +710,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	start_adc_1();
 	#endif
 	
+	#ifdef BOARD_KOMON_420_SABANG
+	vTaskDelay(1000);
+	#endif
+	
 	#ifdef BOARD_KOMON_A_RTD
 	kalibrasi_adc1();
 	vTaskDelay(100);
@@ -741,6 +749,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_set_prompt( PROMPT );
 	/* force untuk tampil prompt */
 	tinysh_char_in('\r');
+	
 	
 	/*
 	 * main loop shell

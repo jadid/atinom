@@ -22,6 +22,7 @@
 #include "queue.h"
 #include "semphr.h"
 
+
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
 //#define CEK_BLINK
@@ -39,7 +40,7 @@ unsigned int tot_idle;
 static int tog;
 static void sysInit(void);
 void init_led_utama(void);
-void init_spi_mmc(char min)	;
+//void init_spi_mmc(char min)	;
 
 xTaskHandle hdl_led;
 xTaskHandle hdl_shell;
@@ -72,7 +73,21 @@ int main( void )
 	FIO0CLR = LED_UTAMA;	
 	
 	FIO1DIR = 0xFFFFFFFF;
+
+
+
+	#ifdef PAKAI_SERIAL_2
+	/* PCONP enable UART2 */
+	PCONP |= BIT(24);
 	
+	/* PCLK UART2, PCLK = CCLK */
+	PCLKSEL1 &= ~(BIT(16) | BIT(17));
+	PCLKSEL1 |= BIT(16);
+	
+	/* init TX2, RX2 */
+	PINSEL0 |= (BIT(20) | BIT(22));
+	#endif
+
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
 	int t=0;
@@ -87,7 +102,9 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
-
+	#ifdef PAKAI_SERIAL_2
+		serial2_init( BAUD_PM, (1 * configMINIMAL_STACK_SIZE) );
+	#endif
 
 
 //	init_gpio_adc();
@@ -96,8 +113,11 @@ int main( void )
 #ifdef jalankan
 	init_led_utama();
 	start_ether();
+	
 	init_shell();
+	init_task_pm();
 
+	
 	vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle

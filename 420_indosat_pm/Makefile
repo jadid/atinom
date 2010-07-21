@@ -71,6 +71,7 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
+		pm_server.c \
 		../system/setup_cpu.c \
 		../system/syscall.c \
 		../system/reset_cpu.c \
@@ -110,13 +111,16 @@ THUMB_SOURCE= \
 #		LCD/menu_monita.c \
 #		LCD/menu_popup.c \
 
-
+PM_SOURCE = \
+		pm_server.c \
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../serial/serialISR.c \
 		../GPIO/gpio_ISR.c 
 		
+#THUMB_SOURCE += $(PM_SOURCE)
+
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

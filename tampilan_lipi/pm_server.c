@@ -169,13 +169,15 @@ static void proses_pm(void)
 		//printf("_________masuk  urut 6, jmlBalik: %d\r\n", jum_balik );
 	}
 
-	
+	//printf("Minta ke PM -%d : %d : ", urut_PM710, sizeof(pmod));
 	st = (char *) &pmod;
 	for (i=0; i< sizeof(pmod); i++)
 	{
 		//xSerialPutChar2( 0, *st++, 100 );
 		serX_putchar(PAKAI_PM, st++, 100);
+		printf("%02hX ", st);
 	}
+	printf("\r\n");
 	
 	//printf("Send %1d : %2d :", urut_PM710, jum_balik);
 	
@@ -214,6 +216,11 @@ static void proses_pm(void)
 			}
 		}
 	}
+	
+	for (i=0; i<jum_balik; i++) {
+		printf("%02hhX ", buf_rx[i]);	
+	}
+	printf("\r\n");
 	
 	//for (i=0; i<jum_balik; i++)
 	//	printw("%X ", buf_rx[i]);	
@@ -283,9 +290,10 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	{
 		vTaskDelay(95);
 		proses_pm();
-		/*
+		//*
 		if (muternya>5) {
-			printf("__________data V_f: %f, angin: %.2f, %d, arah: %e\r\n", asli_PM710[0].frek, f_wind_speed, wind_speed, wind_dir_tr);
+			//printf("__________data V_f: %f, angin: %.2f, %d, arah: %e\r\n", asli_PM710[0].frek, f_wind_speed, wind_speed, wind_dir_tr);
+			printf("__________data V_f: %.2f, volt: %.2f\r\n", asli_PM710[0].frek, asli_PM710[0].volt1);
 			muternya=0;
 		}
 		muternya++;

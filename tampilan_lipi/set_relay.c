@@ -63,7 +63,7 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 		if(loopnya>50) {
 			//printf("jam sekarang: %d", jam_sekarang());
 			//cek_penduduk();
-			printf("Solar volt: %f, Solar cur: %f, relay1: %f\r\n", data_f[26-1], data_f[28-1], data_f[PER_SUMBER*JML_SUMBER]);
+			//printf("Solar volt: %f, Solar cur: %f, relay1: %f\r\n", data_f[26-1], data_f[28-1], data_f[PER_SUMBER*JML_SUMBER]);
 			loopnya=0;
 		}
 		//*/

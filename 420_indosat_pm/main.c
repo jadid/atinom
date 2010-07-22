@@ -30,6 +30,7 @@
 
 #ifdef BOARD_KOMON_420_SABANG
 #define LED_UTAMA	BIT(27)
+#define TXDE	BIT(24)
 #endif
 
 //xSemaphoreHandle lcd_sem;
@@ -74,7 +75,24 @@ int main( void )
 	
 	FIO1DIR = 0xFFFFFFFF;
 
-
+	#ifdef PAKAI_SERIAL_3
+	/* PCONP enable UART3 */
+	PCONP |= BIT(25);
+	
+	/* PCLK UART3, PCLK = CCLK */
+	PCLKSEL1 &= ~(BIT(18) | BIT(19));
+	PCLKSEL1 |= BIT(18);
+	
+	/* init TX3, RX3 */
+	PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));
+	PINSEL1 |= (BIT(18) | BIT(19));
+	PINSEL1 |= (BIT(20) | BIT(21));
+	
+	/* TXDE di highkan */
+	FIO0DIR |= TXDE;
+	FIO0SET = TXDE;		// on	---> bisa kirim
+	//FIO0SET &= ~TXDE;		// off	---> gak bisa kirim
+	#endif
 
 	#ifdef PAKAI_SERIAL_2
 	/* PCONP enable UART2 */
@@ -105,7 +123,9 @@ int main( void )
 	#ifdef PAKAI_SERIAL_2
 		serial2_init( BAUD_PM, (1 * configMINIMAL_STACK_SIZE) );
 	#endif
-
+	#ifdef PAKAI_SERIAL_3
+		serial3_init( BAUD_PM, (1 * configMINIMAL_STACK_SIZE) );
+	#endif
 
 //	init_gpio_adc();
 

@@ -365,7 +365,7 @@ void serX_putchar(int no, signed portCHAR * pxNext, portTickType xBlockTime) {
 	
 	#ifdef PAKAI_SERIAL_3
 	if (no==3) {
-		printf("masuk serial.c 3 !\r\n");
+		//printf("masuk serial.c 3 !\r\n");
 		//ser3_putstring(pcString);
 		xSerialPutChar3( 1, *pxNext, xBlockTime );
 	}

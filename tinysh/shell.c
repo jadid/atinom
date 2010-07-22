@@ -163,8 +163,10 @@ void kirim_serial (int argc, char **argv) {
 	if (3 == sumb) {
 		ganti_kata(buf, argv[2]);
 		serX_putstring(3, buf);
+		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP==3)
 			baca_hasil();			// fitur yang perlu jawaban
+		#endif
 	}
 	#endif
 	

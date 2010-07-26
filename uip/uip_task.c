@@ -78,9 +78,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	static volatile portTickType xStartTime, xCurrentTime;
 	
 	vTaskDelay(200);
-	#ifdef BOARD_KOMON_420_SABANG
-	vTaskDelay(200);
-	#endif
+	
 	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
@@ -156,11 +154,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	/* supaya cukup waktu buat siap2 */
 	loop = -1000;
 	
-	
-
+	printf(">>>  akhir Ethernet .................\r\n");
+	#ifdef BOARD_KOMON_420_SABANG
+	vTaskDelay(200);
+	#endif
 	for (;;)
 	{
-		vTaskDelay(1);
+		vTaskDelay(10);
 		//portYIELD();
 		
 		#ifdef PAKAI_WEBCLIENT

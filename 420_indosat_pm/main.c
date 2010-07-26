@@ -46,6 +46,7 @@ void init_led_utama(void);
 xTaskHandle hdl_led;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
+xTaskHandle hdl_pm;
 
 void dele(int dd)
 {
@@ -132,12 +133,12 @@ int main( void )
 
 #ifdef jalankan
 	init_led_utama();
+
+	init_shell();
+
 	start_ether();
 	
-	//init_task_pm();
-	init_shell();
-	//init_task_pm();
-
+	init_task_pm();
 	
 	vTaskStartScheduler();
 
@@ -181,11 +182,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		vTaskDelay(500);
 	}
 }
-void init_led_utama(void)
-{
+void init_led_utama(void) {
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) ,\
 		 NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
-
-
-

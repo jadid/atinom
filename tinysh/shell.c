@@ -545,7 +545,7 @@ extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
-  	//vTaskDelay(10);
+  	//vTaskDelay(1000);
   	xTaskHandle xHandle;
 	printf(">>>  masuk Shell .................\r\n");
   	printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
@@ -714,7 +714,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	#ifdef BOARD_KOMON_420_SABANG
-		//vTaskDelay(10);
+		vTaskDelay(100);
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD

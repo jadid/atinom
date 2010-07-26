@@ -505,7 +505,11 @@ void samb_appcall(void)
 				//memcpy((char *) &s_data[nomer_sambung].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, sizeof (data_float));
-				memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
+				//memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
+				
+				#ifdef BOARD_KOMON_420_SABANG
+					//memcpy( (char *) &datanya[0], in_buf.buf, (PER_SUMBER*sizeof (float)) );
+				#endif
 				
 				debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
 				

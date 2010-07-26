@@ -545,8 +545,9 @@ extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
+  	//vTaskDelay(10);
   	xTaskHandle xHandle;
-
+	printf(">>>  masuk Shell .................\r\n");
   	printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
 
   	printf("Daun Biru Engineering, Des 2008\r\n");
@@ -713,7 +714,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	#ifdef BOARD_KOMON_420_SABANG
-	//vTaskDelay(1000);
+		//vTaskDelay(10);
 	#endif
 	
 	#ifdef BOARD_KOMON_A_RTD
@@ -759,6 +760,7 @@ portTASK_FUNCTION(shell, pvParameters )
   	int lop = 0;
   	while(1)
     {
+		vTaskDelay(40);
 	  lop++;
 	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)
 	  {

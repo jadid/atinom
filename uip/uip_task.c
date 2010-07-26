@@ -76,12 +76,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	unsigned int timer_menit=0;
 	unsigned int loop_menit=0;	
 	static volatile portTickType xStartTime, xCurrentTime;
-
+	
 	vTaskDelay(200);
+	#ifdef BOARD_KOMON_420_SABANG
+	vTaskDelay(200);
+	#endif
 	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
-	
+	printf(">>>  masuk Ethernet .................\r\n");
 	printf("UIP : uip_init\r\n");
 	uip_init ();
 	

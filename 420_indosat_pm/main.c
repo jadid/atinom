@@ -134,9 +134,9 @@ int main( void )
 	init_led_utama();
 	start_ether();
 	
-	init_task_pm();
+	//init_task_pm();
 	init_shell();
-	
+	//init_task_pm();
 
 	
 	vTaskStartScheduler();

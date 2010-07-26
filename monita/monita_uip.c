@@ -43,6 +43,10 @@ extern struct t_adc st_adc;
 #define BOARD_KOMON
 #endif
 
+#ifdef BOARD_KOMON_420_SABANG
+#define BOARD_KOMON
+#endif
+
 #ifdef BOARD_KOMON_B_THERMO
 #include "../adc/ad7708.h"
 extern struct t_adc st_adc;
@@ -60,6 +64,8 @@ extern struct t_env env2;
 void monita_init(void)
 {
 	loop_kirim = 0;
+	
+	printf("Monita init_______________________________\r\n");
 	uip_listen(HTONS(PORT_MONITA));
 }
 
@@ -105,10 +111,12 @@ void monita_appcall(void)
 	}
 #endif
 	
+	
+	printf("_______________________________ada yg manggil = \r\n\n");
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		//printf("newdata = %d %s\n", len, ipne);
+		printf("newdata = %d %s\n", len, ipne);
 		
 		if (len >= 10)
 		{
@@ -136,6 +144,15 @@ void monita_appcall(void)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
 				}		
+				#endif
+				
+				#ifdef BOARD_KOMON_420_SABANG
+				//*
+				for (i=0; i<20;i++)
+				{
+					data_float.data[i] = data_f[i];
+				}
+				//*/		
 				#endif
 				
 				#ifdef BOARD_KOMON_B_THERMO
@@ -269,7 +286,7 @@ void sambungan_connect(int no)
 
 	struct t_sumber *sumber;
 	sumber = (char *) ALMT_SUMBER;
-	/*
+	//*
 	wer++;
 	if (wer>100) {
 		printf("status sumber %d: %d, status.stat: %d\r\n",no, sumber[no].status, status[no].stat);
@@ -412,7 +429,7 @@ void samb_appcall(void)
 	//*/
 	if (uip_connected())
 	{
-		//printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
+		printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
 		if (status[nomer_sambung].stat == 1)
 		{
 			status[nomer_sambung].stat = 2;
@@ -490,7 +507,7 @@ void samb_appcall(void)
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		//printf("newdata = %d %s\n", len, ipne);
+		printf("newdata = %d %s\n", len, ipne);
 		
 		if (status[nomer_sambung].stat == 3 && len == 248)
 		{

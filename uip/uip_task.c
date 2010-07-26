@@ -82,7 +82,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
-	printf(">>>  masuk Ethernet .................\r\n");
 	printf("UIP : uip_init\r\n");
 	uip_init ();
 	
@@ -154,13 +153,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	/* supaya cukup waktu buat siap2 */
 	loop = -1000;
 	
-	printf(">>>  akhir Ethernet .................\r\n");
 	#ifdef BOARD_KOMON_420_SABANG
 	vTaskDelay(200);
 	#endif
 	for (;;)
 	{
-		vTaskDelay(10);
+		vTaskDelay(1);
 		//portYIELD();
 		
 		#ifdef PAKAI_WEBCLIENT

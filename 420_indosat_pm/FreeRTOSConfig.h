@@ -41,6 +41,7 @@
 //#define BOARD_KOMON_A_RTD
 
 //#define BOARD_KOMON_420_SAJA
+#define BOARD_KOMON
 #define BOARD_KOMON_420_SABANG
 #define VERSI_KOMON		"1.50"
 

@@ -46,7 +46,6 @@ void init_led_utama(void);
 xTaskHandle hdl_led;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
-xTaskHandle hdl_pm;
 
 void dele(int dd)
 {
@@ -133,13 +132,10 @@ int main( void )
 
 #ifdef jalankan
 	init_led_utama();
-
-	init_shell();
-
 	start_ether();
 	
 	init_task_pm();
-	
+	init_shell();
 	vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle

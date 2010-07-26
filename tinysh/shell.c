@@ -177,7 +177,35 @@ static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[a
 
 
 
-
+#ifdef PAKAI_PM
+	void cek_pm(int argc, char **argv) {
+		int i=0;
+		printf("NILAI PARAMETER POWER METER\r\n");		// 41
+		printf("---------------------------\r\n");		// 41
+		printf("   kwh		: %.2f kWh\r\n", data_f[i*PER_SUMBER+0]);		// 41
+		printf("   kvah		: %.2f kVAh\r\n", data_f[i*PER_SUMBER+1]);		// 41
+		printf("   kvarh	: %.2f kVArh\r\n", data_f[i*PER_SUMBER+2]);		// 41
+		printf("   kw		: %.2f kW\r\n", data_f[i*PER_SUMBER+3]);		// 41
+		printf("   kva		: %.2f kVA\r\n", data_f[i*PER_SUMBER+4]);		// 41
+		printf("   kvar		: %.2f kVAr\r\n", data_f[i*PER_SUMBER+5]);		// 41
+		printf("   pf		: %.2f\r\n", data_f[i*PER_SUMBER+6]);		// 41
+		printf("   volt1	: %.2f V\r\n", data_f[i*PER_SUMBER+7]);		// 41
+		printf("   volt2	: %.2f V\r\n", data_f[i*PER_SUMBER+8]);		// 41
+		printf("   amp		: %.2f A\r\n", data_f[i*PER_SUMBER+9]);		// 41
+		printf("   frek		: %.2f Hz\r\n", data_f[i*PER_SUMBER+10]);		// 41
+		printf("   ampA		: %.2f A\r\n", data_f[i*PER_SUMBER+11]);		// 41
+		printf("   ampB		: %.2f A\r\n", data_f[i*PER_SUMBER+12]);		// 41
+		printf("   ampC		: %.2f A\r\n", data_f[i*PER_SUMBER+13]);		// 41
+		printf("   ampN		: %.2f A\r\n", data_f[i*PER_SUMBER+14]);		// 41
+		printf("   voltA_B	: %.2f V\r\n", data_f[i*PER_SUMBER+15]);		// 41
+		printf("   voltB_C	: %.2f V\r\n", data_f[i*PER_SUMBER+16]);		// 41
+		printf("   voltA_C	: %.2f V\r\n", data_f[i*PER_SUMBER+17]);		// 41
+		printf("   voltA_N	: %.2f V\r\n", data_f[i*PER_SUMBER+18]);		// 41
+	}
+	
+	static tinysh_cmd_t cek_pm_cmd={0,"cek_pm","mengecek nilai parameter PM","[args]",
+                              cek_pm,0,0,0};
+#endif
 
 
 #ifdef PAKAI_RTC
@@ -545,9 +573,7 @@ extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
-  	//vTaskDelay(1000);
   	xTaskHandle xHandle;
-	printf(">>>  masuk Shell .................\r\n");
   	printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
 
   	printf("Daun Biru Engineering, Des 2008\r\n");
@@ -625,6 +651,10 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&matikan_telnet_cmd);
 #endif
 
+#ifdef PAKAI_PM
+	tinysh_add_command(&cek_pm_cmd);
+#endif	
+	
 #ifdef PAKAI_GSM_FTP
 	tinysh_add_command(&set_modem_ftp_cmd);
 	tinysh_add_command(&cek_modem_cmd);

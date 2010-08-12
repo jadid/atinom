@@ -23,7 +23,7 @@
 #include "semphr.h"
 
 
-#define BAUD_RATE	( ( unsigned portLONG ) 115200 )
+#define BAUD_RATE	( ( unsigned portLONG ) 19200 )
 
 //#define CEK_BLINK
 
@@ -87,11 +87,13 @@ int main( void )
 	PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));
 	PINSEL1 |= (BIT(18) | BIT(19));
 	PINSEL1 |= (BIT(20) | BIT(21));
-	
+	PINSEL1 &= ~(BIT(16) | BIT(17));
 	/* TXDE di highkan */
 	FIO0DIR |= TXDE;
-	FIO0SET = TXDE;		// on	---> bisa kirim
+	//FIO0SET = TXDE;		// on	---> bisa kirim
 	//FIO0SET &= ~TXDE;		// off	---> gak bisa kirim
+	//FIO0CLR = TXDE;
+	FIO0SET = TXDE;
 	#endif
 
 	#ifdef PAKAI_SERIAL_2

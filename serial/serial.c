@@ -501,7 +501,7 @@ void ser3_putstring(const signed portCHAR * const pcString)
 	pxNext = ( signed portCHAR * ) pcString;
 	while( *pxNext )
 	{		
-		xSerialPutChar3( 1, *pxNext, 1000 );	// 100 OK
+		xSerialPutChar3( 1, *pxNext, 100 );	// 100 OK
 		pxNext++;
 	}
 }

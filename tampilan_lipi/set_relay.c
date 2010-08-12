@@ -154,7 +154,7 @@ void cek_penduduk() {
 			set_selenoid(1);		// listrik penduduk hidup, relay1 NO - normally open - BUKA
 			unset_selenoid(7);		// fuel cell mati, relay1 NC - normally close - NYAMBUNG
 		} else if (teg_batere<120) {
-			printf("_____________________________ masuk sini\r\n");
+			//printf("_____________________________ masuk sini\r\n");
 			unset_selenoid(1);		// listrik penduduk mati
 			set_selenoid(7);		// fuel cell hidup
 		}

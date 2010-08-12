@@ -34,6 +34,7 @@
 
 #ifdef  BOARD_KOMON_420_SABANG
 	#include "utils.c"
+	#define TXDE	BIT(24)
 #endif 
 
 #ifdef BOARD_KOMON_A_RTD
@@ -117,7 +118,7 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 
 void kirim_serial (int argc, char **argv) {
 	int sumb=0;
-	unsigned char buf[40];
+	unsigned char buf[100];
 	// serial 2 AT\r\n
 	if (argc < 3) 
 	{
@@ -160,9 +161,22 @@ void kirim_serial (int argc, char **argv) {
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3
+	
 	if (3 == sumb) {
+		//printf("KIRIM SERIAL 3   : ........... %s\r\n", argv[2]);
 		ganti_kata(buf, argv[2]);
+		//printf("KIRIM SERIAL 3_2 : ........... %s\r\n", buf);
+		
+		#ifdef PAKAI_MAX485
+		FIO0SET = TXDE;		// on	---> bisa kirim
+		#endif
 		serX_putstring(3, buf);
+		
+		#ifdef PAKAI_MAX485
+		//FIO0SET &= ~TXDE;	// off	---> gak bisa kirim
+		//FIO0CLR = TXDE;
+		#endif
+		
 		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP==3)
 			baca_hasil();			// fitur yang perlu jawaban

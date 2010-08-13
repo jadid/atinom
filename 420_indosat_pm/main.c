@@ -23,7 +23,7 @@
 #include "semphr.h"
 
 
-#define BAUD_RATE	( ( unsigned portLONG ) 19200 )
+#define BAUD_RATE	( ( unsigned portLONG ) 115200 )	// 19200
 
 //#define CEK_BLINK
 

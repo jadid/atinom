@@ -391,7 +391,7 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 
 //*/
 #endif
-#define HD	8
+#define HD	0
 void taruh_data(int no_slave, int urt)
 {
 	short satuan_t;

@@ -6,6 +6,7 @@
 #define 	JUMLAH_PM		1
 #define		TIPE_PM710
 
+#include 	"FreeRTOS.h"
 #include 	"low_mod.h"
 #include 	"mbcrc.h"
 #include 	"mbcrc.c"
@@ -51,7 +52,7 @@ unsigned int get_PM710(unsigned short reg, unsigned char uk)
 	addr_PM710=2;
    reg_flag = reg;
 
-   if (reg != reg_kwh)
+   //if (reg != reg_kwh)
    reg = reg - 1;
 
    pmod.addr = (unsigned char)   addr_PM710;
@@ -391,16 +392,20 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 
 //*/
 #endif
-#define HD	0
+#if (PAKAI_MAX485 == 1) 
+	#define HD	sizeof(pmod)
+#else
+	#define HD	0
+#endif
 void taruh_data(int no_slave, int urt)
 {
 	short satuan_t;
 	int i;
 	/*
-	for (i=0; i<255; i++)
-	{
+	for (i=0; i<255; i++)	{
 		buf[i] = buf[i] & 0x00FF;
-	} */
+	} 
+	//*/
 	
 	if (urt == 0)     //satuan2
 	{
@@ -417,6 +422,8 @@ void taruh_data(int no_slave, int urt)
 		else if (satuan_t == 2) satuan_amp = 100.0;
 		else if (satuan_t == 3) satuan_amp = 1000.0;
 		else if (satuan_t == 4) satuan_amp = 10000.0;
+		
+		//printf("satuan t: %d, satuan amp: %f\r\n", satuan_t, satuan_amp);
 		
 		//move_ke(80, 12);
         //printw("sat amp  : %d : %X", satuan_t, (short) satuan_t);
@@ -435,8 +442,10 @@ void taruh_data(int no_slave, int urt)
 		else if (satuan_t == 3) satuan_volt = 1000.0;
 		else if (satuan_t == 4) satuan_volt = 10000.0;
 
+		//printf("satuan t: %d, satuan volt: %f\r\n", satuan_t, satuan_volt);
+
 		//power
-		satuan_t = buf[7];
+		satuan_t = buf[7+HD];
 		satuan_t = (satuan_t << 8) | buf[8+HD];
 
 		if (satuan_t == -4) satuan_kw = 0.0001;
@@ -449,8 +458,10 @@ void taruh_data(int no_slave, int urt)
 		else if (satuan_t == 3) satuan_kw = 1000.0;
 		else if (satuan_t == 4) satuan_kw = 10000.0;
 
+		//printf("satuan t: %d, satuan kw: %f\r\n", satuan_t, satuan_kw);
+		
 		//energy
-		satuan_t = buf[9];
+		satuan_t = buf[9+HD];
 		satuan_t = (satuan_t << 8) | buf[10+HD];
 
 		if (satuan_t == -4) satuan_kwh = 0.0001;
@@ -463,6 +474,7 @@ void taruh_data(int no_slave, int urt)
 		else if (satuan_t == 3) satuan_kwh = 1000.0;
 		else if (satuan_t == 4) satuan_kwh = 10000.0;
 
+		//printf("satuan t: %d, satuan kwh: %f\r\n", satuan_t, satuan_kwh);
 		//urut_PM710 = 0;
 	}
 	else if (urt == 1) // kva, kvar, PF, volt1, volt2, amper
@@ -604,7 +616,8 @@ void taruh_data(int no_slave, int urt)
 		data_PM710[no_slave].kwh = (data_PM710[no_slave].kwh << 8) | buf[3+HD];
 		data_PM710[no_slave].kwh = (data_PM710[no_slave].kwh << 8) | buf[4+HD];
 		asli_PM710[no_slave].kwh = data_PM710[no_slave].kwh * satuan_kwh;
-
+		//printf("____________-kWhnya: %.2f, data: %d, satuan: %f\r\n", asli_PM710[no_slave].kwh, data_PM710[no_slave].kwh, satuan_kwh);
+		
 		// kVAh
 		data_PM710[no_slave].kvah = buf[9+HD];
 		data_PM710[no_slave].kvah  = (data_PM710[no_slave].kvah  << 8) | buf[10+HD];
@@ -625,18 +638,20 @@ void taruh_data(int no_slave, int urt)
 		else
 			asli_PM710[no_slave].kw = data_PM710[no_slave].kw * satuan_kw;
 	
-		//urut_PM710 = 1;
+		
+	
+		//urut_PM710 = 4;
 	}
 	else if (urt == 5)
 	{
 		// data angin
-		wind_speed = buf[3];
+		wind_speed = buf[3+HD];
 		wind_speed = (wind_speed << 8) | buf[4+HD];
 		
 		/* ubah ke m/s dari MPH */
 		f_wind_speed = wind_speed * 0.44704;
 		
-		wind_dir = buf[5];
+		wind_dir = buf[5+HD];
 		wind_dir = (wind_dir << 8) | buf[6+HD];	
 		
 		asli_PM710[no_slave].voltB_C = f_wind_speed;

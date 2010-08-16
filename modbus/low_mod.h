@@ -31,7 +31,8 @@
 #ifdef TIPE_PM710
 
 #define reg_test	7006
-#define reg_kwh   4000     // 2 register
+//#define reg_kwh   1000     // 2 register		//harusnya 4000
+#define reg_kwh   4001     // 2 register		//harusnya 4000
 #define reg_kvah  4002     // 2 register
 #define reg_kvarh  4004    // 2 reactive energy consumption
 #define reg_kw    4006     // total real power

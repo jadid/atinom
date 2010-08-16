@@ -47,6 +47,7 @@ float satuan_amp;
 #define move_ke(a,b)	goto_xy(a,b)
 
 #define KIRI_TENGAH		20
+#define TXDE	BIT(24)
 
 /* menampilkan data pada layar */
 /*
@@ -165,13 +166,23 @@ static void proses_pm(void)
 
 	//printf("Minta ke PM -%d : %d : ", urut_PM710, sizeof(pmod));
 	st = (char *) &pmod;
+	FIO0SET = TXDE;		// on	---> bisa kirim
 	for (i=0; i< sizeof(pmod); i++)
 	{
 		//xSerialPutChar2( 0, *st++, 100 );
 		//printf("%02hX ", *st);
 		serX_putchar(PAKAI_PM, st++, 100);
-		//
+		/*
+		#if (PAKAI_PM == 1) 
+			ser1_getchar(1, &buf_rx[0], 0);
+		#elif (PAKAI_PM == 2) 			
+			ser2_getchar(1, &buf_rx[0], 0);
+		#elif (PAKAI_PM == 3)
+			ser3_getchar(1, &buf_rx[0], 0);
+		#endif
+		//*/
 	}
+	//FIO0SET = TXDE;		// on	---> bisa kirim
 	//printf("\r\n");
 	
 	//printf("Send %1d : %2d :", urut_PM710, jum_balik);
@@ -183,7 +194,7 @@ static void proses_pm(void)
 		printw("%2X ", (unsigned char) *st++);
 	}*/
 	
-	vTaskDelay(10);
+	
 	i=0;
 
 		
@@ -200,21 +211,31 @@ static void proses_pm(void)
 		//*/
 		//if (serX_getchar(PAKAI_PM, buf_rx[i], 100 ) == pdTRUE)
 		{
-			//printf("%02hX ",buf_rx[i]);
+			/*
+			if (urut_PM710==4) {
+				printf("%02hX ",buf_rx[i]);
+			}
+			//*/
 			i++;
-			
-			if (i == jum_balik) break;
+			#if (PAKAI_MAX485 == 1) 
+				if (i == jum_balik+sizeof(pmod)) break;
+			#else
+				if (i == jum_balik) break;
+			#endif
+
 		}
 		else
 		{
 			timeout++;
 			if (timeout > 20)
 			{
-				printf("%s(): timeout\r\n", __FUNCTION__);
+				//printf("%s(): timeout\r\n", __FUNCTION__);
 				break;
 			}
 		}
 	}
+	//printf("\r\n");
+	//vTaskDelay(100);
 	/*
 	for (i=0; i<jum_balik; i++) {
 		printf("%02hhX ", buf_rx[i]);	
@@ -288,24 +309,22 @@ portTASK_FUNCTION( pm_task, pvParameters )
 	
 	// flush RX
 	for (i=0; i<100; i++)
-		/*
+		//*
 		#ifdef PAKAI_SERIAL_1
 			ser1_getchar(1, &loop, 20 );
 		#endif
 		#ifdef PAKAI_SERIAL_2
-		//*/
 			ser2_getchar(1, &loop, 100 );
-		/*
 		#endif
 		#ifdef PAKAI_SERIAL_3
-			ser3_getchar(1, &loop, 20 );
+			ser3_getchar(1, &loop, 100 );
 		#endif
 		//*/
 	for (;;)
 	{
 		vTaskDelay(95);
 		proses_pm();
-		//*
+		/*
 		if (muternya>5) {
 			printf("__________data %d [0]: %.2f, [1]: %.2f, [7]: %.2f, [10]: %.2f\r\n", j++, data_f[0], data_f[1], data_f[7], data_f[10]);
 			//printf("__________data V_f: %f, angin: %.2f, %d, arah: %e\r\n", asli_PM710[0].frek, f_wind_speed, wind_speed, wind_dir_tr);

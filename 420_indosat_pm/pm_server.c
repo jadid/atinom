@@ -142,10 +142,10 @@ static void proses_pm(void)
 	   jum_balik = get_PM710(reg_satuan, 4);
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 1)	{
-	   jum_balik = get_PM710(reg_kva, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz
+	   jum_balik = get_PM710(reg_kva, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 2)	{
-	   jum_balik = get_PM710(reg_ampA, 4); //ampA, B, C & N
+	   jum_balik = get_PM710(reg_ampA, 4); //ampA, B, C & N								// 4020
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 3) {
 	   jum_balik = get_PM710(reg_voltA_C, 6); //voltA_B, B_C, A_C, A_N, B_N & C_N

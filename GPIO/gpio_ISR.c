@@ -295,3 +295,79 @@ void gpio_ISR_KONTROL( void )
 	VICVectAddr = 0;
 }
 #endif
+
+#ifdef PAKAI_SENSOR_ANGIN
+extern struct t_angin angin;
+extern struct t_fangin fangin;
+
+void timer1_ISR_Wrapper( void )
+{
+        /* Save the context of the interrupted task. */
+        portSAVE_CONTEXT();
+
+        /* Call the handler.  This must be a separate function from the wrapper
+        to ensure the correct stack frame is set up. */
+        timer1_ISR_Handler();
+
+        /* Restore the context of whichever task is going to run next. */
+        portRESTORE_CONTEXT();
+}
+
+void timer1_ISR_Handler( void )
+{
+        //konter.ovflow++;
+
+        T1IR = TxIR_MR0_Interrupt;   // clear interrupt by writing an IR-bit
+
+        /* Clear the ISR in the VIC. */
+        VICVectAddr = 0;
+}
+
+void gpio_ISR_Wrapper( void )
+{
+        /* Save the context of the interrupted task. */
+        portSAVE_CONTEXT();
+
+        #if ( DEBUG_KONTER == 1)
+        togle_led_konter();
+        #endif
+
+        /* Call the handler.  This must be a separate function from the wrapper
+        to ensure the correct stack frame is set up. */
+
+        gpio_ISR_Handler();
+        /* Restore the context of whichever task is going to run next. */
+        portRESTORE_CONTEXT();
+}
+
+unsigned int tim_speed;
+void gpio_ISR_Handler( void )
+{
+        int t=0;
+        unsigned int period;
+        //konter.global_hit++;
+
+        period = T1TC;
+        //cek sumber
+        if (IO0_INT_STAT_F & GPIO_SPEED)
+        {
+            //tim_speed = new_period;
+			if (period > angin.last_period)
+			{
+				angin.beda = (period - angin.last_period) * 50;	// 1 clock 50 nanosecond
+			}
+			else	// sudah overflow
+			{
+				angin.beda = (period + (0xFFFFFFFF - angin.last_period)) * 50;	// 1 clock 50 nanosecond
+
+			}
+			angin.hit++;
+			angin.last_period = period;
+
+            IO0_INT_CLR = GPIO_SPEED;
+        }
+        /* Clear the ISR in the VIC. */
+        VICVectAddr = 0;
+}
+
+#endif

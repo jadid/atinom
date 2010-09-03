@@ -106,7 +106,7 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 							  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
-
+#if 0
 void kirim_serial (int argc, char **argv) {
 	int sumb=0;
 	unsigned char buf[40];
@@ -160,7 +160,7 @@ void kirim_serial (int argc, char **argv) {
 
 static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
                               kirim_serial,0,0,0};
-
+#endif
 
 
 
@@ -176,7 +176,8 @@ void set_date(int argc, char **argv)
 	
 	rtc_reset();
 	rtc_init();
-	rtc_start();
+	rtc_reset_waktu();
+	//rtc_start();
 	
 	buf = pvPortMalloc(512);
 	if (buf == NULL) 
@@ -228,6 +229,8 @@ void set_date(int argc, char **argv)
 	//clk = mktime(&tmku);	
 	//ret = rtc_time_to_bfin(clk);
 	//bfin_write_RTC_STAT(ret);
+	rtc_start();
+
 	vPortFree(buf);
 	printf(" ..OK\r\n");
 }							 
@@ -505,7 +508,7 @@ static tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
 
 #endif
 
-
+#if 0
 #if (PAKAI_GSM_FTP == 1)
 /* GSM FTP */
 int gsm_ftp(int argc, char *argv[]);
@@ -525,6 +528,7 @@ void mulai_gsm_ftp(void)
 
 static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","proses gsm ftp","[args]",
                               mulai_gsm_ftp,0,0,0};
+#endif
 #endif
 
 extern int usb_terup;
@@ -641,7 +645,7 @@ portTASK_FUNCTION(shell, pvParameters )
 
 
 #if defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
-	tinysh_add_command(&kirim_serial_cmd);
+	//tinysh_add_command(&kirim_serial_cmd);
 #endif
 	/* add sub commands
  	*/
@@ -780,7 +784,6 @@ portTASK_FUNCTION(shell, pvParameters )
 
 void init_shell(void)
 {
-	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10),	/* 7 */	\
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10),	/* 10 */
 		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }

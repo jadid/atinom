@@ -43,7 +43,13 @@
 	
 	set_group 5 data 34 unset : jika data 34 ada di group 5, maka data 34
 					akan diremove dari group 5.
-	
+
+	1 Sept 2010
+	---------------------
+	jika group belum di setting, keterangan menjadi sangat panjang
+	dan kemungkinan akan menyebabkan error.
+
+	--> pakai memcpy dengan panjang yang fixed
 */
 
 #include "../monita/monita_uip.h"
@@ -58,7 +64,8 @@ static int cek_group(int argc, char **argv)
 	int i;
 	struct t_group *pgroup;
 	int sumb;
-	unsigned char buf[24];
+	unsigned char buf[32];
+	unsigned char nama_buf[10];
 	int y=0;
 	
 	pgroup = (char *) ALMT_GROUP;
@@ -76,9 +83,15 @@ static int cek_group(int argc, char **argv)
 			sumb = 0;
 			for (y = 0; y<40; y++)
 				if ( pgroup[i].no_data[y] != 0 ) sumb++;
+
+			memcpy(buf, pgroup[i].ket, sizeof (buf));
+			buf[31] = 0;
+			memcpy(nama_buf, pgroup[i].nama, sizeof (nama_buf));
+			nama_buf[9] = 0;
 			
 			printf(" (%2d): %-10s :    %d   : %-10s : %8d : (%X)\r\n", pgroup[i].ID_group, \
-				pgroup[i].nama, pgroup[i].stat, pgroup[i].ket, sumb, &pgroup[i]);	
+				nama_buf, pgroup[i].stat, buf, sumb, &pgroup[i]);	
+			
 		}
 	}
 	else if (argc > 1)
@@ -154,7 +167,7 @@ int set_group(int argc, char **argv)
 				
 				printf(" 2. set_group x [opt1] [opt2]\r\n");
 				printf("    x    : nomer group\r\n");
-				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
+				printf("    opt1 : nama, set/aktif, desc/ket, data\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
 				printf("    nama     : memberikan nama group yang akan ditampilkan\r\n");
@@ -170,6 +183,12 @@ int set_group(int argc, char **argv)
 				printf("    desc/ket  : memberikan keterangan/deskripsi pada group\r\n");
 				printf("    misalnya  : $ set_group 7 ket ini_milik_Sulzer\r\n");
 				printf("    catatan   : jangan ada spasi pada keterangannya !\r\n");
+				printf("\r\n");
+				printf("    data      : memasukkan data pada group untuk ditampilkan\r\n");
+				printf("    misalnya  : $ set_group 7 data 120\r\n");
+				printf("    artinya memasukkan data nomer 120 ke group 7.\r\n");
+				printf("    misalnya  : $ set_group 7 data clear\r\n");
+				printf("    artinya membersihkan data dari group 7.\r\n");
 				
 				return ;
 			}
@@ -196,8 +215,7 @@ int set_group(int argc, char **argv)
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
 		return -1;
 	}
-	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_gr);
-	
+	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_gr);	
 	memcpy((char *) p_gr, (char *) ALMT_GROUP, (10 * sizeof (struct t_group)));
 	
 	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
@@ -258,6 +276,7 @@ int set_group(int argc, char **argv)
 		sumb = cek_nomer_valid(buf, 10);
 		if (sumb > 0)		
 		{
+			#if 1
 			// cek jika argumen selanjutnya adalah clear, maka direset
 			if (strcmp(argv[3], "clear") == 0)
 			{
@@ -275,10 +294,11 @@ int set_group(int argc, char **argv)
 				
 				if (ndata > 0)
 				{
-				
+					#if 0
 					/* jika argument terakhir masih ada unset maka hanya pada 
 					* nomer data itu saja yang dihapus */
-					if (strcmp(argv[4], "unset") == 0)
+					sprintf(buf, "%s", argv[4]);	
+					if (strcmp(buf, "unset") == 0)
 					{
 						printf(" Unset koneksi data %d dari group %d !\r\n", ndata, sumb);
 						for (i=0; i<40; i++)
@@ -291,6 +311,7 @@ int set_group(int argc, char **argv)
 						}
 					}
 					else
+					#endif
 					{
 						printf(" Set koneksi data %d ke group %d !\r\n", ndata, sumb);
 						/* cari slot no_data yang masih nol */
@@ -311,6 +332,7 @@ int set_group(int argc, char **argv)
 					return;
 				}
 			} /* else clear */
+			#endif
 		} /* nomer group valid */
 	}
 	else
@@ -335,7 +357,6 @@ int set_group(int argc, char **argv)
 		return -1;
 	}
 	vPortFree( p_gr );
-
 }
 
 static tinysh_cmd_t set_group_cmd={0,"set_group","menampilkan konfigurasi mesin","help default nama ket",

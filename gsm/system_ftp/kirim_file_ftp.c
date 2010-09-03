@@ -338,7 +338,7 @@ int gsm_ftp(int argc, char *argv[])
 							{
 								tulis_char( abs_path[i] );
 							}	
-						
+						ff
 							if ( res < size ) break; 
 						}
 						

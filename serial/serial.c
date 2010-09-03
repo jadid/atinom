@@ -546,7 +546,8 @@ signed portBASE_TYPE xReturn;
 	}
 	portEXIT_CRITICAL();	
 	return xReturn;
-}#endif
+}
+#endif
 
 #ifdef PAKAI_SERIAL_2
 /* UART 2, untuk PM server */
@@ -691,7 +692,7 @@ signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOu
 				printf2("%s(): masih penuh\r\n", __FUNCTION__);
 			*/
 			
-			#if 0
+			#if 1
 			/* Depending on queue sizing and task prioritisation:  While we
 			were blocked waiting to post interrupts were not disabled.  It is
 			possible that the serial ISR has emptied the Tx queue, in which
@@ -707,7 +708,8 @@ signed portBASE_TYPE xSerialPutChar2( xComPortHandle pxPort, signed portCHAR cOu
 	}
 	portEXIT_CRITICAL();	
 	return xReturn;
-}#endif
+}
+#endif
 
 #ifdef PAKAI_SERIAL_1
 /* UART 1 */

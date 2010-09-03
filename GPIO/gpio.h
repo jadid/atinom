@@ -16,6 +16,9 @@
 
 #define JUM_GPIO	10
 
+#define GPIO_SPEED  BIT(26)     // P0.26 ==> interrupt
+#define GPIO_ARAH   BIT(25)     // P0.25 ==> adc input
+
 typedef struct {
 	//unsigned int new_period;
 	unsigned int last_period;
@@ -28,6 +31,22 @@ struct t2_konter{
 	unsigned int global_hit;
 	unsigned int ovflow;		// overflow count untuk Timer 1
 	ts_konter t_konter[JUM_GPIO];
+};
+
+struct t_angin {
+	unsigned int hit;
+	unsigned int beda;
+	unsigned int hit_lama;
+	unsigned int last_period;
+	//unsigned int arah;
+};
+
+struct t_fangin {
+	float rps;				// instan rps (kira2 setiap 200 ms)
+	float speed;
+	float tot_rps;			// akumulasi rps
+	unsigned int jum_rps;	// jumlah data akumulasi rps
+	unsigned int arah;		// dalam mV
 };
 
 #endif /* GPIO_H_ */

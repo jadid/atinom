@@ -23,7 +23,6 @@
 	Ubah perintah sumber ke format standart : kommand no_x parameter data
 */
 
-//#include <regex.h>
 #include "../monita/monita_uip.h"
 struct t_sumber *sumber;
 int cek_nomer_sumber(char *arg, int maks);
@@ -65,10 +64,12 @@ void cek_sumber(void)
 			printf("%-16s"," ");
 		
 		if (sumber[i].status == 1) {
-			if (sumber[i].alamat>0) {
+			if (sumber[i].alamat == 1) {
 				printf("%s\r\n","Power Meter");
 			} else if (sumber[i].alamat==0) {
 				printf("%s\r\n","Modul Monita");
+			} else if (sumber[i].alamat== 254 ) {
+				printf("%s\r\n","On Board");			 
 			} else {
 				printf("%s\r\n","");
 			}		
@@ -120,11 +121,13 @@ void set_sumber(int argc, char **argv)
 				printf("     artinya sumber nomer 4 supaya aktif\r\n");	
 				printf(" \r\n");
 				printf("   alamat : set nomer alamat\r\n");
-				printf("     hal ini berguna misalnya modul memiliki lebih dari 1 alamat\r\n");
-				printf("     Alamat digunakan pada Power Meter. Modul monita yang dipanel tidak terpengaruh setting ini.\r\n");
+				printf("     Hal ini berguna misalnya modul memiliki lebih dari 1 alamat.\r\n");
+				printf("     Alamat digunakan pada Power Meter. Modul monita yang dipanel-\r\n");
+				printf("     tidak terpengaruh setting ini.\r\n");
 				printf("     Tiap PM HARUS memiliki alamat yang berbeda.\r\n");
 				printf("     misalnya : $ set_sumber 4 modul 1\r\n");
 				printf("     artinya sumber nomer 4 pada modul nomer 1\r\n");	
+				printf("     Untuk alamat = 254, artinya untuk onboard resource.\r\n");
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
@@ -242,12 +245,11 @@ void set_sumber(int argc, char **argv)
 			printf(" sumber = %d : ", sumb);
 			
 			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 5);
+			stat = cek_nomer_sumber(buf, 255);
 			
 			if (stat >=0)
 			{
 				p_sbr[sumb-1].alamat = stat;
-				//printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 				printf("pd modul = %d\r\n", p_sbr[sumb-1].alamat);
 			}
 		}

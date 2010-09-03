@@ -28,15 +28,11 @@
 
 
 #include "../monita/monita_uip.h"
-#include "../gsm/system_ftp.c"
 
+int gsm_ftp(int argc, char *argv[]);
+extern int timer_saat_gsm;				/* counting timer untuk saat pengiriman */
 
-int fd = 0;
 char buf[128];
-
-
-//#define read(a, b, c) serX_getchar(PAKAI_GSM_FTP, a, b, 1000);	\ 
-//				tendang_wdog();
 
 #define read(a, b, c) ser2_getchar(a, b, 1000);	\
 		tendang_wdog();
@@ -62,16 +58,19 @@ int cek_modem(int argc, char **argv)
 		printf("FTP User      : %s\r\n", p_dt->ftp_user);
 		printf("FTP Password  : %s\r\n\r\n", p_dt->ftp_passwd);
 		
-		printf("Periode FTP   : %d\r\n", p_dt->ftp_periode);
+		printf("Periode FTP   : %d menit\r\n", p_dt->ftp_periode);
 		printf("Nama File     : %s\r\n", p_dt->nama_file);
 		printf("Direktori     : %s\r\n\r\n", p_dt->direktori);
 		
-		printf("Status GPRS   : %s\r\n", (p_dt->gsm_mode>0)?"Aktif [1]":"Tidak Aktif [0]");
+		printf("Status GPRS   : %s\r\n", (p_dt->status>0)?"Aktif [1]":"Tidak Aktif [0]");
 		printf("Jenis Kartu   : %s\r\n", p_dt->kartu);
 		printf("GPRS APN1     : %s\r\n", p_dt->gprs_apn1);
 		printf("GPRS APN2     : %s\r\n", p_dt->gprs_apn2);
 		printf("GPRS User     : %s\r\n", p_dt->gprs_user);
 		printf("GPRS Password : %s\r\n", p_dt->gprs_passwd);
+
+		printf("\r\n");
+		printf("Current count : %d detik\r\n", timer_saat_gsm);
 		
 	}
 	else if (argc > 1)
@@ -116,7 +115,7 @@ static int set_modem_ftp_default(void) {
 	p_gr->ftp_periode = 30;
 	p_gr->ftp_mode = 0;
 	p_gr->ftp_port = 21;
-	p_gr->gsm_mode = 0;
+	p_gr->status = 0;
 	sprintf(p_gr->kartu,		"telkomsel");
 	sprintf(p_gr->gprs_apn1,	"internet");
 	sprintf(p_gr->gprs_apn2, 	"telkomsel");
@@ -393,7 +392,7 @@ int set_modem_gsm(int argc, char **argv)
 				
 				printf(" 2. set_modem_ftp x [opt1] [opt2]\r\n");
 				printf("    x    : nomer data\r\n");
-				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
+				printf("    opt1 : user, password, apn1, apn2, set \r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
 				printf("    nama     : memberikan nama data yang akan ditampilkan\r\n");
@@ -487,10 +486,10 @@ int set_modem_gsm(int argc, char **argv)
 		}
 	} else if (argc==2) {
 		if ( (strcmp(argv[1], "set") == 0) || (strcmp(argv[1], "aktif") == 0) ) {
-			p_dt->gsm_mode = 1;
+			p_dt->status = 1;
 		}
 		else if ( (strcmp(argv[1], "unset") == 0) || (strcmp(argv[1], "mati") == 0) ) {
-			p_dt->gsm_mode = 0;
+			p_dt->status = 0;
 		} else {
 			printf(" ERR: perintah tidak benar / argumen kurang !\r\n");
 			printf(" coba set_modem_gsm help \r\n");
@@ -545,6 +544,7 @@ static int simpan_data_gsm_ftp( struct t_gsm_ftp *pgr)
 	return 0;
 }
 
+#if 0
 void cetak_tulisan(char *isi) {
 	printf("%s", isi);
 }
@@ -603,3 +603,4 @@ int baca_serial(char *buf, int len, int timeout)
 		}
 	}
 }
+#endif

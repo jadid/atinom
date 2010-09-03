@@ -83,7 +83,6 @@ int cek_data(int argc, char **argv)
 		p_dt = (char *) ALMT_DT_SET;
 	
 		judul(" Data Setting\r\n");
-	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
 		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
 		garis_bawah();
 	
@@ -115,7 +114,7 @@ int cek_data(int argc, char **argv)
 				judul(" Data Setting\r\n");
 				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
 				printf(" no.  : Nama       :  Data  : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
-				garis_bawah();
+				printf("----------------------------------------------------------------------------\r\n");
 				
 				sumb--;
 		
@@ -199,7 +198,7 @@ int set_data(int argc, char **argv)
 				
 				printf(" 2. set_data x [opt1] [opt2]\r\n");
 				printf("    x    : nomer data\r\n");
-				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
+				printf("    opt1 : nama, alarmH, alarmL, satuan, relay, set/aktif, desc/ket\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
 				printf("    nama     : memberikan nama data yang akan ditampilkan\r\n");

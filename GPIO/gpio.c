@@ -228,3 +228,141 @@ void init_gpio_adc(void)
 }
 #endif
 
+#ifdef PAKAI_SENSOR_ANGIN
+struct t_angin angin;
+struct t_fangin fangin;
+
+
+void init_gpio_angin(void)
+{
+    extern void ( gpio_ISR_Wrapper )( void );
+    extern void ( timer1_ISR_Wrapper )( void );
+
+    portENTER_CRITICAL();
+
+    // setup GPIO direction & interrupt
+    FIO0DIR = FIO0DIR  & ~GPIO_SPEED;
+    /* masking dengan 0 supaya bisa dibaca */
+    FIO0MASK = FIO0MASK & ~GPIO_SPEED;
+
+
+    // siapkan interrupt
+
+    // Timer1 untuk free running clock
+    T1TCR = TxTCR_Counter_Reset;           // reset & disable timer 0
+
+    // setup Timer 1 to count forever
+    // Periode Timer 1 adalah 50 ns
+    // akan overflow setiap 3.57 menit, interrupt dan
+    // lakukan sesuatu pada variabel2.
+    T1PR = 3 - 1;               	// set the prescale divider (60 / 3, 20 Mhz (50 ns))
+    T1CCR = 0;                      // disable dulu compare registers
+    T1EMR = 0;                      // disable external match register
+    T1TCR = TxTCR_Counter_Enable;
+
+    //siapkan interrupt handler untuk Timer 1
+    VICIntSelect &= ~(VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer1));
+    VICIntEnClr  = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer1);
+    VICVectAddr5 = ( portLONG )timer1_ISR_Wrapper;
+    VICVectPriority5 = 0x08;
+    VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer1);
+    T1MR0 = 0xFFFFFFFF;		// maksimum
+    T1MCR = TxMCR_MR0I;     // interrupt on cmp-match0
+    T1IR  = TxIR_MR0_Interrupt; // clear match0 interrupt
+
+    // karena masih 3 menit yang akan datang, harusnya dienable dari sini gak masalah
+    T1TCR = TxTCR_Counter_Enable;         // enable timer 0
+
+    //siapkan interrupt handler untuk GPIO
+    VICIntSelect    &= ~VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
+    VICIntEnClr      = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
+    VICVectAddr17 = ( portLONG )gpio_ISR_Wrapper;
+    VICVectPriority17 = 0x05;
+    VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
+
+    // enable falling edge interrupt
+    IO0_INT_EN_F = GPIO_SPEED;
+
+
+    portEXIT_CRITICAL();
+}
+
+/* 
+	akan dipanggil oleh task led, sekitar setiap 500 ms 
+	karena angin cukup pelan, jadi mengecek mati atau tidak itu
+	setiap 5 detik. atau minimum.
+
+	Hello
+ 
+	Each turn every 2.25 seconds equals 1 mph of wind speed.  With that in mind,
+	1600 revolutions per hour = 1 mph.  So, x mph =  y revolutions per
+	minute/2.25 seconds.  I hope this is an adequate answer. 
+
+	Rex Knapps (Rex Knapps <rexk@davisnet.com>)
+	Davis Instruments Technical Support
+
+	jadi 1 putaran per detik = 1/2.25 = 0.4444444 mph
+	1 mil = 1609.344 m
+	1 jam = 3600 detik
+
+	0.44444 mph * 1609.344 = 715.264 meter/h
+	715.264 m/h = 0.198684444 m/s
+*/
+
+#include "../monita/monita_uip.h"
+
+#define k_angin 	0.198684444
+static saat_angin = 0;
+void proses_onboard(void)
+{
+	int i;
+	struct t_sumber *sumber;
+	sumber = (char *) ALMT_SUMBER;
+	
+	saat_angin++;
+	start_adc_2();
+	
+	if (saat_angin > 10)
+	{
+		portENTER_CRITICAL();
+		if ( angin.hit_lama == angin.hit)
+		{	
+			angin.beda = 0;
+			fangin.rps = 0;
+		}
+		else
+		{
+			//fangin.rps = (float) (1000000000.00 / angin.beda);
+			//fangin.rpm = fangin.rpm * 60;
+		}		
+		angin.hit_lama = angin.hit; 
+		portEXIT_CRITICAL();
+		saat_angin = 0;
+	}
+
+	if (angin.beda == 0)
+		fangin.rps = 0;
+	else
+		fangin.rps = (float) (1000000000.00 / angin.beda);
+
+	fangin.speed = fangin.rps * k_angin;
+	fangin.arah = (unsigned int) (read_adc_2() * 3300 / 0xFFFF); 
+
+	for (i=0; i<JML_SUMBER; i++) 
+	{
+		if (sumber[i].status == 1 && sumber[i].alamat == 254) 
+		{
+			portENTER_CRITICAL();
+			data_f[ (i * PER_SUMBER) - 1 ] = fangin.rps;
+			data_f[ (i * PER_SUMBER) ] = fangin.speed;	
+			data_f[ (i * PER_SUMBER) + 1 ] = (float) (fangin.arah * 1.0);
+			portEXIT_CRITICAL();
+			//printf("(%d), spd = %f rps, %f m/s\r\n", (i* PER_SUMBER), fangin.rps, fangin.speed);	
+		}
+	}	
+	//printf("spd = %f rps, %f m/s\r\n", fangin.rps, fangin.speed);
+
+	//start_adc_2();	// untuk yang akan datang
+}
+
+#endif

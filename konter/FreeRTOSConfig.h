@@ -41,6 +41,7 @@
 #define BOARD_KOMON_KONTER
 #define VERSI_KOMON		"1.45"
 #define KONTER_MALINGPING	1
+#define KOMON_KONTER
 
 #define DEBUG_KONTER	0
 

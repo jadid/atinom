@@ -153,7 +153,7 @@ int set_file(int argc, char **argv)
 				//*
 				printf(" 2. set_file [opt1] [opt2]\r\n");
 				printf("    set_file [nama|set|periode] [opt2]\r\n");
-				printf("    opt1 : nama, set/aktif, periode, data\r\n");
+				printf("    opt1 : nama, set/aktif, detik, periode, data\r\n");
 				printf("    opt2 : nilai dari opt 1 yang tepat\r\n");
 				printf("\r\n");
 				printf("    [opt1]\r\n");				
@@ -170,6 +170,10 @@ int set_file(int argc, char **argv)
 				printf("    periode   : memberikan nilai periode penyimpanan file dalam MMC\r\n");
 				printf("    misalnya  : $ set_file periode 10\r\n");
 				printf("    artinya   : file disimpan dalam MMC setiap 10 menit\r\n");
+				printf("\r\n");
+				printf("    data      : menambahkan data dalam file\r\n");
+				printf("    misalnya  : $ set_file data 160\r\n");
+				printf("    artinya memasukkan data nomer 160 kedalam file.\r\n");
 				//*/
 
 				return ;

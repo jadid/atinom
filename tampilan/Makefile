@@ -84,7 +84,7 @@ THUMB_SOURCE= \
 		../tinysh/shell.c \
 		../tinysh/enviro.c \
 		LCD/lcd_320.c \
-		LCD/menu_popup.c \	
+		LCD/menu_popup.c \
 		LCD/menu_monita.c \
 		tampilan.c \
 		../spi/spi.c \

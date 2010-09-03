@@ -11,6 +11,13 @@
 	task led_utama, maka watchdog harus ditendang disini
 	
 	*/
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "FreeRTOS.h"
+#include "task.h"
+
+#define DEBUG 1	
 int fd = 0;
 	
 #if ( PAKAI_LINUX == 1)
@@ -252,7 +259,8 @@ int tulis_serial(char *buf, int len, int timeout)
 
 int tulis_char(char c)
 {
-	write(fd, &c, 1);
+	//write(fd, &c, 1);
+	xSerialPutChar2( 0, (char ) c, 1000 );
 }
 
 int tutup_serial()

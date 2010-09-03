@@ -209,7 +209,7 @@ static void proses_pm(void)
 	
 	// simpan data //
 	for (i=0; i<JML_SUMBER; i++) {
-		if (sumber[i].status == 1 && sumber[i].alamat > 0) {
+		if (sumber[i].status == 1 && sumber[i].alamat == 1) {
 			//printf("masuk data SUMBER: %d\r\n",i+1);
 			memcpy( (char *) &data_f[i*PER_SUMBER], (char *) &asli_PM710[0], (PER_SUMBER*sizeof (float)) );
 			

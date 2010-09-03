@@ -44,6 +44,7 @@
 
 #define PAKE_TELNETD
 #define TAMPILAN_LPC_4
+#define VERSI_KONFIG	2
 
 #define PAKE_TELNETD
 #define VERSI_KOMON		"1.43"

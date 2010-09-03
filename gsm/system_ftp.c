@@ -12,18 +12,20 @@
 
 //#define tulis_serial(buf,0,0) ser2_putstring(buf)
 char buf[128];
+extern char buf_lfn[];
 
 #define CTRL_ETX	0x03	/* END of TEXT lihat ascii code http://en.wikipedia.org/wiki/ASCII */
 #define CTRL_DLE	0x10	/* Data link escape, untuk memagari jika ada karakter ETX yang ikut dikirim */
 FIL fd2;
 
+int tulis_char(char c);
+int tulis_serial(char *buf, int len, int timeout);
+
 int gsm_ftp(int argc, char *argv[])
 {
 	int i;
 	int c, res;
-	int tout;
-	//time_t rawtime;
-	//struct tm * timeinfo;
+	int tot_size;
 	
 	time_t timeval;
 	struct tm tw;
@@ -138,8 +140,7 @@ int gsm_ftp(int argc, char *argv[])
 	if (create_ftp_sess() == 0)
 	{
 		printf("Create FTP session OK !\r\n");		// nyampe sini !!!
-		
-		
+				
 		//time(&rawtime); 
 		//timeinfo = localtime ( &rawtime );
 		get_tm_time( &tw );
@@ -229,19 +230,24 @@ int gsm_ftp(int argc, char *argv[])
 					if ( upload_file(nama) == 0)
 					{
 						//upload_data_file("AAAAAAAAABBBBBBBB");
+						tot_size = 0;
 						size = sizeof (abs_path);
 						for (;;)
 						{
 							f_read( &fd2, abs_path, size, &res);
 							
 							for (i=0; i<res; i++)
-							{
-								
-								//tulis_char( abs_path[i] );
-								serX_putchar(PAKAI_GSM_FTP, &abs_path[i]);
+							{								
+								tulis_char( abs_path[i] );
 							}	
-							printf("loop res\r\n");
-							if ( res < size ) break; 
+
+							printf(".");
+							tot_size += res;
+							if ( res < size )
+							{ 
+								printf(" EOF %d bytes\r\n", tot_size);
+								break; /* artinya sudah sampai akhir file */
+							}
 						}
 						
 						// untuk mengakhiri data ftp //
@@ -251,7 +257,7 @@ int gsm_ftp(int argc, char *argv[])
 						}
 						
 						// tulis SENDED pada akhir file //
-						sprintf(abs_path, "%s", ctime( &timeval ));	
+						sprintf( abs_path, "%s", ctime( &timeval ));	
 						sprintf( &abs_path[24], "SENDED");	
 						printf("TULIS %s \r\n", abs_path);
 											
@@ -313,23 +319,24 @@ void cariDino(char *dest) {
 	
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
-	sprintf(dest,"%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
-		p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1);
+	//sprintf(dest,"%s\\tahun_%d\\%s\\tgl_%d\\jam_%d", \ 
+	//	p_dt->direktori,(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1);
 	//strcpy(dest,buf);
+
+	sprintf(dest,"data\\tahun_%d\\%s\\tgl_%d\\jam_%02d", \ 
+		(tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1);
 }
 
 
 int cek_awal(void) {
 	//char buf[32];
 	/* paksa ATE0, supaya echo disable */
-	//tulis_serial("ATE0\r\n", 6, 0);
-	serX_putstring(PAKAI_GSM_FTP, "ATE0\r\n");
+	tulis_serial("ATE0\r\n", 6, 0);
 	
 	baca_serial(buf, 12, 10);	/* flush ATE0 jika mungkin*/
 	baca_serial(buf, 12, 10);	/* flush OK */
 	
-	//tulis_serial("AT\r\n", 4, 0);
-	serX_putstring(PAKAI_GSM_FTP, "AT\r\n");
+	tulis_serial("AT\r\n", 4, 0);
 	
 	/* harus ada jawaban OK */
 	if ( baca_serial(buf, 12, 10) < 0 )
@@ -341,8 +348,7 @@ int cek_awal(void) {
 	if (strncmp(buf,"AT", 2) == 0)
 	{
 		printf(" Modem ECHO enabled, harus didisable dulu\r\n");
-		//tulis_serial("ATE0\r\n", 6, 0);
-		serX_putstring(PAKAI_GSM_FTP, "ATE0\r\n");
+		tulis_serial("ATE0\r\n", 6, 0);
 		
 		memset(buf, 0, sizeof(buf));
 		
@@ -356,8 +362,7 @@ int cek_awal(void) {
 		/* flush OK nya */
 		baca_serial(buf, 12, 10);
 		
-		//tulis_serial("AT\r\n", 4, 0);
-		serX_putstring(PAKAI_GSM_FTP, "AT\r\n");
+		tulis_serial("AT\r\n", 4, 0);
 		
 		if ( baca_serial(buf, 12, 10) < 0 )
 		{
@@ -381,8 +386,7 @@ int set_cpin(void) {
 	/* cek dulu apakah pin sudah dimasukkan ? */	
 	printf("masuk set_cpin\r\n");
 	sprintf(buf, "AT+CPIN?\r\n");
-	//tulis_serial(buf, strlen(buf), 0);
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);
 	printf("setelah masuk set_cpin\r\n");
 	baca_serial(buf, 20, 5);
 	
@@ -396,8 +400,7 @@ int set_cpin(void) {
 	{
 		/* pin belum dimasukkan */
 		sprintf(buf, "AT+CPIN=1234\r\n");
-		//tulis_serial(buf, strlen(buf), 0);	
-		serX_putstring(PAKAI_GSM_FTP, buf);
+		tulis_serial(buf, strlen(buf), 0);	
 		baca_serial(buf, 20, 5);
 	
 		if (strncmp(buf, "+CPIN", 5) == 0 || strncmp(buf, "ERROR", 5) == 0)	
@@ -428,23 +431,20 @@ int set_cpin(void) {
 int set_wipcfg(void) {	
 	/* nyalakan dulu, jika tidak bisa matikan dulu */
 	sprintf(buf, "AT+WIPCFG=1\r\n");
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	baca_serial(buf, 20, 5);
 	
 	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	
 	{
 		/* barangkali masih aktif */
 		sprintf(buf, "AT+WIPCFG=0\r\n");
-		//tulis_serial(buf, strlen(buf), 0);
-		serX_putstring(PAKAI_GSM_FTP, buf);
+		tulis_serial(buf, strlen(buf), 0);
 		baca_serial(buf, 20, 10);
 		
 		if (strncmp(buf, "OK", 2) == 0)	
 		{
 			sprintf(buf, "AT+WIPCFG=1\r\n");
-			//tulis_serial(buf, strlen(buf), 0);	
-			serX_putstring(PAKAI_GSM_FTP, buf);
+			tulis_serial(buf, strlen(buf), 0);	
 			baca_serial(buf, 20, 10);
 			
 			if (strncmp(buf, "OK", 2) != 0)
@@ -474,8 +474,7 @@ int set_wipcfg(void) {
 
 int set_wipbr(void) {
 	sprintf(buf, "AT+WIPBR=1,6\r\n");
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	baca_serial(buf, 20, 5);
 	
 	if (strncmp(buf, "+CME", 4) == 0 || strncmp(buf, "ERROR", 5) == 0)	
@@ -502,8 +501,7 @@ int set_wipbr_apn(void) {
 	p_dt = (char *) ALMT_GSM_FTP;
 	//char buf[64];
 	sprintf(buf, "AT+WIPBR=2,6,11,%s\r\n", p_dt->gprs_apn1);
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 5);
 	
@@ -530,8 +528,7 @@ int set_wipbr_user(void) {
 	p_dt = (char *) ALMT_GSM_FTP;
 	//char buf[64];
 	sprintf(buf, "AT+WIPBR=2,6,0,%s\r\n", p_dt->gprs_user);
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 5);
 	
@@ -558,8 +555,7 @@ int set_wipbr_passwd(void) {
 	p_dt = (char *) ALMT_GSM_FTP;
 	//char buf[64];
 	sprintf(buf, "AT+WIPBR=2,6,1,%s\r\n", p_dt->gprs_passwd);
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 5);
 	
@@ -585,8 +581,7 @@ int start_gprs(void) {
 	//char buf[64];
 	sprintf(buf, "AT+WIPBR=4,6,0\r\n");
 	
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	/* timeout dibuat agak lama */
 	baca_serial(buf, 20, 50);
@@ -611,8 +606,7 @@ int start_gprs(void) {
 
 int stop_gprs(void) {
 	sprintf(buf, "AT+WIPBR=5,6\r\n");
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 5);
 	
@@ -635,15 +629,15 @@ int stop_gprs(void) {
 }
 
 //*
-int create_ftp_sess(void) {
+int create_ftp_sess(void) 
+{
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
 	//char buf[128];
 	sprintf(buf, "AT+WIPCREATE=4,1,\"%s\",%d,\"%s\", \"%s\"\r\n", p_dt->ftp_server, p_dt->ftp_port, \
 		p_dt->ftp_user, p_dt->ftp_passwd);
 	printf(buf);
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	// timeout 10 menit jika koneksi buruk //
 	baca_serial(buf, 20, 120);
@@ -668,12 +662,12 @@ int create_ftp_sess(void) {
 //*/
 int upload_file(char *nama_file) {
 	//char buf[64];
-	struct t_gsm_ftp *p_dt;
-	p_dt = (char *) ALMT_GSM_FTP;
+	//struct t_gsm_ftp *p_dt;
+	//p_dt = (char *) ALMT_GSM_FTP;
 	
-	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s\"\r\n", p_dt->nama_file);
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	//sprintf(buf, "AT+WIPFILE=4,1,2,\"%s\"\r\n", p_dt->nama_file);
+	sprintf(buf, "AT+WIPFILE=4,1,2,\"%s\"\r\n", nama_file);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 20);
 	
@@ -695,6 +689,7 @@ int upload_file(char *nama_file) {
 	}
 }
 
+#if 0
 int upload_data_file(char *nama_data)
 {
 	int i;
@@ -702,27 +697,28 @@ int upload_data_file(char *nama_data)
 	while( *nama_data != 0)
 	{
 		// apa ini ???
-		//tulis_char( *nama_data++);
-		serX_putchar(PAKAI_GSM_FTP, nama_data++);
+		tulis_char( *nama_data++);
+		//serX_putchar(PAKAI_GSM_FTP, nama_data++);
 	}
 	
 	/* untuk mengakhiri data ftp */
 	send_etx();
 }
+#endif
 
 int send_etx(void)
 {
-	//tulis_char((char) CTRL_ETX );
+	tulis_char((char) CTRL_ETX );		
+	tulis_serial("\r\n", 3, 0);
 	
-	
-	sprintf(buf, "%c", CTRL_ETX);
-	serX_putstring(PAKAI_GSM_FTP, buf);
-	
-	baca_serial(buf, 20, 5);
-	if (strncmp(buf, "OK", 2) == 0) 	{
+	baca_serial(buf, 20, 40);
+	if (strncmp(buf, "OK", 2) == 0) 	
+	{
 		printf(" %s(): OK\r\n", __FUNCTION__);
 		return 0;
-	} 	else	{
+	} 	
+	else	
+	{
 		printf(" %s(): ERR ??\r\n", __FUNCTION__);
 		return -1;
 	}
@@ -732,8 +728,7 @@ int send_etx(void)
 int close_ftp_sess(void) {
 	//char buf[64];
 	sprintf(buf, "AT+WIPCLOSE=4,1\r\n");
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 5);
 	
@@ -758,8 +753,7 @@ int close_ftp_sess(void) {
 int stop_tcpip_stack(void) {
 	//char buf[64];
 	sprintf(buf, "AT+WIPCFG=0\r\n");
-	//tulis_serial(buf, strlen(buf), 0);	
-	serX_putstring(PAKAI_GSM_FTP, buf);
+	tulis_serial(buf, strlen(buf), 0);	
 	
 	baca_serial(buf, 20, 5);
 	

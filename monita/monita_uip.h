@@ -254,7 +254,7 @@ struct t_simpan_file {
 
 #ifdef PAKAI_GSM_FTP
 struct t_gsm_ftp {
-	int 	ftp_periode;		// 1 periode disimpan dalam MMC
+	int 	ftp_periode;		// 1 periode untuk kirim data (dalam menit)
 	int 	ftp_mode;			// 2 aktif atau tidak mode ftp
 	int		ftp_port;			// 3 portnya ftp
 	char 	ftp_user[40];		// 4 periode data disimpan dalam file
@@ -262,7 +262,7 @@ struct t_gsm_ftp {
 	char 	ftp_server[40];		// 6
 	char	nama_file[40];		// 7 awalan nama file, misalnya angin
 	char	direktori[40];		// 8
-	int		gsm_mode;			// 9 aktif atau tidak mode gsm
+	int		status;				// 9 aktif atau tidak mode gsm
 	char	kartu[15];
 	char	gprs_apn1[16];		// 10
 	char	gprs_apn2[16];		// 11

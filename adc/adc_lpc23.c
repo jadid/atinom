@@ -13,10 +13,14 @@
 #define ADC_CLKDIV	(250 << 8)
 #define ADC_PDN		BIT(21)
 #define ADC_START	BIT(24)
-#define ADC_1		BIT(0)
-#define ADC_2		BIT(1)
+//#define ADC_1		BIT(0)
+//#define ADC_2		BIT(1)
+#define ADC_0		BIT(0)
+#define ADC_1		BIT(1)
+#define ADC_2		BIT(2)
 #define ADC_DONE	BIT(31)	
 
+#ifdef PAKAI_INTERNAL_ADC
 
 void setup_adc(void)
 {
@@ -26,7 +30,11 @@ void setup_adc(void)
 	/* PCLK ADC pakai default (00) atau CCLK / 4 */
 	
 	/* setup PINSEL1 utk AD0 & AD1 */
-	PINSEL1 |= (BIT(14) | BIT(16));
+	//PINSEL1 |= (BIT(14) | BIT(16));
+
+	/* AD_2 saja, untuk arah angin, P0.25 */
+	PINSEL1 &= ~(BIT(18) | BIT(19));
+	PINSEL1 |= BIT(18);
 }
 
 void start_adc_1(void)
@@ -67,7 +75,8 @@ unsigned short read_adc_2(void)
 {
 	unsigned int stat;
 	
-	stat = AD0DR1;
+	//stat = AD0DR1;
+	stat = AD0DR2;
 	if (stat & ADC_DONE)
 	{
 		return (stat & 0xFFFF);
@@ -75,4 +84,6 @@ unsigned short read_adc_2(void)
 	else
 		return 0;
 }
+
+#endif
 

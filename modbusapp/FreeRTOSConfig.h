@@ -38,9 +38,7 @@
 
 #define PAKE_TELNETD
 
-//#define BOARD_KOMON_A_RTD
 
-//#define BOARD_KOMON_420_SAJA
 #define BOARD_KOMON
 #define BOARD_KOMON_420_SABANG
 #define VERSI_KOMON		"1.50"
@@ -50,16 +48,18 @@
 #define _printf	printf2
 #define printf	printf2
 
+#define PAKAI_MODBUS
+#ifdef PAKAI_MODBUS
+	#define BAUD_MODBUS			19200
+#endif
 
 //#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 1
 //#define PAKAI_PM			2		// nyambung ke SERIAL 3
 #define PAKAI_MAX485		1
-#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 1
-#define PAKAI_PM			3		// nyambung ke SERIAL 3
+#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 3
+#define TXDE	BIT(24)
+//#define PAKAI_PM			3		// nyambung ke SERIAL 3
 
-#ifdef PAKAI_PM
-	#define BAUD_PM			19200
-#endif
 
 
 #define PROMPT 		"Komon_420_I_PM $ "

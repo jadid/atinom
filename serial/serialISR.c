@@ -88,6 +88,9 @@ static volatile portLONG lTHREEmpty;
 
 /*-----------------------------------------------------------*/
 
+
+
+
 /* 
  * The queues are created in serialISR.c as they are used from the ISR.
  * Obtain references to the queues and THRE Empty flag. 
@@ -236,13 +239,13 @@ void vUART3_ISR_Handler( void )
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
 	/* What caused the interrupt? */
-	switch( U3IIR & serINTERRUPT_SOURCE_MASK )
+	switch( U3IIR & serINTERRUPT_SOURCE_MASK )	// (U3IIR & 0x0f)
 	{
-		case serSOURCE_ERROR :	/* Not handling this, but clear the interrupt. */
+		case serSOURCE_ERROR :	/* Not handling this, but clear the interrupt. */	// 0x06
 								cChar = U3LSR;
 								break;
 
-		case serSOURCE_THRE	:	/* The THRE is empty.  If there is another
+		case serSOURCE_THRE	:	/* The THRE is empty.  If there is another			// 0x02
 								character in the Tx queue, send it now. */
 								if( xQueueReceiveFromISR( xCharsForTx3, &cChar, &xHigherPriorityTaskWoken ) == pdTRUE )
 								{
@@ -259,8 +262,8 @@ void vUART3_ISR_Handler( void )
 								}
 								break;
 
-		case serSOURCE_RX_TIMEOUT :
-		case serSOURCE_RX	:	/* A character was received.  Place it in 
+		case serSOURCE_RX_TIMEOUT :													// 0x0c
+		case serSOURCE_RX	:	/* A character was received.  Place it in 			// 0x04
 								the queue of received characters. */
 								cChar = U3RBR;
 								xQueueSendFromISR( xRxedChars3, &cChar, &xHigherPriorityTaskWoken );
@@ -270,7 +273,7 @@ void vUART3_ISR_Handler( void )
 								break;
 	}
 	
-	
+
 	if( xHigherPriorityTaskWoken )
 	{
 		portYIELD_FROM_ISR();
@@ -292,6 +295,8 @@ void vUART3_ISR_Wrapper( void )
 	/* Restore the context of whichever task is going to run next. */
 	portRESTORE_CONTEXT();
 }
+
+
 
 #endif
 

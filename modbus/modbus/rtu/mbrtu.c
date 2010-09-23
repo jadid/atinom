@@ -50,6 +50,8 @@
 #define MB_SER_PDU_ADDR_OFF     0       /*!< Offset of slave address in Ser-PDU. */
 #define MB_SER_PDU_PDU_OFF      1       /*!< Offset of Modbus-PDU in Ser-PDU. */
 
+
+
 /* ----------------------- Type definitions ---------------------------------*/
 typedef enum
 {
@@ -76,19 +78,20 @@ static volatile USHORT usSndBufferCount;
 
 static volatile USHORT usRcvBufferPos;
 
+extern int berhitung_serial3;
+
 /* ----------------------- Start implementation -----------------------------*/
-eMBErrorCode
-eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity )
-{
+eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity ) {
     eMBErrorCode    eStatus = MB_ENOERR;
     ULONG           usTimerT35_50us;
 
     ( void )ucSlaveAddress;
-    ENTER_CRITICAL_SECTION(  );
-
+    //ENTER_CRITICAL_SECTION(  );
+	portENTER_CRITICAL();
     /* Modbus RTU uses 8 Databits. */
     if( xMBPortSerialInit( ucPort, ulBaudRate, 8, eParity ) != TRUE )
     {
+		printf("______gagal eMBRTUInit serial 3\r\n");
         eStatus = MB_EPORTERR;
     }
     else
@@ -96,8 +99,7 @@ eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity ePar
         /* If baudrate > 19200 then we should use the fixed timer values
          * t35 = 1750us. Otherwise t35 must be 3.5 times the character time.
          */
-        if( ulBaudRate > 19200 )
-        {
+        if( ulBaudRate > 19200 )         {
             usTimerT35_50us = 35;       /* 1800us. */
         }
         else
@@ -112,20 +114,22 @@ eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity ePar
              */
             usTimerT35_50us = ( 7UL * 220000UL ) / ( 2UL * ulBaudRate );
         }
+        
+        printf("usTimerT35_50us: %d, eSTATUS: %d\r\n", usTimerT35_50us, eStatus);
         if( xMBPortTimersInit( ( USHORT ) usTimerT35_50us ) != TRUE )
+        //if(FALSE)
         {
             eStatus = MB_EPORTERR;
         }
     }
-    EXIT_CRITICAL_SECTION(  );
-
+    //EXIT_CRITICAL_SECTION(  );
+	portEXIT_CRITICAL();
     return eStatus;
 }
 
-void
-eMBRTUStart( void )
-{
-    ENTER_CRITICAL_SECTION(  );
+void eMBRTUStart( void ) {
+    //ENTER_CRITICAL_SECTION(  );
+    portENTER_CRITICAL();
     /* Initially the receiver is in the state STATE_RX_INIT. we start
      * the timer and if no character is received within t3.5 we change
      * to STATE_RX_IDLE. This makes sure that we delay startup of the
@@ -133,29 +137,33 @@ eMBRTUStart( void )
      */
     eRcvState = STATE_RX_INIT;
     vMBPortSerialEnable( TRUE, FALSE );
+
     vMBPortTimersEnable(  );
 
-    EXIT_CRITICAL_SECTION(  );
+    //EXIT_CRITICAL_SECTION(  );
+    portEXIT_CRITICAL();
+    berhitung_serial3+=3;
 }
 
-void
-eMBRTUStop( void )
-{
-    ENTER_CRITICAL_SECTION(  );
+void eMBRTUStop( void ) {
+    //ENTER_CRITICAL_SECTION(  );
+    portENTER_CRITICAL();
     vMBPortSerialEnable( FALSE, FALSE );
     vMBPortTimersDisable(  );
-    EXIT_CRITICAL_SECTION(  );
+    portEXIT_CRITICAL();
+    //EXIT_CRITICAL_SECTION(  );
+    
+    berhitung_serial3+=4;
 }
 
-eMBErrorCode
-eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength )
-{
+eMBErrorCode eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength ) {
     BOOL            xFrameReceived = FALSE;
     eMBErrorCode    eStatus = MB_ENOERR;
 
-    ENTER_CRITICAL_SECTION(  );
+    //ENTER_CRITICAL_SECTION(  );
+    
     assert( usRcvBufferPos < MB_SER_PDU_SIZE_MAX );
-
+	portENTER_CRITICAL();
     /* Length and CRC check */
     if( ( usRcvBufferPos >= MB_SER_PDU_SIZE_MIN )
         && ( usMBCRC16( ( UCHAR * ) ucRTUBuf, usRcvBufferPos ) == 0 ) )
@@ -173,24 +181,20 @@ eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength )
         /* Return the start of the Modbus PDU to the caller. */
         *pucFrame = ( UCHAR * ) & ucRTUBuf[MB_SER_PDU_PDU_OFF];
         xFrameReceived = TRUE;
-    }
-    else
-    {
+    } else {
         eStatus = MB_EIO;
     }
-
-    EXIT_CRITICAL_SECTION(  );
+	portEXIT_CRITICAL();
+    //EXIT_CRITICAL_SECTION(  );
     return eStatus;
 }
 
-eMBErrorCode
-eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT usLength )
-{
+eMBErrorCode eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT usLength ) {
     eMBErrorCode    eStatus = MB_ENOERR;
     USHORT          usCRC16;
 
-    ENTER_CRITICAL_SECTION(  );
-
+    //ENTER_CRITICAL_SECTION(  );
+	portENTER_CRITICAL();
     /* Check if the receiver is still in idle state. If not we where to
      * slow with processing the received frame and the master sent another
      * frame on the network. We have to abort sending the frame.
@@ -213,28 +217,26 @@ eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT usLength )
         /* Activate the transmitter. */
         eSndState = STATE_TX_XMIT;
         vMBPortSerialEnable( FALSE, TRUE );
-    }
-    else
-    {
+    } else {
         eStatus = MB_EIO;
     }
-    EXIT_CRITICAL_SECTION(  );
+    //EXIT_CRITICAL_SECTION(  );
+    portEXIT_CRITICAL();
+    
+    berhitung_serial3+=5;
     return eStatus;
 }
 
-BOOL
-xMBRTUReceiveFSM( void )
-{
+BOOL xMBRTUReceiveFSM( void ) {
     BOOL            xTaskNeedSwitch = FALSE;
     UCHAR           ucByte;
 
     assert( eSndState == STATE_TX_IDLE );
-
+	
     /* Always read the character. */
     ( void )xMBPortSerialGetByte( ( CHAR * ) & ucByte );
-
-    switch ( eRcvState )
-    {
+	//printf("%c", ucByte);
+    switch ( eRcvState ) {
         /* If we have received a character in the init state we have to
          * wait until the frame is finished.
          */
@@ -282,15 +284,12 @@ xMBRTUReceiveFSM( void )
     return xTaskNeedSwitch;
 }
 
-BOOL
-xMBRTUTransmitFSM( void )
-{
+BOOL xMBRTUTransmitFSM( void ) {
     BOOL            xNeedPoll = FALSE;
 
     assert( eRcvState == STATE_RX_IDLE );
 
-    switch ( eSndState )
-    {
+    switch ( eSndState ) {
         /* We should not get a transmitter event if the transmitter is in
          * idle state.  */
     case STATE_TX_IDLE:
@@ -320,9 +319,7 @@ xMBRTUTransmitFSM( void )
     return xNeedPoll;
 }
 
-BOOL
-xMBRTUTimerT35Expired( void )
-{
+BOOL xMBRTUTimerT35Expired( void ) {
     BOOL            xNeedPoll = FALSE;
 
     switch ( eRcvState )

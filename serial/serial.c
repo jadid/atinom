@@ -451,7 +451,7 @@ xComPortHandle serial3_init( unsigned portLONG ulWantedBaud, unsigned portBASE_T
 			VICVectAddr29 = ( portLONG ) vUART3_ISR_Wrapper;
 			//VICVectCntl29 = serUART3_VIC_CHANNEL | serUART3_VIC_ENABLE;
 			//VICVectCntl29 = (29 | 10);	// priority
-			VICVectCntl29 = (serUART0_VIC_ENABLE | 29);
+			VICVectCntl29 = (serUART3_VIC_ENABLE | 29);
 			
 			//VICVectPriority29 = 10;
 			//VICSWPrioMask =	10; 
@@ -738,7 +738,7 @@ xComPortHandle serial1_init( unsigned portLONG ulWantedBaud, unsigned portBASE_T
 		( ulWantedBaud != ( unsigned portLONG ) 0 )
 	  )
 	{
-		printf(" buf .................................OK\r\n");
+		printf(" serial1 .................................OK\r\n");
 		portENTER_CRITICAL();
 		{
 			/* Setup the baud rate:  Calculate the divisor value. */

@@ -65,7 +65,7 @@ unsigned int paket_kita=0;
 	
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
-
+unsigned char datakeserver[512];
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -130,7 +130,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 #ifdef PAKAI_WEBCLIENT
 	webclient_init();
-	printf("webclient inited !\r\n");
+	int kWnya = 3500;
+	printf("webclient inited !, kW: %d\r\n", kWnya);
 	int wclient = 0;
 #endif
 
@@ -143,6 +144,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	target_kirim = 4-1;
 	sumber_datanya=3-1;
 	//giliran=1-1;
+	
 	printf("Kirim Balik inited, Target data: sumber %d, target kirim: %d !\r\n", sumber_datanya+1, target_kirim+1);
 #endif
 
@@ -163,10 +165,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		#ifdef PAKAI_WEBCLIENT
 		wclient++;
-		if (wclient == 30000)	/* 30 detik */
+		if (wclient == 1000)	/* 30 detik */
 		{
 			wclient = 0;
-			webclient_get("192.168.1.105", 80, "/frame.jpg");
+			sprintf(datakeserver, "/monita3/monita_loket.php?id_module=1&location=1&jml=2&id=243~456&data=1.234~%d", kWnya++);
+			webclient_get("192.168.1.75", 80, datakeserver);
 			//printf("GET mulai !\r\n");
 		}
 		#endif

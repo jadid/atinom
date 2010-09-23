@@ -34,6 +34,14 @@
 
 /* ----------------------- Platform includes --------------------------------*/
 #include "port.h"
+#include "../port/port.c"
+//#include "../port/portevent.c"
+#include "../modbus/modbus/functions/mbfunccoils.c"
+#include "../modbus/modbus/functions/mbfuncholding.c"
+#include "../modbus/modbus/functions/mbfuncother.c"
+#include "../modbus/modbus/functions/mbfuncinput.c"
+#include "../modbus/modbus/functions/mbfuncdisc.c"
+#include "../modbus/modbus/functions/mbutils.c"
 
 /* ----------------------- Modbus includes ----------------------------------*/
 #include "mb.h"
@@ -126,9 +134,7 @@ static xMBFunctionHandler xFuncHandlers[MB_FUNC_HANDLERS_MAX] = {
 };
 
 /* ----------------------- Start implementation -----------------------------*/
-eMBErrorCode
-eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity )
-{
+eMBErrorCode eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity ) {
     eMBErrorCode    eStatus = MB_ENOERR;
 
     /* check preconditions */
@@ -136,9 +142,8 @@ eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eM
         ( ucSlaveAddress < MB_ADDRESS_MIN ) || ( ucSlaveAddress > MB_ADDRESS_MAX ) )
     {
         eStatus = MB_EINVAL;
-    }
-    else
-    {
+        printf("Alamat MODBUS Client diluar range [1-247]");
+    }     else     {
         ucMBAddress = ucSlaveAddress;
 
         switch ( eMode )
@@ -157,6 +162,7 @@ eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eM
             eStatus = eMBRTUInit( ucMBAddress, ucPort, ulBaudRate, eParity );
             break;
 #endif
+
 #if MB_ASCII_ENABLED > 0
         case MB_ASCII:
             pvMBFrameStartCur = eMBASCIIStart;
@@ -175,15 +181,11 @@ eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eM
             eStatus = MB_EINVAL;
         }
 
-        if( eStatus == MB_ENOERR )
-        {
-            if( !xMBPortEventInit(  ) )
-            {
+        if( eStatus == MB_ENOERR )         {
+            if( !xMBPortEventInit(  ) )    {
                 /* port dependent event module initalization failed. */
                 eStatus = MB_EPORTERR;
-            }
-            else
-            {
+            } else {
                 eMBCurrentMode = eMode;
                 eMBState = STATE_DISABLED;
             }
@@ -193,22 +195,15 @@ eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eM
 }
 
 #if MB_TCP_ENABLED > 0
-eMBErrorCode
-eMBTCPInit( USHORT ucTCPPort )
-{
+eMBErrorCode eMBTCPInit( USHORT ucTCPPort ) {
     eMBErrorCode    eStatus = MB_ENOERR;
 
-    if( ( eStatus = eMBTCPDoInit( ucTCPPort ) ) != MB_ENOERR )
-    {
+    if ( ( eStatus = eMBTCPDoInit( ucTCPPort ) ) != MB_ENOERR )     {
         eMBState = STATE_DISABLED;
-    }
-    else if( !xMBPortEventInit(  ) )
-    {
+    } else if ( !xMBPortEventInit(  ) )     {
         /* Port dependent event module initalization failed. */
         eStatus = MB_EPORTERR;
-    }
-    else
-    {
+    } else {
         pvMBFrameStartCur = eMBTCPStart;
         pvMBFrameStopCur = eMBTCPStop;
         peMBFrameReceiveCur = eMBTCPReceive;
@@ -222,9 +217,7 @@ eMBTCPInit( USHORT ucTCPPort )
 }
 #endif
 
-eMBErrorCode
-eMBRegisterCB( UCHAR ucFunctionCode, pxMBFunctionHandler pxHandler )
-{
+eMBErrorCode eMBRegisterCB( UCHAR ucFunctionCode, pxMBFunctionHandler pxHandler ) {
     int             i;
     eMBErrorCode    eStatus;
 
@@ -269,9 +262,7 @@ eMBRegisterCB( UCHAR ucFunctionCode, pxMBFunctionHandler pxHandler )
 }
 
 
-eMBErrorCode
-eMBClose( void )
-{
+eMBErrorCode eMBClose( void ) {
     eMBErrorCode    eStatus = MB_ENOERR;
 
     if( eMBState == STATE_DISABLED )
@@ -288,9 +279,7 @@ eMBClose( void )
     return eStatus;
 }
 
-eMBErrorCode
-eMBEnable( void )
-{
+eMBErrorCode eMBEnable( void ) {
     eMBErrorCode    eStatus = MB_ENOERR;
 
     if( eMBState == STATE_DISABLED )
@@ -298,17 +287,13 @@ eMBEnable( void )
         /* Activate the protocol stack. */
         pvMBFrameStartCur(  );
         eMBState = STATE_ENABLED;
-    }
-    else
-    {
+    } else {
         eStatus = MB_EILLSTATE;
     }
     return eStatus;
 }
 
-eMBErrorCode
-eMBDisable( void )
-{
+eMBErrorCode eMBDisable( void ) {
     eMBErrorCode    eStatus;
 
     if( eMBState == STATE_ENABLED )
@@ -328,9 +313,7 @@ eMBDisable( void )
     return eStatus;
 }
 
-eMBErrorCode
-eMBPoll( void )
-{
+eMBErrorCode eMBPoll( void ) {
     static UCHAR   *ucMBFrame;
     static UCHAR    ucRcvAddress;
     static UCHAR    ucFunctionCode;
@@ -363,11 +346,11 @@ eMBPoll( void )
                 /* Check if the frame is for us. If not ignore the frame. */
                 if( ( ucRcvAddress == ucMBAddress ) || ( ucRcvAddress == MB_ADDRESS_BROADCAST ) )
                 {
-                    ( void )xMBPortEventPost( EV_EXECUTE );
+					printf("UNTUK DIRIKU...\R\N");
+                    //( void )xMBPortEventPost( EV_EXECUTE );
                 }
             }
             break;
-
         case EV_EXECUTE:
             ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF];
             eException = MB_EX_ILLEGAL_FUNCTION;
@@ -385,11 +368,9 @@ eMBPoll( void )
                 }
             }
 
-            /* If the request was not sent to the broadcast address we
-             * return a reply. */
-            if( ucRcvAddress != MB_ADDRESS_BROADCAST )
-            {
-                if( eException != MB_EX_NONE )
+            /* If the request was not sent to the broadcast address we return a reply. */
+            if ( ucRcvAddress != MB_ADDRESS_BROADCAST )  {
+                if ( eException != MB_EX_NONE )
                 {
                     /* An exception occured. Build an error frame. */
                     usLength = 0;

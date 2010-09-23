@@ -22,6 +22,8 @@
 #ifndef _PORT_H
 #define _PORT_H
 
+#include "FreeRTOS.h"		// di portISR.c
+
 #include <assert.h>
 #include <inttypes.h>
 
@@ -29,11 +31,21 @@
 #define PR_BEGIN_EXTERN_C           extern "C" {
 #define	PR_END_EXTERN_C             }
 
+// aslinya yg di comment, biar syncron diubah ke versi FreeRTOS, semoga
 #define ENTER_CRITICAL_SECTION( )		EnterCriticalSection( )
+//#define ENTER_CRITICAL_SECTION( )		portENTER_CRITICAL()
 #define EXIT_CRITICAL_SECTION( )    ExitCriticalSection( )
+//#define EXIT_CRITICAL_SECTION( )		portEXIT_CRITICAL()
 
+#define SAVE_CONTEXT_SECTION( )		portSAVE_CONTEXT()
+//#define EXIT_CRITICAL_SECTION( )    ExitCriticalSection( )
+#define RESTORE_CONTEXT_SECTION( )		portRESTORE_CONTEXT()	
+
+//#define CCLK	60.000.000L
 #define CCLK	60000000L
-#define PCLK	CCLK/4
+#ifndef PCLK
+	#define PCLK	CCLK/4
+#endif
 
 void            EnterCriticalSection( void );
 void            ExitCriticalSection( void );

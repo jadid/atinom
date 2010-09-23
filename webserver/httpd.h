@@ -50,6 +50,12 @@ struct httpd_state {
   char *scriptptr;
   int scriptlen;
   
+#if 1
+	struct psock p;
+	char inputbuffer[10];
+	char name[40];
+#endif  
+  
   unsigned short count;
 };
 

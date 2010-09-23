@@ -145,10 +145,10 @@ webclient_get(char *host, u16_t port, char *file)
   
   //
   uip_ipaddr_t ip_modul;
-  uip_ipaddr(ip_modul, 192,168, 1, 105);
+  uip_ipaddr(ip_modul, 192,168, 1, 75);
   //
   
-  //printf("%s(): %s, port %d\r\n", __FUNCTION__,host, port);
+  printf("%s(): %s, port %d, %s\r\n", __FUNCTION__,host, port, file);
   
   /* First check if the host is an IP address. */
   ipaddr = &addr; 
@@ -402,8 +402,8 @@ webclient_appcall(void)
     s.timer = 0;
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
-    webclient_connected();
-    //printf("%s(): Connected\r\n", __FUNCTION__);
+    //webclient_connected();
+    printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
@@ -471,7 +471,7 @@ void webclient_datahandler(char *data, u16_t len)
 {
 	//printf("%s", __FUNCTION__);
 	
-	tulis_foto( data, len );
+	//tulis_foto( data, len );
 	
 	//if (len == 0)
 	//	printf("\r\n");

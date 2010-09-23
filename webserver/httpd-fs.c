@@ -213,6 +213,45 @@ httpd_fs_strcmp(const char *str1, const char *str2)
   goto loop;
 }
 /*-----------------------------------------------------------------------------------*/
+#if 1
+int
+httpd_fs_open(const char *name, struct httpd_fs_file *file)
+{
+#ifdef ASLINYA
+	
+#if HTTPD_FS_STATISTICS
+  u16_t i = 0;
+#endif /* HTTPD_FS_STATISTICS */
+  struct httpd_fsdata_file_noconst *f;
+
+  for(f = (struct httpd_fsdata_file_noconst *)HTTPD_FS_ROOT;
+      f != NULL;
+      f = (struct httpd_fsdata_file_noconst *)f->next) {
+
+    if(httpd_fs_strcmp(name, f->name) == 0) {
+      file->data = f->data;
+      file->len = f->len;
+#if HTTPD_FS_STATISTICS
+      ++count[i];
+#endif /* HTTPD_FS_STATISTICS */
+      return 1;
+    }
+#if HTTPD_FS_STATISTICS
+    ++i;
+#endif /* HTTPD_FS_STATISTICS */
+
+  }
+  return 0;
+#endif
+	
+	file->len = 100;
+	
+	return 1;
+	
+}
+#endif 
+
+#if 0
 int
 httpd_fs_open(const char *name, struct httpd_fs_file *file)
 {
@@ -306,6 +345,8 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
   return 0;
   #endif
 }
+#endif 
+
 /*-----------------------------------------------------------------------------------*/
 void
 httpd_fs_init(void)

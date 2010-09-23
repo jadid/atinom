@@ -189,6 +189,10 @@ extern volatile unsigned portLONG ulCriticalNesting;					\
 }
 
 
+//extern void portRESTORE_CONTEXT( void );
+//extern void portSAVE_CONTEXT( void );
+
+
 #define portYIELD_FROM_ISR()		vTaskSwitchContext()
 #define portYIELD()					asm volatile ( "SWI" )
 /*-----------------------------------------------------------*/

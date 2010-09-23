@@ -49,9 +49,7 @@ static USHORT   usMBSlaveIDLen;
 
 /* ----------------------- Start implementation -----------------------------*/
 
-eMBErrorCode
-eMBSetSlaveID( UCHAR ucSlaveID, BOOL xIsRunning,
-               UCHAR const *pucAdditional, USHORT usAdditionalLen )
+eMBErrorCode eMBSetSlaveID( UCHAR ucSlaveID, BOOL xIsRunning, UCHAR const *pucAdditional, USHORT usAdditionalLen )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
 

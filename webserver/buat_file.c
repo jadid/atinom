@@ -12,15 +12,19 @@
 
 #include "../tinysh/enviro.h"
 extern struct t_env env2;
-#define		tot_buf	buffer
+#define BESAR_BUF_HTTP	8192
+unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
+unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+//#define		tot_buf	buffer
 
-#if 0
+
+/*
 extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
-
+//*/
 extern struct t_adc st_adc;
 
 static unsigned int nomer_mesin=0;
@@ -40,11 +44,15 @@ static unsigned int nomer_mesin=0;
 #ifdef BOARD_KOMON_KONTER
 #define BOARD_KOMON_WEB
 #endif
+
+#ifdef BOARD_KOMON_420_SABANG
+#define BOARD_KOMON_WEB
 #endif
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
 //#ifdef BOARD_TAMPILAN
+#ifdef CARI_SUMBER
 #define LINK_ATAS "<table border=""0"" align=""left"">\n \
   <tbody align=""center"">\n \
 	<tr>\n \
@@ -68,9 +76,10 @@ static unsigned int nomer_mesin=0;
     </tr>\n \
   </tbody>\n \
 </table>\n"
-//#endif
+#endif
 
 #ifdef BOARD_KOMON_WEB
+#ifndef PAKAI_PM
 #define LINK_ATAS "<table border=""0"" align=""left"">\n \
   <tbody align=""center"">\n \
 	<tr>\n \
@@ -90,11 +99,29 @@ static unsigned int nomer_mesin=0;
     </tr>\n \
   </tbody>\n \
 </table>\n"
+#else 
+#define LINK_ATAS "<table border=""0"" align=""left"">\n \
+  <tbody align=""center"">\n \
+	<tr>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
+      <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
+    </tr>\n \
+  </tbody>\n \
+</table>\n"
+
+#define LINK_BAWAH "<table border=""0"" align=""left"">\n \
+  <tbody align=""center"">\n \
+	<tr>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+    </tr>\n \
+  </tbody>\n \
+</table>\n"
+#endif
 #endif
 
-void buat_head(unsigned int flag)
-{
-	char head_buf[256];
+void buat_head(unsigned int flag) {
+	char head_buf[512];
 	
 	/* flag = 1, perlu di refresh */
 	if (flag == 1)
@@ -103,7 +130,7 @@ void buat_head(unsigned int flag)
 		sprintf(head_buf, "%s\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
 	
 	sprintf(tot_buf, "%s", head_buf);
-
+	
 	sprintf(head_buf, "%s<br>", LINK_ATAS);
 	strcat(tot_buf, head_buf);
 
@@ -118,8 +145,7 @@ void buat_head(unsigned int flag)
 	strcat(tot_buf, head_buf);
 }
 
-void buat_bottom(void)
-{
+void buat_bottom(void) {
 	char head_buf[256];
 	
 	unsigned int sec;
@@ -131,23 +157,19 @@ void buat_bottom(void)
 	/* data uptime */
 	uptime(&sec, &menit, &jam, &hari, &tahun);
 	strcat(tot_buf, "<h4>Uptime = ");
-	if (tahun !=0)
-	{
+	if (tahun !=0)	{
 		sprintf(head_buf, "%d thn ", tahun);
 		strcat(tot_buf, head_buf);	
 	}
-	if (hari !=0)
-	{
+	if (hari !=0) 	{
 		sprintf(head_buf, "%d hari ", hari);
 		strcat(tot_buf, head_buf);		
 	}
-	if (jam !=0)
-	{
+	if (jam !=0)	{
 		sprintf(head_buf, "%d jam ", jam);
 		strcat(tot_buf, head_buf);		
 	}
-	if (menit !=0)
-	{
+	if (menit !=0) 	{
 		sprintf(head_buf, "%d mnt ", menit);
 		strcat(tot_buf, head_buf);		
 	}
@@ -161,7 +183,7 @@ void buat_bottom(void)
 	/* sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__); */
 	sprintf(head_buf,"<h4>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);
-	strcat(tot_buf, "<br>NXP LPC2368, 60 MHz, FreeRTOS 5.1.1</h4>\n");
+	strcat(tot_buf, "<br>NXP LPC2387, 60 MHz, FreeRTOS 5.1.1</h4>\n");
 	
 	
 	// close html
@@ -170,9 +192,28 @@ void buat_bottom(void)
 }
 
 #if 0
+void buat_file_index(void) {
+	
+	buat_head(0);
+	
+	
+	buat_bottom();
+	printf("%s", tot_buf);
+	/*
+	#if 1
+	char head_bufs[256];
+	sprintf(tot_buf, "%s", judul);
+	sprintf(head_bufs, "</head><body><h1>Tes</h1></body>\n", judul);
+	strcat(tot_buf, head_bufs);
+	printf("%s", tot_buf);
+	#endif
+	//*/
+	//buat_bottom();
+}
+#endif
 
-void buat_file_index(void)
-{
+#if 1
+void buat_file_index(void) {
 	/* 
 		data masing2 mesin secara bergiliran ditampilkan
 		setiap refresh index.html		
@@ -185,7 +226,8 @@ void buat_file_index(void)
 
 	buat_head(1);
 						
-#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_TAMPILAN
+#ifdef CARI_SUMBER
 	nomer_mesin++;
 	if (nomer_mesin == 5) nomer_mesin = 0;
 	
@@ -252,6 +294,11 @@ void buat_file_index(void)
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
+#ifdef BOARD_KOMON_420_SABANG	
+	strcat(tot_buf, "<th>Nilai</th>\n");
+	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
+#endif
+
 #ifdef BOARD_KOMON_B_THERMO	
 	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
 	strcat(tot_buf, "<th>Celcius</th>\n");
@@ -264,7 +311,6 @@ void buat_file_index(void)
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
-	
 #ifdef BOARD_KOMON_A_RTD
 	for (i=0; i< 5; i++)
 	{		
@@ -299,7 +345,64 @@ void buat_file_index(void)
 				
 	}
 #endif
+//*
+#ifdef BOARD_KOMON_420_SABANG
+#ifdef PAKAI_PM
+	int h=0;
+	extern float data [ (JML_SUMBER * PER_SUMBER) ];
+	for (i=0; i< JML_SUMBER; i++)
+	{		
 
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=""right"">%1.4f</td>\n", (i+1), data_f[i*PER_SUMBER+0]);
+		strcat(tot_buf, head_buf);
+		
+		sprintf(head_buf, "<td>%s</td>\n</tr>\n", env2.kalib[i].ket);		
+		strcat(tot_buf, head_buf);
+		/*
+		 printf("   kwh		: %.2f kWh\r\n", printf("   kwh		: %.2f kWh\r\n", data_f[i*PER_SUMBER+0]);		// 41
+		printf("   kvah		: %.2f kVAh\r\n", data_f[i*PER_SUMBER+1]);		// 41
+		printf("   kvarh	: %.2f kVArh\r\n", data_f[i*PER_SUMBER+2]);		// 41
+		printf("   kw		: %.2f kW\r\n", data_f[i*PER_SUMBER+3]);		// 41
+		printf("   kva		: %.2f kVA\r\n", data_f[i*PER_SUMBER+4]);		// 41
+		printf("   kvar		: %.2f kVAr\r\n", data_f[i*PER_SUMBER+5]);		// 41
+		printf("   pf		: %.2f\r\n", data_f[i*PER_SUMBER+6]);		// 41
+		printf("   volt1	: %.2f V\r\n", data_f[i*PER_SUMBER+7]);		// 41
+		printf("   volt2	: %.2f V\r\n", data_f[i*PER_SUMBER+8]);		// 41
+		printf("   amp		: %.2f A\r\n", data_f[i*PER_SUMBER+9]);		// 41
+		printf("   frek		: %.2f Hz\r\n", data_f[i*PER_SUMBER+10]);		// 41
+		printf("   ampA		: %.2f A\r\n", data_f[i*PER_SUMBER+11]);		// 41
+		printf("   ampB		: %.2f A\r\n", data_f[i*PER_SUMBER+12]);		// 41
+		printf("   ampC		: %.2f A\r\n", data_f[i*PER_SUMBER+13]);		// 41
+		printf("   ampN		: %.2f A\r\n", data_f[i*PER_SUMBER+14]);		// 41
+		printf("   voltA_B	: %.2f V\r\n", data_f[i*PER_SUMBER+15]);		// 41
+		printf("   voltB_C	: %.2f V\r\n", data_f[i*PER_SUMBER+16]);		// 41
+		printf("   voltA_C	: %.2f V\r\n", data_f[i*PER_SUMBER+17]);		// 41
+		printf("   voltA_N	: %.2f V\r\n", data_f[i*PER_SUMBER+18]);		// 41);		// 41
+		printf("   kvah		: %.2f kVAh\r\n", data_f[i*PER_SUMBER+1]);		// 41
+		printf("   kvarh	: %.2f kVArh\r\n", data_f[i*PER_SUMBER+2]);		// 41
+		printf("   kw		: %.2f kW\r\n", data_f[i*PER_SUMBER+3]);		// 41
+		printf("   kva		: %.2f kVA\r\n", data_f[i*PER_SUMBER+4]);		// 41
+		printf("   kvar		: %.2f kVAr\r\n", data_f[i*PER_SUMBER+5]);		// 41
+		printf("   pf		: %.2f\r\n", data_f[i*PER_SUMBER+6]);		// 41
+		printf("   volt1	: %.2f V\r\n", data_f[i*PER_SUMBER+7]);		// 41
+		printf("   volt2	: %.2f V\r\n", data_f[i*PER_SUMBER+8]);		// 41
+		printf("   amp		: %.2f A\r\n", data_f[i*PER_SUMBER+9]);		// 41
+		printf("   frek		: %.2f Hz\r\n", data_f[i*PER_SUMBER+10]);		// 41
+		printf("   ampA		: %.2f A\r\n", data_f[i*PER_SUMBER+11]);		// 41
+		printf("   ampB		: %.2f A\r\n", data_f[i*PER_SUMBER+12]);		// 41
+		printf("   ampC		: %.2f A\r\n", data_f[i*PER_SUMBER+13]);		// 41
+		printf("   ampN		: %.2f A\r\n", data_f[i*PER_SUMBER+14]);		// 41
+		printf("   voltA_B	: %.2f V\r\n", data_f[i*PER_SUMBER+15]);		// 41
+		printf("   voltB_C	: %.2f V\r\n", data_f[i*PER_SUMBER+16]);		// 41
+		printf("   voltA_C	: %.2f V\r\n", data_f[i*PER_SUMBER+17]);		// 41
+		printf("   voltA_N	: %.2f V\r\n", data_f[i*PER_SUMBER+18]);		// 41
+		 
+		//*/	
+	}
+#endif
+	
+#endif
+//*/
 #ifdef BOARD_KOMON_420_SAJA
 	/* data 4-20 mA */
 	for (i=0; i< 10; i++)
@@ -391,7 +494,9 @@ void buat_file_index(void)
 	//printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
+#endif
 
+#ifndef PAKAI_PM 
 void buat_file_setting(unsigned int flag)
 {
 	int i;
@@ -401,7 +506,8 @@ void buat_file_setting(unsigned int flag)
 	
 	buat_head(0);
 	
-	#ifdef BOARD_TAMPILAN
+	//#ifdef BOARD_TAMPILAN
+	#ifdef CARI_SUMBER
 	
 	if (flag == 1)
 		nomer_mesin++;
@@ -504,7 +610,9 @@ void buat_file_setting(unsigned int flag)
 	
 	return;
 }
+#endif
 
+#if 1
 void buat_file_about(void)
 {
 	/* 
@@ -536,7 +644,7 @@ void buat_file_about(void)
 		strcat(tot_buf, "<br>Enabled Preemptive kernel");
 	sprintf(head_buf, "<br>Idle loop check = %d perdetik", tot_idle);
 	strcat(tot_buf, head_buf);
-	
+/*	
 	strcat(tot_buf, "<br><br>Task & Free stack (bytes) :");
 	sprintf(head_buf, "<br>&nbsp;&nbsp; Shell    : %d", uxTaskGetStackHighWaterMark(hdl_shell));
 	strcat(tot_buf, head_buf);
@@ -544,7 +652,8 @@ void buat_file_about(void)
 	sprintf(head_buf, "<br>&nbsp;&nbsp; Led      : %d", uxTaskGetStackHighWaterMark(hdl_led));
 	strcat(tot_buf, head_buf);
 	
-	#ifdef BOARD_TAMPILAN
+	//#ifdef BOARD_TAMPILAN
+	#ifdef CARI_SUMBER
 	sprintf(head_buf, "<br>&nbsp;&nbsp; Tampilan : %d", uxTaskGetStackHighWaterMark(hdl_tampilan));
 	strcat(tot_buf, head_buf);
 	sprintf(head_buf, "<br>&nbsp;&nbsp; LCD      : %d", uxTaskGetStackHighWaterMark(hdl_lcd));
@@ -553,7 +662,7 @@ void buat_file_about(void)
 	
 	sprintf(head_buf, "<br>&nbsp;&nbsp; Ethernet : %d", uxTaskGetStackHighWaterMark(hdl_ether));
 	strcat(tot_buf, head_buf);
-	
+//*/	
 	/* informasi environtment, nama, ip, gateway dll */
 	strcat(tot_buf, "<br><br>Informasi Modul :");
 	sprintf(head_buf, "<br>&nbsp;&nbsp;Nama     : %s", env2.nama_board);
@@ -575,13 +684,16 @@ void buat_file_about(void)
 	
 	return;
 }
+#endif
 
+#if 0
 void buat_file_sumber(void)
 {
 	int i;
 	buat_head(0);
 	
-	#ifdef BOARD_TAMPILAN
+	//#ifdef BOARD_TAMPILAN
+	#ifdef CARI_SUMBER
 	strcat(tot_buf, "<br>Informasi Setting Sumber Data</h4>\n");
 	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
 	

@@ -30,7 +30,7 @@
 
 #ifdef BOARD_KOMON_420_SABANG
 #define LED_UTAMA	BIT(27)
-#define TXDE	BIT(24)
+//#define TXDE	BIT(24)
 #endif
 
 //xSemaphoreHandle lcd_sem;
@@ -80,14 +80,14 @@ int main( void )
 	PCONP |= BIT(25);
 	
 	/* PCLK UART3, PCLK = CCLK */
-	PCLKSEL1 &= ~(BIT(18) | BIT(19));
+	PCLKSEL1 &= ~(BIT(18) | BIT(19));  // reset dulu
 	PCLKSEL1 |= BIT(18);
 	
 	/* init TX3, RX3 */
 	PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));
-	PINSEL1 |= (BIT(18) | BIT(19));
-	PINSEL1 |= (BIT(20) | BIT(21));
-	PINSEL1 &= ~(BIT(16) | BIT(17));
+	PINSEL1 |= (BIT(18) | BIT(19));		// set TXD3
+	PINSEL1 |= (BIT(20) | BIT(21));		// set RXD3
+	PINSEL1 &= ~(BIT(16) | BIT(17));	// set IO TXDE
 	/* TXDE di highkan */
 	FIO0DIR |= TXDE;
 	//FIO0SET = TXDE;		// on	---> bisa kirim
@@ -96,17 +96,7 @@ int main( void )
 	FIO0SET = TXDE;
 	#endif
 
-	#ifdef PAKAI_SERIAL_2
-	/* PCONP enable UART2 */
-	PCONP |= BIT(24);
-	
-	/* PCLK UART2, PCLK = CCLK */
-	PCLKSEL1 &= ~(BIT(16) | BIT(17));
-	PCLKSEL1 |= BIT(16);
-	
-	/* init TX2, RX2 */
-	PINSEL0 |= (BIT(20) | BIT(22));
-	#endif
+
 
 	/*	untuk cek blinking saat system boot */
 #ifdef CEK_BLINK
@@ -122,11 +112,17 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
-	#ifdef PAKAI_SERIAL_2
-		serial2_init( BAUD_PM, (1 * configMINIMAL_STACK_SIZE) );
-	#endif
+
 	#ifdef PAKAI_SERIAL_3
-		serial3_init( BAUD_PM, (1 * configMINIMAL_STACK_SIZE) );
+		//*
+		#ifdef PAKAI_MODBUS
+			//serial3_init( BAUD_MODBUS, (1 * configMINIMAL_STACK_SIZE) );
+		#endif
+		//*/
+				
+		#ifdef PAKAI_PM
+			//serial3_init( BAUD_PM, (1 * configMINIMAL_STACK_SIZE) );
+		#endif
 	#endif
 
 //	init_gpio_adc();
@@ -136,7 +132,8 @@ int main( void )
 	init_led_utama();
 	start_ether();
 	
-	init_task_pm();
+	init_task_modbus();
+	
 	init_shell();
 	vTaskStartScheduler();
 

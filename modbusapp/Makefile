@@ -60,6 +60,10 @@ CFLAGS= $(DEBUG) \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
 		-I ../uip/uip \
+		-I ../modbus/modbus/ascii/ \
+		-I ../modbus/modbus/include/ \
+		-I ../modbus/modbus/rtu/ \
+		-I ../modbus/port/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -71,7 +75,6 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
-		pm_server.c \
 		../system/setup_cpu.c \
 		../system/syscall.c \
 		../system/reset_cpu.c \
@@ -105,21 +108,40 @@ THUMB_SOURCE= \
 		../system/idle_hook.c \
 		../uip/apps/telnetd/telnetd.c	\
 		../spi/low_ss1.c	\
+		
 #		../adc/ad7708.c	\
 #		LCD/lcd_320.c \
 #		tampilan.c \
 #		LCD/menu_monita.c \
 #		LCD/menu_popup.c \
 
-PM_SOURCE = \
-		pm_server.c \
-	
+#PM_SOURCE = \
+#		pm_server.c \
+
+MODBUS_SOURCE = \
+		modbus.c \
+        ../modbus/port/portevent.c \
+        ../modbus/port/portserial.c \
+		../modbus/port/porttimer.c \
+		../modbus/modbus/mb.c \
+		../modbus/modbus/rtu/mbrtu.c \
+		../modbus/modbus/rtu/mbcrc.c \
+#		../modbus/modbus/ascii/mbascii.c \
+        ../modbus/modbus/functions/mbfunccoils.c \
+        ../modbus/modbus/functions/mbfuncdiag.c \
+        ../modbus/modbus/functions/mbfuncholding.c \
+        ../modbus/modbus/functions/mbfuncinput.c \
+        ../modbus/modbus/functions/mbfuncother.c \
+        ../modbus/modbus/functions/mbfuncdisc.c \
+        ../modbus/modbus/functions/mbutils.c \
+
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../serial/serialISR.c \
-		../GPIO/gpio_ISR.c 
+		../GPIO/gpio_ISR.c \
+		../modbus/port/modbus_ISR.c \
 		
-#THUMB_SOURCE += $(PM_SOURCE)
+THUMB_SOURCE += $(MODBUS_SOURCE)
 
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
@@ -155,6 +177,7 @@ clean :
 	rm $(NAMA_FILE).bin
 	rm $(NAMA_FILE).S
 	rm $(NAMA_FILE).map
+#	rm $(NAMA_FILE).d
 #	touch Makefile
 	
 tulis :

@@ -148,7 +148,7 @@ webclient_get(char *host, u16_t port, char *file)
   uip_ipaddr(ip_modul, 192,168, 1, 75);
   //
   
-  printf("%s(): %s, port %d, %s\r\n", __FUNCTION__,host, port, file);
+  //printf("%s(): %s, port %d, %s\r\n", __FUNCTION__,host, port, file);
   
   /* First check if the host is an IP address. */
   ipaddr = &addr; 
@@ -403,7 +403,7 @@ webclient_appcall(void)
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    printf("%s(): Connected\r\n", __FUNCTION__);
+    //printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 

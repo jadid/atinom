@@ -292,11 +292,17 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			s->file.data = tot_buf;
 			portEXIT_CRITICAL();
 		}
-#ifndef PAKAI_PM
+
 		else if (strncmp(s->filename, "/setting", 8) == 0) {
-			//printf(" Buat file about\r\n");
+			printf(" Buat file setting: %s\r\n", s->filename);
+			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
+				ganti_setting(s->filename);
+				buat_file_setting(1, s->filename);
+				//buat_file_setting(1);
+			} else {
+				buat_file_setting(0,"");
+			}
 			
-			buat_file_setting();
 			
 			s->file.len = strlen(tot_buf);
 			
@@ -305,7 +311,6 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			portEXIT_CRITICAL();
 
 		} 
-#endif
 		else {
 //*/
 
@@ -342,7 +347,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
   PSOCK_BEGIN(&s->sin);
 
   PSOCK_READTO(&s->sin, ISO_space);
-
+	printf("http spasi: %s\r\n", s->inputbuf);
   if(strncmp(s->inputbuf, http_get, 4) != 0) {
 	
     PSOCK_CLOSE_EXIT(&s->sin);

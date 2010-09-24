@@ -9,6 +9,7 @@ struct t_kalib {
 	float m;
 	float C;
 	char ket[64];
+	int id;
 };
 
 struct t_env {

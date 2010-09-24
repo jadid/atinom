@@ -20,11 +20,21 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
-#define JML_SUMBER	20
+#ifdef PAKAI_PM
+	#define JML_SUMBER	10
+#else
+	#define JML_SUMBER	1
+#endif
+
 #define JML_MESIN	10
 #define TIAP_MESIN	100
 #define JML_KANAL	20
-#define PER_SUMBER	20
+
+#ifdef PAKAI_PM
+	#define PER_SUMBER	30
+#else
+	#define PER_SUMBER	20
+#endif
 
 #ifdef PAKAI_FILE_SIMPAN
 	#define SEKTOR_SFILE	24
@@ -39,6 +49,10 @@
 
 #define SEKTOR_GROUP	26
 #define ALMT_GROUP		0x7C000
+
+#define SEKTOR_KONFIG	26
+#define ALMT_KONFIG	0x7C000
+
 
 #define SEKTOR_TITIK	21
 #define ALMT_TITIK		0x70000
@@ -168,6 +182,13 @@ sumber status :
 	1 : time_out
 	2 : normal
 */
+
+struct t_setting {
+	int id;
+	char status;		// tidak aktif, timeout, dll
+	char ket[16];
+};
+
 struct t_sumber {
 	char nama[16];
 	//char ID_sumber;

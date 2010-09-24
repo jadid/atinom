@@ -44,7 +44,7 @@ DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
 PENULIS= ../Penulis/./lpc_dbe
 
-NAMA_FILE=komon_420
+NAMA_FILE=komon_420_indosat
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=$(NAMA_FILE).map 

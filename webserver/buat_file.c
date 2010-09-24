@@ -11,6 +11,11 @@
 	*/
 
 #include "../tinysh/enviro.h"
+
+#ifdef CENDOL
+//	#include "../tinysh/setting_eth.c" 
+#endif
+
 extern struct t_env env2;
 #define BESAR_BUF_HTTP	8192
 unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
@@ -79,7 +84,7 @@ static unsigned int nomer_mesin=0;
 #endif
 
 #ifdef BOARD_KOMON_WEB
-#ifndef PAKAI_PM
+
 #define LINK_ATAS "<table border=""0"" align=""left"">\n \
   <tbody align=""center"">\n \
 	<tr>\n \
@@ -99,25 +104,7 @@ static unsigned int nomer_mesin=0;
     </tr>\n \
   </tbody>\n \
 </table>\n"
-#else 
-#define LINK_ATAS "<table border=""0"" align=""left"">\n \
-  <tbody align=""center"">\n \
-	<tr>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
-    </tr>\n \
-  </tbody>\n \
-</table>\n"
 
-#define LINK_BAWAH "<table border=""0"" align=""left"">\n \
-  <tbody align=""center"">\n \
-	<tr>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-    </tr>\n \
-  </tbody>\n \
-</table>\n"
-#endif
 #endif
 
 void buat_head(unsigned int flag) {
@@ -189,6 +176,10 @@ void buat_bottom(void) {
 	// close html
     sprintf(head_buf, "\n</body>\n</html>\n");
     strcat(tot_buf, head_buf);
+}
+
+void ganti_setting(char *isi) {
+	
 }
 
 #if 0
@@ -350,10 +341,10 @@ void buat_file_index(void) {
 #ifdef PAKAI_PM
 	int h=0;
 	extern float data [ (JML_SUMBER * PER_SUMBER) ];
-	for (i=0; i< JML_SUMBER; i++)
+	for (i=0; i< PER_SUMBER; i++)
 	{		
 
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=""right"">%1.4f</td>\n", (i+1), data_f[i*PER_SUMBER+0]);
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%1.4f</td>\n", (i+1), data_f[i*PER_SUMBER+0]);
 		strcat(tot_buf, head_buf);
 		
 		sprintf(head_buf, "<td>%s</td>\n</tr>\n", env2.kalib[i].ket);		
@@ -496,8 +487,8 @@ void buat_file_index(void) {
 }
 #endif
 
-#ifndef PAKAI_PM 
-void buat_file_setting(unsigned int flag)
+
+void buat_file_setting(unsigned int flag, char *kata)
 {
 	int i;
 	unsigned int cek_mesin;
@@ -581,6 +572,7 @@ void buat_file_setting(unsigned int flag)
 	#endif
 	
 	#ifdef BOARD_KOMON_WEB
+	#ifdef PAKAI_ADC
 	strcat(tot_buf, "<br>Faktor kalibrasi (y = mx + C)</h4>\n");
 	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
 	
@@ -604,13 +596,49 @@ void buat_file_setting(unsigned int flag)
 	strcat(tot_buf, "</tbody>\n</table>\n");
 	#endif
 	
+	#ifdef CENDOL		// akses php
+		if (flag) {
+			sprintf(head_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>", kata);
+			//strcat(tot_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>");
+			strcat(tot_buf, head_buf);
+		}
+		
+		strcat(tot_buf, "<h3>Info Kanal</h3>\n");
+		strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
+		strcat(tot_buf, "<col width = ""50px"">\n");		// Kanal
+		strcat(tot_buf, "<col width = ""50px"">\n");		// id
+		strcat(tot_buf, "<col width = ""200px"">\n");		// keterangan
+		strcat(tot_buf, "<col width = ""50x"">\n");			// Ubah
+
+		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+		strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
+		strcat(tot_buf, "<th>ID Titik</th>\n");
+		strcat(tot_buf, "<th>Keterangan</th>\n");
+		strcat(tot_buf, "<th>Penggantian</th>\n");
+		
+		for (i=0; i<PER_SUMBER; i++)
+		{
+			// Kanal, id & Keterangan
+			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+							"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+							"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"50\"/></td>\n" \
+							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+				i+1, i+1, i+1,  i+1, "Ket");
+			strcat(tot_buf, head_buf);
+		}
+		
+		strcat(tot_buf, "</tbody>\n</table>\n");
+
+	#endif
+	#endif
+	
 	buat_bottom();
 	
 	//printf("pjg setting = %d\r\n", strlen(tot_buf));
 	
 	return;
 }
-#endif
+
 
 #if 1
 void buat_file_about(void)

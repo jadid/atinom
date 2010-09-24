@@ -38,6 +38,10 @@
 
 #define PAKE_TELNETD
 
+#define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
+					// cendol memungkinkan client mengakses file php di server untuk menyimpan datanya
+
+
 //#define BOARD_KOMON_A_RTD
 
 //#define BOARD_KOMON_420_SAJA

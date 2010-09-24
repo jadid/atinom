@@ -22,6 +22,10 @@
 #include "sfile.c"
 #endif
 
+#ifdef CENDOL
+	#include "setting_eth.c"
+#endif
+
 #ifdef BOARD_TAMPILAN
 #include "mesin.c"
 #include "titik.c"
@@ -115,6 +119,7 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 							  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
+
 
 void kirim_serial (int argc, char **argv) {
 	int sumb=0;
@@ -701,6 +706,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cari_doku_cmd);
 #endif	
 
+
+#ifdef CENDOL
+	tinysh_add_command(&cek_konfig_cmd);
+	tinysh_add_command(&set_konfig_cmd);
+#endif
 
 #if defined(PAKAI_SERIAL_1) || defined(PAKAI_SERIAL_2) || defined(PAKAI_SERIAL_3)
 	tinysh_add_command(&kirim_serial_cmd);

@@ -65,7 +65,7 @@ unsigned int paket_kita=0;
 	
 extern struct t_env env2;
 extern xTaskHandle hdl_ether;
-unsigned char datakeserver[512];
+unsigned char datakeserver[1024];
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -132,7 +132,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	webclient_init();
 	int kWnya = 3500;
 	printf("webclient inited !, kW: %d\r\n", kWnya);
-	int wclient = 0;
+	int wclient=0, jmlData=0;
+	char il[256], dl[512];
+	char ipdest[15];
+	
+	extern struct t_env env2;
+	sprintf(env2.berkas, "\/monita3\/monita_loket.php");
+	//printf("Jml Data : %d\r\n", jmlData);
+	
+	
+	
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -168,9 +177,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (wclient == 1000)	/* 30 detik */
 		{
 			wclient = 0;
-			sprintf(datakeserver, "/monita3/monita_loket.php?id_module=1&location=1&jml=2&id=243~456&data=1.234~%d", kWnya++);
-			webclient_get("192.168.1.75", 80, datakeserver);
-			//printf("GET mulai !\r\n");
+			jmlData=kirimModul(0, il, dl);
+			//printf("list idny: %s\r\n", il);	printf("list data: %s\r\n", dl);
+			sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+			//printf("kirim ke : %s\r\n", ipdest);
+			sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&il=%s&dl=%s", env2.berkas, env2.SN, jmlData, il, dl);
+			//printf("%s\r\n",datakeserver);
+			//webclient_get("192.168.1.75", 80, datakeserver);
+			webclient_get(ipdest, 80, datakeserver);
+			
+			// 
 		}
 		#endif
 		
@@ -328,7 +344,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 void start_ether(void)
 {	//8
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 12), \
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 18), \
 		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 

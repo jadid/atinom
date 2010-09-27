@@ -119,6 +119,21 @@ static void setenv_fnt(int argc, char **argv)
 			printf(" Nama board : %s\n", env2.nama_board);
 		}
 	}
+	else if (strcmp(argv[1], "SN") == 0)
+	{
+		printf(" set nama_board\r\n");
+		memset(env2.SN, 0, sizeof (env2.SN));
+		if (strlen(argv[2]) > sizeof (env2.SN))
+		{
+			printf("SN terlalu panjang !");
+			return;	
+		}
+		else
+		{
+			sprintf(env2.SN, "%s", argv[2]);
+			printf(" Nama board : %s\n", env2.SN);
+		}
+	}
 	else if (strcmp(argv[1], "kanal") == 0)
 	{
 		int kanal;
@@ -202,7 +217,7 @@ unsigned int baca_ip(char *ipne)
 	hasil = (unsigned int)((hasil  << 8) + bin);
 	
 	
-	printf(" Hasil IP = 0x%X = ", hasil);
+	//printf(" Hasil IP = 0x%X = ", hasil);
 	//cek hasil
 	/*
 	for (i = 3; i >= 0; i--)

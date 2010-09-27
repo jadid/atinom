@@ -21,7 +21,7 @@
 #define MONITA_UIP_H_
 
 #ifdef PAKAI_PM
-	#define JML_SUMBER	10
+	#define JML_SUMBER	2
 #else
 	#define JML_SUMBER	1
 #endif
@@ -82,6 +82,7 @@
 #define 	ISO_nl 			0x0a
 #define		PORT_KONTROL	7235
 #define		PORT_KIRIM_BALIK	6543
+#define		PORT_HTTP	80
 
 /* offset masing2 data pada array */
 #define OFFSET_CAP_L	1	- 1
@@ -186,7 +187,7 @@ sumber status :
 struct t_setting {
 	int id;
 	char status;		// tidak aktif, timeout, dll
-	char ket[16];
+	char ket[30];
 };
 
 struct t_sumber {

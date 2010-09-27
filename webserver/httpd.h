@@ -42,20 +42,13 @@ struct httpd_state {
   unsigned char timer;
   struct psock sin, sout;
   struct pt outputpt, scriptpt;
-  char inputbuf[80];	/* 50 */
+  char inputbuf[258];	/* 50 */
   char filename[512];	/* 20 */
   char state;
   struct httpd_fs_file file;
   int len;
   char *scriptptr;
-  int scriptlen;
-  
-#if 0
-	struct psock p;
-	char inputbuffer[10];
-	char name[40];
-#endif  
-  
+  int scriptlen;  
   unsigned short count;
 };
 

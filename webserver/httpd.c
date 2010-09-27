@@ -294,11 +294,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 		}
 
 		else if (strncmp(s->filename, "/setting", 8) == 0) {
-			printf(" Buat file setting: %s\r\n", s->filename);
+			//printf(" Buat file setting: %s\r\n", s->filename);
 			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
 				ganti_setting(s->filename);
 				buat_file_setting(1, s->filename);
-				//buat_file_setting(1);
 			} else {
 				buat_file_setting(0,"");
 			}

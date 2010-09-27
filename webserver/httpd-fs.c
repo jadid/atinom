@@ -244,7 +244,7 @@ httpd_fs_open(const char *name, struct httpd_fs_file *file)
   return 0;
 #endif
 	
-	file->len = 100;
+	file->len = 512;
 	
 	return 1;
 	

@@ -8,8 +8,17 @@ typedef void (*IAP)(unsigned int [],unsigned int[]);
 struct t_kalib {
 	float m;
 	float C;
-	char ket[64];
-	int id;
+	char ket[32];
+};
+
+struct t_webclient {
+	unsigned char IP0;
+	unsigned char IP1;
+	unsigned char IP2;
+	unsigned char IP3;
+	char hostname[32];
+	char berkas[32];
+	char status;		// status 0: default (pake IP), 1: pake IP.
 };
 
 struct t_env {
@@ -26,6 +35,8 @@ struct t_env {
 	int magic1;
 	int magic2;
 	int mmc_serial;
+	char SN[20];
+	char berkas[32];
 };
 
 void save_env(int argc, char **argv);

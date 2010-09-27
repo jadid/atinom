@@ -62,6 +62,7 @@
 
 #include <string.h>
 
+#define uchr unsigned char
 #define WEBCLIENT_TIMEOUT 100
 
 #define WEBCLIENT_STATE_STATUSLINE 0
@@ -107,15 +108,11 @@ webclient_port(void)
   return s.port;
 }
 /*-----------------------------------------------------------------------------------*/
-void
-webclient_init(void)
-{
+void webclient_init(void) {
 
 }
 /*-----------------------------------------------------------------------------------*/
-static void
-init_connection(void)
-{
+static void init_connection(void) {
   s.state = WEBCLIENT_STATE_STATUSLINE;
 
   s.getrequestleft = sizeof(http_get) - 1 + 1 +
@@ -136,6 +133,35 @@ webclient_close(void)
   s.state = WEBCLIENT_STATE_CLOSE;
 }
 /*-----------------------------------------------------------------------------------*/
+int kirimModul(int sumber, char *il, char *dl) {
+	char id[10], dt[10];
+	int i=0;
+	int jmlAktif=0;
+		
+	struct t_setting *konfig;
+	//int jmlData = (sizeof(data_f)/sizeof(float));
+	konfig = (char *) ALMT_KONFIG;
+		
+	strcpy(il,"&il=");
+	strcpy(dl,"&dl=");
+	for (i=0; i<PER_SUMBER; i++) {
+		if (konfig[i].status) {
+			jmlAktif++;
+			if (i==0) {
+				sprintf(id, "%d", konfig[i].id);
+				sprintf(dt, "%.2f", data_f[i]);
+			} else {
+				sprintf(id, "~%d", konfig[i].id);
+				sprintf(dt, "~%.2f", data_f[i]);
+			}
+			strcat(il,id);
+			strcat(dl,dt);
+			}
+	}
+	return jmlAktif;
+}
+
+/*-----------------------------------------------------------------------------------*/
 unsigned char
 webclient_get(char *host, u16_t port, char *file)
 {
@@ -145,10 +171,14 @@ webclient_get(char *host, u16_t port, char *file)
   
   //
   uip_ipaddr_t ip_modul;
-  uip_ipaddr(ip_modul, 192,168, 1, 75);
+	unsigned int ret_ip;
+	ret_ip = baca_ip(host);	
+
+	//printf("ip tujuan: %d.%d.%d.%d\r\n", (uchr)(ret_ip >> 24), (uchr)(ret_ip >> 16), (uchr)(ret_ip >> 8), (uchr)(ret_ip));
+  //uip_ipaddr(ip_modul, 192,168, 1, 75);
+  uip_ipaddr(ip_modul, (uchr)(ret_ip >> 24), (uchr)(ret_ip >> 16), (uchr)(ret_ip >> 8), (uchr)(ret_ip));
   //
   
-  //printf("%s(): %s, port %d, %s\r\n", __FUNCTION__,host, port, file);
   
   /* First check if the host is an IP address. */
   ipaddr = &addr; 
@@ -173,6 +203,9 @@ webclient_get(char *host, u16_t port, char *file)
   s.port = port;
   strncpy(s.file, file, sizeof(s.file));
   strncpy(s.host, host, sizeof(s.host));
+  
+  //printf("___%s(): %s, port %d, %s, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, file, sizeof(s.file));
+  printf("___%s(): %s, port %d, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, strlen(s.file), sizeof(s.file));
   
   init_connection();
   return 1;

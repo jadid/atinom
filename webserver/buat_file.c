@@ -20,6 +20,7 @@ extern struct t_env env2;
 #define BESAR_BUF_HTTP	8192
 unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+char ket[30];
 //#define		tot_buf	buffer
 
 
@@ -178,9 +179,104 @@ void buat_bottom(void) {
     strcat(tot_buf, head_buf);
 }
 
-void ganti_setting(char *isi) {
-	
+#define DIGANTI 1
+
+//int ganti(char* input);
+
+int ganti_karakter(char *dest, char *src) {
+	char *asli[] = {"+"};
+	char *pengganti[] = {" "};
+	char * pch;
+
+	int i=0, j=0, k=0;
+	for (j=0; src[j] != '\0'; ++j) {
+		dest[i] = src[j];
+
+		for (k=0; k<DIGANTI; k++) {
+			pch = strstr (dest,asli[k]);
+			
+			if (pch) {
+				strncpy (pch,pengganti[k],strlen(pengganti[k]));
+				strcat(dest, pengganti[k]);
+				i += strlen(pengganti[k])-strlen(asli[k]);
+			}
+		}
+		++i;
+	}
+	dest[i] = '\0';
 }
+
+void ganti_setting(char *str) {
+	printf("Data telah diubah: %s\r\n", str);
+	char tmp[30], kets[30];
+	
+	int nk=0, no=0, titik=0;
+	char * pch, *pch2, *ids, *ket, *stat;
+	pch=strchr(str,'?');
+
+	while(pch!=NULL) {
+		pch2 = pch;
+		pch2=strchr(pch2+1, '&');
+		
+		if ( (pch!=NULL)&&(pch2==NULL) ) {
+			pch2=strchr(pch, '\0');
+		}
+		nk = pch2-pch-1;
+		
+		strncpy(tmp, pch+1, nk);
+		tmp[nk]='\0';
+		
+		// Parsing ke tiap variabel ID, status, Ket yg bersesuaian 
+		if (strncmp(tmp, "i", 1)==0) {
+			ids = strchr(tmp,'i');
+			no = atoi(ids+1);
+			//printf("  no: %d\r\n", no);
+			
+			ids = strchr(tmp,'=');
+			titik = atoi(ids+1);
+			//printf("  id: %d\r\n", titik);
+		} 
+		if (strncmp(tmp, "k", 1)==0) {
+			ket = strchr(tmp,'=');
+			sprintf(kets, ket+1);
+			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+		}
+		if (strncmp(tmp, "s", 1)==0) {
+			stat = strchr(tmp,'=')+1;
+			//printf("  stat: %s, %d\r\n", stat);
+		}
+		pch=strchr(pch+1, '&');
+	}
+	
+	int jmlData = (sizeof(data_f)/sizeof(float));
+	struct t_setting *p_sbr;
+	//printf("Jml Data : %d\r\n", jmlData);
+	p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
+	
+	if (p_sbr == NULL)
+	{
+		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+		return -1;
+	}
+	//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+
+	portENTER_CRITICAL();
+	memcpy((char *) p_sbr, (char *) ALMT_KONFIG, (jmlData * sizeof (struct t_setting)));
+	portEXIT_CRITICAL();
+	
+	p_sbr[no-1].id = titik;
+	sprintf(p_sbr[no-1].ket, kets);
+	p_sbr[no-1].status = (atoi(stat))?1:0;
+	//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
+	
+	if (simpan_konfig( p_sbr ) < 0)
+	{
+		vPortFree( p_sbr );
+	}
+	vPortFree( p_sbr );
+}
+
+
 
 #if 0
 void buat_file_index(void) {
@@ -214,7 +310,7 @@ void buat_file_index(void) {
 	unsigned int cek_mesin;
 	float fl;
 	float temp_rpm;
-
+	
 	buat_head(1);
 						
 //#ifdef BOARD_TAMPILAN
@@ -340,14 +436,16 @@ void buat_file_index(void) {
 #ifdef BOARD_KOMON_420_SABANG
 #ifdef PAKAI_PM
 	int h=0;
-	extern float data [ (JML_SUMBER * PER_SUMBER) ];
+	struct t_setting *konfig;
+	konfig = (char *) ALMT_KONFIG;
+	
 	for (i=0; i< PER_SUMBER; i++)
 	{		
 
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%1.4f</td>\n", (i+1), data_f[i*PER_SUMBER+0]);
 		strcat(tot_buf, head_buf);
-		
-		sprintf(head_buf, "<td>%s</td>\n</tr>\n", env2.kalib[i].ket);		
+		ganti_karakter(ket, konfig[i].ket);
+		sprintf(head_buf, "<td>%s</td>\n</tr>\n", ket);		
 		strcat(tot_buf, head_buf);
 		/*
 		 printf("   kwh		: %.2f kWh\r\n", printf("   kwh		: %.2f kWh\r\n", data_f[i*PER_SUMBER+0]);		// 41
@@ -601,29 +699,44 @@ void buat_file_setting(unsigned int flag, char *kata)
 			sprintf(head_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>", kata);
 			//strcat(tot_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>");
 			strcat(tot_buf, head_buf);
+		} else {
+			strcat(tot_buf, "<br/>");
 		}
 		
 		strcat(tot_buf, "<h3>Info Kanal</h3>\n");
 		strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
 		strcat(tot_buf, "<col width = ""50px"">\n");		// Kanal
-		strcat(tot_buf, "<col width = ""50px"">\n");		// id
-		strcat(tot_buf, "<col width = ""200px"">\n");		// keterangan
+		strcat(tot_buf, "<col width = ""40px"">\n");		// id
+		strcat(tot_buf, "<col width = ""130px"">\n");		// keterangan
+		strcat(tot_buf, "<col width = ""130px"">\n");		// Status
 		strcat(tot_buf, "<col width = ""50x"">\n");			// Ubah
 
 		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
 		strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
 		strcat(tot_buf, "<th>ID Titik</th>\n");
 		strcat(tot_buf, "<th>Keterangan</th>\n");
-		strcat(tot_buf, "<th>Penggantian</th>\n");
+		strcat(tot_buf, "<th>Status</th>\n");
+		strcat(tot_buf, "<th>Ganti</th>\n");
+		
+		struct t_setting *konfig;
+		//int jmlData = (sizeof(data_f)/sizeof(float));
+		konfig = (char *) ALMT_KONFIG;
 		
 		for (i=0; i<PER_SUMBER; i++)
 		{
 			// Kanal, id & Keterangan
+			ganti_karakter(ket, konfig[i].ket);
+			
 			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
 							"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-							"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"50\"/></td>\n" \
+							"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"30\"/></td>\n" \
+							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-				i+1, i+1, i+1,  i+1, "Ket");
+				i+1, i+1, konfig[i].id, \
+				i+1, ket, \
+				i+1, (konfig[i].status?"checked":""), \
+				i+1, (konfig[i].status?"":"checked"));
 			strcat(tot_buf, head_buf);
 		}
 		

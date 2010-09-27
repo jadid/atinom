@@ -41,7 +41,11 @@
 //#define BOARD_KOMON_A_RTD
 
 #define BOARD_KOMON_420_SAJA
-#define VERSI_KOMON		"1.42"
+//#define BOARD_KOMON_420_SABANG
+#define VERSI_KOMON		"1.50"
+
+#define PAKAI_ADC
+#define CENDOL
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 

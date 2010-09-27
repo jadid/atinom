@@ -11,6 +11,7 @@
 	*/
 
 #include "../tinysh/enviro.h"
+#include "../adc/ad7708.h"
 
 #ifdef CENDOL
 //	#include "../tinysh/setting_eth.c" 
@@ -256,7 +257,7 @@ void ganti_setting(char *str) {
 	if (p_sbr == NULL)
 	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
-		return -1;
+		return;	// -1
 	}
 	//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
 
@@ -493,6 +494,7 @@ void buat_file_index(void) {
 #endif
 //*/
 #ifdef BOARD_KOMON_420_SAJA
+#ifdef PAKAI_ADC
 	/* data 4-20 mA */
 	for (i=0; i< 10; i++)
 	{		
@@ -509,6 +511,7 @@ void buat_file_index(void) {
 		strcat(tot_buf, head_buf);
 				
 	}
+#endif
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO

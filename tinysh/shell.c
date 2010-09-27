@@ -32,6 +32,7 @@
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA
+#include "utils.c"
 #include "../adc/command_adc.c"
 #include "set_kanal.c"
 #endif

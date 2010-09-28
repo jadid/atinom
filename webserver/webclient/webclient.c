@@ -63,7 +63,7 @@
 #include <string.h>
 
 #define uchr unsigned char
-#define WEBCLIENT_TIMEOUT 200
+#define WEBCLIENT_TIMEOUT 100
 
 #define WEBCLIENT_STATE_STATUSLINE 0
 #define WEBCLIENT_STATE_HEADERS    1
@@ -167,22 +167,19 @@ unsigned char
 webclient_get(char *host, u16_t port, char *file)
 {
   struct uip_conn *conn;
-  uip_ipaddr_t *ipaddr;
-  static uip_ipaddr_t addr;
+  //uip_ipaddr_t *ipaddr;
+  //static uip_ipaddr_t addr;
   int kali=0;
-  //
+
   uip_ipaddr_t ip_modul;
 	unsigned int ret_ip;
 	ret_ip = baca_ip(host);	
 
-	//printf("ip tujuan: %d.%d.%d.%d\r\n", (uchr)(ret_ip >> 24), (uchr)(ret_ip >> 16), (uchr)(ret_ip >> 8), (uchr)(ret_ip));
   //uip_ipaddr(ip_modul, 192,168, 1, 75);
   uip_ipaddr(ip_modul, (uchr)(ret_ip >> 24), (uchr)(ret_ip >> 16), (uchr)(ret_ip >> 8), (uchr)(ret_ip));
-  //
-  
-  
+
   /* First check if the host is an IP address. */
-  ipaddr = &addr; 
+  //ipaddr = &addr; 
   
   /*
   if(uiplib_ipaddrconv(host, (unsigned char *)addr) == 0) {

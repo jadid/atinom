@@ -63,7 +63,7 @@
 #include <string.h>
 
 #define uchr unsigned char
-#define WEBCLIENT_TIMEOUT 100
+#define WEBCLIENT_TIMEOUT 200
 
 #define WEBCLIENT_STATE_STATUSLINE 0
 #define WEBCLIENT_STATE_HEADERS    1
@@ -80,7 +80,8 @@
 #define ISO_cr       0x0d
 #define ISO_space    0x20
 
-
+int kirimURL=0;
+char terkirimURL=0;
 static struct webclient_state s;
 
 /*-----------------------------------------------------------------------------------*/
@@ -109,7 +110,7 @@ webclient_port(void)
 }
 /*-----------------------------------------------------------------------------------*/
 void webclient_init(void) {
-
+	kirimURL=0;
 }
 /*-----------------------------------------------------------------------------------*/
 static void init_connection(void) {
@@ -142,8 +143,8 @@ int kirimModul(int sumber, char *il, char *dl) {
 	//int jmlData = (sizeof(data_f)/sizeof(float));
 	konfig = (char *) ALMT_KONFIG;
 		
-	strcpy(il,"&il=");
-	strcpy(dl,"&dl=");
+	strcpy(il,"il=");
+	strcpy(dl,"dl=");
 	for (i=0; i<PER_SUMBER; i++) {
 		if (konfig[i].status) {
 			jmlAktif++;
@@ -168,7 +169,7 @@ webclient_get(char *host, u16_t port, char *file)
   struct uip_conn *conn;
   uip_ipaddr_t *ipaddr;
   static uip_ipaddr_t addr;
-  
+  int kali=0;
   //
   uip_ipaddr_t ip_modul;
 	unsigned int ret_ip;
@@ -192,22 +193,37 @@ webclient_get(char *host, u16_t port, char *file)
       return 0;
     }
   }*/
-  
-  //conn = uip_connect(ipaddr, htons(port));
+
   conn = uip_connect( ip_modul, htons(port));
-  
-  if(conn == NULL) {
-    return 0;
+  if (conn == NULL) {
+	  //s.timer = 0;
+	  return 0;
   }
+  /*
+  while(conn == NULL) {
+		
+		vTaskDelay(1);
+	  	kali++;
+	  	if (kali>50) {
+	  		printf("__________conn NULL\r\n");
+	  		s.timer = 0;
+	    	return 0;
+	    } else {
+			conn = uip_connect( ip_modul, htons(port));
+		}
+	}
+  //*/
   
   s.port = port;
   strncpy(s.file, file, sizeof(s.file));
   strncpy(s.host, host, sizeof(s.host));
   
   //printf("___%s(): %s, port %d, %s, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, file, sizeof(s.file));
-  printf("___%s(): %s, port %d, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, strlen(s.file), sizeof(s.file));
   
   init_connection();
+  
+  //printf("___%s(): %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
+  
   return 1;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -248,6 +264,8 @@ senddata(void)
       s.getrequestleft;
     uip_send(&(getrequest[s.getrequestptr]), len);
   }
+  terkirimURL=1;
+  printf("%s(): Terkirim\r\n", __FUNCTION__);
 }
 /*-----------------------------------------------------------------------------------*/
 static void
@@ -442,7 +460,7 @@ webclient_appcall(void)
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-     printf("%s(): Closed\r\n", __FUNCTION__);
+    //printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
@@ -460,17 +478,21 @@ webclient_appcall(void)
   if(uip_acked()) {
     s.timer = 0;
     acked();
+    //printf("%s(): Acked\r\n", __FUNCTION__);
   }
   if(uip_newdata()) {
     s.timer = 0;
     newdata();
+    //printf("%s(): New data\r\n", __FUNCTION__);
   }
   if(uip_rexmit() ||
      uip_newdata() ||
      uip_acked()) {
     senddata();
+    //printf("%s(): rexmit\r\n", __FUNCTION__);
   } else if(uip_poll()) {
     ++s.timer;
+    printf("%s(): uip_poll\r\n", __FUNCTION__);
     if(s.timer == WEBCLIENT_TIMEOUT) {
       //webclient_timedout();
 	  printf("%s(): Timeout 2\r\n", __FUNCTION__);

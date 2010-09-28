@@ -60,7 +60,7 @@ char kalibrasi_adc1(int fdy)
 		/* kalibrasi zero scale + CHCON */
 		set_mode(4 + 16);			
 		cek = cek_adccon();
-		//if (cek != temp_char) printf(" !%d ", cek); 
+		if (cek != temp_char) printf(" !%d ", cek); 
 		//serial_puts("tidak cocok");
 		
 		vTaskDelay(1);

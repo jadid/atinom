@@ -52,7 +52,8 @@ extern struct t_adc st_adc;
 #define PAKE_HTTP
 #endif
 
-#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_TAMPILAN
+#ifdef CARI_SUMBER
 #define PAKE_HTTP
 #endif
 
@@ -132,15 +133,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	webclient_init();
 	int kWnya = 3500;
 	printf("webclient inited !, kW: %d\r\n", kWnya);
-	int wclient=0, jmlData=0;
+	int wclient=0, jmlData=0, detik1=0;
 	char il[256], dl[512];
 	char ipdest[15];
 	
 	extern struct t_env env2;
 	sprintf(env2.berkas, "\/monita3\/monita_loket.php");
 	//printf("Jml Data : %d\r\n", jmlData);
-	
-	
+	extern int kirimURL;
+	extern char terkirimURL;
 	
 #endif
 
@@ -174,20 +175,36 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		#ifdef PAKAI_WEBCLIENT
 		wclient++;
-		if (wclient == 1000)	/* 30 detik */
-		{
+		if (wclient == 1000) {	
 			wclient = 0;
 			jmlData=kirimModul(0, il, dl);
-			//printf("list idny: %s\r\n", il);	printf("list data: %s\r\n", dl);
 			sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
-			//printf("kirim ke : %s\r\n", ipdest);
-			sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&il=%s&dl=%s", env2.berkas, env2.SN, jmlData, il, dl);
-			//printf("%s\r\n",datakeserver);
-			//webclient_get("192.168.1.75", 80, datakeserver);
+			sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", env2.berkas, env2.SN, jmlData, il, dl);
 			webclient_get(ipdest, 80, datakeserver);
-			
-			// 
+			kirimURL++;
+			printf("____Kirim : %d\r\n", kirimURL);
 		}
+
+/*
+		if (wclient == 250)	
+		{
+			if (detik1<4) {
+				detik1++;
+				if (!terkirimURL) {
+					wclient = 0;
+					jmlData=kirimModul(0, il, dl);
+					sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+					sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", env2.berkas, env2.SN, jmlData, il, dl);
+					webclient_get(ipdest, 80, datakeserver);
+					kirimURL++;
+					printf("____Kirim : %d\r\n", kirimURL);
+				}
+			} else {
+				detik1=0;
+				terkirimURL=0;
+			}
+		}
+//*/
 		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
@@ -326,18 +343,19 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				}
 		 }	// tanpa paket
 		 
-		 #ifdef BOARD_KOMON_A_RTD
-		 proses_data_adc();
-		 #endif
-		 
-		 #ifdef BOARD_KOMON_B_THERMO
-		 proses_data_adc();
-		 #endif
-		 
-		 #ifdef BOARD_KOMON_420_SAJA
-		 proses_data_adc();
-		 #endif
-
+		#ifdef PAKAI_ADC
+			#ifdef BOARD_KOMON_A_RTD
+			proses_data_adc();
+			#endif
+			 
+			#ifdef BOARD_KOMON_B_THERMO
+			proses_data_adc();
+			#endif
+			 
+			#ifdef BOARD_KOMON_420_SAJA
+			proses_data_adc();
+			#endif
+		#endif
 	}
 }
 

@@ -155,11 +155,20 @@ int baca_env(char tampil)
 			printf(env2.nama_board);
 			printf("\r\n IP Address = ");
 			printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+			printf(" No Seri    = ");
+			printf("%s\r\n", env2.SN);
+			
 			
 			// tampilkan GW address, pakai env2 sekalian buat ngetes
 			printf(" Gateway IP = ");
 			printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
 			
+			#ifdef PAKAI_WEBCLIENT
+				printf(" File       = ");
+				printf("%s\r\n", env2.berkas); 
+			#endif
+			
+			#ifdef PAKAI_ADC
 			if (tampil == 1)
 			{
 				printf(" Faktor kalibrasi (y = mx + C) :\r\n");
@@ -191,7 +200,8 @@ int baca_env(char tampil)
 					printf("  (%2d) %s\r\n", i+1, env2.kalib[i].ket);
 				}
 				printf("\n");
-			}			
+			}
+			#endif			
 			return 0;
 		}
 		else
@@ -246,3 +256,9 @@ void set_dafault_kalib(void)
 	} 
 
 }
+
+void set_dafault_env_lain(void) {
+	sprintf(env2.SN, "-");
+	sprintf(env2.berkas, "\/?");
+}
+

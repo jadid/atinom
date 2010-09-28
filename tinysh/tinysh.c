@@ -481,7 +481,7 @@ static void start_of_line()
 {
   /* display start of new line */
   puts(prompt);
-
+	// kayaknya disini
   if(cur_context)
     {
       puts(context_buffer);

@@ -51,7 +51,7 @@ static void setenv_fnt(int argc, char **argv)
 			{
 				printf(" set environment dengan data default !\n");
 				set_default_ip();
-				
+				set_dafault_env_lain();
 				return;
 			}	
 		}

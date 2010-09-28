@@ -26,15 +26,12 @@
 
 //#define CEK_BLINK
 
-#ifdef BOARD_KOMON_A_RTD
-#define LED_UTAMA	BIT(26)
-#endif
 
 #ifdef BOARD_KOMON_420_SAJA
 #define LED_UTAMA	BIT(27)
 #endif
 
-xSemaphoreHandle lcd_sem;
+//xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
 unsigned int idle_lama;
 unsigned int tot_idle;
@@ -44,9 +41,9 @@ static void sysInit(void);
 void init_led_utama(void);
 void init_spi_mmc(char min)	;
 
-xTaskHandle hdl_lcd;
+//xTaskHandle hdl_lcd;
 xTaskHandle hdl_led;
-xTaskHandle hdl_tampilan;
+//xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
@@ -92,11 +89,11 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
-
+/*
 #ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
-
+//*/
 	init_gpio_adc();
 	
 #ifdef BOARD_KOMON_420_SAJA
@@ -106,7 +103,7 @@ int main( void )
 
 #ifdef jalankan
 	init_led_utama();
-	start_ether();
+//	start_ether();
 	init_shell();
 
 	vTaskStartScheduler();

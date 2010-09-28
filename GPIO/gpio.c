@@ -225,6 +225,8 @@ void init_gpio_adc(void)
 	FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	
 		
 	portEXIT_CRITICAL();
+	
+	printf("Isi FIO1DIR: %08X, FIO2DIR: %08X\r\n", FIO1DIR, FIO2DIR);
 }
 #endif
 

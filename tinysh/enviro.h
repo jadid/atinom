@@ -37,7 +37,9 @@ struct t_env {
 	int mmc_serial;
 	char SN[20];
 	char berkas[32];
+	char statusWebClient;
 };
+
 
 void save_env(int argc, char **argv);
 void print_env(int argc, char **argv);

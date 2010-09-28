@@ -26,7 +26,8 @@
 	#include "setting_eth.c"
 #endif
 
-#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_TAMPILAN
+#ifdef CARI_SUMBER
 #include "mesin.c"
 #include "titik.c"
 #endif
@@ -306,7 +307,8 @@ void cek_stack(void)
 	printf(" Shell    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
 	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
-	#ifdef BOARD_TAMPILAN
+	//#ifdef BOARD_TAMPILAN
+	#ifdef CARI_SUMBER
 	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
 	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
@@ -334,7 +336,7 @@ void cek_versi(void)
 	printf("\n %s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
 	
   	printf(" ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
-  	printf(" CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
+  	printf(" CPU = LPC 2387, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\r\n");	
 }							 
 
@@ -599,7 +601,7 @@ portTASK_FUNCTION(shell, pvParameters )
   	printf("Daun Biru Engineering, Des 2008\r\n");
   	printf("=========================================\r\n");
   	printf("ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
-  	printf("CPU = LPC 2368, %d MHz,", configCPU_CLOCK_HZ/1000000);
+  	printf("CPU = LPC 2387, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\r\n");
 
 	if (configUSE_PREEMPTION == 0)
@@ -639,7 +641,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 
-#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_TAMPILAN
+#ifdef CARI_SUMBER
 	tinysh_add_command(&cek_sumber_cmd);
 	tinysh_add_command(&set_sumber_cmd);
 	tinysh_add_command(&cek_mesin_cmd);
@@ -754,7 +757,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 
-	#ifdef BOARD_TAMPILAN	
+	//#ifdef BOARD_TAMPILAN	
+	#ifdef CARI_SUMBER	
 	// cek ukuran struk
 	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);
 	printf("size struct Sumber = %d\r\n", sizeof (struct t_sumber) * JML_SUMBER);

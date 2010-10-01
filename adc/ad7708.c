@@ -275,8 +275,7 @@ unsigned char cek_adc_id(void)
 	//r = spiPut(0x00);
 	r = ambil_word();
 	uncs_ad7708();
-	
-	
+
 	return r;
 }
 void start_adc_1(int fdx)

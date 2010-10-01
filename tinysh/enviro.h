@@ -40,10 +40,12 @@ struct t_env {
 	char statusWebClient;
 };
 
+#define SEKTOR_ENV	24
+#define ALMT_ENV	0x7A000
 
 void save_env(int argc, char **argv);
 void print_env(int argc, char **argv);
 void set_default_ip(void);
 int baca_env(char tampil);
-
+int simpan_env( struct t_env *pgr);
 #endif

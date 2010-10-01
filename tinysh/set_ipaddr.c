@@ -2,6 +2,11 @@
 	setenv ipaddr
 	12 Des 2008
 	furkan jadid
+	 
+	diStandardkan cara penyimpan data 
+	Sekali set langsung tersimpan ke ROM
+	1 Okt 2010 -- Afrendy Bayu
+	
 	*/
 
 #include <stdio.h>
@@ -50,8 +55,9 @@ static void setenv_fnt(int argc, char **argv)
 			else if (strcmp(argv[1], "default") == 0)
 			{
 				printf(" set environment dengan data default !\n");
-				set_default_ip();
-				set_dafault_env_lain();
+				//set_default_ip();
+				//set_dafault_env_lain();
+				set_env_default();
 				return;
 			}	
 		}
@@ -65,13 +71,21 @@ static void setenv_fnt(int argc, char **argv)
 	garis_bawah();
   	display_args(argc,argv);
 	
+	struct t_env *p_sbr;
+	p_sbr = pvPortMalloc( sizeof (struct t_env) );
+	memcpy((char *) p_sbr, (char *) ALMT_ENV, (sizeof (struct t_env)));
+	
+	if (p_sbr == NULL) {
+		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+		return -1;
+	}
+	
 	unsigned char buf[24];
 	unsigned int ret_ip;
 	
-  	if (strcmp(argv[1], "ipaddr") == 0)
-  	{
+  	if (strcmp(argv[1], "ipaddr") == 0)  	{
 		printf(" set IP address\r\n");  
-		memset(buf, 0, sizeof (buf));
+		//memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
 		ret_ip = baca_ip(buf);
@@ -81,15 +95,11 @@ static void setenv_fnt(int argc, char **argv)
 		env2.IP2 = (unsigned char)(ret_ip >> 8);
 		env2.IP3 = (unsigned char)(ret_ip);
 		
-		printf("%d.", env2.IP0);
-		printf("%d.", env2.IP1);
-		printf("%d.", env2.IP2);
-		printf("%d\r\n", env2.IP3);
+		printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
 	}
-	else if (strcmp(argv[1], "gateway") == 0)
-  	{
+	else if (strcmp(argv[1], "gateway") == 0)  	{
 		printf(" set GATEWAY address\r\n");  
-		memset(buf, 0, sizeof (buf));
+		//memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
 		ret_ip = baca_ip(buf);
@@ -99,18 +109,16 @@ static void setenv_fnt(int argc, char **argv)
 		env2.GW2 = (unsigned char)(ret_ip >> 8);
 		env2.GW3 = (unsigned char)(ret_ip);
 		
-		printf("%d.", env2.GW0);
-		printf("%d.", env2.GW1);
-		printf("%d.", env2.GW2);
-		printf("%d\n", env2.GW3);
+		printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
 	}
-	else if (strcmp(argv[1], "nama") == 0)
-	{
+	else if (strcmp(argv[1], "nama") == 0)	{
 		printf(" set nama_board\r\n");
-		memset(env2.nama_board, 0, sizeof (env2.nama_board));
+		//memset(env2.nama_board, 0, sizeof (env2.nama_board));
+		
 		if (strlen(argv[2]) > sizeof (env2.nama_board))
 		{
 			printf("Nama board terlalu panjang !");
+			vPortFree( p_sbr );
 			return;	
 		}
 		else
@@ -118,14 +126,14 @@ static void setenv_fnt(int argc, char **argv)
 			sprintf(env2.nama_board, "%s", argv[2]);
 			printf(" Nama board : %s\n", env2.nama_board);
 		}
-	}
-	else if (strcmp(argv[1], "SN") == 0)
-	{
+	}	
+	else if (strcmp(argv[1], "SN") == 0)	{
 		printf(" set nama_board\r\n");
-		memset(env2.SN, 0, sizeof (env2.SN));
+		//memset(env2.SN, 0, sizeof (env2.SN));
 		if (strlen(argv[2]) > sizeof (env2.SN))
 		{
 			printf("SN terlalu panjang !");
+			vPortFree( p_sbr );
 			return;	
 		}
 		else
@@ -139,7 +147,7 @@ static void setenv_fnt(int argc, char **argv)
 		int kanal;
 		
 		printf(" set param kanal \r\n");
-		memset(buf, 0, sizeof (buf));
+		//memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
 		kanal = baca_kanal(buf);
@@ -154,19 +162,27 @@ static void setenv_fnt(int argc, char **argv)
 				if (strlen(argv[4]) > env2.kalib[kanal-1].ket)
 				{
 					printf(" terlalu panjang\n");
+					vPortFree( p_sbr );
 					return;	
 				}
 				sprintf(env2.kalib[kanal-1].ket, "%s", argv[4]);
 				printf(" %s\n", env2.kalib[kanal-1].ket); 	
 			}
 		}
-		else if (kanal == 0 || kanal > 20)
+		else if (kanal == 0 || kanal > 20) {
+			vPortFree( p_sbr );
 			printf(" kanal %d diluar range !\r\n");
-		else
+		} else {
+			vPortFree( p_sbr );
 			printf(" format kanal salah !\r\n");
-		
+		}
 	}
 	
+	if (simpan_env( p_sbr ) < 0) {
+		vPortFree( p_sbr );
+		return -1;
+	}
+	vPortFree( p_sbr );
 		
 	return;
   

@@ -151,21 +151,19 @@ int baca_env(char tampil)
 	{
 		if (ev->magic2 == 0x77)
 		{			
-			printf(" Nama board = ");
-			printf(env2.nama_board);
-			printf("\r\n IP Address = ");
-			printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
-			printf(" No Seri    = ");
-			printf("%s\r\n", env2.SN);
-			
+			struct t_env *env2;
+			env2 = (char *) ALMT_ENV;
+	
+			printf(" Nama board = "); 	printf("%s\r\n",env2->nama_board);
+			printf(" No Seri    = ");	printf("%s\r\n", env2->SN);
+			printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 			
 			// tampilkan GW address, pakai env2 sekalian buat ngetes
-			printf(" Gateway IP = ");
-			printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
+			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
 			
 			#ifdef PAKAI_WEBCLIENT
 				printf(" File       = ");
-				printf("%s\r\n", env2.berkas); 
+				printf("%s\r\n", env2->berkas); 
 			#endif
 			
 			#ifdef PAKAI_ADC
@@ -189,15 +187,15 @@ int baca_env(char tampil)
 				
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) m = %3.3f, C = %3.3f", i+1, env2.kalib[i].m, env2.kalib[i].C);
+					printf("  (%2d) m = %3.3f, C = %3.3f", i+1, env2[0].kalib[i].m, env2[0].kalib[i].C);
 					i++;
-					printf("  (%2d) m = %3.3f, C = %3.3f\r\n", i+1, env2.kalib[i].m, env2.kalib[i].C);
+					printf("  (%2d) m = %3.3f, C = %3.3f\r\n", i+1, env2[0].kalib[i].m, env2[0].kalib[i].C);
 				}
 				
 				printf(" Keterangan kanal :\r\n");
 				for (i=0; i<20; i++)
 				{
-					printf("  (%2d) %s\r\n", i+1, env2.kalib[i].ket);
+					printf("  (%2d) %s\r\n", i+1, env2[0].kalib[i].ket);
 				}
 				printf("\n");
 			}
@@ -220,45 +218,109 @@ int baca_env(char tampil)
 		return -1;
 	}
 }
-
+/*
 void set_default_ip(void)
 {
 	int i;	
-
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
 	printf(" Default IP = ");	
-	env2.IP0 = 192;
-	env2.IP1 = 168;
-	env2.IP2 = 1;
-	env2.IP3 = 250;	
-	printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+	env2[0].IP0 = 192;
+	env2[0].IP1 = 168;
+	env2[0].IP2 = 1;
+	env2[0].IP3 = 250;	
+	printf("%d.%d.%d.%d\r\n", env2[0].IP0, env2[0].IP1, env2[0].IP2, env2[0].IP3);
 	
 	printf(" Default GW = ");	
-	env2.GW0 = 192;
-	env2.GW1 = 168;
-	env2.GW2 = 1;
-	env2.GW3 = 13;
-	printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+	env2[0].GW0 = 192;
+	env2[0].GW1 = 168;
+	env2[0].GW2 = 1;
+	env2[0].GW3 = 13;
+	printf("%d.%d.%d.%d\r\n", env2[0].GW0, env2[0].GW1, env2[0].GW2, env2[0].GW3);
 
 	set_dafault_kalib();
 
-	sprintf(env2.nama_board, "Gantilah namanya !");
+	sprintf(env2[0].nama_board, "Gantilah namanya !");
 }
 
 void set_dafault_kalib(void)
 {
 	int i;
-	
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
 	for (i=0; i<20; i++)
 	{
-		env2.kalib[i].m = 1.00;
-		env2.kalib[i].C = 0.00;
-		sprintf(env2.kalib[i].ket, "--");
+		env2[0].kalib[i].m = 1.00;
+		env2[0].kalib[i].C = 0.00;
+		sprintf(env2[0].kalib[i].ket, "--");
 	} 
 
 }
 
 void set_dafault_env_lain(void) {
-	sprintf(env2.SN, "-");
-	sprintf(env2.berkas, "\/?");
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+	sprintf(env2->SN, "-");
+	sprintf(env2->berkas, "/?");
+}
+//*/
+
+
+void set_env_default() {
+	int i;
+	struct t_env *env2;
+	env2 = pvPortMalloc( sizeof (struct t_env) );
+	memcpy((char *) env2, (char *) ALMT_ENV, (sizeof (struct t_env)));
+	
+	if (env2 == NULL) {
+		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+		return -1;
+	}
+	
+	env2->magic1 = 0xAA;
+	env2->magic2 = 0x77;
+	sprintf(env2->SN, "-");
+	sprintf(env2->berkas, "/?");
+	for (i=0; i<20; i++) {
+		env2->kalib[i].m = 1.00;
+		env2->kalib[i].C = 0.00;
+		sprintf(env2->kalib[i].ket, "--");
+	}
+	sprintf(env2->nama_board, "Gantilah namanya !");
+	env2->IP0 = 192;
+	env2->IP1 = 168;
+	env2->IP2 = 1;
+	env2->IP3 = 250;
+	
+	env2->GW0 = 192;
+	env2->GW1 = 168;
+	env2->GW2 = 1;
+	env2->GW3 = 13;
+	
+	env2->statusWebClient = 0;
+	
+	if (simpan_env( env2 ) < 0) {
+		vPortFree( env2 );
+		return -1;
+	}
+	vPortFree( env2 );
+	
+	return;
 }
 
+int simpan_env( struct t_env *pgr) {
+	printf(" Save struct ENV ke flash ..");
+	if(prepare_flash(SEKTOR_ENV, SEKTOR_ENV)) return -1;
+	printf("..");
+	
+	if(hapus_flash(SEKTOR_ENV, SEKTOR_ENV)) return -1;
+	printf("..");
+	
+	if(prepare_flash(SEKTOR_ENV, SEKTOR_ENV)) return -1;
+	printf("..");
+	
+	if(tulis_flash(ALMT_ENV, (unsigned short *) pgr, (sizeof (struct t_env) * 1))) return -1;
+	
+	printf(".. OK\r\n");
+	return 0;
+}

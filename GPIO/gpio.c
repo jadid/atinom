@@ -218,15 +218,13 @@ void init_gpio_adc(void)
 	
 	/* GPIO CS diset output */
 	FIO1DIR = FIO1DIR | port_cs_ad7708;
+	/* port 2, nanti ganti ke mode interrupt */
+	FIO2DIR = FIO2DIR & ~port_rdy_ad7708;
 	
 	uncs_ad7708();
 	
-	/* port 2, nanti ganti ke mode interrupt */
-	FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	
-		
-	portEXIT_CRITICAL();
 	
-	printf("Isi FIO1DIR: %08X, FIO2DIR: %08X\r\n", FIO1DIR, FIO2DIR);
+	//portEXIT_CRITICAL();
 }
 #endif
 

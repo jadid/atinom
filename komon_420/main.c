@@ -28,10 +28,9 @@
 
 
 #ifdef BOARD_KOMON_420_SAJA
-#define LED_UTAMA	BIT(27)
+	#define LED_UTAMA	BIT(27)
 #endif
 
-//xSemaphoreHandle lcd_sem;
 unsigned int loop_idle=0;
 unsigned int idle_lama;
 unsigned int tot_idle;
@@ -41,14 +40,14 @@ static void sysInit(void);
 void init_led_utama(void);
 void init_spi_mmc(char min)	;
 
-//xTaskHandle hdl_lcd;
+
 xTaskHandle hdl_led;
-//xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
-void dele(int dd)
-{
+
+#ifdef CEK_BLINK
+void dele(int dd) {
 	int g;
 	int i;
 	int dum;
@@ -58,7 +57,7 @@ void dele(int dd)
 		dum = FIO0DIR;
 	}
 }
-
+#endif
 
 /*-----------------------------------------------------------*/
 #define jalankan
@@ -89,13 +88,9 @@ int main( void )
 #endif
 
 	xSerialPortInitMinimal( BAUD_RATE, configMINIMAL_STACK_SIZE  );
-/*
-#ifdef BOARD_KOMON_KONTER
-	init_gpio();
-#endif
-//*/
+
 	init_gpio_adc();
-	
+	init_gpio_mmc();
 #ifdef BOARD_KOMON_420_SAJA
 	/* init spi #1 untuk adc & MMC */
 	init_spi_mmc(0);
@@ -103,13 +98,11 @@ int main( void )
 
 #ifdef jalankan
 	init_led_utama();
-//	start_ether();
+	//start_ether();
 	init_shell();
-
 	vTaskStartScheduler();
 
-    /* Will only get here if there was insufficient memory to create the idle
-    task. */
+    /* Will only get here if there was insufficient memory to create the idle task. */
 	return 0;
 #endif
 }
@@ -127,11 +120,6 @@ void togle_led_utama(void)
 		
 		/* reset wdog setiap detik */
 		tendang_wdog();
-		
-		#ifdef BOARD_KOMON_KONTER
-		/* tiap detik cek apakah rpm mati */
-		cek_gpio_lama();
-		#endif
 	}
 	else
 	{
@@ -140,8 +128,7 @@ void togle_led_utama(void)
 	}
 }
 
-static portTASK_FUNCTION(task_led2, pvParameters )
-{
+static portTASK_FUNCTION(task_led2, pvParameters ) {
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;

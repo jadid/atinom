@@ -103,15 +103,9 @@ THUMB_SOURCE= \
 		../webserver/httpd-cgi.c \
 		../system/idle_hook.c \
 		../adc/ad7708.c	\
+		../adc/tes_adc.c \
 		../uip/apps/telnetd/telnetd.c	\
 		../spi/low_ss1.c	\
-
-#		LCD/lcd_320.c \
-#		tampilan.c \
-#		LCD/menu_monita.c \
-#		LCD/menu_popup.c \
-
-
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

@@ -33,9 +33,9 @@
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA
-#include "utils.c"
 #include "../adc/command_adc.c"
 #include "set_kanal.c"
+#include "utils.c"
 #endif
 
 #ifdef  BOARD_KOMON_420_SABANG
@@ -96,12 +96,13 @@ extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
+extern struct t_env env2;
 
 #ifdef PAKAI_SELENOID
 	extern xTaskHandle *hdl_relay;
 #endif
 
-
+char str[20];
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -808,7 +809,9 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_date_cmd);
 	#endif
 	
-	tinysh_set_prompt( PROMPT );
+	sprintf(str,"%s%d$ ", PROMPT, ( env2.IP3));
+	tinysh_set_prompt(str);
+	//tinysh_set_prompt( PROMPT );
 	/* force untuk tampil prompt */
 	tinysh_char_in('\r');
 	
@@ -819,22 +822,22 @@ portTASK_FUNCTION(shell, pvParameters )
   	int lop = 0;
   	while(1)
     {
-		vTaskDelay(40);
+		vTaskDelay(1);
 	  lop++;
-	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)
+	  if (xSerialGetChar(1, &c, 100 ) == pdTRUE)
 	  {
 			lop = 0;
 			tinysh_char_in((unsigned char)c);
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 60)
+	  if (lop > 600)
 	  {
 			lop = 0;
 			printf("\r\nPasswd lock!\r\n");
 			while(1)
 			{
-				if (xSerialGetChar(1, &c, 1000) == pdTRUE)
+				if (xSerialGetChar(1, &c, 100) == pdTRUE)
 				{
 					if (proses_passwd( &c ) == 1) break;
 				}
@@ -843,8 +846,40 @@ portTASK_FUNCTION(shell, pvParameters )
 						proses_simpan_file();
 					#endif
 				#endif
+				
+				
+				#ifdef PAKAI_ADC
+					#ifdef BOARD_KOMON_A_RTD
+					proses_data_adc();
+					#endif
+					 
+					#ifdef BOARD_KOMON_B_THERMO
+					proses_data_adc();
+					#endif
+					 
+					#ifdef BOARD_KOMON_420_SAJA
+					proses_data_adc();
+					#endif
+				#endif
+				
+				
 			}
 	  }
+	  
+		// pembacaaan ADC dipindah dari task eth ke shell 1 Okt 2010.
+		#ifdef PAKAI_ADC
+			#ifdef BOARD_KOMON_A_RTD
+				proses_data_adc();
+			#endif
+		 
+			#ifdef BOARD_KOMON_B_THERMO
+				proses_data_adc();
+			#endif
+				 
+			#ifdef BOARD_KOMON_420_SAJA
+				proses_data_adc();
+			#endif
+		#endif
 	  
 	  #ifdef PAKAI_MMC
 		  #if (PAKAI_FILE_SIMPAN == 1)

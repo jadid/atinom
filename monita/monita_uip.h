@@ -36,6 +36,9 @@
 	#define PER_SUMBER	20
 #endif
 
+//#define SEKTOR_ENV	24
+//#define ALMT_ENV	0x7A000
+
 #ifdef PAKAI_FILE_SIMPAN
 	#define SEKTOR_SFILE	24
 	#define ALMT_SFILE		0x7A000

@@ -718,7 +718,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 		strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
 		strcat(tot_buf, "<th>ID Titik</th>\n");
 		strcat(tot_buf, "<th>Keterangan</th>\n");
-		strcat(tot_buf, "<th>Status</th>\n");
+		strcat(tot_buf, "<th>Status Kirim</th>\n");
 		strcat(tot_buf, "<th>Ganti</th>\n");
 		
 		struct t_setting *konfig;

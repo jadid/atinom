@@ -80,7 +80,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	vTaskDelay(200);
 	
-	
+	for (;;)
+	{
+		vTaskDelay(10);
+	}
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
 	printf("UIP : uip_init\r\n");
@@ -116,7 +119,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
     printf("MONITA : monita init\r\n");
     monita_init();
 #endif
-
+	
+	
 #if (PAKAI_KONTROL == 1)
 	printf("MONITA : monita kontrol init\r\n");
 	kontrol_init();
@@ -168,6 +172,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	#ifdef BOARD_KOMON_420_SABANG
 	vTaskDelay(200);
 	#endif
+	
+	
+	
+	
 	for (;;)
 	{
 		vTaskDelay(1);

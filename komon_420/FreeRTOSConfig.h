@@ -52,7 +52,7 @@
 #define _printf	printf2
 #define printf	printf2
 
-#define PROMPT 		"Komon_420 $ "
+#define PROMPT 		"Komon_420@"
 #define NAMA_BOARD	"Babelan Komon-420 (4-20mA Saja)"
 
 /*-----------------------------------------------------------

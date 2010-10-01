@@ -7,7 +7,7 @@
 	
 	*/
 
-extern unsigned int kanal_aktif;
+//extern unsigned int kanal_aktif;
 
 #define false	0
 #define true	1
@@ -21,28 +21,28 @@ char kalibrasi_adc1(int fdy)
 	int loop;
 	int loop_full_calib;
 	
-	//unsigned char kanal_aktif;
 	unsigned char temp_char;
 	unsigned char cek;
-	unsigned int mask;
+	//unsigned int mask;
 	
 	printf("Start calibrating ADC");
 
 	stop_adc();
 	set_calibrated(0);
-	vTaskDelay(100);
+	vTaskDelay(200);
 	reset_adc();
-	vTaskDelay(100);
+	vTaskDelay(200);
 	
 	//cek ID
-	cek = cek_adc_id();
+	cek = cek_adc_id();	
 	printf(" id = 0x%X \n", cek);
 	
 	vTaskDelay(10);
 	set_iocon(0x00);
 	er = 0;
 	ada_adc_1 = false;
-
+	
+	//*
 	for (t=0; t<10; t++)
 	{
 		temp_char = (unsigned char) ((er << 4) + 15);		// 0x0F
@@ -57,7 +57,7 @@ char kalibrasi_adc1(int fdy)
 	   	loop_ulang++;
 		set_adccon(temp_char);
 		
-		/* kalibrasi zero scale + CHCON */
+		// kalibrasi zero scale + CHCON //
 		set_mode(4 + 16);			
 		cek = cek_adccon();
 		if (cek != temp_char) printf(" !%d ", cek); 
@@ -91,18 +91,15 @@ char kalibrasi_adc1(int fdy)
 			printf(" try = %d (OK)\n", loop);
 			ada_adc_1 = true;
 		}
-		/*
-		if (ada_adc_1 == false) 
-		{
-			printf("tidak terdapat ADC");
 
-			return 1;
-		   	//break;
-		}
-		*/
+		//if (ada_adc_1 == false) 		{
+		//	printf("tidak terdapat ADC");
+		//	return 1;
+		//}
+
 		er++;
 	}
-	
+	//*/
 	if (ada_adc_1 == true)
 	{
 		set_filter((unsigned char) rate_7708);
@@ -119,6 +116,7 @@ char kalibrasi_adc1(int fdy)
 	else
 	{
 		set_calibrated(0);
+		printf("__ADC tidak dikenali__\r\n");
 		return 0;
 	}
 }

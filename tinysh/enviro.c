@@ -205,16 +205,16 @@ int baca_env(char tampil)
 		else
 		{
 			printf(" Magic number2 salah !\r\n");
-			set_default_ip();
-			
+			//set_default_ip();
+			set_env_default();
 			return -1;
 		}
 	}
 	else
 	{
 		printf(" Magic number1 salah !\r\n");		
-		set_default_ip();
-		
+		//set_default_ip();
+		set_env_default();
 		return -1;
 	}
 }

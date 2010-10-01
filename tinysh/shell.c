@@ -110,10 +110,10 @@ char str[20];
 #define per_oflow (0xFFFFFFFF * 0.050) / (1000 * 1000 * 60)
 #define per_tik		0.050 / (1000 * 1000 * 60)
 
-
+/*
 static tinysh_cmd_t save_env_cmd={0,"save_env","menyimpan environment","[args]",
                               save_env,0,0,0};
-							  
+//*/						  
 static tinysh_cmd_t printenv_cmd={0,"cek_env","menampilkan environment","[args]",
                               print_env,0,0,0};
 							  
@@ -631,7 +631,7 @@ portTASK_FUNCTION(shell, pvParameters )
   	//tinysh_add_command(&myfoocmd);
   	tinysh_add_command(&printenv_cmd);
 	tinysh_add_command(&setenv_cmd);
-	tinysh_add_command(&save_env_cmd);
+//	tinysh_add_command(&save_env_cmd);
 	tinysh_add_command(&reset_cmd);
 	tinysh_add_command(&cek_stack_cmd);
 	tinysh_add_command(&uptime_cmd);

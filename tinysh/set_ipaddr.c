@@ -14,7 +14,7 @@
 
 #define pengali	10
 
-extern struct t_env env2;
+//extern struct t_env env2;
 
 void display_args(int argc, char **argv);
 unsigned int baca_ip(char *ipne);
@@ -52,8 +52,7 @@ static void setenv_fnt(int argc, char **argv)
 				 
 				return;
 			} 
-			else if (strcmp(argv[1], "default") == 0)
-			{
+			else if (strcmp(argv[1], "default") == 0)			{
 				printf(" set environment dengan data default !\n");
 				//set_default_ip();
 				//set_dafault_env_lain();
@@ -90,12 +89,12 @@ static void setenv_fnt(int argc, char **argv)
 		
 		ret_ip = baca_ip(buf);
 		
-		env2.IP0 = (unsigned char)(ret_ip >> 24);
-		env2.IP1 = (unsigned char)(ret_ip >> 16);
-		env2.IP2 = (unsigned char)(ret_ip >> 8);
-		env2.IP3 = (unsigned char)(ret_ip);
+		p_sbr->IP0 = (unsigned char)(ret_ip >> 24);
+		p_sbr->IP1 = (unsigned char)(ret_ip >> 16);
+		p_sbr->IP2 = (unsigned char)(ret_ip >> 8);
+		p_sbr->IP3 = (unsigned char)(ret_ip);
 		
-		printf("%d.%d.%d.%d\r\n", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+		printf("%d.%d.%d.%d\r\n", p_sbr->IP0, p_sbr->IP1, p_sbr->IP2, p_sbr->IP3);
 	}
 	else if (strcmp(argv[1], "gateway") == 0)  	{
 		printf(" set GATEWAY address\r\n");  
@@ -104,18 +103,18 @@ static void setenv_fnt(int argc, char **argv)
 		
 		ret_ip = baca_ip(buf);
 		
-		env2.GW0 = (unsigned char)(ret_ip >> 24);
-		env2.GW1 = (unsigned char)(ret_ip >> 16);
-		env2.GW2 = (unsigned char)(ret_ip >> 8);
-		env2.GW3 = (unsigned char)(ret_ip);
+		p_sbr->GW0 = (unsigned char)(ret_ip >> 24);
+		p_sbr->GW1 = (unsigned char)(ret_ip >> 16);
+		p_sbr->GW2 = (unsigned char)(ret_ip >> 8);
+		p_sbr->GW3 = (unsigned char)(ret_ip);
 		
-		printf("%d.%d.%d.%d\r\n", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+		printf("%d.%d.%d.%d\r\n", p_sbr->GW0, p_sbr->GW1, p_sbr->GW2, p_sbr->GW3);
 	}
 	else if (strcmp(argv[1], "nama") == 0)	{
 		printf(" set nama_board\r\n");
 		//memset(env2.nama_board, 0, sizeof (env2.nama_board));
 		
-		if (strlen(argv[2]) > sizeof (env2.nama_board))
+		if (strlen(argv[2]) > sizeof (p_sbr->nama_board))
 		{
 			printf("Nama board terlalu panjang !");
 			vPortFree( p_sbr );
@@ -123,14 +122,14 @@ static void setenv_fnt(int argc, char **argv)
 		}
 		else
 		{
-			sprintf(env2.nama_board, "%s", argv[2]);
-			printf(" Nama board : %s\n", env2.nama_board);
+			sprintf(p_sbr->nama_board, "%s", argv[2]);
+			printf(" Nama board : %s\n", p_sbr->nama_board);
 		}
 	}	
 	else if (strcmp(argv[1], "SN") == 0)	{
 		printf(" set nama_board\r\n");
 		//memset(env2.SN, 0, sizeof (env2.SN));
-		if (strlen(argv[2]) > sizeof (env2.SN))
+		if (strlen(argv[2]) > sizeof (p_sbr->SN))
 		{
 			printf("SN terlalu panjang !");
 			vPortFree( p_sbr );
@@ -138,8 +137,8 @@ static void setenv_fnt(int argc, char **argv)
 		}
 		else
 		{
-			sprintf(env2.SN, "%s", argv[2]);
-			printf(" Nama board : %s\n", env2.SN);
+			sprintf(p_sbr->SN, "%s", argv[2]);
+			printf(" Nama board : %s\n", p_sbr->SN);
 		}
 	}
 	else if (strcmp(argv[1], "kanal") == 0)
@@ -159,14 +158,14 @@ static void setenv_fnt(int argc, char **argv)
 			if (strcmp(argv[3], "ket") == 0)
 			{
 				printf(" keterangan kanal :");
-				if (strlen(argv[4]) > env2.kalib[kanal-1].ket)
+				if (strlen(argv[4]) > p_sbr->kalib[kanal-1].ket)
 				{
 					printf(" terlalu panjang\n");
 					vPortFree( p_sbr );
 					return;	
 				}
-				sprintf(env2.kalib[kanal-1].ket, "%s", argv[4]);
-				printf(" %s\n", env2.kalib[kanal-1].ket); 	
+				sprintf(p_sbr->kalib[kanal-1].ket, "%s", argv[4]);
+				printf(" %s\n", p_sbr->kalib[kanal-1].ket); 	
 			}
 		}
 		else if (kanal == 0 || kanal > 20) {

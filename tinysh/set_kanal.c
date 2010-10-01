@@ -48,14 +48,23 @@ void set_kanal(int argc, char **argv)
 			else if (strcmp(argv[1], "default") == 0)
 			{
 				printf("set kanal dengan data default !\n");
-				set_dafault_kalib();
-				
+				//set_dafault_kalib();
+				set_env_default();
 				return;
 			}	
 		}
 		printf(" ERR: argument kurang !\r\n");
 		printf(" coba set_kanal help \r\n");
 		return;	
+	}
+	
+	struct t_env *p_sbr;
+	p_sbr = pvPortMalloc( sizeof (struct t_env) );
+	memcpy((char *) p_sbr, (char *) ALMT_ENV, (sizeof (struct t_env)));
+	
+	if (p_sbr == NULL) {
+		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+		return -1;
 	}
 	
 	printf(" set_kanal untuk kanal %s dipanggil\r\n", argv[1]);
@@ -67,6 +76,7 @@ void set_kanal(int argc, char **argv)
 	
 	if (kanal > 10 || ret == NULL) 
 	{
+		vPortFree( p_sbr );
 		printf(" Err kanal !\r\n");
 		return ;
 	}
@@ -74,8 +84,8 @@ void set_kanal(int argc, char **argv)
 	if (strcmp(argv[2], "ket") == 0)
   	{
   		printf(" Setting keterangan kanal %d :\r\n", kanal);
-  		sprintf(env2.kalib[kanal-1].ket, "%s", argv[3]);
-  		printf(" %s", env2.kalib[kanal-1].ket);
+  		sprintf(p_sbr->kalib[kanal-1].ket, "%s", argv[3]);
+  		printf(" %s", p_sbr->kalib[kanal-1].ket);
   	}
   	else
   	{
@@ -85,6 +95,7 @@ void set_kanal(int argc, char **argv)
 		if (ret == NULL) 
 		{
 			printf(" Err m !\r\n"); 
+			vPortFree( p_sbr );
 			return ;
 		}
 	
@@ -94,14 +105,21 @@ void set_kanal(int argc, char **argv)
 		if (ret == NULL) 
 		{
 			printf(" Err C !\r\n"); 
+			vPortFree( p_sbr );
 			return ;
 		}
 	
 		printf(" Seting kanal %d, m = %f, dan C = %f\r\n", kanal, m, c);
-		env2.kalib[kanal - 1].m = m;
-		env2.kalib[kanal - 1].C = c;
+		p_sbr->kalib[kanal - 1].m = m;
+		p_sbr->kalib[kanal - 1].C = c;
 		
 	}
+	
+	if (simpan_env( p_sbr ) < 0) {
+		vPortFree( p_sbr );
+		return -1;
+	}
+	vPortFree( p_sbr );
 }
 
 static tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help",

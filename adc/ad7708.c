@@ -12,7 +12,10 @@
 #include "ad7708.h"
 #include <math.h>
 #include "../tinysh/enviro.h"
-extern struct t_env env2;
+//extern struct t_env env2;
+
+struct t_env *env2;
+//env2 = (char *) ALMT_ENV;
 
 static unsigned int kalibrated;
 struct t_adc st_adc;
@@ -454,7 +457,8 @@ void hitung_data_float(void)
 		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
 				
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			}
+		//st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;		
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;			}
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
@@ -465,7 +469,8 @@ void hitung_data_float(void)
 		temp_rpm = st_adc.data[i] * faktor_pengali_RTD / 0xffff;
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;				
+		//st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;				
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;				
 	}
 	
 	/* data 4-20 mA */
@@ -475,7 +480,8 @@ void hitung_data_float(void)
 		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+		//st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;			
 	}
 #endif
 
@@ -488,7 +494,8 @@ void hitung_data_float(void)
 		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+		//st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;			
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;			
 	}
 #endif
 }

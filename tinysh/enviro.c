@@ -13,7 +13,7 @@
 #include "task.h"
 
 // kalau ditaruh di ethram, nulisnya jadi error
-struct t_env env2;
+//struct t_env env2;
 
 unsigned int command[5]; 	// For Command Table
 unsigned int result[2]; 	// For Result Table
@@ -49,6 +49,7 @@ void save_env(int argc, char **argv)
 
 int tulis_env(void)
 {
+/*
 	int i;
 	
 	env2.magic1 = 0xAA;
@@ -122,6 +123,7 @@ int tulis_env(void)
 			return;
 		}
 		printf(".. OK");
+//*/
 }
 
 void tulis_env_flash(struct t_env *ev)
@@ -144,7 +146,7 @@ int baca_env(char tampil)
 	{
 		/* pada saat awal start, pasti akses ini dulu */
 		ev = (struct t_env *) 0x7A000;
-		memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
+		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
 	if (ev->magic1 == 0xAA)

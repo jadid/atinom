@@ -64,12 +64,17 @@ extern struct t_adc st_adc;
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
 	
-extern struct t_env env2;
+
+			
 extern xTaskHandle hdl_ether;
-unsigned char datakeserver[1024];
+unsigned char datakeserver[512];
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
+	struct t_env *envx;
+	envx = (char *) ALMT_ENV;
+
+	
 	portBASE_TYPE xARPTimer;
 	uip_ipaddr_t xIPAddr;
 	int loop;
@@ -80,27 +85,30 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	vTaskDelay(200);
 	
-	for (;;)
-	{
-		vTaskDelay(10);
-	}
+	
+	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
 	printf("UIP : uip_init\r\n");
+	
+	
+	
 	uip_init ();
 	
 	//uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
-	uip_ipaddr( xIPAddr, env2.IP0, env2.IP1, env2.IP2, env2.IP3 );
+	uip_ipaddr( xIPAddr, envx->IP0, envx->IP1, envx->IP2, envx->IP3 );
 	uip_sethostaddr( xIPAddr );
 
 	printf("ARP : arp_init\r\n");
 	uip_arp_init ();
-
+	
+	
+	
 	printf("Init ENC28J .. ");
 
 	if (enc28j60Init() == 1)
 	{
-		 printf(" .. OK\r\n");
+		 printf(" .. ENC OK\r\n");
 	}
 	else
 		printf("ENC tidak respons !\r\n");
@@ -119,7 +127,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
     printf("MONITA : monita init\r\n");
     monita_init();
 #endif
-	
 	
 #if (PAKAI_KONTROL == 1)
 	printf("MONITA : monita kontrol init\r\n");
@@ -141,12 +148,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	char il[256], dl[512];
 	char ipdest[15];
 	
-	extern struct t_env env2;
-	sprintf(env2.berkas, "\/monita3\/monita_loket.php");
+	//extern struct t_env env2;
+	sprintf(envx->berkas, "\/monita3\/monita_loket.php");
 	//printf("Jml Data : %d\r\n", jmlData);
 	extern int kirimURL;
 	extern char terkirimURL;
-	
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -173,7 +179,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	vTaskDelay(200);
 	#endif
 	
-	
+	while (1)	{
+		vTaskDelay(1000);
+	}
 	
 	
 	for (;;)
@@ -186,8 +194,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (wclient == 1000) {	
 			wclient = 0;
 			jmlData=kirimModul(0, il, dl);
-			sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
-			sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", env2.berkas, env2.SN, jmlData, il, dl);
+			//sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
+			//sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", env2.berkas, env2.SN, jmlData, il, dl);
 			webclient_get(ipdest, 80, datakeserver);
 			kirimURL++;
 			printf("____Kirim : %d\r\n", kirimURL);
@@ -350,7 +358,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					paket_kita = 0;
 				}
 		 }	// tanpa paket
-		 
+		
+		/*
+		// proses ADC dipindah ke shell // 
 		#ifdef PAKAI_ADC
 			#ifdef BOARD_KOMON_A_RTD
 			proses_data_adc();
@@ -364,13 +374,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			proses_data_adc();
 			#endif
 		#endif
+		//*/
 	}
 }
 
 
 void start_ether(void)
 {	//8
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 18), \
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 12), \
 		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 

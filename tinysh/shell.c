@@ -96,7 +96,9 @@ extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
-extern struct t_env env2;
+//extern struct t_env env2;
+
+
 
 #ifdef PAKAI_SELENOID
 	extern xTaskHandle *hdl_relay;
@@ -809,7 +811,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_date_cmd);
 	#endif
 	
-	sprintf(str,"%s%d$ ", PROMPT, ( env2.IP3));
+	
+	struct t_env *envx;
+	envx = (char *) ALMT_ENV;
+	
+	sprintf(str,"%s%d$ ", PROMPT, ( envx->IP3));
 	tinysh_set_prompt(str);
 	//tinysh_set_prompt( PROMPT );
 	/* force untuk tampil prompt */

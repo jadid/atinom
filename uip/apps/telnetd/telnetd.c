@@ -75,7 +75,7 @@
 #include "telnetd.h"
 
 #include "../../tinysh/enviro.h"
-extern struct t_env env2;
+//extern struct t_env env2;
 
 //
 //
@@ -221,6 +221,8 @@ static void telnetdSendData (void)
 static int telnetdOpen (void)
 {
   char tt[64];
+  struct t_env *envx;
+  envx = (char *) ALMT_ENV;
   
   poll_no_komand = 0;
   passwd_benar = 0;
@@ -237,7 +239,8 @@ static int telnetdOpen (void)
   sprintf(tt, "%s v%s \n", NAMA_BOARD, VERSI_KOMON);
   telnetdBufferAppend (&telnetdBuf, tt, strlen (tt));
   
-  sprintf(tt, "IP: %d.%d.%d.%d \n", env2.IP0, env2.IP1, env2.IP2, env2.IP3); 
+  //sprintf(tt, "IP: %d.%d.%d.%d \n", env2.IP0, env2.IP1, env2.IP2, env2.IP3); 
+  sprintf(tt, "IP: %d.%d.%d.%d \n", envx->IP0, envx->IP1, envx->IP2, envx->IP3); 
   telnetdBufferAppend (&telnetdBuf, tt, strlen (tt));
   
   telnetdBufferAppend (&telnetdBuf, HELLO_3, strlen (HELLO_3));

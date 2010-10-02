@@ -17,9 +17,10 @@
 //	#include "../tinysh/setting_eth.c" 
 #endif
 
-extern struct t_env env2;
+//extern struct t_env *env2;
+//env2 = (char *) ALMT_ENV;
 #define BESAR_BUF_HTTP	8192
-unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
+unsigned char head_buf[512] 				; /*__attribute__ ((section (".eth_test"))); */
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 char ket[30];
 //#define		tot_buf	buffer
@@ -110,6 +111,9 @@ static unsigned int nomer_mesin=0;
 #endif
 
 void buat_head(unsigned int flag) {
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+	
 	char head_buf[512];
 	
 	/* flag = 1, perlu di refresh */
@@ -130,7 +134,7 @@ void buat_head(unsigned int flag) {
 	//sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
 	//strcat(tot_buf, head_buf);
 
-	sprintf(head_buf, "<h4><p>Nama Modul : %s\n", env2.nama_board);
+	sprintf(head_buf, "<h4><p>Nama Modul : %s\n", env2->nama_board);
 	strcat(tot_buf, head_buf);
 }
 
@@ -311,6 +315,8 @@ void buat_file_index(void) {
 	unsigned int cek_mesin;
 	float fl;
 	float temp_rpm;
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
 	
 	buat_head(1);
 						
@@ -409,7 +415,7 @@ void buat_file_index(void) {
 		strcat(tot_buf, head_buf);
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
 		
 		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
 		strcat(tot_buf, head_buf);
@@ -426,9 +432,9 @@ void buat_file_index(void) {
 		strcat(tot_buf, head_buf);
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		st_adc.flt_data[i] = (float) (temp_rpm * env2file->kalib[i].m) + env2file->kalib[i].C;
 		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2file->kalib[i].ket);		
 		strcat(tot_buf, head_buf);
 				
 	}
@@ -505,9 +511,9 @@ void buat_file_index(void) {
 		strcat(tot_buf, head_buf);
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
 		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
+		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2->kalib[i].ket);		
 		strcat(tot_buf, head_buf);
 				
 	}
@@ -524,7 +530,7 @@ void buat_file_index(void) {
 		strcat(tot_buf, head_buf);
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2.kalib[i].m) + env2.kalib[i].C;
+		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
 		
 		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2.kalib[i].ket);		
 		strcat(tot_buf, head_buf);
@@ -595,6 +601,8 @@ void buat_file_setting(unsigned int flag, char *kata)
 	unsigned int cek_mesin;
 	unsigned int mulai = 0;
 	unsigned int akhir = 0;
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
 	
 	buat_head(0);
 	
@@ -691,7 +699,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 	{
 		// Kanal, m & C
 		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%f</td>\n<td>%f</td>\n</tr>\n", \
-			i+1, env2.kalib[i].m, env2.kalib[i].C);
+			i+1, env2->kalib[i].m, env2->kalib[i].C);
 		strcat(tot_buf, head_buf);
 	}
 	strcat(tot_buf, "</tbody>\n</table>\n");
@@ -772,7 +780,8 @@ void buat_file_about(void)
 	
 	int i;
 	extern unsigned int tot_idle;
-	
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
 	buat_head(0);
 	
 	strcat(tot_buf, "<h4>Operating System FreeRTOS 5.1.1");
@@ -809,11 +818,11 @@ void buat_file_about(void)
 //*/	
 	/* informasi environtment, nama, ip, gateway dll */
 	strcat(tot_buf, "<br><br>Informasi Modul :");
-	sprintf(head_buf, "<br>&nbsp;&nbsp;Nama     : %s", env2.nama_board);
+	sprintf(head_buf, "<br>&nbsp;&nbsp;Nama     : %s", env2->nama_board);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "<br>&nbsp;&nbsp;IP       : %d.%d.%d.%d", env2.IP0, env2.IP1, env2.IP2, env2.IP3);
+	sprintf(head_buf, "<br>&nbsp;&nbsp;IP       : %d.%d.%d.%d", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 	strcat(tot_buf, head_buf);   
-	sprintf(head_buf, "<br>&nbsp;&nbsp;Gateway  : %d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3); 
+	sprintf(head_buf, "<br>&nbsp;&nbsp;Gateway  : %d.%d.%d.%d", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
 	strcat(tot_buf, head_buf);
 	
 	strcat(tot_buf, "<br><br>Dibuat oleh :");

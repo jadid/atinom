@@ -120,7 +120,7 @@ static u8_t encMACread (void);
 static void encMACreadBulk (u8_t *buffer, u16_t length);
 
 #include "../../tinysh/enviro.h"
-extern struct t_env env2;
+//extern struct t_env env2;
 
 //
 //  Global variable
@@ -145,8 +145,8 @@ xSemaphoreHandle xENC28J60Semaphore = NULL;
 int enc28j60Init (void)
 {
   volatile portTickType xTicks;
-		
-	
+	struct t_env *envx;
+	envx = (char *) ALMT_ENV;
   //
   //  If the current MAC address is 00:00:00:00:00:00, default to UIP_ETHADDR[0..5] values
   //
@@ -162,7 +162,8 @@ int enc28j60Init (void)
     	*/
     	sed = WDTV;
     	printf("Random seed = %u, ", sed);
-    	sed = sed * env2.IP3;
+    	//sed = sed * env2.IP3;
+    	sed = sed * envx->IP3;
     	
     	srand(sed);
     	
@@ -175,9 +176,12 @@ int enc28j60Init (void)
 		printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
 			UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, UIP_ETHADDR4, env2.IP3+3);
 		*/
-		struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3}};
+		//struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3}};
+		struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, envx->IP3, ran_mac, envx->IP3+3}};
+		//printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
+		//	UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3);
 		printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
-			UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3);
+			UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, envx->IP3, ran_mac, envx->IP3+3);
 		uip_setethaddr (mac);
   }
 

@@ -4,8 +4,7 @@
 	entri dari boot.s adalah ke main
 	
 	20 feb 2009
-	buat buffer file index.html dilakukan di 
-	task led.
+	buat buffer file index.html dilakukan di task led.
 	
 	15 april 2009
 	coba porting untuk Komon_A (RTD & 4-20 mA)	
@@ -98,7 +97,7 @@ int main( void )
 
 #ifdef jalankan
 	init_led_utama();
-	//start_ether();
+	start_ether();
 	init_shell();
 	vTaskStartScheduler();
 

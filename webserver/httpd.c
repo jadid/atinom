@@ -79,7 +79,7 @@
 /*---------------------------------------------------------------------------*/
 
 #define BESAR_BUF_HTTP	8192
-extern unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
+//extern unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
 extern unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 
 static unsigned short

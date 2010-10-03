@@ -5,9 +5,16 @@
 #define IAP_LOCATION 0x7FFFFFF1
 typedef void (*IAP)(unsigned int [],unsigned int[]);
 
+#ifdef BOARD_KOMON_KONTER
+	#define KANALNYA 20
+#else
+	#define KANALNYA 10
+#endif
+
 struct t_kalib {
 	float m;
 	float C;
+	char status;		// 0: adc tegangan		1: sensor pintu
 	char ket[32];
 };
 
@@ -18,7 +25,7 @@ struct t_webclient {
 	unsigned char IP3;
 	char hostname[32];
 	char berkas[32];
-	char status;		// status 0: default (pake IP), 1: pake IP.
+	char status;		// status 0: default (pake IP), 1: pake URL.
 };
 
 struct t_env {
@@ -31,7 +38,7 @@ struct t_env {
 	unsigned char GW1;
 	unsigned char GW2;
 	unsigned char GW3;
-	struct t_kalib kalib[20];
+	struct t_kalib kalib[KANALNYA];
 	int magic1;
 	int magic2;
 	int mmc_serial;

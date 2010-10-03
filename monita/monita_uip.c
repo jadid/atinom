@@ -39,6 +39,7 @@ extern struct t_adc st_adc;
 
 #ifdef BOARD_KOMON_420_SAJA
 #include "../adc/ad7708.h"
+#include "../tinysh/enviro.h"
 extern struct t_adc st_adc;
 #define BOARD_KOMON
 #endif
@@ -140,7 +141,7 @@ void monita_appcall(void)
 				#ifdef BOARD_KOMON_420_SAJA
 				hitung_data_float();
 				
-				for (i=0; i<20;i++)
+				for (i=0; i<KANALNYA;i++)
 				{
 					data_float.data[i] = st_adc.flt_data[i];
 				}		

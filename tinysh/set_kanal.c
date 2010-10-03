@@ -19,7 +19,7 @@
 	
 	*/
 
-extern struct t_env env2;
+//extern struct t_env env2;
 
 
 void set_kanal(int argc, char **argv)
@@ -43,6 +43,9 @@ void set_kanal(int argc, char **argv)
 				printf(" set_kanal juga bisa untuk setting keterangan, misalnya :\r\n");
 				printf(" set_kanal 3 ket jacket_water_temp\r\n");
 				printf(" artinya : setting kanal 3 dengan keterangan 'jacket_water_temp'\r\n");
+				printf(" set_kanal 3 status [onoff|1|0], default: 0 (Tegangan)\r\n");
+				printf(" set_kanal 3 status 1\r\n");
+				printf(" artinya : setting kanal 3 dengan status OnOff\r\n");
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
@@ -55,6 +58,7 @@ void set_kanal(int argc, char **argv)
 		}
 		printf(" ERR: argument kurang !\r\n");
 		printf(" coba set_kanal help \r\n");
+		printf(" format lain: set_kanal [help|ket|status]\r\n");
 		return;	
 	}
 	
@@ -86,6 +90,20 @@ void set_kanal(int argc, char **argv)
   		printf(" Setting keterangan kanal %d :\r\n", kanal);
   		sprintf(p_sbr->kalib[kanal-1].ket, "%s", argv[3]);
   		printf(" %s", p_sbr->kalib[kanal-1].ket);
+  	}
+  	else if (strcmp(argv[2], "status") == 0)
+  	{
+  		printf(" Setting status kanal %d :\r\n", kanal);
+  		//*
+  		if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
+			p_sbr->kalib[kanal-1].status = (argv[3][0] - '0');
+		} 
+		else if ( strcmp(argv[3], "onoff")==0) {
+			p_sbr->kalib[kanal-1].status = 1;
+		} else {
+			p_sbr->kalib[kanal-1].status = 0;
+		}
+		//*/
   	}
   	else
   	{

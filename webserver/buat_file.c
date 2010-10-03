@@ -10,6 +10,11 @@
 	
 	*/
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+
 #include "../tinysh/enviro.h"
 #include "../adc/ad7708.h"
 
@@ -26,7 +31,7 @@ char ket[30];
 //#define		tot_buf	buffer
 
 
-/*
+//*
 extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
@@ -131,10 +136,9 @@ void buat_head(unsigned int flag) {
 	sprintf(head_buf, "<br>Monita %s v %s</h4>\n", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
 
-	//sprintf(head_buf, "<p>Modul %s", NAMA_BOARD);
-	//strcat(tot_buf, head_buf);
-
-	sprintf(head_buf, "<h4><p>Nama Modul : %s\n", env2->nama_board);
+	sprintf(head_buf, "<h4><p>Nama Modul : %s</h4>", env2->nama_board);
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "<h4><p>Alamat IP  : %d.%d.%d.%d</h4>", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 	strcat(tot_buf, head_buf);
 }
 
@@ -369,22 +373,26 @@ void buat_file_index(void) {
 #ifdef BOARD_KOMON_WEB	
 	strcat(tot_buf, "</h4>");				
 	strcat(tot_buf, "<table border>\n");
-	strcat(tot_buf, "<col width = ""120px"" />\n");
-	strcat(tot_buf, "<col width = ""140px"" />\n");
-	strcat(tot_buf, "<col width = ""170px"" />\n");
-	strcat(tot_buf, "<col width = ""400px"" />\n");
+	strcat(tot_buf, "<col width = \"70px\" />\n");
+	strcat(tot_buf, "<col width = \"90px\" />\n");
+#ifdef BOARD_KOMON_420_SAJA	
+	strcat(tot_buf, "<col width = \"100px\" />\n");
+#endif
+	strcat(tot_buf, "<col width = \"100px\" />\n");
+	strcat(tot_buf, "<col width = \"200px\" />\n");
 	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
 #endif
 
 #ifdef BOARD_KOMON_A_RTD	
-	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
-	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
+	strcat(tot_buf, "<th>Teg ADC</th>\n");
+	strcat(tot_buf, "<th>Nilai</th>\n");
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA	
-	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
-	strcat(tot_buf, "<th>Celcius / Barg</th>\n");
+	strcat(tot_buf, "<th>Teg ADC</th>\n");
+	strcat(tot_buf, "<th>Status</th>\n");
+	strcat(tot_buf, "<th>Nilai</th>\n");
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
@@ -502,18 +510,26 @@ void buat_file_index(void) {
 #ifdef BOARD_KOMON_420_SAJA
 #ifdef PAKAI_ADC
 	/* data 4-20 mA */
-	for (i=0; i< 10; i++)
+	for (i=0; i< KANALNYA; i++)
 	{		
 		/*  tegangan */		
 		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%1.4f</td>\n", (i+1), temp_rpm);
+		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td align=\"right\">%1.4f V</td>\n", (i+1), temp_rpm);
+		strcat(tot_buf, head_buf);
+		
+		sprintf(head_buf, "<td>%s</td>\n", (env2->kalib[i].status==0)?"Tegangan":"OnOff");
 		strcat(tot_buf, head_buf);
 		
 		/* satuan yang diinginkan */
-		st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
-		
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2->kalib[i].ket);		
+		if (env2->kalib[i].status==0) {	// "Tegangan"
+			st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
+			sprintf(head_buf, "<td align=\"right\">%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2->kalib[i].ket);		
+		} else {
+			sprintf(head_buf, "<td align=\"left\">%s</td>\n<td>%s</td>\n</tr>\n", \
+				(st_adc.data[i]>20000)?"On/Tertutup":"Off/Terbuka", env2->kalib[i].ket);		
+		}
+
 		strcat(tot_buf, head_buf);
 				
 	}
@@ -797,7 +813,7 @@ void buat_file_about(void)
 		strcat(tot_buf, "<br>Enabled Preemptive kernel");
 	sprintf(head_buf, "<br>Idle loop check = %d perdetik", tot_idle);
 	strcat(tot_buf, head_buf);
-/*	
+//*	
 	strcat(tot_buf, "<br><br>Task & Free stack (bytes) :");
 	sprintf(head_buf, "<br>&nbsp;&nbsp; Shell    : %d", uxTaskGetStackHighWaterMark(hdl_shell));
 	strcat(tot_buf, head_buf);

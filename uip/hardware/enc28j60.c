@@ -180,8 +180,8 @@ int enc28j60Init (void)
 		struct uip_eth_addr mac = {{UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, envx->IP3, ran_mac, envx->IP3+3}};
 		//printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
 		//	UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, env2.IP3, ran_mac, env2.IP3+3);
-		printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
-			UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, envx->IP3, ran_mac, envx->IP3+3);
+		//printf("(%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X)", 
+		//	UIP_ETHADDR0, UIP_ETHADDR1, UIP_ETHADDR2, envx->IP3, ran_mac, envx->IP3+3);
 		uip_setethaddr (mac);
   }
 
@@ -292,7 +292,7 @@ int enc28j60Init (void)
   encBankSelect (BANK3);
 
 	#if 1
-	printf("\r\nMAC address :\r\n");
+	printf("MAC address : ");
 	printf("  (%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X) ", \
 		uip_ethaddr.addr [0], uip_ethaddr.addr [1],	\
 		uip_ethaddr.addr [2], uip_ethaddr.addr [3], \

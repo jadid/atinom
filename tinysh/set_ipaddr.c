@@ -127,7 +127,7 @@ static void setenv_fnt(int argc, char **argv)
 		}
 	}	
 	else if (strcmp(argv[1], "SN") == 0)	{
-		printf(" set nama_board\r\n");
+		printf(" set no seri \r\n");
 		//memset(env2.SN, 0, sizeof (env2.SN));
 		if (strlen(argv[2]) > sizeof (p_sbr->SN))
 		{
@@ -138,11 +138,23 @@ static void setenv_fnt(int argc, char **argv)
 		else
 		{
 			sprintf(p_sbr->SN, "%s", argv[2]);
-			printf(" Nama board : %s\n", p_sbr->SN);
+			printf(" SN : %s\n", p_sbr->SN);
 		}
 	}
-	else if (strcmp(argv[1], "kanal") == 0)
-	{
+	else if (strcmp(argv[1], "file") == 0)	{
+		printf(" set file \r\n");
+		//memset(env2.SN, 0, sizeof (env2.SN));
+		if (strlen(argv[2]) > sizeof (p_sbr->berkas)) 	{
+			printf("file terlalu panjang !");
+			vPortFree( p_sbr );
+			return;	
+		}
+		else {
+			sprintf(p_sbr->berkas, "%s", argv[2]);
+			printf(" Nama file : %s\n", p_sbr->berkas);
+		}
+	}
+	else if (strcmp(argv[1], "kanal") == 0)	{
 		int kanal;
 		
 		printf(" set param kanal \r\n");

@@ -135,7 +135,7 @@ int baca_env(char tampil)
 {
 	struct t_env *ev;
 	int i;
-	char teku[128];
+	//char teku[128];
 	
 	if (tampil == 1)
 	{
@@ -159,47 +159,25 @@ int baca_env(char tampil)
 			printf(" Nama board = "); 	printf("%s\r\n",env2->nama_board);
 			printf(" No Seri    = ");	printf("%s\r\n", env2->SN);
 			printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
-			
-			// tampilkan GW address, pakai env2 sekalian buat ngetes
 			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
 			
 			#ifdef PAKAI_WEBCLIENT
-				printf(" File       = ");
-				printf("%s\r\n", env2->berkas); 
+				printf(" File       = ");		printf("%s\r\n", env2->berkas); 
 			#endif
 			
 			#ifdef PAKAI_ADC
-			if (tampil == 1)
-			{
-				printf(" Faktor kalibrasi (y = mx + C) :\r\n");
-				
-				extern char tek;
-				
-				double ff = 0.123;
-				int t;
-				
-				/*
-				portENTER_CRITICAL();
-				//snprintf(teku, 64, " float %f", ff);
-				//teku = (char *) fcvt(ff, 6, i, t);
-				printf("%f", ff);
-				
-				portEXIT_CRITICAL();
-				*/
-				
-				for (i=0; i<20; i++)
-				{
-					printf("  (%2d) m = %3.3f, C = %3.3f", i+1, env2[0].kalib[i].m, env2[0].kalib[i].C);
-					i++;
-					printf("  (%2d) m = %3.3f, C = %3.3f\r\n", i+1, env2[0].kalib[i].m, env2[0].kalib[i].C);
+			if (tampil == 1)	{
+				printf("   No    Status       Faktor kalibrasi     Keterangan kanal\r\n");
+				for (i=0; i<KANALNYA; i++)	{
+					if (env2->kalib[i].status==0) { // Tegangan (default)
+						printf("  (%2d) %-10s  m: %7.3f, C: %7.3f  %-s\r\n", \ 
+							i+1, (env2->kalib[i].status==0)?"Tegangan":"On/OFF", \
+							env2->kalib[i].m, env2->kalib[i].C, env2->kalib[i].ket);
+					} else {		// OnOff
+						printf("  (%2d) %-23s  %10s %-s\r\n", \ 
+							i+1, (env2->kalib[i].status==0)?"Tegangan":"On/OFF", " ", env2->kalib[i].ket);
+					}
 				}
-				
-				printf(" Keterangan kanal :\r\n");
-				for (i=0; i<20; i++)
-				{
-					printf("  (%2d) %s\r\n", i+1, env2[0].kalib[i].ket);
-				}
-				printf("\n");
 			}
 			#endif			
 			return 0;
@@ -276,6 +254,7 @@ void set_env_default() {
 	
 	if (env2 == NULL) {
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+		vPortFree( env2 );	
 		return -1;
 	}
 	
@@ -283,9 +262,10 @@ void set_env_default() {
 	env2->magic2 = 0x77;
 	sprintf(env2->SN, "-");
 	sprintf(env2->berkas, "/?");
-	for (i=0; i<20; i++) {
+	for (i=0; i<KANALNYA; i++) {
 		env2->kalib[i].m = 1.00;
 		env2->kalib[i].C = 0.00;
+		env2->kalib[i].status = 0;
 		sprintf(env2->kalib[i].ket, "--");
 	}
 	sprintf(env2->nama_board, "Gantilah namanya !");

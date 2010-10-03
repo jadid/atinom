@@ -73,7 +73,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 {
 	struct t_env *envx;
 	envx = (char *) ALMT_ENV;
-
 	
 	portBASE_TYPE xARPTimer;
 	uip_ipaddr_t xIPAddr;
@@ -85,14 +84,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	vTaskDelay(200);
 	
+	#ifdef MEMORI_BARU
 	
+	#endif
 	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
 	printf("UIP : uip_init\r\n");
-	
-	
-	
+
 	uip_init ();
 	
 	//uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
@@ -102,22 +101,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("ARP : arp_init\r\n");
 	uip_arp_init ();
 	
-	
-	
 	printf("Init ENC28J .. ");
 
-	if (enc28j60Init() == 1)
-	{
+	if (enc28j60Init() == 1)	{
 		 printf(" .. ENC OK\r\n");
-	}
-	else
+	}	else
 		printf("ENC tidak respons !\r\n");
 
 	#ifdef PAKE_HTTP
 	printf("SIMPLE HTTP : init\r\n");
 	httpd_init ();
 	#endif
-
+	
 	#ifdef PAKE_TELNETD
 	printf("SIMPLE TELNET : init\r\n");
     telnetd_init ();
@@ -140,17 +135,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	mul = 0;
 #endif
 
+
 #ifdef PAKAI_WEBCLIENT
 	webclient_init();
 	int kWnya = 3500;
-	printf("webclient inited !, kW: %d\r\n", kWnya);
+	printf("webclient inited !\r\n");
 	int wclient=0, jmlData=0, detik1=0;
 	char il[256], dl[512];
 	char ipdest[15];
 	
-	//extern struct t_env env2;
-	sprintf(envx->berkas, "\/monita3\/monita_loket.php");
-	//printf("Jml Data : %d\r\n", jmlData);
+	//sprintf(envx->berkas, "\/monita3\/monita_loket.php");
 	extern int kirimURL;
 	extern char terkirimURL;
 #endif
@@ -178,24 +172,20 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	#ifdef BOARD_KOMON_420_SABANG
 	vTaskDelay(200);
 	#endif
-	
-	while (1)	{
-		vTaskDelay(1000);
-	}
-	
+
 	
 	for (;;)
 	{
 		vTaskDelay(1);
 		//portYIELD();
 		
-		#ifdef PAKAI_WEBCLIENT
+		#ifdef PAKAI_WEBCLIENTx
 		wclient++;
 		if (wclient == 1000) {	
 			wclient = 0;
 			jmlData=kirimModul(0, il, dl);
 			//sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
-			//sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", env2.berkas, env2.SN, jmlData, il, dl);
+			sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
 			webclient_get(ipdest, 80, datakeserver);
 			kirimURL++;
 			printf("____Kirim : %d\r\n", kirimURL);
@@ -360,7 +350,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		 }	// tanpa paket
 		
 		/*
-		// proses ADC dipindah ke shell // 
+		// proses ADC dipindah ke shell 1 Okt 2010// 
 		#ifdef PAKAI_ADC
 			#ifdef BOARD_KOMON_A_RTD
 			proses_data_adc();

@@ -658,13 +658,16 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&save_titik_cmd);
 #endif
 
+
 #ifdef BOARD_KOMON_A_RTD
 	tinysh_add_command(&cek_adc_cmd);
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA
+#ifdef PAKAI_ADC
 	tinysh_add_command(&cek_adc_cmd);
+#endif
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 

@@ -116,7 +116,7 @@ PM_SOURCE = \
 
 WEBCLIENT_SOURCE = \
 		../webserver/webclient/webclient.c			\
-		../webserver/webclient/webclient-strings.c
+		../webserver/webclient/webclient-strings.c	\
 
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

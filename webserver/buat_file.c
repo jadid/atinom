@@ -25,7 +25,7 @@
 //extern struct t_env *env2;
 //env2 = (char *) ALMT_ENV;
 #define BESAR_BUF_HTTP	8192
-unsigned char head_buf[512] 				; /*__attribute__ ((section (".eth_test"))); */
+//unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
 unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 char ket[30];
 //#define		tot_buf	buffer
@@ -66,26 +66,26 @@ static unsigned int nomer_mesin=0;
 
 //#ifdef BOARD_TAMPILAN
 #ifdef CARI_SUMBER
-#define LINK_ATAS "<table border=""0"" align=""left"">\n \
-  <tbody align=""center"">\n \
+#define LINK_ATAS "<table border=\"0\" align=\"left\">\n \
+  <tbody align=\"center\">\n \
 	<tr>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""set_satu.html"">Setting 1-50</a></td>\n \
-	  <td bgcolor=""lightGray"" width=""200""><a href=""set_dua.html"">Setting 51-100</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""sumber.html"">Sumber Data</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"index.html\">Data</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"set_satu.html\">Setting 1-50</a></td>\n \
+	  <td bgcolor=\"lightGray\" width=\"200\"><a href=\"set_dua.html\">Setting 51-100</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"sumber.html\">Sumber Data</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"about.html\">About</a></td>\n \
     </tr>\n \
   </tbody>\n \
 </table>\n"
 
-#define LINK_BAWAH "<table border=""0"" align=""left"">\n \
-  <tbody align=""center"">\n \
+#define LINK_BAWAH "<table border=\"0\" align=\"left\">\n \
+  <tbody align=\"center\">\n \
 	<tr>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
     </tr>\n \
   </tbody>\n \
 </table>\n"
@@ -123,7 +123,7 @@ void buat_head(unsigned int flag) {
 	
 	/* flag = 1, perlu di refresh */
 	if (flag == 1)
-		sprintf(head_buf, "%s<meta http-equiv=""refresh"" content=""3"">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
+		sprintf(head_buf, "%s<meta http-equiv=\"refresh\" content=\"3\">\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
 	else if (flag == 0)
 		sprintf(head_buf, "%s\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);
 	
@@ -132,13 +132,13 @@ void buat_head(unsigned int flag) {
 	sprintf(head_buf, "%s<br>", LINK_ATAS);
 	strcat(tot_buf, head_buf);
 
-	strcat(tot_buf, "\n<h4>Daun Biru Engineering");
-	sprintf(head_buf, "<br>Monita %s v %s</h4>\n", NAMA_BOARD, VERSI_KOMON);
+	strcat(tot_buf, "\n<h4>Daun Biru Engineering<br/>\n");
+	sprintf(head_buf, "Monita %s v %s<br/>\n", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
 
-	sprintf(head_buf, "<h4><p>Nama Modul : %s</p></h4>", env2->nama_board);
+	sprintf(head_buf, "Nama Modul : %s<br/>\n", env2->nama_board);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "<h4>Alamat IP  : %d.%d.%d.%d</h4>", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+	sprintf(head_buf, "Alamat IP  : %d.%d.%d.%d</h4>\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 	strcat(tot_buf, head_buf);
 }
 
@@ -321,7 +321,7 @@ void buat_file_index(void) {
 	float temp_rpm;
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
-	
+	char head_buf[512];
 	buat_head(1);
 						
 //#ifdef BOARD_TAMPILAN
@@ -527,7 +527,7 @@ void buat_file_index(void) {
 			sprintf(head_buf, "<td align=\"right\">%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2->kalib[i].ket);		
 		} else {
 			sprintf(head_buf, "<td align=\"left\">%s</td>\n<td>%s</td>\n</tr>\n", \
-				(st_adc.data[i]>20000)?"On/Tertutup":"Off/Terbuka", env2->kalib[i].ket);		
+				(st_adc.data[i]>10000)?"On/Tertutup":"<font color=\"red\">Off/Terbuka</font>", env2->kalib[i].ket);		
 		}
 
 		strcat(tot_buf, head_buf);
@@ -619,9 +619,9 @@ void buat_file_setting(unsigned int flag, char *kata)
 	unsigned int akhir = 0;
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
-	
+	char head_buf[512];
 	buat_head(0);
-	
+
 	//#ifdef BOARD_TAMPILAN
 	#ifdef CARI_SUMBER
 	
@@ -697,59 +697,58 @@ void buat_file_setting(unsigned int flag, char *kata)
 	#endif
 	
 	#ifdef BOARD_KOMON_WEB
+	
 	#ifdef PAKAI_ADC
-	strcat(tot_buf, "<br>Faktor kalibrasi (y = mx + C)</h4>\n");
-	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
-	
-	strcat(tot_buf, "<col width = ""100px"">\n");		// Kanal
-	strcat(tot_buf, "<col width = ""200px"">\n");		// m
-	strcat(tot_buf, "<col width = ""200px"">\n");		// C
+		strcat(tot_buf, "<br><h3>Faktor kalibrasi (y = mx + C)</h3>\n");
 
-	
-	strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
-	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
-	strcat(tot_buf, "<th>m</th>\n");
-	strcat(tot_buf, "<th>C</th>\n");
-
-	for (i=0; i<10; i++)
-	{
-		// Kanal, m & C
-		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%f</td>\n<td>%f</td>\n</tr>\n", \
-			i+1, env2->kalib[i].m, env2->kalib[i].C);
-		strcat(tot_buf, head_buf);
-	}
-	strcat(tot_buf, "</tbody>\n</table>\n");
+		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
+		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
+		strcat(tot_buf, "<th width=\"40px\">m</th>\n");
+		strcat(tot_buf, "<th width=\"40px\">C</th>\n");
+		strcat(tot_buf, "<th width=\"220px\">Status</th>\n");
+		strcat(tot_buf, "<th width=\"60px\">Ganti</th></tr>\n");
+		
+		for (i=0; i<KANALNYA; i++)	{
+			// Kanal, m & C
+			sprintf(head_buf,	"<tr>\n<form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />\n" \
+								"<th>%d</th>\n<td><input type=\"text\" name=\"m%d\" value=\"%f\" size=\"10\"/></td>\n" \
+								"<td><input type=\"text\" name=\"c%d\" value=\"%f\" size=\"10\"/></td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"p%d\" value=\"0\" %s/>Suhu/Tekanan" \
+								"<input type=\"radio\" name=\"p%d\" value=\"1\" %s/>OnOff</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td></form></tr>\n", \
+				i+1, i+1, env2->kalib[i].m, \
+				i+1, env2->kalib[i].C, \
+				i+1, (env2->kalib[i].status==0)?"checked":"", \
+				i+1, (env2->kalib[i].status==0)?"":"checked");
+			strcat(tot_buf, head_buf);
+		}
+		strcat(tot_buf, "</tbody>\n</table>\n");
 	#endif
 	
 	#ifdef CENDOL		// akses php
+
 		if (flag) {
 			sprintf(head_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>", kata);
-			//strcat(tot_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>");
 			strcat(tot_buf, head_buf);
 		} else {
 			strcat(tot_buf, "<br/>");
 		}
 		
 		strcat(tot_buf, "<h3>Info Kanal</h3>\n");
-		strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
-		strcat(tot_buf, "<col width = ""50px"">\n");		// Kanal
-		strcat(tot_buf, "<col width = ""40px"">\n");		// id
-		strcat(tot_buf, "<col width = ""130px"">\n");		// keterangan
-		strcat(tot_buf, "<col width = ""130px"">\n");		// Status
-		strcat(tot_buf, "<col width = ""50x"">\n");			// Ubah
-
+		strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
 		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
-		strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
-		strcat(tot_buf, "<th>ID Titik</th>\n");
-		strcat(tot_buf, "<th>Keterangan</th>\n");
-		strcat(tot_buf, "<th>Status Kirim</th>\n");
-		strcat(tot_buf, "<th>Ganti</th>\n");
+		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
+		strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
+		strcat(tot_buf, "<th width=\"130px\">Keterangan</th>\n");
+		strcat(tot_buf, "<th width=\"130px\">Status Kirim</th>\n");
+		strcat(tot_buf, "<th width=\"50x\">Ganti</th>\n");
 		
 		struct t_setting *konfig;
 		//int jmlData = (sizeof(data_f)/sizeof(float));
 		konfig = (char *) ALMT_KONFIG;
 		
-		for (i=0; i<PER_SUMBER; i++)
+		for (i=0; i<KANALNYA; i++)
 		{
 			// Kanal, id & Keterangan
 			ganti_karakter(ket, konfig[i].ket);
@@ -769,9 +768,9 @@ void buat_file_setting(unsigned int flag, char *kata)
 		
 		strcat(tot_buf, "</tbody>\n</table>\n");
 
+	#endif	
 	#endif
-	#endif
-	
+
 	buat_bottom();
 	
 	//printf("pjg setting = %d\r\n", strlen(tot_buf));
@@ -798,6 +797,7 @@ void buat_file_about(void)
 	extern unsigned int tot_idle;
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
+	char head_buf[512];
 	buat_head(0);
 	
 	strcat(tot_buf, "<h4>Operating System FreeRTOS 5.1.1");

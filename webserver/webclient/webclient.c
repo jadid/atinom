@@ -202,7 +202,7 @@ webclient_get(char *host, u16_t port, char *file)
   
   init_connection();
   
-  printf("___%s(): %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
+  //printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   
   return 1;
 }
@@ -434,20 +434,20 @@ webclient_appcall(void)
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    printf("%s(): Connected\r\n", __FUNCTION__);
+    //printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    printf("%s(): Closed\r\n", __FUNCTION__);
+    //printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	 printf("%s(): Aborted\r\n", __FUNCTION__);
+	 //printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();

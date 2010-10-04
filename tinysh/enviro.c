@@ -262,7 +262,7 @@ void set_env_default() {
 	env2->magic1 = 0xAA;
 	env2->magic2 = 0x77;
 	sprintf(env2->SN, "-");
-	sprintf(env2->berkas, "/?");
+	sprintf(env2->berkas, "/");
 	for (i=0; i<KANALNYA; i++) {
 		env2->kalib[i].m = 1.00;
 		env2->kalib[i].C = 0.00;

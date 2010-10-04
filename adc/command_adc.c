@@ -51,7 +51,7 @@ void status_adc(void) {
 		{
 			//*
 			if(envx->kalib[i].status) {
-				printf("%2d : %6d : %s\r\n", (i+1), st_adc.data[i], (st_adc.data[i]>20000)?"On/Tertutup":"Off/Terbuka");
+				printf("%2d : %6d : %s\r\n", (i+1), st_adc.data[i], (st_adc.data[i]>10000)?"On/Tertutup":"Off/Terbuka");
 				// 
 			} else 
 			//*/

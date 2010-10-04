@@ -136,17 +136,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 
-#ifdef PAKAI_WEBCLIENTx
-	webclient_init();
-	int kWnya = 3500;
-	printf("webclient inited !\r\n");
-	int wclient=0, jmlData=0, detik1=0;
-	char il[256], dl[512];
-	char ipdest[15];
-	
-	//sprintf(envx->berkas, "\/monita3\/monita_loket.php");
-	extern int kirimURL;
-	extern char terkirimURL;
+#ifdef PAKAI_WEBCLIENT
+		webclient_init();
+		printf("webclient inited !\r\n");
+		int wclient=0, jmlData=0, detik1=0;
+		char il[256], dl[512];
+		char ipdest[15];
+		extern int kirimURL;
+		extern char terkirimURL;
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -183,16 +180,20 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		vTaskDelay(1);
 		//portYIELD();
 		
-		#ifdef PAKAI_WEBCLIENTx
-		wclient++;
-		if (wclient == 1000) {	
-			wclient = 0;
-			jmlData=kirimModul(0, il, dl);
-			//sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
-			sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
-			webclient_get(ipdest, 80, datakeserver);
-			kirimURL++;
-			printf("____Kirim : %d\r\n", kirimURL);
+		#ifdef PAKAI_WEBCLIENT
+		if (envx->statusWebClient==1) {
+			
+			wclient++;
+			if (wclient == 1000) {
+				wclient = 0;
+				
+				jmlData=kirimModul(0, il, dl);
+				sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+				sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
+				webclient_get(ipdest, 80, datakeserver);
+				kirimURL++;
+				//printf("____Kirim : %d\r\n", kirimURL);
+			}
 		}
 
 /*

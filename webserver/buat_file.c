@@ -136,9 +136,9 @@ void buat_head(unsigned int flag) {
 	sprintf(head_buf, "<br>Monita %s v %s</h4>\n", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
 
-	sprintf(head_buf, "<h4><p>Nama Modul : %s</h4>", env2->nama_board);
+	sprintf(head_buf, "<h4><p>Nama Modul : %s</p></h4>", env2->nama_board);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "<h4><p>Alamat IP  : %d.%d.%d.%d</h4>", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+	sprintf(head_buf, "<h4>Alamat IP  : %d.%d.%d.%d</h4>", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 	strcat(tot_buf, head_buf);
 }
 

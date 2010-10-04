@@ -516,7 +516,8 @@ static void _tinysh_char_in(uchar c)
         }
       start_of_line();
     }
-  else if(c==TOPCHAR) /* return to top level */
+/*
+  else if(c==TOPCHAR) // return to top level //
     {
       if(echo)
         putchar(c);
@@ -524,6 +525,7 @@ static void _tinysh_char_in(uchar c)
       cur_context=0;
       cur_cmd_ctx=0;
     }
+//*/
   else if(c==8 || c==127) /* backspace */
     {
       if(cur_index>0)

@@ -162,9 +162,10 @@ int baca_env(char tampil)
 			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
 			
 			#ifdef PAKAI_WEBCLIENT
+				printf(" WebClient  = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 
 				printf(" File       = ");		printf("%s\r\n", env2->berkas); 
 			#endif
-			
+			garis_bawah();
 			#ifdef PAKAI_ADC
 			if (tampil == 1)	{
 				printf("   No    Status       Faktor kalibrasi     Keterangan kanal\r\n");

@@ -136,7 +136,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 
-#ifdef PAKAI_WEBCLIENT
+#ifdef PAKAI_WEBCLIENTx
 	webclient_init();
 	int kWnya = 3500;
 	printf("webclient inited !\r\n");
@@ -173,6 +173,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	vTaskDelay(200);
 	#endif
 
+	#ifdef PAKAI_WEBCLIENT
+		vTaskDelay(2000);
+		vTaskDelay(2000);
+	#endif
 	
 	for (;;)
 	{

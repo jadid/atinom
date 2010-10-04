@@ -154,6 +154,21 @@ static void setenv_fnt(int argc, char **argv)
 			printf(" Nama file : %s\n", p_sbr->berkas);
 		}
 	}
+	else if (strcmp(argv[1], "webclient") == 0)	{
+		printf(" set status webclient\r\n");
+  		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {
+			p_sbr->statusWebClient = (argv[2][0] - '0');
+		} 
+		else if (strcmp(argv[2], "aktif")==0) {
+			p_sbr->statusWebClient = 1;
+		} else if (strcmp(argv[2], "mati")==0)  {
+			p_sbr->statusWebClient = 0;
+		} else {
+			p_sbr->statusWebClient = 0;
+		}
+		
+		printf(" Status webclient : %s\r\n", (p_sbr->statusWebClient==1)?"aktif":"mati");
+	}
 	else if (strcmp(argv[1], "kanal") == 0)	{
 		int kanal;
 		

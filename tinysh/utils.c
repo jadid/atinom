@@ -132,3 +132,76 @@ int ganti_kata(char *dest, char *src) {
 	dest[i] = '\0';
 }
 
+#ifdef PAKAI_PM
+	char * judulnya_pm[] = {
+		"kWh",				// 0 //
+		"kVAh",
+		"kVArh",
+		"kW",
+		"kVA",		
+		"kVAr",
+		"Power Faktor",
+		"Volt1",
+		"Volt2",
+		"Arus",
+		"Frek",				// 10 //
+		"Arus R",
+		"Arus S",
+		"Arus T",
+		"Arus Netral",
+		"Tegangan Vab",
+		"Tegangan Vbc",
+		"Tegangan Vac",
+		"Tegangan Van",
+		"Tegangan Vbn",
+		"Tegangan Vcn",		// 20 //
+		"Daya kW R",
+		"Daya kW S",
+		"Daya kW T",
+		"Daya kVA R",
+		"Daya kVA S",
+		"Daya kVA T",
+		"Daya kVAr R",
+		"Daya kVAr S",
+		"Daya kVAr T",
+		"Power Faktor R",	// 30 //
+		"Power Faktor S",
+		"Power Faktor T"
+	};
+	
+	char * satuannya_pm[] = {
+		"kWh",		// 0 //
+		"kVAh",
+		"kVArh",
+		"kW",
+		"kVA",		
+		"kVAr",
+		"",
+		"V",
+		"V",
+		"A",
+		"Hz",		// 10 //
+		"A",
+		"A",
+		"A",
+		"A",
+		"V",
+		"V",
+		"V",
+		"V",
+		"V",
+		"V",		// 20 //
+		"kW",
+		"kW",
+		"kW",
+		"kVA",
+		"kVA",
+		"kVA",
+		"kVAr",
+		"kVAr",
+		"kVAr",
+		"",			// 30 //
+		"",
+		""
+	};
+#endif

@@ -15,9 +15,9 @@
 #include <math.h>
 #include <float.h>
 
-#define TIPE_PM710
+//#define TIPE_PM710
 #include "../modbus/low_mod.h"
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
 
 #ifdef PAKAI_KTA
 	unsigned char addr_KTA;
@@ -142,13 +142,13 @@ static void proses_pm(void)
 	   jum_balik = get_PM710(reg_satuan, 4);
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 1)	{
-	   jum_balik = get_PM710(reg_kva, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
+	   //jum_balik = get_PM710(reg_kva, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 2)	{
-	   jum_balik = get_PM710(reg_ampA, 4); //ampA, B, C & N								// 4020
+	   //jum_balik = get_PM710(reg_ampA, 4); //ampA, B, C & N								// 4020
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 3) {
-	   jum_balik = get_PM710(reg_voltA_C, 6); //voltA_B, B_C, A_C, A_N, B_N & C_N
+	   //jum_balik = get_PM710(reg_voltA_C, 6); //voltA_B, B_C, A_C, A_N, B_N & C_N
 	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 4)	{
 	   jum_balik = get_PM710(reg_kwh, 6);  //kWh, kVAh, & kVArh
@@ -292,8 +292,7 @@ static void proses_pm(void)
 }
 
 
-portTASK_FUNCTION( pm_task, pvParameters )
-{
+portTASK_FUNCTION( pm_task, pvParameters )	{
 	int i,j=0;
 	
 	urut_PM710 = 0;
@@ -320,8 +319,7 @@ portTASK_FUNCTION( pm_task, pvParameters )
 			ser3_getchar(1, &loop, 100 );
 		#endif
 		//*/
-	for (;;)
-	{
+	for (;;)	{
 		vTaskDelay(95);
 		proses_pm();
 		/*

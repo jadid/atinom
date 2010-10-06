@@ -57,6 +57,11 @@
 #include "set_kanal.c"
 #endif
 
+#ifdef PAKAI_PM
+#include "pm_server.c"
+#include "setting_pm.c"
+#endif
+
 #ifdef PAKAI_MMC
 #include "../fatfs/shell_fs.c"
 #endif
@@ -201,11 +206,12 @@ static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[a
 
 
 
-#ifdef PAKAI_PM
+#ifdef PAKAI_PMx
 	void cek_pm(int argc, char **argv) {
 		int i=0;
 		printf("NILAI PARAMETER POWER METER\r\n");		// 41
-		printf("---------------------------\r\n");		// 41
+		garis_bawah();
+		//printf("---------------------------\r\n");		// 41
 		printf("   kwh		: %.2f kWh\r\n", data_f[i*PER_SUMBER+0]);		// 41
 		printf("   kvah		: %.2f kVAh\r\n", data_f[i*PER_SUMBER+1]);		// 41
 		printf("   kvarh	: %.2f kVArh\r\n", data_f[i*PER_SUMBER+2]);		// 41
@@ -227,8 +233,7 @@ static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[a
 		printf("   voltA_N	: %.2f V\r\n", data_f[i*PER_SUMBER+18]);		// 41
 	}
 	
-	static tinysh_cmd_t cek_pm_cmd={0,"cek_pm","mengecek nilai parameter PM","[args]",
-                              cek_pm,0,0,0};
+	static tinysh_cmd_t cek_pm_cmd={0,"cek_pm_data","mengecek nilai parameter PM","[args]", cek_pm,0,0,0};
 #endif
 
 
@@ -685,6 +690,8 @@ portTASK_FUNCTION(shell, pvParameters )
 
 #ifdef PAKAI_PM
 	tinysh_add_command(&cek_pm_cmd);
+	tinysh_add_command(&set_pm_cmd);
+	tinysh_add_command(&cek_konfig_pmnya_cmd);
 #endif	
 	
 #ifdef PAKAI_GSM_FTP
@@ -820,8 +827,8 @@ portTASK_FUNCTION(shell, pvParameters )
 	
 	struct t_env *envx;
 	envx = (char *) ALMT_ENV;
-	
-	sprintf(str,"%s%d$ ", PROMPT, ( envx->IP3));
+
+	sprintf(str,"%s%d$ ", PROMPT, (envx->IP3));
 	tinysh_set_prompt(str);
 	//tinysh_set_prompt( PROMPT );
 	/* force untuk tampil prompt */

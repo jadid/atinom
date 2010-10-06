@@ -21,7 +21,8 @@
 #define MONITA_UIP_H_
 
 #ifdef PAKAI_PM
-	#define JML_SUMBER	2
+	// di sektor 26, harusnya bisa nyampe 120 sumber
+	#define JML_SUMBER	5
 #else
 	#define JML_SUMBER	1
 #endif
@@ -31,7 +32,7 @@
 #define JML_KANAL	20
 
 #ifdef PAKAI_PM
-	#define PER_SUMBER	30
+	#define PER_SUMBER	32
 #else
 	#define PER_SUMBER	20
 #endif
@@ -44,21 +45,31 @@
 	#define ALMT_SFILE		0x7A000
 #endif
 
+
+// pengakses: tinysh/setting_pm.c dipakai PM di board 420_SABANG
 #define SEKTOR_SUMBER	25
 #define ALMT_SUMBER		0x7B000
 
+//------------------------------------------------------------//
 #define SEKTOR_MESIN	26
 #define ALMT_MESIN		0x7C000
 
 #define SEKTOR_GROUP	26
 #define ALMT_GROUP		0x7C000
 
-#define SEKTOR_KONFIG	26
-#define ALMT_KONFIG	0x7C000
+// pengakses: tinysh/setting_eth.c
+//#define SEKTOR_KONFIG	26			// konfig id titik ukur
+//#define ALMT_KONFIG	0x7C000
+//------------------------------------------------------------//
 
-
+//------------------------------------------------------------//
 #define SEKTOR_TITIK	21
 #define ALMT_TITIK		0x70000
+
+// pengakses: tinysh/setting_eth.c, dipindah dari sektor 26 ke 21
+#define SEKTOR_KONFIG	21			// konfig id titik ukur
+#define ALMT_KONFIG		0x70000
+//------------------------------------------------------------//
 
 #define SEKTOR_DT_SET	21
 #define ALMT_DT_SET		0x70000
@@ -88,6 +99,7 @@
 #define		PORT_HTTP	80
 
 /* offset masing2 data pada array */
+#if 0
 #define OFFSET_CAP_L	1	- 1
 #define OFFSET_CAP_R	2	- 1
 #define OFFSET_CAT_L	3	- 1
@@ -145,6 +157,8 @@
 #define OFFSET_KWH		52	- 1
 #define OFFSET_VOLT		53	- 1
 #define OFFSET_AMP		54	- 1
+#endif
+
 
 #ifdef  PAKAI_SELENOID
 float data_f [ (JML_SUMBER * PER_SUMBER)+JML_RELAY ];
@@ -203,6 +217,94 @@ struct t_sumber {
 	char IP3;
 	char status;		// tidak aktif, timeout, dll
 };
+
+#ifdef PAKAI_PM
+/*
+	char * judulnya_pm[] = {
+		"kWh",				// 0 //
+		"kVAh",
+		"kVArh",
+		"kW",
+		"kVA",		
+		"kVAr",
+		"Power Faktor",
+		"Volt1",
+		"Volt2",
+		"Arus",
+		"Frek",				// 10 //
+		"Arus R",
+		"Arus S",
+		"Arus T",
+		"Arus Netral",
+		"Tegangan Vab",
+		"Tegangan Vbc",
+		"Tegangan Vac",
+		"Tegangan Van",
+		"Tegangan Vbn",
+		"Tegangan Vcn",		// 20 //
+		"Daya kW R",
+		"Daya kW S",
+		"Daya kW T",
+		"Daya kVA R",
+		"Daya kVA S",
+		"Daya kVA T",
+		"Daya kVAr R",
+		"Daya kVAr S",
+		"Daya kVAr T",
+		"Power Faktor R",	// 30 //
+		"Power Faktor S",
+		"Power Faktor T"
+	};
+	
+	char * satuannya_pm[] = {
+		"kWh",		// 0 //
+		"kVAh",
+		"kVArh",
+		"kW",
+		"kVA",		
+		"kVAr",
+		"",
+		"V",
+		"V",
+		"A",
+		"Hz",		// 10 //
+		"A",
+		"A",
+		"A",
+		"A",
+		"V",
+		"V",
+		"V",
+		"V",
+		"V",
+		"V",		// 20 //
+		"kW",
+		"kW",
+		"kW",
+		"kVA",
+		"kVA",
+		"kVA",
+		"kVAr",
+		"kVAr",
+		"kVAr",
+		"",			// 30 //
+		"",
+		""
+	};
+//*/
+	struct t_sumber_pmx {
+		char nama[32];
+		char alamat;		// alamat PM //
+		char status;		// aktif tidak aktif
+	};
+
+	struct t_sumber_pm {
+		char magic1;
+		char magic2;
+		char status;
+		struct t_sumber_pmx pm[JML_SUMBER];
+	};
+#endif
 
 struct t_titik {
 	char ID_sumber;			// sumber mulai dari 1, 1 untuk array sumber ke nol

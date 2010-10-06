@@ -71,7 +71,6 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
-		pm_server.c \
 		../system/setup_cpu.c \
 		../system/syscall.c \
 		../system/reset_cpu.c \
@@ -111,8 +110,8 @@ THUMB_SOURCE= \
 #		LCD/menu_monita.c \
 #		LCD/menu_popup.c \
 
-PM_SOURCE = \
-		pm_server.c \
+#PM_SOURCE = \
+#		pm_server.c \
 
 WEBCLIENT_SOURCE = \
 		../webserver/webclient/webclient.c			\

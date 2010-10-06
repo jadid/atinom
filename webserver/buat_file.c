@@ -899,14 +899,22 @@ void buat_file_setting(unsigned int flag, char *kata)
 		strcat(tot_buf, "<th width=\"50x\">Ganti</th>\n");
 		
 		struct t_setting *konfig;
-		//int jmlData = (sizeof(data_f)/sizeof(float));
 		konfig = (char *) ALMT_KONFIG;
 		
+		// buahaya disini !!!! //
+		#ifdef BOARD_KOMON_420_SAJA
 		for (i=0; i<KANALNYA; i++)
+		#endif
+		
+		#ifdef BOARD_KOMON_420_SABANG
+		int jmlData = (sizeof(data_f)/sizeof(float));
+		printf("jmlData: %d\r\n", jmlData);
+		for (i=0; i<jmlData; i++)
+		#endif
 		{
+		/*
 			// Kanal, id & Keterangan
 			ganti_karakter(ket, konfig[i].ket);
-			
 			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
 							"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
 							"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"30\"/></td>\n" \
@@ -918,6 +926,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 				i+1, (konfig[i].status?"checked":""), \
 				i+1, (konfig[i].status?"":"checked"));
 			strcat(tot_buf, head_buf);
+		//*/
 		}
 		
 		strcat(tot_buf, "</tbody>\n</table>\n");

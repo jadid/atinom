@@ -23,13 +23,15 @@
 
 //#define addr_PM710      2
 #define command_baca    0x03	//4
+
+#ifdef PAKAI_KTA
 #define reg_KTA			1
 #define reg_satuan_KTA			30
-
+#endif
 //#define TIPE_PM810
 
 #ifdef TIPE_PM710
-
+#define JML_REQ_PM	5
 #define reg_test	7006
 //#define reg_kwh   1000     // 2 register		//harusnya 4000
 #define reg_kwh   4001     // 2 register		//harusnya 4000
@@ -63,7 +65,7 @@
 #endif // tipe_PM710
 
 #ifdef TIPE_PM810
-
+#define JML_REQ_PM	8
 #define meter_current   1100
 #define meter_voltage   1120
 #define meter_power     1140
@@ -248,7 +250,7 @@ struct t_kontrol_PM {
      unsigned char baru;        // data baru atau tidak
 };
 
-unsigned int get_PM710(unsigned short reg, unsigned char uk);
+unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk);
 
 //---------------------------------------------------------------------------
 #endif

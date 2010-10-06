@@ -49,7 +49,7 @@
 #define BOARD_KOMON_420_SABANG
 #define VERSI_KOMON		"1.50"
 
-#define PAKAI_WEBCLIENT
+//#define PAKAI_WEBCLIENT
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
@@ -65,10 +65,11 @@
 
 #ifdef PAKAI_PM
 	#define BAUD_PM			19200
+	#define TIPE_PM810
 #endif
 
 
-#define PROMPT 		"Komon_420_I_PM $ "
+#define PROMPT 		"Komon_PM@"
 #define NAMA_BOARD	"Babelan Komon-420"
 
 /*-----------------------------------------------------------

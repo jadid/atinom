@@ -215,11 +215,120 @@ int ganti_karakter(char *dest, char *src) {
 	dest[i] = '\0';
 }
 
+int kali10(int n) {
+	int i=1;
+	while(n>0) {
+		i*=10;
+		n--;
+	}
+	return i;
+}
+
+float per10(int n) {
+	float f=1;
+	while(n>0) {
+		f*=0.1;
+		n--;
+	}
+	return f;
+}
+
+int angka(char x) {
+	if(x>='0' && x<='9') {
+		return (int)(x-'0');
+	} else {
+		return 0;
+	}
+}
+
+float stof(char * str) {
+	int pjg=0, jml=0, i=0, j=0;
+	int posTitik;
+	float pecahan=0.00;
+	
+	char * pch, *pch2, pecah[10];
+	
+	pjg = strlen(str);
+	
+	//printf("p: %d, string: %s\r\n", pjg, str);
+	// cek apakah karakter angka, titik
+	for (i=0; i<pjg; i++) {
+		if (!(str[i]>=45 && str[i]<=57 && str[i]!=47))
+			return 0.00;
+	}	
+	// cek '-' hanya di awal saja
+	pch2=strchr(str,'-');
+	if (pch2!=NULL) {
+		posTitik = pch2-str+1;
+		//printf("posisi: %d\r\n", posTitik);
+		if (posTitik>1) {
+			return 0.00;
+		}
+	}
+	
+	// cari titik pertama, batas bulat dan pecahan
+	pch=strchr(str,'.');
+	if(pch!=NULL) {
+		posTitik=pch-str;
+		//printf("posisiTitik: %d\r\n", posTitik);
+		pch2 = pch+1;
+		pch=strchr(pch+1,'.');
+		i=pch-str;
+	}
+	//*/
+	
+	jml=strlen(pch2);
+	//printf("i: %d, jml: %d\r\n",i, jml);
+	// ketemu jml titiknya > 1, hilangkan titik ke 2 dsb
+	if (i>0) {
+  		i=0;
+  		for (j=0; j<jml; j++) {
+			if(pch2[j]!='.') {
+				pecah[i]=pch2[j];
+				i++;
+			}
+			if (i>7)
+				break;		
+		}
+		pecah[i]='\0';
+	} else {
+		for (j=0; j<jml; j++) {
+			pecah[j]=pch2[j];
+		}
+		pecah[j]='\0';
+		//printf("isi pecah: %s\r\n",pecah);
+	}
+
+	// kalikan perslotnya
+	for (i=0; i<posTitik; i++) {
+		//printf("nilai bulat: %d, pecah: %c, kali10: %d\r\n", angka(str[i])+1, str[i], kali10(posTitik-i-1));
+		pecahan += (angka(str[i])*kali10(posTitik-i-1));
+	}
+	//printf("bulat: %f\r\n", pecahan);
+	posTitik=strlen(pecah);
+	//printf("jml pecah: %d\r\n", posTitik);
+	for (i=0; i<posTitik; i++) {
+		//printf("nilai pecah: %d\r\n", angka(pecah[i]));
+		pecahan += (angka(pecah[i])*per10(i+1));
+	}	
+	//printf("pecah: %f\r\n", pecahan);
+	// bilangan negatif kah ?
+	if (str[0]=='-') {
+		pecahan=0-pecahan;
+	}
+	//printf("return total: %f, +111.111: %f\r\n", pecahan, pecahan+111.111);
+	return pecahan;
+}
+
+
 void ganti_setting(char *str) {
 	printf("Data telah diubah: %s\r\n", str);
 	char tmp[30], kets[30];
 	
 	int nk=0, no=0, titik=0;
+	int kanal=0; 
+	float m=0.00, c=0.00;
+	char statnya=0;
 	char * pch, *pch2, *ids, *ket, *stat;
 	pch=strchr(str,'?');
 
@@ -252,61 +361,92 @@ void ganti_setting(char *str) {
 		}
 		if (strncmp(tmp, "s", 1)==0) {
 			stat = strchr(tmp,'=')+1;
-			//printf("  stat: %s, %d\r\n", stat);
+			printf("  stat: %s\r\n", stat);
+		}
+		if (strncmp(tmp, "m", 1)==0) {
+			ids = strchr(tmp,'m');
+			kanal = atoi(ids+1);
+			
+			ket = strchr(tmp,'=');
+			m = stof(ket+1);
+			printf(" ket:%s,  m: %f\r\n", ket+1, m);
+		}
+		if (strncmp(tmp, "c", 1)==0) {
+			ket = strchr(tmp,'=');
+			c = stof(ket+1);
+			printf(" ket:%s,  c: %f\r\n", ket+1, c);
 		}
 		pch=strchr(pch+1, '&');
 	}
 	
-	int jmlData = (sizeof(data_f)/sizeof(float));
-	struct t_setting *p_sbr;
-	//printf("Jml Data : %d\r\n", jmlData);
-	p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
-	
-	if (p_sbr == NULL)
-	{
-		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
-		return;	// -1
-	}
-	//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+	if (titik>0) {
+		int jmlData=0;
+		//#if (defined PAKAI_PM)
+			jmlData = (sizeof(data_f)/sizeof(float));
+		//#else
+		//	jmlData = KANALNYA;
+		//#endif
+		
+		struct t_setting *p_sbr;
+		//printf("Jml Data : %d\r\n", jmlData);
+		p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
+		
+		if (p_sbr == NULL)
+		{
+			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			vPortFree( p_sbr );
+			return;	// -1
+		}
+		//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
 
-	portENTER_CRITICAL();
-	memcpy((char *) p_sbr, (char *) ALMT_KONFIG, (jmlData * sizeof (struct t_setting)));
-	portEXIT_CRITICAL();
-	
-	p_sbr[no-1].id = titik;
-	sprintf(p_sbr[no-1].ket, kets);
-	p_sbr[no-1].status = (atoi(stat))?1:0;
-	//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
-	
-	if (simpan_konfig( p_sbr ) < 0)
-	{
+		portENTER_CRITICAL();
+		memcpy((char *) p_sbr, (char *) ALMT_KONFIG, (jmlData * sizeof (struct t_setting)));
+		portEXIT_CRITICAL();
+		
+		p_sbr[no-1].id = titik;
+		sprintf(p_sbr[no-1].ket, kets);
+		p_sbr[no-1].status = (atoi(stat))?1:0;
+		//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
+		
+		if (simpan_konfig( p_sbr ) < 0)
+		{
+			vPortFree( p_sbr );
+			return;
+		}
 		vPortFree( p_sbr );
 	}
-	vPortFree( p_sbr );
-}
+	#ifdef PAKAI_ADCx
+	if (kanal>0) {
+		printf("_________masuk kanal %d\r\n", kanal);
+		struct t_env *envzzz;
+		envzzz = pvPortMalloc( sizeof (struct t_env) );
+		
+		if (envzzz == NULL)	{
+			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			vPortFree( envzzz );
+			return;	// -1
+		}
 
-
-
-#if 0
-void buat_file_index(void) {
-	
-	buat_head(0);
-	
-	
-	buat_bottom();
-	printf("%s", tot_buf);
-	/*
-	#if 1
-	char head_bufs[256];
-	sprintf(tot_buf, "%s", judul);
-	sprintf(head_bufs, "</head><body><h1>Tes</h1></body>\n", judul);
-	strcat(tot_buf, head_bufs);
-	printf("%s", tot_buf);
+		envzzz->kalib[kanal-1].m = m;
+		envzzz->kalib[kanal-1].C = c;
+		envzzz->kalib[kanal-1].status = (atoi(stat))?1:0;
+		envzzz->magic1 = 0xAA;
+		envzzz->magic2 = 0x77;
+		
+		/*
+		portENTER_CRITICAL();
+		if (simpan_env( envzzz ) < 0)	{
+			vPortFree( envzzz );
+			return;
+		}
+		portEXIT_CRITICAL();
+		//*/
+		vPortFree( envzzz );
+	}
+	//printf();
 	#endif
-	//*/
-	//buat_bottom();
 }
-#endif
+
 
 #if 1
 void buat_file_index(void) {
@@ -509,9 +649,13 @@ void buat_file_index(void) {
 //*/
 #ifdef BOARD_KOMON_420_SAJA
 #ifdef PAKAI_ADC
+	struct t_setting *konfig;
+	konfig = (char *) ALMT_KONFIG;
+	
 	/* data 4-20 mA */
 	for (i=0; i< KANALNYA; i++)
 	{		
+		ganti_karakter(ket, konfig[i].ket);
 		/*  tegangan */		
 		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
@@ -524,14 +668,13 @@ void buat_file_index(void) {
 		/* satuan yang diinginkan */
 		if (env2->kalib[i].status==0) {	// "Tegangan"
 			st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
-			sprintf(head_buf, "<td align=\"right\">%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], env2->kalib[i].ket);		
+			sprintf(head_buf, "<td align=\"right\">%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], ket);		
 		} else {
 			sprintf(head_buf, "<td align=\"left\">%s</td>\n<td>%s</td>\n</tr>\n", \
-				(st_adc.data[i]>10000)?"On/Tertutup":"<font color=\"red\">Off/Terbuka</font>", env2->kalib[i].ket);		
+				(st_adc.data[i]>10000)?"On/Tertutup":"<font color=\"red\">Off/Terbuka</font>", ket);		
 		}
 
 		strcat(tot_buf, head_buf);
-				
 	}
 #endif
 #endif
@@ -704,21 +847,32 @@ void buat_file_setting(unsigned int flag, char *kata)
 		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
 		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
-		strcat(tot_buf, "<th width=\"40px\">m</th>\n");
-		strcat(tot_buf, "<th width=\"40px\">C</th>\n");
+		strcat(tot_buf, "<th width=\"60px\">m</th>\n");		// klo pake input 40 aja
+		strcat(tot_buf, "<th width=\"60px\">C</th>\n");		// klo pake input 40 aja
 		strcat(tot_buf, "<th width=\"220px\">Status</th>\n");
-		strcat(tot_buf, "<th width=\"60px\">Ganti</th></tr>\n");
+		//strcat(tot_buf, "<th width=\"60px\">Ganti</th>\n");
+		strcat(tot_buf, "</tr>\n");
 		
 		for (i=0; i<KANALNYA; i++)	{
 			// Kanal, m & C
+			/*
 			sprintf(head_buf,	"<tr>\n<form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />\n" \
 								"<th>%d</th>\n<td><input type=\"text\" name=\"m%d\" value=\"%f\" size=\"10\"/></td>\n" \
 								"<td><input type=\"text\" name=\"c%d\" value=\"%f\" size=\"10\"/></td>\n" \
-								"<td align=\"left\"><input type=\"radio\" name=\"p%d\" value=\"0\" %s/>Suhu/Tekanan" \
-								"<input type=\"radio\" name=\"p%d\" value=\"1\" %s/>OnOff</td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Suhu/Tekanan" \
+								"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>OnOff</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td></form></tr>\n", \
 				i+1, i+1, env2->kalib[i].m, \
 				i+1, env2->kalib[i].C, \
+				i+1, (env2->kalib[i].status==0)?"checked":"", \
+				i+1, (env2->kalib[i].status==0)?"":"checked");
+			//*/
+			sprintf(head_buf,	"<tr>\n<th>%d</th>\n<td align=\"right\">%6.3f\n" \
+								"<td align=\"right\">%6.3f</td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Suhu/Tekanan" \
+								"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>OnOff</td>\n" \
+								"</tr>\n", \
+				i+1, env2->kalib[i].m, env2->kalib[i].C, \
 				i+1, (env2->kalib[i].status==0)?"checked":"", \
 				i+1, (env2->kalib[i].status==0)?"":"checked");
 			strcat(tot_buf, head_buf);

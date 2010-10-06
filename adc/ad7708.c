@@ -488,9 +488,9 @@ void hitung_data_float(void)
 #ifdef BOARD_KOMON_420_SAJA
 	
 	/* data 4-20 mA */
-	for (i=0; i< 10; i++)
+	for (i=0; i< KANALNYA; i++)
 	{		
-		/*  tegangan */		
+		/*  tegangan */
 		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
 		/* satuan yang diinginkan */

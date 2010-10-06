@@ -594,6 +594,9 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","proses gsm ftp","[args]",
                               mulai_gsm_ftp,0,0,0};
 #endif
 
+ 
+
+
 extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
@@ -856,7 +859,6 @@ portTASK_FUNCTION(shell, pvParameters )
 					#endif
 				#endif
 				
-				
 				#ifdef PAKAI_ADC
 					#ifdef BOARD_KOMON_A_RTD
 					proses_data_adc();
@@ -869,9 +871,9 @@ portTASK_FUNCTION(shell, pvParameters )
 					#ifdef BOARD_KOMON_420_SAJA
 					proses_data_adc();
 					#endif
+					
+					simpan_ke_data_f();
 				#endif
-				
-				
 			}
 	  }
 	  
@@ -888,6 +890,8 @@ portTASK_FUNCTION(shell, pvParameters )
 			#ifdef BOARD_KOMON_420_SAJA
 				proses_data_adc();
 			#endif
+			
+			simpan_ke_data_f();
 		#endif
 	  
 	  #ifdef PAKAI_MMC

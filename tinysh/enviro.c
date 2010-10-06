@@ -251,7 +251,10 @@ void set_env_default() {
 	int i;
 	struct t_env *env2;
 	env2 = pvPortMalloc( sizeof (struct t_env) );
+	
+	portENTER_CRITICAL();
 	memcpy((char *) env2, (char *) ALMT_ENV, (sizeof (struct t_env)));
+	portEXIT_CRITICAL();
 	
 	if (env2 == NULL) {
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
@@ -278,7 +281,7 @@ void set_env_default() {
 	env2->GW0 = 192;
 	env2->GW1 = 168;
 	env2->GW2 = 1;
-	env2->GW3 = 13;
+	env2->GW3 = 75;
 	
 	env2->statusWebClient = 0;
 	

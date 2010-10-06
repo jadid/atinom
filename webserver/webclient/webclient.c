@@ -156,7 +156,7 @@ int kirimModul(int sumber, char *il, char *dl) {
 			}
 			strcat(il,id);
 			strcat(dl,dt);
-			}
+		}
 	}
 	return jmlAktif;
 }

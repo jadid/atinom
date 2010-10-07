@@ -155,7 +155,7 @@ static int set_data_default(void)
 	if (p_gr == NULL)
 	{
 		printf("%s(): Err allok memory gagal !\r\n", __FUNCTION__);
-		return -1;
+		return;
 	}
 	
 	for (i=0; i< (JML_SUMBER*PER_SUMBER); i++)
@@ -195,7 +195,7 @@ static int set_data_default(void)
 	if (simpan_data( p_gr ) < 0)
 	{
 		vPortFree( p_gr );
-		return -1;
+		return;
 	}
 	vPortFree( p_gr );
 	
@@ -268,7 +268,7 @@ int set_data(int argc, char **argv)
 	if (p_dt == NULL)
 	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
-		return -1;
+		return;
 	}
 	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_dt);
 	
@@ -449,7 +449,7 @@ int set_data(int argc, char **argv)
 	if (simpan_data( p_dt ) < 0)
 	{
 		vPortFree( p_dt );
-		return -1;
+		return;
 	}
 	vPortFree( p_dt );
 

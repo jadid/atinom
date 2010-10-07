@@ -32,7 +32,7 @@
 #define JML_KANAL	20
 
 #ifdef PAKAI_PM
-	#define PER_SUMBER	32
+	#define PER_SUMBER	33
 #else
 	#define PER_SUMBER	20
 #endif
@@ -296,6 +296,7 @@ struct t_sumber {
 		char nama[32];
 		char alamat;		// alamat PM //
 		char status;		// aktif tidak aktif
+		char modul;			// 0: PM, 1: KTA, 2:????, dst
 	};
 
 	struct t_sumber_pm {

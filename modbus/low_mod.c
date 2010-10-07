@@ -18,12 +18,11 @@ unsigned short reg_flag;
 //extern unsigned char addr_PM710;
 //extern unsigned char addr_KTA;
 
-//struct d_PM710 data_PM710[JUMLAH_PM];
-//struct f_PM710 asli_PM710[JUMLAH_PM];
 struct d_PM710 data_PM710[JML_SUMBER];
 struct f_PM710 asli_PM710[JML_SUMBER];
 //struct t_kontrol_PM kontrol_PM[JUMLAH_PM];
 
+#ifdef PAKAI_KTA
 unsigned short 	wind_speed;
 unsigned short 	wind_dir;
 float 			f_wind_speed;
@@ -31,6 +30,8 @@ float 			f_wind_speed;
 unsigned short wind_satuan;
 unsigned short wind_speed_tr;		// retransmision value
 unsigned short wind_dir_tr;
+#endif
+
 
 #define buf	buf_rx
 extern struct d_pmod pmod;
@@ -689,8 +690,8 @@ void taruh_data(int no_slave, int urt)
 		unsigned int temp2;
 		if (urt == 0)	{
 			// amper
-			satuan_t = buf[3];
-			satuan_t = (satuan_t << 8) + buf[4];
+			satuan_t = buf[3+HD];
+			satuan_t = (satuan_t << 8) + buf[4+HD];
 
 			if 		(satuan_t == -4) satuan_amp[pm_dibaca] = 0.0001;
 			else if (satuan_t == -3) satuan_amp[pm_dibaca] = 0.001;
@@ -703,8 +704,8 @@ void taruh_data(int no_slave, int urt)
 			else if (satuan_t == 4) satuan_amp[pm_dibaca] = 10000.0;
 
 			//ampere2 (L-N)
-			satuan_t = buf[5];
-			satuan_t = (satuan_t << 8) + buf[6];
+			satuan_t = buf[5+HD];
+			satuan_t = (satuan_t << 8) + buf[6+HD];
 
 			if (satuan_t == -4) satuan_amp2[pm_dibaca] = 0.0001;
 			else if (satuan_t == -3) satuan_amp2[pm_dibaca] = 0.001;
@@ -718,8 +719,8 @@ void taruh_data(int no_slave, int urt)
 			// buf[7] & [8] kosong
 
 			// volt (L - L)
-			satuan_t = buf[9];
-			satuan_t = (satuan_t << 8) + buf[10];
+			satuan_t = buf[9+HD];
+			satuan_t = (satuan_t << 8) + buf[10+HD];
 
 			if (satuan_t == -4) satuan_volt[pm_dibaca] = 0.0001;
 			else if (satuan_t == -3) satuan_volt[pm_dibaca] = 0.001;
@@ -732,8 +733,8 @@ void taruh_data(int no_slave, int urt)
 			else if (satuan_t == 4) satuan_volt[pm_dibaca] = 10000.0;
 
 			// volt2 (L - N)
-			satuan_t = buf[11];
-			satuan_t = (satuan_t << 8) + buf[12];
+			satuan_t = buf[11+HD];
+			satuan_t = (satuan_t << 8) + buf[12+HD];
 
 			if (satuan_t == -4) satuan_volt2[pm_dibaca] = 0.0001;
 			else if (satuan_t == -3) satuan_volt2[pm_dibaca] = 0.001;
@@ -746,8 +747,8 @@ void taruh_data(int no_slave, int urt)
 			else if (satuan_t == 4) satuan_volt2[pm_dibaca] = 10000.0;
 
 			//power
-			satuan_t = buf[13];
-			satuan_t = (satuan_t << 8) + buf[14];
+			satuan_t = buf[13+HD];
+			satuan_t = (satuan_t << 8) + buf[14+HD];
 
 			if (satuan_t == -4) satuan_kw[pm_dibaca] = 0.0001;
 			else if (satuan_t == -3) satuan_kw[pm_dibaca] = 0.001;
@@ -775,23 +776,27 @@ void taruh_data(int no_slave, int urt)
 			else if (satuan_t == 4) satuan_kwh = 10000.0;
 			*/
 			satuan_kwh[pm_dibaca] = 10;	
+			//printf("pm_dibaca: %d, amp: %10.4f\, amp2: %10.4f, volt: %10.4f, volt2: %10.4f, kw: %f\r\n", \
+			//	pm_dibaca, satuan_amp[pm_dibaca], satuan_amp2[pm_dibaca], satuan_volt[pm_dibaca], \
+			//	satuan_volt2[pm_dibaca], satuan_kw[pm_dibaca]);
 		}	
-		else if (urt == 1)
-		{
+		else if (urt == 1)		{
 			// current_metering
-			data_PM710[pm_dibaca].ampA = buf[3];
-			data_PM710[pm_dibaca].ampA = (data_PM710[pm_dibaca].ampA << 8) + buf[4];
-
-			asli_PM710[pm_dibaca].ampA = data_PM710[pm_dibaca].ampA * satuan_amp[pm_dibaca];
+			data_PM710[pm_dibaca].ampA = buf[3+HD];
+			data_PM710[pm_dibaca].ampA = (data_PM710[pm_dibaca].ampA << 8) + buf[4+HD];
+			
+			if (data_PM710[pm_dibaca].ampA == 32768)
+				asli_PM710[pm_dibaca].ampA = 0;
+			else
+				asli_PM710[pm_dibaca].ampA = data_PM710[pm_dibaca].ampA * satuan_amp[pm_dibaca];
 
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].ampA * 10;
-			//Label45->Caption = FloatToStrF(f, ffGeneral, 8, 2);
 			#endif
 
 			// ampere B
-			data_PM710[pm_dibaca].ampB = buf[5];
-			data_PM710[pm_dibaca].ampB  = (data_PM710[pm_dibaca].ampB  << 8) + buf[6];
+			data_PM710[pm_dibaca].ampB = buf[5+HD];
+			data_PM710[pm_dibaca].ampB  = (data_PM710[pm_dibaca].ampB  << 8) + buf[6+HD];
 			//asli_PM710[pm_dibaca].ampB = data_PM710[pm_dibaca].ampB * satuan_amp[pm_dibaca];
 			if (data_PM710[pm_dibaca].ampB == 32768)
 				asli_PM710[pm_dibaca].ampB = 0;
@@ -801,12 +806,11 @@ void taruh_data(int no_slave, int urt)
 
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].ampB  * 10;
-			//Label46->Caption = FloatToStrF(f, ffGeneral, 8, 2);
 			#endif
 
 			// ampere C
-			data_PM710[pm_dibaca].ampC = buf[7];
-			data_PM710[pm_dibaca].ampC = (data_PM710[pm_dibaca].ampC << 8) + buf[8];
+			data_PM710[pm_dibaca].ampC = buf[7+HD];
+			data_PM710[pm_dibaca].ampC = (data_PM710[pm_dibaca].ampC << 8) + buf[8+HD];
 			//asli_PM710[pm_dibaca].ampC = data_PM710[pm_dibaca].ampC * satuan_amp[pm_dibaca];
 			if (data_PM710[pm_dibaca].ampC == 32768)
 				asli_PM710[pm_dibaca].ampC = 0;
@@ -815,12 +819,11 @@ void taruh_data(int no_slave, int urt)
 
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].ampC  * 10;
-			//Label47->Caption = FloatToStrF(f, ffGeneral, 8, 2);
 			#endif
 
 			// ampere N
-			data_PM710[pm_dibaca].ampN = buf[9];
-			data_PM710[pm_dibaca].ampN = (data_PM710[pm_dibaca].ampN << 8) + buf[10];
+			data_PM710[pm_dibaca].ampN = buf[9+HD];
+			data_PM710[pm_dibaca].ampN = (data_PM710[pm_dibaca].ampN << 8) + buf[10+HD];
 			//asli_PM710[pm_dibaca].ampN = data_PM710[pm_dibaca].ampN * satuan_amp[pm_dibaca];
 			if (data_PM710[pm_dibaca].ampN == 32768)
 				asli_PM710[pm_dibaca].ampN = 0;
@@ -828,25 +831,25 @@ void taruh_data(int no_slave, int urt)
 				asli_PM710[pm_dibaca].ampN = data_PM710[pm_dibaca].ampN * satuan_amp[pm_dibaca];
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].ampN  * 10;
-			//Label48->Caption = FloatToStrF(f, ffGeneral, 8, 2);
 			#endif
 
 			// ampere average
-			data_PM710[pm_dibaca].amp = buf[13];
+			data_PM710[pm_dibaca].amp = buf[13+HD];
 			data_PM710[pm_dibaca].amp = (data_PM710[pm_dibaca].amp << 8) + buf[14];
-			asli_PM710[pm_dibaca].amp = data_PM710[pm_dibaca].amp * satuan_amp[pm_dibaca];
+			if (data_PM710[pm_dibaca].amp == 32768)
+				asli_PM710[pm_dibaca].amp = 0;
+			else
+				asli_PM710[pm_dibaca].amp = data_PM710[pm_dibaca].amp * satuan_amp[pm_dibaca];
 
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].amp  * 10;
-			//Label21->Caption = FloatToStrF(f, ffGeneral, 8, 2);
 			#endif
 
 		 }
-		 else if (urt == 2)
-		 {
+		else if (urt == 2)		 {
 			//voltA_B, B_C, A_C, A_N, B_N & C_N
-			data_PM710[pm_dibaca].voltA_B = buf[3];
-			data_PM710[pm_dibaca].voltA_B = (data_PM710[pm_dibaca].voltA_B << 8) + buf[4];
+			data_PM710[pm_dibaca].voltA_B = buf[3+HD];
+			data_PM710[pm_dibaca].voltA_B = (data_PM710[pm_dibaca].voltA_B << 8) + buf[4+HD];
 			//asli_PM710[pm_dibaca].voltA_B = data_PM710[pm_dibaca].voltA_B * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].voltA_B == 32768)
 				asli_PM710[pm_dibaca].voltA_B = 0;
@@ -854,16 +857,16 @@ void taruh_data(int no_slave, int urt)
 				asli_PM710[pm_dibaca].voltA_B = data_PM710[pm_dibaca].voltA_B * satuan_volt[pm_dibaca];
 
 
-			data_PM710[pm_dibaca].voltB_C = buf[5];
-			data_PM710[pm_dibaca].voltB_C = (data_PM710[pm_dibaca].voltB_C << 8) + buf[6];
+			data_PM710[pm_dibaca].voltB_C = buf[5+HD];
+			data_PM710[pm_dibaca].voltB_C = (data_PM710[pm_dibaca].voltB_C << 8) + buf[6+HD];
 			//asli_PM710[pm_dibaca].voltB_C = data_PM710[pm_dibaca].voltB_C * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].voltB_C == 32768)
 				asli_PM710[pm_dibaca].voltB_C = 0;
 			else
 				asli_PM710[pm_dibaca].voltB_C = data_PM710[pm_dibaca].voltB_C * satuan_volt[pm_dibaca];
 
-			data_PM710[pm_dibaca].voltA_C = buf[7];
-			data_PM710[pm_dibaca].voltA_C = (data_PM710[pm_dibaca].voltA_C << 8) + buf[8];
+			data_PM710[pm_dibaca].voltA_C = buf[7+HD];
+			data_PM710[pm_dibaca].voltA_C = (data_PM710[pm_dibaca].voltA_C << 8) + buf[8+HD];
 			//asli_PM710[pm_dibaca].voltA_C = data_PM710[pm_dibaca].voltA_C * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].voltA_C == 32768)
 				asli_PM710[pm_dibaca].voltA_C = 0;
@@ -871,16 +874,16 @@ void taruh_data(int no_slave, int urt)
 				asli_PM710[pm_dibaca].voltA_C = data_PM710[pm_dibaca].voltA_C * satuan_volt[pm_dibaca];
 
 			// L-L average
-			data_PM710[pm_dibaca].volt1 = buf[9];
-			data_PM710[pm_dibaca].volt1 = (data_PM710[pm_dibaca].volt1 << 8) + buf[10];
+			data_PM710[pm_dibaca].volt1 = buf[9+HD];
+			data_PM710[pm_dibaca].volt1 = (data_PM710[pm_dibaca].volt1 << 8) + buf[10+HD];
 			//asli_PM710[pm_dibaca].volt1 = data_PM710[pm_dibaca].volt1 * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].volt1 == 32768)
 				asli_PM710[pm_dibaca].volt1 = 0;
 			else
 				asli_PM710[pm_dibaca].volt1 = data_PM710[pm_dibaca].volt1 * satuan_volt[pm_dibaca];
 
-			data_PM710[pm_dibaca].voltA_N = buf[11];
-			data_PM710[pm_dibaca].voltA_N = (data_PM710[pm_dibaca].voltA_N << 8) + buf[12];
+			data_PM710[pm_dibaca].voltA_N = buf[11+HD];
+			data_PM710[pm_dibaca].voltA_N = (data_PM710[pm_dibaca].voltA_N << 8) + buf[12+HD];
 			//asli_PM710[pm_dibaca].voltA_N = data_PM710[pm_dibaca].voltA_N * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].voltA_N == 32768)
 				asli_PM710[pm_dibaca].voltA_N = 0;
@@ -888,8 +891,8 @@ void taruh_data(int no_slave, int urt)
 				asli_PM710[pm_dibaca].voltA_N = data_PM710[pm_dibaca].voltA_N * satuan_volt[pm_dibaca];
 
 
-			data_PM710[pm_dibaca].voltB_N = buf[13];
-			data_PM710[pm_dibaca].voltB_N = (data_PM710[pm_dibaca].voltB_N << 8) + buf[14];
+			data_PM710[pm_dibaca].voltB_N = buf[13+HD];
+			data_PM710[pm_dibaca].voltB_N = (data_PM710[pm_dibaca].voltB_N << 8) + buf[14+HD];
 			//asli_PM710[pm_dibaca].voltB_N = data_PM710[pm_dibaca].voltB_N * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].voltB_N == 32768)
 				asli_PM710[pm_dibaca].voltB_N = 0;
@@ -897,8 +900,8 @@ void taruh_data(int no_slave, int urt)
 				asli_PM710[pm_dibaca].voltB_N = data_PM710[pm_dibaca].voltB_N * satuan_volt[pm_dibaca];
 
 
-			data_PM710[pm_dibaca].voltC_N = buf[15];
-			data_PM710[pm_dibaca].voltC_N = (data_PM710[pm_dibaca].voltC_N << 8) + buf[16];
+			data_PM710[pm_dibaca].voltC_N = buf[15+HD];
+			data_PM710[pm_dibaca].voltC_N = (data_PM710[pm_dibaca].voltC_N << 8) + buf[16+HD];
 			//asli_PM710[pm_dibaca].voltC_N = data_PM710[pm_dibaca].voltC_N * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].voltC_N == 32768)
 				asli_PM710[pm_dibaca].voltC_N = 0;
@@ -907,8 +910,8 @@ void taruh_data(int no_slave, int urt)
 
 
 			// fasa - netral average
-			data_PM710[pm_dibaca].volt2 = buf[19];
-			data_PM710[pm_dibaca].volt2 = (data_PM710[pm_dibaca].volt2 << 8) + buf[20];
+			data_PM710[pm_dibaca].volt2 = buf[19+HD];
+			data_PM710[pm_dibaca].volt2 = (data_PM710[pm_dibaca].volt2 << 8) + buf[20+HD];
 			//asli_PM710[pm_dibaca].volt2 = data_PM710[pm_dibaca].volt2 * satuan_volt[pm_dibaca];
 			if (data_PM710[pm_dibaca].volt2 == 32768)
 				asli_PM710[pm_dibaca].volt2 = 0;
@@ -916,65 +919,99 @@ void taruh_data(int no_slave, int urt)
 				asli_PM710[pm_dibaca].volt2 = data_PM710[pm_dibaca].volt2 * satuan_volt[pm_dibaca];
 
 		 }
-		 else if (urt == 3)
-		 {
+		else if (urt == 3)		 {
 			// kwA, kwB, kwC, kw
-			data_PM710[pm_dibaca].kwA = buf[3];
-			data_PM710[pm_dibaca].kwA = (data_PM710[pm_dibaca].kwA << 8) + buf[4];
-			asli_PM710[pm_dibaca].kwA = data_PM710[pm_dibaca].kwA * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kwA = buf[3+HD];
+			data_PM710[pm_dibaca].kwA = (data_PM710[pm_dibaca].kwA << 8) + buf[4+HD];
+			if (data_PM710[pm_dibaca].kwA == 32768)
+				asli_PM710[pm_dibaca].kwA = 0;
+			else
+				asli_PM710[pm_dibaca].kwA = data_PM710[pm_dibaca].kwA * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kwB = buf[5];
-			data_PM710[pm_dibaca].kwB = (data_PM710[pm_dibaca].kwB << 8) + buf[6];
-			asli_PM710[pm_dibaca].kwB = data_PM710[pm_dibaca].kwB * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kwB = buf[5+HD];
+			data_PM710[pm_dibaca].kwB = (data_PM710[pm_dibaca].kwB << 8) + buf[6+HD];
+			if (data_PM710[pm_dibaca].kwB == 32768)
+				asli_PM710[pm_dibaca].kwB = 0;
+			else
+				asli_PM710[pm_dibaca].kwB = data_PM710[pm_dibaca].kwB * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kwC = buf[7];
-			data_PM710[pm_dibaca].kwC = (data_PM710[pm_dibaca].kwC << 8) + buf[8];
-			asli_PM710[pm_dibaca].kwC = data_PM710[pm_dibaca].kwC * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kwC = buf[7+HD];
+			data_PM710[pm_dibaca].kwC = (data_PM710[pm_dibaca].kwC << 8) + buf[8+HD];
+			if (data_PM710[pm_dibaca].kwC == 32768)
+				asli_PM710[pm_dibaca].kwC = 0;
+			else
+				asli_PM710[pm_dibaca].kwC = data_PM710[pm_dibaca].kwC * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kw = buf[9];
-			data_PM710[pm_dibaca].kw = (data_PM710[pm_dibaca].kw << 8) + buf[10];
-			asli_PM710[pm_dibaca].kw = data_PM710[pm_dibaca].kw * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kw = buf[9+HD];
+			data_PM710[pm_dibaca].kw = (data_PM710[pm_dibaca].kw << 8) + buf[10+HD];
+			if (data_PM710[pm_dibaca].kw == 32768)
+				asli_PM710[pm_dibaca].kw = 0;
+			else
+				asli_PM710[pm_dibaca].kw = data_PM710[pm_dibaca].kw * satuan_kw[pm_dibaca];
 
 			// kvarA, kvarB, kvarC, kvar
-			data_PM710[pm_dibaca].kvarA = buf[11];
-			data_PM710[pm_dibaca].kvarA = (data_PM710[pm_dibaca].kvarA << 8) + buf[12];
-			asli_PM710[pm_dibaca].kvarA = data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvarA = buf[11+HD];
+			data_PM710[pm_dibaca].kvarA = (data_PM710[pm_dibaca].kvarA << 8) + buf[12+HD];
+			if (data_PM710[pm_dibaca].kvarA == 32768)
+				asli_PM710[pm_dibaca].kvarA = 0;
+			else
+				asli_PM710[pm_dibaca].kvarA = data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kvarB = buf[13];
-			data_PM710[pm_dibaca].kvarB = (data_PM710[pm_dibaca].kvarB << 8) + buf[14];
-			asli_PM710[pm_dibaca].kvarB = data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvarB = buf[13+HD];
+			data_PM710[pm_dibaca].kvarB = (data_PM710[pm_dibaca].kvarB << 8) + buf[14+HD];
+			if (data_PM710[pm_dibaca].kvarB == 32768)
+				asli_PM710[pm_dibaca].kvarB = 0;
+			else
+				asli_PM710[pm_dibaca].kvarB = data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kvarC = buf[15];
-			data_PM710[pm_dibaca].kvarC = (data_PM710[pm_dibaca].kvarC << 8) + buf[16];
-			asli_PM710[pm_dibaca].kvarC = data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvarC = buf[15+HD];
+			data_PM710[pm_dibaca].kvarC = (data_PM710[pm_dibaca].kvarC << 8) + buf[16+HD];
+			if (data_PM710[pm_dibaca].kvarC == 32768)
+				asli_PM710[pm_dibaca].kvarC = 0;
+			else
+				asli_PM710[pm_dibaca].kvarC = data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kvar = buf[17];
-			data_PM710[pm_dibaca].kvar = (data_PM710[pm_dibaca].kvar << 8) + buf[18];
-			asli_PM710[pm_dibaca].kvar = data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvar = buf[17+HD];
+			data_PM710[pm_dibaca].kvar = (data_PM710[pm_dibaca].kvar << 8) + buf[18+HD];
+			if (data_PM710[pm_dibaca].kvar == 32768)
+				asli_PM710[pm_dibaca].kvar = 0;
+			else
+				asli_PM710[pm_dibaca].kvar = data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca];
 
 			// kvaA, kvaB, kvaC, kva
-			data_PM710[pm_dibaca].kvaA = buf[19];
-			data_PM710[pm_dibaca].kvaA = (data_PM710[pm_dibaca].kvaA << 8) + buf[20];
-			asli_PM710[pm_dibaca].kvaA = data_PM710[pm_dibaca].kvaA * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvaA = buf[19+HD];
+			data_PM710[pm_dibaca].kvaA = (data_PM710[pm_dibaca].kvaA << 8) + buf[20+HD];
+			if (data_PM710[pm_dibaca].kvaA == 32768)
+				asli_PM710[pm_dibaca].kvaA = 0;
+			else
+				asli_PM710[pm_dibaca].kvaA = data_PM710[pm_dibaca].kvaA * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kvaB = buf[21];
-			data_PM710[pm_dibaca].kvaB = (data_PM710[pm_dibaca].kvaB << 8) + buf[22];
-			asli_PM710[pm_dibaca].kvaB = data_PM710[pm_dibaca].kvaB * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvaB = buf[21+HD];
+			data_PM710[pm_dibaca].kvaB = (data_PM710[pm_dibaca].kvaB << 8) + buf[22+HD];
+			if (data_PM710[pm_dibaca].kvaB == 32768)
+				asli_PM710[pm_dibaca].kvaB = 0;
+			else
+				asli_PM710[pm_dibaca].kvaB = data_PM710[pm_dibaca].kvaB * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kvaC = buf[23];
-			data_PM710[pm_dibaca].kvaC = (data_PM710[pm_dibaca].kvaC << 8) + buf[24];
-			asli_PM710[pm_dibaca].kvaC = data_PM710[pm_dibaca].kvaC * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kvaC = buf[23+HD];
+			data_PM710[pm_dibaca].kvaC = (data_PM710[pm_dibaca].kvaC << 8) + buf[24+HD];
+			if (data_PM710[pm_dibaca].kvaC == 32768)
+				asli_PM710[pm_dibaca].kvaC = 0;
+			else
+				asli_PM710[pm_dibaca].kvaC = data_PM710[pm_dibaca].kvaC * satuan_kw[pm_dibaca];
 
-			data_PM710[pm_dibaca].kva = buf[25];
-			data_PM710[pm_dibaca].kva = (data_PM710[pm_dibaca].kva << 8) + buf[26];
-			asli_PM710[pm_dibaca].kva = data_PM710[pm_dibaca].kva * satuan_kw[pm_dibaca];
+			data_PM710[pm_dibaca].kva = buf[25+HD];
+			data_PM710[pm_dibaca].kva = (data_PM710[pm_dibaca].kva << 8) + buf[26+HD];
+			if (data_PM710[pm_dibaca].kva == 32768)
+				asli_PM710[pm_dibaca].kva = 0;
+			else
+				asli_PM710[pm_dibaca].kva = data_PM710[pm_dibaca].kva * satuan_kw[pm_dibaca];
 
 		 }
-		 else if (urt == 4)
-		 {
+		else if (urt == 4)		 {
 			//pfA, pfB, pfC, pf
-			data_PM710[pm_dibaca].pfA = buf[3];
-			data_PM710[pm_dibaca].pfA = (data_PM710[pm_dibaca].pfA << 8) + buf[4];
+			data_PM710[pm_dibaca].pfA = buf[3+HD];
+			data_PM710[pm_dibaca].pfA = (data_PM710[pm_dibaca].pfA << 8) + buf[4+HD];
 			if (data_PM710[pm_dibaca].pfA == 0x8000) asli_PM710[pm_dibaca].pfA = 1.00;
 			else
 			{
@@ -984,8 +1021,8 @@ void taruh_data(int no_slave, int urt)
 			   asli_PM710[pm_dibaca].pfA = data_PM710[pm_dibaca].pfA * 0.001;
 			}
 
-			data_PM710[pm_dibaca].pfB = buf[5];
-			data_PM710[pm_dibaca].pfB = (data_PM710[pm_dibaca].pfB << 8) + buf[6];
+			data_PM710[pm_dibaca].pfB = buf[5+HD];
+			data_PM710[pm_dibaca].pfB = (data_PM710[pm_dibaca].pfB << 8) + buf[6+HD];
 			if (data_PM710[pm_dibaca].pfB == 0x8000) asli_PM710[pm_dibaca].pfB = 1.00;
 			else
 			{
@@ -995,8 +1032,8 @@ void taruh_data(int no_slave, int urt)
 			   asli_PM710[pm_dibaca].pfB = data_PM710[pm_dibaca].pfB * 0.001;
 			}
 
-			data_PM710[pm_dibaca].pfC = buf[7];
-			data_PM710[pm_dibaca].pfC = (data_PM710[pm_dibaca].pfC << 8) + buf[8];
+			data_PM710[pm_dibaca].pfC = buf[7+HD];
+			data_PM710[pm_dibaca].pfC = (data_PM710[pm_dibaca].pfC << 8) + buf[8+HD];
 			//Memo1->Lines->Add(IntToStr( data_PM710[pm_dibaca].pfC));
 			if (data_PM710[pm_dibaca].pfC == 0x8000) asli_PM710[pm_dibaca].pfC = 1.00;
 			else
@@ -1007,8 +1044,8 @@ void taruh_data(int no_slave, int urt)
 			   asli_PM710[pm_dibaca].pfC = data_PM710[pm_dibaca].pfC * 0.001;
 			}
 
-			data_PM710[pm_dibaca].pf = buf[9];
-			data_PM710[pm_dibaca].pf = (data_PM710[pm_dibaca].pf << 8) + buf[10];
+			data_PM710[pm_dibaca].pf = buf[9+HD];
+			data_PM710[pm_dibaca].pf = (data_PM710[pm_dibaca].pf << 8) + buf[10+HD];
 			if (data_PM710[pm_dibaca].pf == 0x8000) asli_PM710[pm_dibaca].pf = 1.00;
 			else
 			{
@@ -1019,78 +1056,73 @@ void taruh_data(int no_slave, int urt)
 			}
 
 		 }
-		 else if (urt == 5)
-		 {
+		else if (urt == 5)		 {
 			//frekuensi thok
-			data_PM710[pm_dibaca].frek = buf[3];
-			data_PM710[pm_dibaca].frek = (data_PM710[pm_dibaca].frek << 8) + buf[4];
+			//printf("cari frek\r\n");
+			data_PM710[pm_dibaca].frek = buf[3+HD];
+			data_PM710[pm_dibaca].frek = (data_PM710[pm_dibaca].frek << 8) + buf[4+HD];
 
 			if (data_PM710[pm_dibaca].frek == 32768) data_PM710[pm_dibaca].frek = 0;
 			asli_PM710[pm_dibaca].frek = data_PM710[pm_dibaca].frek * 0.01;
 
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].frek * 0.01;
-			//Label22->Caption = FloatToStrF(f, ffGeneral, 4, 3);
 			#endif
-
+			//printf("Nilai frek: %f\r\n", data_PM710[pm_dibaca].frek * 0.01);
 		 }
-		 else if (urt == 6)
-		 {
+		else if (urt == 6)		 {
 			//ENERGI
 			// kwh, kvarh
-			temp2 = buf[7];
-			temp2 = (temp2 << 8) + buf[8];
+			temp2 = buf[7+HD];
+			temp2 = (temp2 << 8) + buf[8+HD];
 			temp2 = temp2 * 10000;
 
-			temp = buf[5];
-			temp = (temp << 8) + buf[6];
+			temp = buf[5+HD];
+			temp = (temp << 8) + buf[6+HD];
 			temp = (temp+temp2) * 10000;
 
-			data_PM710[pm_dibaca].kwh = buf[3];
-			data_PM710[pm_dibaca].kwh = (data_PM710[pm_dibaca].kwh << 8) + buf[4];
+			data_PM710[pm_dibaca].kwh = buf[3+HD];
+			data_PM710[pm_dibaca].kwh = (data_PM710[pm_dibaca].kwh << 8) + buf[4+HD];
 			data_PM710[pm_dibaca].kwh = data_PM710[pm_dibaca].kwh + temp;
 			asli_PM710[pm_dibaca].kwh = data_PM710[pm_dibaca].kwh * satuan_kwh[pm_dibaca];
 
 			//
-			temp2 = buf[15];
-			temp2 = (temp2 << 8) + buf[16];
+			temp2 = buf[15+HD];
+			temp2 = (temp2 << 8) + buf[16+HD];
 			temp2 = temp2 * 10000;
 
-			temp = buf[13];
-			temp = (temp << 8) + buf[14];
+			temp = buf[13+HD];
+			temp = (temp << 8) + buf[14+HD];
 			temp = (temp+temp2) * 10000;
 
-			data_PM710[pm_dibaca].kvarh = buf[11];
-			data_PM710[pm_dibaca].kvarh = (data_PM710[pm_dibaca].kvarh << 8) + buf[12];
+			data_PM710[pm_dibaca].kvarh = buf[11+HD];
+			data_PM710[pm_dibaca].kvarh = (data_PM710[pm_dibaca].kvarh << 8) + buf[12+HD];
 			data_PM710[pm_dibaca].kvarh = data_PM710[pm_dibaca].kvarh + temp;
 			asli_PM710[pm_dibaca].kvarh = data_PM710[pm_dibaca].kvarh * satuan_kwh[pm_dibaca];
-
 		 }
-
-		 else if (urt == 7)
-		 {
+		else if (urt == 7)		 {
 			//ENERGI KVAH
 			// kvah
-			temp2 = buf[7];
-			temp2 = (temp2 << 8) + buf[8];
+			temp2 = buf[7+HD];
+			temp2 = (temp2 << 8) + buf[8+HD];
 			temp2 = temp2 * 10000;
 
-			temp = buf[5];
-			temp = (temp << 8) + buf[6];
+			temp = buf[5+HD];
+			temp = (temp << 8) + buf[6+HD];
 			temp = (temp+temp2) * 10000;
 
-			data_PM710[pm_dibaca].kvah = buf[3];
-			data_PM710[pm_dibaca].kvah = (data_PM710[pm_dibaca].kvah << 8) + buf[4];
+			data_PM710[pm_dibaca].kvah = buf[3+HD];
+			data_PM710[pm_dibaca].kvah = (data_PM710[pm_dibaca].kvah << 8) + buf[4+HD];
 			data_PM710[pm_dibaca].kvah = data_PM710[pm_dibaca].kvah + temp;
 			asli_PM710[pm_dibaca].kvah = data_PM710[pm_dibaca].kvah * satuan_kwh[pm_dibaca];
 
-			kontrol_PM[pm_dibaca].alamat = addr_PM710;
+			//kontrol_PM[pm_dibaca].alamat = addr_PM710;
+			kontrol_PM[pm_dibaca].alamat = pm_dibaca;
 			kontrol_PM[pm_dibaca].konek = 1;             // tersambung
 			kontrol_PM[pm_dibaca].baru = 1;              // data baru
 
 			//cek jika Volt = 0, maka mesin mati
-			if (asli_PM710[pm_dibaca].volt1 == 0)
-			{
+			if (asli_PM710[pm_dibaca].volt1 == 0)	{
 			   kontrol_PM[pm_dibaca].baru = 0;           // supaya tidak dikirim ethernet
 			}
 

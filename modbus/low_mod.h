@@ -66,7 +66,7 @@
 
 #ifdef TIPE_PM810
 #define JML_REQ_PM	8
-#define meter_current   1100
+#define meter_current   1100		// 
 #define meter_voltage   1120
 #define meter_power     1140
 #define meter_faktor    1160

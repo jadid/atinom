@@ -184,7 +184,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (envx->statusWebClient==1) {
 			
 			wclient++;
-			if (wclient == 1000) {
+			if (wclient == 980) {
 				wclient = 0;
 				
 				jmlData=kirimModul(0, il, dl);
@@ -195,27 +195,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				//printf("____Kirim : %d\r\n", kirimURL);
 			}
 		}
-
-/*
-		if (wclient == 250)	
-		{
-			if (detik1<4) {
-				detik1++;
-				if (!terkirimURL) {
-					wclient = 0;
-					jmlData=kirimModul(0, il, dl);
-					sprintf(ipdest, "%d.%d.%d.%d", env2.GW0, env2.GW1, env2.GW2, env2.GW3);
-					sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", env2.berkas, env2.SN, jmlData, il, dl);
-					webclient_get(ipdest, 80, datakeserver);
-					kirimURL++;
-					printf("____Kirim : %d\r\n", kirimURL);
-				}
-			} else {
-				detik1=0;
-				terkirimURL=0;
-			}
-		}
-//*/
 		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
@@ -246,8 +225,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		#endif
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
-		if (cek_paket())
-		{
+		if (cek_paket())	{
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
 		         into the uip_buf. If it returns > 0, there is a packet in the
@@ -282,8 +260,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 		      }
 		}
-		else
-		{
+		else		{
 		      /* The poll function returned 0, so no packet was
 		         received. Instead we check if it is time that we do the
 		         periodic processing. */

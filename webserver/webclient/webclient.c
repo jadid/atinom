@@ -298,7 +298,7 @@ parse_statusline(u16_t len)
       } else {
 	uip_abort();
 	//webclient_aborted();
-	printf("%s(): Aborted\r\n", __FUNCTION__);
+	//printf("%s(): Aborted\r\n", __FUNCTION__);
 	return 0;
       }
       
@@ -451,7 +451,7 @@ webclient_appcall(void)
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	 printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	 //printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   

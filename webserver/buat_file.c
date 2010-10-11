@@ -64,6 +64,12 @@ static unsigned int nomer_mesin=0;
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
+#ifdef PAKAI_PM
+	extern char * judulnya_pm[];
+	extern char * satuannya_pm[];
+#endif
+
+
 //#ifdef BOARD_TAMPILAN
 #ifdef CARI_SUMBER
 #define LINK_ATAS "<table border=\"0\" align=\"left\">\n \
@@ -93,22 +99,22 @@ static unsigned int nomer_mesin=0;
 
 #ifdef BOARD_KOMON_WEB
 
-#define LINK_ATAS "<table border=""0"" align=""left"">\n \
-  <tbody align=""center"">\n \
+#define LINK_ATAS "<table border=\"0\" align=\"left\">\n \
+  <tbody align=\"center\">\n \
 	<tr>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""index.html"">Data</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""setting.html"">Setting</a></td>\n \
-      <td bgcolor=""lightGray"" width=""200""><a href=""about.html"">About</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"index.html\">Data</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"setting.html\">Setting</a></td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\"><a href=\"about.html\">About</a></td>\n \
     </tr>\n \
   </tbody>\n \
 </table>\n"
 
-#define LINK_BAWAH "<table border=""0"" align=""left"">\n \
-  <tbody align=""center"">\n \
+#define LINK_BAWAH "<table border=\"0\" align=\"left\">\n \
+  <tbody align=\"center\">\n \
 	<tr>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
-      <td bgcolor=""lightGray"" width=""200"">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
+      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
     </tr>\n \
   </tbody>\n \
 </table>\n"
@@ -447,6 +453,13 @@ void ganti_setting(char *str) {
 	#endif
 }
 
+#if 0
+void buat_file_index(void) {
+	buat_head(1);
+	
+	buat_bottom();
+}
+#endif
 
 #if 1
 void buat_file_index(void) {
@@ -474,9 +487,9 @@ void buat_file_index(void) {
 	strcat(tot_buf, head_buf);
 	
 	strcat(tot_buf, "<table border>\n");
-	strcat(tot_buf, "<col width = ""100px"" />\n");		// titik
-	strcat(tot_buf, "<col width = ""200px"" />\n");		// nilai
-	strcat(tot_buf, "<col width = ""500px"" />\n");		// keterangan	
+	strcat(tot_buf, "<col width = \"100px\" />\n");		// titik
+	strcat(tot_buf, "<col width = \"200px\" />\n");		// nilai
+	strcat(tot_buf, "<col width = \"500px\" />\n");		// keterangan	
 	
 	strcat(tot_buf, "<tr>\n<th>Titik</th>\n");
 	strcat(tot_buf, "<th>Nilai</th>\n");
@@ -510,17 +523,37 @@ void buat_file_index(void) {
 	}
 #endif
 
-#ifdef BOARD_KOMON_WEB	
+#ifdef BOARD_KOMON_WEB
+
 	strcat(tot_buf, "</h4>");				
+
+	#ifdef PAKAI_PM
+		struct t_setting *konfig;
+		konfig = (char *) ALMT_KONFIG;
+		
+		struct t_sumber_pm *pmx;
+		pmx = (char *) ALMT_SUMBER;
+		
+		strcat(tot_buf, "<br/><b>Alamat : </b>");
+		
+		for (i=0; i<JML_SUMBER; i++)	{
+			/* status */
+			if (pmx->pm[i].status == 1) {
+				sprintf(head_buf, "[%d] ", pmx->pm[i].alamat);
+				strcat(tot_buf, head_buf);
+			}
+		}
+	#endif
+
 	strcat(tot_buf, "<table border>\n");
-	strcat(tot_buf, "<col width = \"70px\" />\n");
-	strcat(tot_buf, "<col width = \"90px\" />\n");
+	//strcat(tot_buf, "<col width = \"70px\" />\n");
+	//strcat(tot_buf, "<col width = \"90px\" />\n");
 #ifdef BOARD_KOMON_420_SAJA	
-	strcat(tot_buf, "<col width = \"100px\" />\n");
+	//strcat(tot_buf, "<col width = \"100px\" />\n");
 #endif
-	strcat(tot_buf, "<col width = \"100px\" />\n");
-	strcat(tot_buf, "<col width = \"200px\" />\n");
-	strcat(tot_buf, "<tr>\n<th>Kanal</th>\n");
+	//strcat(tot_buf, "<col width = \"100px\" />\n");
+	//strcat(tot_buf, "<col width = \"200px\" />\n");
+	strcat(tot_buf, "<tr>\n<th width=\"100px\">Kanal</th>\n");
 #endif
 
 #ifdef BOARD_KOMON_A_RTD	
@@ -537,8 +570,8 @@ void buat_file_index(void) {
 #endif
 
 #ifdef BOARD_KOMON_420_SABANG	
-	strcat(tot_buf, "<th>Nilai</th>\n");
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
+	strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
+	strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n</tr>\n");
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO	
@@ -590,59 +623,16 @@ void buat_file_index(void) {
 //*
 #ifdef BOARD_KOMON_420_SABANG
 #ifdef PAKAI_PM
-	int h=0;
-	struct t_setting *konfig;
-	konfig = (char *) ALMT_KONFIG;
-	
-	for (i=0; i< PER_SUMBER; i++)
-	{		
+	int no=0;
 
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%1.4f</td>\n", (i+1), data_f[i*PER_SUMBER+0]);
+	for (i=0; i< PER_SUMBER; i++)	{		
+
+		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (i+1), data_f[no*PER_SUMBER+i]);
 		strcat(tot_buf, head_buf);
-		ganti_karakter(ket, konfig[i].ket);
-		sprintf(head_buf, "<td>%s</td>\n</tr>\n", ket);		
+		sprintf(head_buf, "<td>%s</td>\n</tr>\n", judulnya_pm[i]);		
 		strcat(tot_buf, head_buf);
-		/*
-		 printf("   kwh		: %.2f kWh\r\n", printf("   kwh		: %.2f kWh\r\n", data_f[i*PER_SUMBER+0]);		// 41
-		printf("   kvah		: %.2f kVAh\r\n", data_f[i*PER_SUMBER+1]);		// 41
-		printf("   kvarh	: %.2f kVArh\r\n", data_f[i*PER_SUMBER+2]);		// 41
-		printf("   kw		: %.2f kW\r\n", data_f[i*PER_SUMBER+3]);		// 41
-		printf("   kva		: %.2f kVA\r\n", data_f[i*PER_SUMBER+4]);		// 41
-		printf("   kvar		: %.2f kVAr\r\n", data_f[i*PER_SUMBER+5]);		// 41
-		printf("   pf		: %.2f\r\n", data_f[i*PER_SUMBER+6]);		// 41
-		printf("   volt1	: %.2f V\r\n", data_f[i*PER_SUMBER+7]);		// 41
-		printf("   volt2	: %.2f V\r\n", data_f[i*PER_SUMBER+8]);		// 41
-		printf("   amp		: %.2f A\r\n", data_f[i*PER_SUMBER+9]);		// 41
-		printf("   frek		: %.2f Hz\r\n", data_f[i*PER_SUMBER+10]);		// 41
-		printf("   ampA		: %.2f A\r\n", data_f[i*PER_SUMBER+11]);		// 41
-		printf("   ampB		: %.2f A\r\n", data_f[i*PER_SUMBER+12]);		// 41
-		printf("   ampC		: %.2f A\r\n", data_f[i*PER_SUMBER+13]);		// 41
-		printf("   ampN		: %.2f A\r\n", data_f[i*PER_SUMBER+14]);		// 41
-		printf("   voltA_B	: %.2f V\r\n", data_f[i*PER_SUMBER+15]);		// 41
-		printf("   voltB_C	: %.2f V\r\n", data_f[i*PER_SUMBER+16]);		// 41
-		printf("   voltA_C	: %.2f V\r\n", data_f[i*PER_SUMBER+17]);		// 41
-		printf("   voltA_N	: %.2f V\r\n", data_f[i*PER_SUMBER+18]);		// 41);		// 41
-		printf("   kvah		: %.2f kVAh\r\n", data_f[i*PER_SUMBER+1]);		// 41
-		printf("   kvarh	: %.2f kVArh\r\n", data_f[i*PER_SUMBER+2]);		// 41
-		printf("   kw		: %.2f kW\r\n", data_f[i*PER_SUMBER+3]);		// 41
-		printf("   kva		: %.2f kVA\r\n", data_f[i*PER_SUMBER+4]);		// 41
-		printf("   kvar		: %.2f kVAr\r\n", data_f[i*PER_SUMBER+5]);		// 41
-		printf("   pf		: %.2f\r\n", data_f[i*PER_SUMBER+6]);		// 41
-		printf("   volt1	: %.2f V\r\n", data_f[i*PER_SUMBER+7]);		// 41
-		printf("   volt2	: %.2f V\r\n", data_f[i*PER_SUMBER+8]);		// 41
-		printf("   amp		: %.2f A\r\n", data_f[i*PER_SUMBER+9]);		// 41
-		printf("   frek		: %.2f Hz\r\n", data_f[i*PER_SUMBER+10]);		// 41
-		printf("   ampA		: %.2f A\r\n", data_f[i*PER_SUMBER+11]);		// 41
-		printf("   ampB		: %.2f A\r\n", data_f[i*PER_SUMBER+12]);		// 41
-		printf("   ampC		: %.2f A\r\n", data_f[i*PER_SUMBER+13]);		// 41
-		printf("   ampN		: %.2f A\r\n", data_f[i*PER_SUMBER+14]);		// 41
-		printf("   voltA_B	: %.2f V\r\n", data_f[i*PER_SUMBER+15]);		// 41
-		printf("   voltB_C	: %.2f V\r\n", data_f[i*PER_SUMBER+16]);		// 41
-		printf("   voltA_C	: %.2f V\r\n", data_f[i*PER_SUMBER+17]);		// 41
-		printf("   voltA_N	: %.2f V\r\n", data_f[i*PER_SUMBER+18]);		// 41
-		 
-		//*/	
 	}
+	//*/
 #endif
 	
 #endif
@@ -751,8 +741,8 @@ void buat_file_index(void) {
 	//printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
-#endif
 
+#endif
 
 void buat_file_setting(unsigned int flag, char *kata)
 {
@@ -904,15 +894,8 @@ void buat_file_setting(unsigned int flag, char *kata)
 		// buahaya disini !!!! //
 		#ifdef BOARD_KOMON_420_SAJA
 		for (i=0; i<KANALNYA; i++)
-		#endif
-		
-		#ifdef BOARD_KOMON_420_SABANG
-		int jmlData = (sizeof(data_f)/sizeof(float));
-		printf("jmlData: %d\r\n", jmlData);
-		for (i=0; i<jmlData; i++)
-		#endif
 		{
-		/*
+		//*
 			// Kanal, id & Keterangan
 			ganti_karakter(ket, konfig[i].ket);
 			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
@@ -928,6 +911,25 @@ void buat_file_setting(unsigned int flag, char *kata)
 			strcat(tot_buf, head_buf);
 		//*/
 		}
+		#endif
+		
+		#ifdef BOARD_KOMON_420_SABANG
+		
+		for (i=0; i<PER_SUMBER; i++) {
+			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+							"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+							"<td align=\"left\">%s</td>\n" \
+							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+				i+1, i+1, konfig[i].id, \
+				judulnya_pm[i], \
+				i+1, (konfig[i].status?"checked":""), \
+				i+1, (konfig[i].status?"":"checked"));
+			strcat(tot_buf, head_buf);
+		}
+		#endif
+		
 		
 		strcat(tot_buf, "</tbody>\n</table>\n");
 

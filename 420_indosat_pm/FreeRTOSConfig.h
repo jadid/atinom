@@ -49,7 +49,7 @@
 #define BOARD_KOMON_420_SABANG
 #define VERSI_KOMON		"1.50"
 
-//#define PAKAI_WEBCLIENT
+#define PAKAI_WEBCLIENT
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 

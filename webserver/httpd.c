@@ -346,7 +346,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
   PSOCK_BEGIN(&s->sin);
 
   PSOCK_READTO(&s->sin, ISO_space);
-	printf("http spasi: %s\r\n", s->inputbuf);
+	//printf("http spasi: %s\r\n", s->inputbuf);
   if(strncmp(s->inputbuf, http_get, 4) != 0) {
 	
     PSOCK_CLOSE_EXIT(&s->sin);
@@ -392,7 +392,7 @@ handle_connection(struct httpd_state *s)
 
 	handle_input(s);
 	if(s->state == STATE_OUTPUT) {
-		//printf("__________masuk handle connection: %d\r\n", nEth++)
+		//printf("__________masuk handle connection: %d\r\n", nEth++);
 		handle_output(s);
   }	
 }
@@ -405,9 +405,6 @@ void httpd_appcall(void)
   } else if(uip_connected()) {
     PSOCK_INIT(&s->sin, s->inputbuf, sizeof(s->inputbuf) - 1);
     PSOCK_INIT(&s->sout, s->inputbuf, sizeof(s->inputbuf) - 1);
-    #if 0
-    PSOCK_INIT(&s->p, s->inputbuffer, sizeof(s->inputbuffer) );
-    #endif
     PT_INIT(&s->outputpt);
     s->state = STATE_WAITING;
     /*    timer_set(&s->timer, CLOCK_SECOND * 100);*/

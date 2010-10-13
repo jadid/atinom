@@ -83,7 +83,7 @@ static void setenv_fnt(int argc, char **argv)
 	unsigned int ret_ip;
 	
   	if (strcmp(argv[1], "ipaddr") == 0)  	{
-		printf(" set IP address\r\n");  
+		printf(" set IP address ");  
 		//memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
@@ -97,7 +97,7 @@ static void setenv_fnt(int argc, char **argv)
 		printf("%d.%d.%d.%d\r\n", p_sbr->IP0, p_sbr->IP1, p_sbr->IP2, p_sbr->IP3);
 	}
 	else if (strcmp(argv[1], "gateway") == 0)  	{
-		printf(" set GATEWAY address\r\n");  
+		printf(" set GATEWAY address ");  
 		//memset(buf, 0, sizeof (buf));
 		sprintf(buf, "%s", argv[2]);
 		
@@ -142,16 +142,16 @@ static void setenv_fnt(int argc, char **argv)
 		}
 	}
 	else if (strcmp(argv[1], "file") == 0)	{
-		printf(" set file \r\n");
+		printf(" set file");
 		//memset(env2.SN, 0, sizeof (env2.SN));
 		if (strlen(argv[2]) > sizeof (p_sbr->berkas)) 	{
-			printf("file terlalu panjang !");
+			printf(", Nama terlalu panjang !");
 			vPortFree( p_sbr );
 			return;	
 		}
 		else {
 			sprintf(p_sbr->berkas, "%s", argv[2]);
-			printf(" Nama file : %s\n", p_sbr->berkas);
+			printf(", Nama : %s\n", p_sbr->berkas);
 		}
 	}
 	else if (strcmp(argv[1], "webclient") == 0)	{
@@ -159,7 +159,7 @@ static void setenv_fnt(int argc, char **argv)
   		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {
 			p_sbr->statusWebClient = (argv[2][0] - '0');
 		} 
-		else if (strcmp(argv[2], "aktif")==0) {
+		else if (strcmp(argv[2], "aktif")==0 || strcmp(argv[2], "hidup")==0) {
 			p_sbr->statusWebClient = 1;
 		} else if (strcmp(argv[2], "mati")==0)  {
 			p_sbr->statusWebClient = 0;

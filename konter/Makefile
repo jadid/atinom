@@ -110,12 +110,17 @@ THUMB_SOURCE= \
 #		LCD/menu_popup.c \
 
 
+WEBCLIENT_SOURCE = \
+		../webserver/webclient/webclient.c			\
+		../webserver/webclient/webclient-strings.c	\
+
 	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../serial/serialISR.c \
 		../GPIO/gpio_ISR.c 
 		
+THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

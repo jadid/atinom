@@ -36,11 +36,13 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-//#define BOARD_TAMPILAN
+
+#define CENDOL
+
 #define BOARD_KOMON
 #define BOARD_KOMON_KONTER
-#define VERSI_KOMON		"1.45"
-#define KONTER_MALINGPING	1
+#define VERSI_KOMON		"1.50"
+//#define KONTER_MALINGPING	1
 
 #define DEBUG_KONTER	0
 
@@ -49,8 +51,10 @@
 #define printf	printf2
 
 #define PAKE_TELNETD
+#define PAKAI_WEBCLIENT
 
-#define PROMPT 		"Konter $ "
+
+#define PROMPT 		"Konter@"
 #define NAMA_BOARD	"Babelan Komon Konter"
 
 /*-----------------------------------------------------------

@@ -246,14 +246,14 @@ int main( void )
 #ifdef BOARD_KOMON_KONTER
 	init_gpio();
 #endif
-	init_gpio_relay();
-	setup_adc();
+	//init_gpio_relay();
+	//setup_adc();
 
 #ifdef jalankan
 	init_led_utama();
 	start_ether();
 	init_shell();
-	init_task_adc();
+	//init_task_adc();
 
 	vTaskStartScheduler();
 

@@ -54,6 +54,7 @@
 #endif
 
 #ifdef BOARD_KOMON_KONTER
+#include "utils.c"
 #include "set_kanal.c"
 #endif
 
@@ -404,13 +405,36 @@ extern unsigned int data_putaran[];
 extern unsigned int data_hit[];	
 extern struct t2_konter konter;
 				
-unsigned int is_angka(float a)
-{
+unsigned int is_angka(float a)	{
 	return (a == a);
 }
 
-static void cek_rpm(int argc, char **argv)
-{
+void data_frek_rpm() {
+	unsigned int i;
+	float temp_f;
+	float temp_rpm;
+	
+	for (i=0; i<10; i++)	{
+		if (i>6) {
+			if (data_putaran[i])	{
+				// cari frekuensi
+				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
+				// rpm
+				temp_rpm = temp_f * 60;
+			}
+			else	{
+				temp_f = 0;
+				data_f[i*2] = 0;
+				temp_rpm = 0;
+			}
+			data_f[i*2] = konter.t_konter[i].hit;
+			data_f[(i*2)+1] = temp_rpm;
+		}
+	}	
+}
+
+//static void cek_rpm(int argc, char **argv)
+static void cek_rpm(){
 	unsigned int i;
 	float temp_f;
 	float temp_rpm;
@@ -418,24 +442,22 @@ static void cek_rpm(int argc, char **argv)
 	printf("Global hit = %d\n", konter.global_hit);
 	printf("Ov flow = %d\n", konter.ovflow);
 
-	for (i=0; i<10; i++)
-	{	
-		if (data_putaran[i])
-		{
-			// cari frekuensi
-			temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
-			// rpm
-			temp_rpm = temp_f * 60;
+	for (i=0; i<10; i++)	{
+		if (i>6) {
+			if (data_putaran[i])	{
+				// cari frekuensi
+				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
+				// rpm
+				temp_rpm = temp_f * 60;
+			}
+			else	{
+				temp_f = 0;
+				temp_rpm = 0;
+			}	
+			
+			printf(" %2d : F = %4.2f Hz, rpm = %4.2f, hit = %d\n", (i+1), \
+				temp_f, temp_rpm, konter.t_konter[i].hit);			
 		}
-		else
-		{
-			temp_f = 0;
-			temp_rpm = 0;
-		}	
-		
-		printf(" %2d : F = %4.2f Hz, rpm = %4.2f, hit = %d\n", (i+1), \
-			temp_f, temp_rpm, konter.t_konter[i].hit);
-
 	}
 	
 	#if (KONTER_MALINGPING == 1)
@@ -821,7 +843,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 600)
+	  if (lop > 6000)
 	  {
 			lop = 0;
 			printf("\r\nPasswd lock!\r\n");
@@ -852,6 +874,10 @@ portTASK_FUNCTION(shell, pvParameters )
 					
 					simpan_ke_data_f();
 				#endif
+				
+				#ifdef BOARD_KOMON_KONTER
+					data_frek_rpm();
+				#endif
 			}
 	  }
 	  
@@ -870,6 +896,10 @@ portTASK_FUNCTION(shell, pvParameters )
 			#endif
 			
 			simpan_ke_data_f();
+		#endif
+		
+		#ifdef BOARD_KOMON_KONTER
+			data_frek_rpm();
 		#endif
 	  
 	  #ifdef PAKAI_MMC

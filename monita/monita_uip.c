@@ -56,7 +56,7 @@ extern struct t_adc st_adc;
 
 #ifdef BOARD_KOMON_KONTER
 #include "../tinysh/enviro.h"
-extern struct t_env env2;
+//extern struct t_env env2;
 #endif
 
 
@@ -169,11 +169,14 @@ void monita_appcall(void)
 				extern unsigned int data_putaran[];
 				extern unsigned int data_hit[];				
 				
+				struct t_env *env2;
+				env2 = (char *) ALMT_ENV;
+				
 				t=0;
 				for (i=0; i<10;i++)
 				{
 					//data_float.data[t] = data_hit[i];
-					data_float.data[t] = (unsigned int) (data_hit[i] * env2.kalib[i].m);
+					data_float.data[t] = (unsigned int) (data_hit[i] * env2->kalib[i].m);
 					t++;
 					
 					if (data_putaran[i])

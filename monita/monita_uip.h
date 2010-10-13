@@ -22,7 +22,7 @@
 
 #ifdef PAKAI_PM
 	// di sektor 26, harusnya bisa nyampe 120 sumber
-	#define JML_SUMBER	5
+	#define JML_SUMBER	10
 #else
 	#define JML_SUMBER	1
 #endif

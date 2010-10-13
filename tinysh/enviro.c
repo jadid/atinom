@@ -163,7 +163,7 @@ int baca_env(char tampil)
 			
 			#ifdef PAKAI_WEBCLIENT
 				printf(" WebClient  = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 
-				printf(" File       = ");		printf("%s\r\n", env2->berkas); 
+				printf(" File       = %s\r\n", env2->berkas); 
 			#endif
 			garis_bawah();
 			#ifdef PAKAI_ADC
@@ -180,7 +180,22 @@ int baca_env(char tampil)
 					}
 				}
 			}
-			#endif			
+			#endif
+
+			#ifdef BOARD_KOMON_KONTER
+			int z=0;
+			if (tampil == 1)	{
+				printf("   No       Faktor kalibrasi     Keterangan kanal\r\n");
+				for (i=0; i<KANALNYA; i++)	{
+					if (i> (7*2-1)) {
+						z++;
+						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\r\n", \ 
+							z, env2->kalib[i].m, env2->kalib[i].C, (int)(i/2)+1);
+					}
+				}
+			}
+			#endif
+				
 			return 0;
 		}
 		else
@@ -188,6 +203,12 @@ int baca_env(char tampil)
 			printf(" Magic number2 salah !\r\n");
 			//set_default_ip();
 			set_env_default();
+			printf("set konfig menjadi default\r\n");
+			set_awal_konfig();
+			#ifdef PAKAI_PM
+				printf("set konfig pm menjadi default\r\n");
+				set_awal_pm();
+			#endif
 			return -1;
 		}
 	}

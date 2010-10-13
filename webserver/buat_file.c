@@ -606,9 +606,9 @@ void buat_file_index(void) {
 #endif
 
 #ifdef BOARD_KOMON_KONTER
-	strcat(tot_buf, "<th>Puls (Count)</th>\n");
-	strcat(tot_buf, "<th>Frek (rpm)</th>\n");
-	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
+	strcat(tot_buf, "<th width=\"100px\">Puls (Count)</th>\n");
+	strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
+	strcat(tot_buf, "<th width=\"240px\">Keterangan</th>\n</tr>\n");
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
@@ -716,33 +716,16 @@ void buat_file_index(void) {
 	extern unsigned int data_putaran[];
 	extern unsigned int data_hit[];
 	
-	for (i=0; i< 10; i++)
-	{		
-		if (data_putaran[i])
-		{
-			/*  cari frekuensi */
-			temp_rpm = 1000000000.00 / data_putaran[i]; // data_rpm msh dlm nS
-			/* rpm */
-			fl = temp_rpm * 60;
+	struct t_setting *konfig;
+	konfig = (char *) ALMT_KONFIG;
+
+	//for (i=0; i< KANALNYA; i++)	{
+	for (i=0; i< 10; i++)	{		
+		if (i>6) {
+			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.0f</td><td align=\"right\">%10.2f</td>\n<td>Pulsa dan Konter</td>\n</tr>\n", \
+				i+1, data_f[i*2], data_f[(i*2)+1]);
+			strcat(tot_buf, head_buf);	
 		}
-		else
-		{
-			temp_rpm = 0;
-			fl = 0;
-		}
-		
-		/* 
-			faktor kalibrasi dipakai pada konter 
-			
-			faktor kalibrasi kanal 0 untuk data_hit 0
-				 
-		*/
-		unsigned int t_hit;
-		t_hit = (unsigned int) (data_hit[i] * env2.kalib[i].m);
-							
-		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td>%d</td>\n", (i+1), t_hit );
-		strcat(tot_buf, head_buf);	
-		
 		#if (KONTER_MALINGPING == 1)
 		/* data kanal 1 adalah adc1 (adc0 internal) */
 		if (i== 0)
@@ -753,8 +736,8 @@ void buat_file_index(void) {
 				
 		#endif
 				
-		sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2.kalib[i].ket);		
-		strcat(tot_buf, head_buf);
+		//sprintf(head_buf, "<td>%3.3f</td>\n<td>%s</td>\n</tr>\n", fl, env2->kalib[i].ket);		
+		//strcat(tot_buf, head_buf);
 				
 	}
 #endif
@@ -957,7 +940,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
 		strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
-		strcat(tot_buf, "<th width=\"130px\">Keterangan</th>\n");
+		strcat(tot_buf, "<th width=\"150px\">Keterangan</th>\n");
 		strcat(tot_buf, "<th width=\"130px\">Status Kirim</th>\n");
 		strcat(tot_buf, "<th width=\"50x\">Ganti</th>\n");
 		
@@ -1003,6 +986,36 @@ void buat_file_setting(unsigned int flag, char *kata)
 		#endif
 		#endif
 		
+		
+		#ifdef BOARD_KOMON_KONTER
+		int w=1,z=0;
+		for (i=0; i<KANALNYA; i++)		{
+		//*
+			// Kanal, id & Keterangan
+			if (i> (7*2-1)) {
+				//ganti_karakter(ket, konfig[i].ket);
+				w=1-w;
+				if (w==1) {
+					sprintf(ket, "Frekuensi kanal %d", (int)(i/2)+1);
+				} else {
+					sprintf(ket, "Pulsa konter kanal %d", (int)(i/2)+1);
+				}
+				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+								"<td align=\"left\">%s</td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+					z+1, i+1, konfig[i].id, \
+					ket, \
+					i+1, (konfig[i].status?"checked":""), \
+					i+1, (konfig[i].status?"":"checked"));
+				strcat(tot_buf, head_buf);
+				z++;
+			}
+		//*/
+		}
+		#endif
 		
 		strcat(tot_buf, "</tbody>\n</table>\n");
 

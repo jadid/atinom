@@ -85,30 +85,53 @@ void cek_konfig(void)
 	garis_bawah2();
 	
 	#endif
-	printf("  No.    ID    Nama            status\r\n");
-
+	printf("  No.    ID      Nama                  status\r\n");
+	int w=1,z=0;
 	for (i=0; i<45; i++)
 		printf("-");
 	printf("\r\n");
 	
-	for (i=0; i<PER_SUMBER; i++)
-	{
-		#ifdef PAKAI_PM
-			printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, judulnya_pm[i]);
+	for (i=0; i<PER_SUMBER; i++)	{
+		#ifdef BOARD_KOMON_KONTER
+			
+			
+			if (i> (7*2-1)) {
+				w=1-w;
+				z++;
+				if (w==1) {
+					printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i].id, "Frekuensi kanal", (int)(i/2)+1);
+				} else {
+					printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i].id, "Pulsa konter kanal", (int)(i/2)+1);
+				}
+				
+				if (konfig[i].status == 0)
+					printf("%-16s","Tidak Aktif");
+				else if (konfig[i].status == 1)
+					printf("%-16s","Aktif / Normal");
+				else if (konfig[i].status == 2)
+					printf("%-16s","TimeOut");
+				else
+					printf("%-16s"," ");
+				printf("\r\n");
+			}
 		#else
-			printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, konfig[i].ket);			// rata kiri
+			#ifdef PAKAI_PM
+				printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, judulnya_pm[i]);
+			#else
+				printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, konfig[i].ket);			// rata kiri
+			#endif
+			
+			/* status */
+			if (konfig[i].status == 0)
+				printf("%-16s","Tidak Aktif");
+			else if (konfig[i].status == 1)
+				printf("%-16s","Aktif / Normal");
+			else if (konfig[i].status == 2)
+				printf("%-16s","TimeOut");
+			else
+				printf("%-16s"," ");
+			printf("\r\n");
 		#endif
-		
-		/* status */
-		if (konfig[i].status == 0)
-			printf("%-16s","Tidak Aktif");
-		else if (konfig[i].status == 1)
-			printf("%-16s","Aktif / Normal");
-		else if (konfig[i].status == 2)
-			printf("%-16s","TimeOut");
-		else
-			printf("%-16s"," ");
-		printf("\r\n");
 	}
 }							 
 //*
@@ -186,7 +209,7 @@ void set_konfig(int argc, char **argv)
 		sprintf(buf, "%s", argv[1]);	
 		
 		sumb = cek_nomer_sumber(buf, jmlData);
-		if (sumb > 0)	{
+		if (sumb >= 0)	{
 			printf(" sumber = %d\r\n", sumb);
 			sprintf(buf, "%s", argv[3]);	
 			stat = cek_nomer_sumber(buf, 32765);

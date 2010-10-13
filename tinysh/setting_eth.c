@@ -138,17 +138,17 @@ void set_konfig(int argc, char **argv)
 				printf(" \r\n");
 				printf("   id : memberikan alamat id pada sumber titik tertentu\r\n");
 				printf("     Power Meter tidak dipengaruhi setting ini\r\n");
-				printf("     misalnya : $ set_env 4 id 19\r\n");
+				printf("     misalnya : $ set_konfig 4 id 19\r\n");
 				printf("     artinya set setting nomer 4 dengan id 19\r\n");
 				printf(" \r\n");
 				printf("   ket : memberikan ket pada titik tertentu\r\n");
-				printf("     misalnya : $ set_env 4 ket RTD_SWD#2\r\n");
+				printf("     misalnya : $ set_konfig 4 ket RTD_SWD#2\r\n");
 				printf("     artinya sumber nomer 4 diberi ket RTD_SWD#2 (maks 10 karakter)\r\n");	
 				printf(" \r\n");
 				printf("   status : set pada sumber tertentu\r\n");
 				printf("     status 0 = tidak aktif, 1 = aktif\r\n");
 				printf("     aktif artinya sumber akan dikirim terus menerus !\r\n");			
-				printf("     misalnya : $ set_env 4 status 1\r\n");
+				printf("     misalnya : $ set_konfig 4 status 1\r\n");
 				printf("     artinya set nomer 4 supaya aktif\r\n");	
 				printf(" \r\n");	
 				return;
@@ -205,7 +205,7 @@ void set_konfig(int argc, char **argv)
 	{
 		//printf("masuk sini\r\n");
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, 20);
+		sumb = cek_nomer_sumber(buf, jmlData);
 		if (sumb > 0)		
 		{
 			printf(" sumber = %d : ", sumb);
@@ -229,7 +229,7 @@ void set_konfig(int argc, char **argv)
 	else if (strcmp(argv[2], "status") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, 20);
+		sumb = cek_nomer_sumber(buf, jmlData);
 		if (sumb > 0)		
 		{
 			printf(" sumber = %d : ", sumb);

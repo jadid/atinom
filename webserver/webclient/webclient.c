@@ -145,14 +145,15 @@ int kirimModul(int sumber, char *il, char *dl) {
 	strcpy(il,"il=");
 	strcpy(dl,"dl=");
 	for (i=0; i<PER_SUMBER; i++) {
-		if (konfig[i].status) {
+		if (konfig[PER_SUMBER*sumber+i].status) {
 			jmlAktif++;
-			if (i==0) {
-				sprintf(id, "%d", konfig[i].id);
-				sprintf(dt, "%.2f", data_f[i]);
+			//if (i==0) {
+			if (jmlAktif==1) {
+				sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
+				sprintf(dt, "%.2f", data_f[PER_SUMBER*sumber+i]);
 			} else {
-				sprintf(id, "~%d", konfig[i].id);
-				sprintf(dt, "~%.2f", data_f[i]);
+				sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
+				sprintf(dt, "~%.2f", data_f[PER_SUMBER*sumber+i]);
 			}
 			strcat(il,id);
 			strcat(dl,dt);

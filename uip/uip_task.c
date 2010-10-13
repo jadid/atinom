@@ -135,7 +135,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #ifdef PAKAI_WEBCLIENT
 		webclient_init();
 		printf("webclient inited !\r\n");
-		int wclient=0, jmlData=0, selang=0, sumbernya=0;
+		int wclient=0, jmlData=0, selang, jmlsumbernya, sumbernya=0;
+		int noPMaktif[JML_SUMBER];
 		char il[256], dl[512];
 		char ipdest[15];
 		extern int kirimURL;
@@ -179,26 +180,37 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
-			
 			wclient++;
 			#ifdef PAKAI_PM
 				struct t_sumber_pm *pmx;
 				pmx = (char *) ALMT_SUMBER;
-			
+				jmlsumbernya=0;
 				for(selang=0; selang<JML_SUMBER; selang++) {
 					if (pmx->pm[selang].status==1) {
-						sumbernya++;
+						noPMaktif[jmlsumbernya]=selang;
+						jmlsumbernya++;
 					}
 				}
-				if (sumbernya==0) {
-					sumbernya=1;
+				if (jmlsumbernya==0) {
+					jmlsumbernya=1;
 				}
-				tiapKirim = (int) 950/sumbernya;
+				tiapKirim = (int) (950/jmlsumbernya);
 			#endif
 			if (wclient == tiapKirim) {
 				wclient = 0;
 				
+				#ifdef PAKAI_PM
+				jmlData=kirimModul(noPMaktif[sumbernya], il, dl);
+				
+				if (sumbernya+1==jmlsumbernya) {
+					sumbernya=0;
+				} else {
+					sumbernya++;
+				}
+				#else
 				jmlData=kirimModul(0, il, dl);
+				#endif
+				
 				sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
 				sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
 				webclient_get(ipdest, 80, datakeserver);

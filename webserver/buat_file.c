@@ -771,7 +771,7 @@ void buat_file_index(void) {
 
 void buat_file_setting(unsigned int flag, char *kata)
 {
-	int i;
+	int i, sumber=0;
 	unsigned int cek_mesin;
 	unsigned int mulai = 0;
 	unsigned int akhir = 0;
@@ -930,6 +930,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 					if (flag && pmx->pm[i].alamat==nk) {
 						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
 						no = i;
+						sumber = i;
 					} else if (pertamax==0 && flag==0) {
 						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
 					} else {
@@ -982,7 +983,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-				i+1, i+1, konfig[PER_SUMBER*no+i].id, \
+				i+1, (sumber*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
 				judulnya_pm[i], \
 				i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
 				i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));

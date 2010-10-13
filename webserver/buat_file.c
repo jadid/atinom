@@ -328,7 +328,7 @@ float stof(char * str) {
 
 
 void ganti_setting(char *str) {
-	printf("Data telah diubah: %s\r\n", str);
+	//printf("Data telah diubah: %s\r\n", str);
 	char tmp[30], kets[30];
 	
 	int nk=0, no=0, titik=0;
@@ -367,7 +367,7 @@ void ganti_setting(char *str) {
 		}
 		if (strncmp(tmp, "s", 1)==0) {
 			stat = strchr(tmp,'=')+1;
-			printf("  stat: %s\r\n", stat);
+			//printf("  stat: %s\r\n", stat);
 		}
 		if (strncmp(tmp, "m", 1)==0) {
 			ids = strchr(tmp,'m');
@@ -375,12 +375,12 @@ void ganti_setting(char *str) {
 			
 			ket = strchr(tmp,'=');
 			m = stof(ket+1);
-			printf(" ket:%s,  m: %f\r\n", ket+1, m);
+			//printf(" ket:%s,  m: %f\r\n", ket+1, m);
 		}
 		if (strncmp(tmp, "c", 1)==0) {
 			ket = strchr(tmp,'=');
 			c = stof(ket+1);
-			printf(" ket:%s,  c: %f\r\n", ket+1, c);
+			//printf(" ket:%s,  c: %f\r\n", ket+1, c);
 		}
 		pch=strchr(pch+1, '&');
 	}
@@ -771,7 +771,7 @@ void buat_file_index(void) {
 
 void buat_file_setting(unsigned int flag, char *kata)
 {
-	int i, sumber=0;
+	int i=0;
 	unsigned int cek_mesin;
 	unsigned int mulai = 0;
 	unsigned int akhir = 0;
@@ -923,6 +923,17 @@ void buat_file_setting(unsigned int flag, char *kata)
 				nk = atoi(tmp);
 			}
 			
+			if (flag==1) {
+				pch=strchr(kata,'&');
+				pch=strchr(pch,'=');
+				pch2=strchr(pch+1, '&');
+				nk=pch2-pch-1;
+							
+				strncpy(tmp, pch+1, nk);
+				tmp[nk]='\0';
+				nk = atoi(tmp);
+			}
+			
 			strcat(tot_buf, "<b>Alamat Modul : </b>");
 			for (i=0; i<JML_SUMBER; i++)	{
 				/* status */
@@ -930,7 +941,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 					if (flag && pmx->pm[i].alamat==nk) {
 						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
 						no = i;
-						sumber = i;
+						//sumber = i;
 					} else if (pertamax==0 && flag==0) {
 						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
 					} else {
@@ -975,20 +986,21 @@ void buat_file_setting(unsigned int flag, char *kata)
 		#endif
 		
 		#ifdef BOARD_KOMON_420_SABANG
-		
+		#ifdef PAKAI_PM
 		for (i=0; i<PER_SUMBER; i++) {
-			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 							"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
 							"<td align=\"left\">%s</td>\n" \
 							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-				i+1, (sumber*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+				pmx->pm[no].alamat, i+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
 				judulnya_pm[i], \
 				i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
 				i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
 			strcat(tot_buf, head_buf);
 		}
+		#endif
 		#endif
 		
 		

@@ -462,13 +462,17 @@ void buat_file_index(void) {
 #endif
 
 #if 1
-void buat_file_index(void) {
+#ifdef PAKAI_PM
+	void buat_file_index(unsigned int flag, char *kata) {
+#else
+	void buat_file_index(void) {
+#endif
 	/* 
 		data masing2 mesin secara bergiliran ditampilkan
 		setiap refresh index.html		
 	*/
 		
-	int i;
+	int i, no=0;
 	unsigned int cek_mesin;
 	float fl;
 	float temp_rpm;
@@ -483,7 +487,7 @@ void buat_file_index(void) {
 	if (nomer_mesin == 5) nomer_mesin = 0;
 	
 	cek_mesin = TIAP_MESIN * nomer_mesin;
-	sprintf(head_buf, "<br>Mesin %d : %s </h4>", (nomer_mesin + 1), mesin[nomer_mesin].nama);
+	sprintf(head_buf, "Mesin %d : %s </h4>", (nomer_mesin + 1), mesin[nomer_mesin].nama);
 	strcat(tot_buf, head_buf);
 	
 	strcat(tot_buf, "<table border>\n");
@@ -528,19 +532,40 @@ void buat_file_index(void) {
 	strcat(tot_buf, "</h4>");				
 
 	#ifdef PAKAI_PM
+		char tmp[5]; char *pch, *pch2;
+		int pertamax=0, nk=0;
 		struct t_setting *konfig;
 		konfig = (char *) ALMT_KONFIG;
 		
 		struct t_sumber_pm *pmx;
 		pmx = (char *) ALMT_SUMBER;
 		
-		strcat(tot_buf, "<br/><b>Alamat : </b>");
-		
+		if(flag) {
+			pch=strchr(kata,'&');
+			pch=strchr(pch,'=');
+			pch2=strchr(pch+1, '\0');
+			nk=pch2-pch-1;
+						
+			strncpy(tmp, pch+1, nk);
+			tmp[nk]='\0';
+			nk = atoi(tmp);
+			//printf("nk: %d, tmp: %s, tmp: %d\r\n", nk, tmp, atoi(tmp)+111);
+		}
+				
+		strcat(tot_buf, "<b>Alamat Modul : </b>");
 		for (i=0; i<JML_SUMBER; i++)	{
 			/* status */
 			if (pmx->pm[i].status == 1) {
-				sprintf(head_buf, "[%d] ", pmx->pm[i].alamat);
+				if (flag && pmx->pm[i].alamat==nk) {
+					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
+					no = i;
+				} else if (pertamax==0 && flag==0) {
+					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
+				} else {
+					sprintf(head_buf, "[<a href=\"index.html?pm=1&d=%d\">%d</a>] ", pmx->pm[i].alamat, pmx->pm[i].alamat);
+				}
 				strcat(tot_buf, head_buf);
+				pertamax++;
 			}
 		}
 	#endif
@@ -623,13 +648,13 @@ void buat_file_index(void) {
 //*
 #ifdef BOARD_KOMON_420_SABANG
 #ifdef PAKAI_PM
-	int no=0;
+	
 
 	for (i=0; i< PER_SUMBER; i++)	{		
 
 		sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (i+1), data_f[no*PER_SUMBER+i]);
 		strcat(tot_buf, head_buf);
-		sprintf(head_buf, "<td>%s</td>\n</tr>\n", judulnya_pm[i]);		
+		sprintf(head_buf, "<td>%s (%s)</td>\n</tr>\n", judulnya_pm[i], satuannya_pm[i]);		
 		strcat(tot_buf, head_buf);
 	}
 	//*/
@@ -872,14 +897,50 @@ void buat_file_setting(unsigned int flag, char *kata)
 	
 	#ifdef CENDOL		// akses php
 
-		if (flag) {
-			sprintf(head_buf, "<br/><font color=\"red\">Data telah diubah: %s</font><br/>", kata);
+		if (flag==1) {
+			sprintf(head_buf, "<font color=\"red\">Data telah diubah: %s</font><br/>", kata);
 			strcat(tot_buf, head_buf);
 		} else {
-			strcat(tot_buf, "<br/>");
+			//strcat(tot_buf, "<br/>");
 		}
 		
 		strcat(tot_buf, "<h3>Info Kanal</h3>\n");
+		#ifdef PAKAI_PM
+			char tmp[5]; char *pch, *pch2;
+			int pertamax=0, nk=0, no=0;
+			
+			struct t_sumber_pm *pmx;
+			pmx = (char *) ALMT_SUMBER;
+			
+			if(flag==2) {
+				pch=strchr(kata,'&');
+				pch=strchr(pch,'=');
+				pch2=strchr(pch+1, '\0');
+				nk=pch2-pch-1;
+							
+				strncpy(tmp, pch+1, nk);
+				tmp[nk]='\0';
+				nk = atoi(tmp);
+			}
+			
+			strcat(tot_buf, "<b>Alamat Modul : </b>");
+			for (i=0; i<JML_SUMBER; i++)	{
+				/* status */
+				if (pmx->pm[i].status == 1) {
+					if (flag && pmx->pm[i].alamat==nk) {
+						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
+						no = i;
+					} else if (pertamax==0 && flag==0) {
+						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
+					} else {
+						sprintf(head_buf, "[<a href=\"setting.html?pm=1&d=%d\">%d</a>] ", pmx->pm[i].alamat, pmx->pm[i].alamat);
+					}
+					strcat(tot_buf, head_buf);
+					pertamax++;
+				}
+			}
+		
+		#endif
 		strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
 		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
@@ -893,8 +954,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 		
 		// buahaya disini !!!! //
 		#ifdef BOARD_KOMON_420_SAJA
-		for (i=0; i<KANALNYA; i++)
-		{
+		for (i=0; i<KANALNYA; i++)		{
 		//*
 			// Kanal, id & Keterangan
 			ganti_karakter(ket, konfig[i].ket);
@@ -922,10 +982,10 @@ void buat_file_setting(unsigned int flag, char *kata)
 							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-				i+1, i+1, konfig[i].id, \
+				i+1, i+1, konfig[PER_SUMBER*no+i].id, \
 				judulnya_pm[i], \
-				i+1, (konfig[i].status?"checked":""), \
-				i+1, (konfig[i].status?"":"checked"));
+				i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
+				i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
 			strcat(tot_buf, head_buf);
 		}
 		#endif

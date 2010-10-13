@@ -84,10 +84,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	vTaskDelay(200);
 	
-	#ifdef MEMORI_BARU
-	
-	#endif
-	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
 	printf("UIP : uip_init\r\n");
@@ -139,11 +135,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #ifdef PAKAI_WEBCLIENT
 		webclient_init();
 		printf("webclient inited !\r\n");
-		int wclient=0, jmlData=0, detik1=0;
+		int wclient=0, jmlData=0, selang=0, sumbernya=0;
 		char il[256], dl[512];
 		char ipdest[15];
 		extern int kirimURL;
 		extern char terkirimURL;
+		int tiapKirim=950;
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -184,7 +181,21 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (envx->statusWebClient==1) {
 			
 			wclient++;
-			if (wclient == 980) {
+			#ifdef PAKAI_PM
+				struct t_sumber_pm *pmx;
+				pmx = (char *) ALMT_SUMBER;
+			
+				for(selang=0; selang<JML_SUMBER; selang++) {
+					if (pmx->pm[selang].status==1) {
+						sumbernya++;
+					}
+				}
+				if (sumbernya==0) {
+					sumbernya=1;
+				}
+				tiapKirim = (int) 950/sumbernya;
+			#endif
+			if (wclient == tiapKirim) {
 				wclient = 0;
 				
 				jmlData=kirimModul(0, il, dl);
@@ -395,8 +406,7 @@ void dispatch_tcp_appcall (void)
 
 #ifdef PAKAI_WEBCLIENT
 	/* webclient */
-	if (uip_conn->rport == HTONS(80))
-	{
+	if (uip_conn->rport == HTONS(80))	{
 		webclient_appcall();
 	}	  
 #endif

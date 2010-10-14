@@ -8,37 +8,26 @@
 	
 	*/
 
-#include "enviro.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "enviro.h"
 // kalau ditaruh di ethram, nulisnya jadi error
 //struct t_env env2;
 
-unsigned int command[5]; 	// For Command Table
-unsigned int result[2]; 	// For Result Table
-IAP iap_entry;
+//unsigned int command[5]; 	// For Command Table
+//unsigned int result[2]; 	// For Result Table
+//IAP iap_entry;
 
 void tulis_env_flash(struct t_env *ev);
 int tulis_env(void);
 
-void print_env(int argc, char **argv)
-{
+void print_env(int argc, char **argv)	{
 	baca_env(1);
 }
 
-#if 0
-void getdef_env(int argc, char **argv)
-{
-	printf(" Set Default Environtment \r\n");
-	garis_bawah();	
-	set_default_ip();
-	printf(" OK\n");
-}
-#endif
-
-void save_env(int argc, char **argv)
-{
+void save_env(int argc, char **argv)	{
 	printf(" Saving environtment\r\n");
 	garis_bawah();
 
@@ -166,6 +155,7 @@ int baca_env(char tampil)
 				printf(" File       = %s\r\n", env2->berkas); 
 			#endif
 			garis_bawah();
+			
 			#ifdef PAKAI_ADC
 			if (tampil == 1)	{
 				printf("   No    Status       Faktor kalibrasi     Keterangan kanal\r\n");
@@ -184,10 +174,12 @@ int baca_env(char tampil)
 
 			#ifdef BOARD_KOMON_KONTER
 			int z=0;
+			//printf("KANALNYA: %d, i: %d\r\n", KANALNYA, 7*2-1);
 			if (tampil == 1)	{
 				printf("   No       Faktor kalibrasi     Keterangan kanal\r\n");
-				for (i=0; i<KANALNYA; i++)	{
-					if (i> (7*2-1)) {
+				for (i=0; i<20; i++)	{
+					//if (i> (7*2-1)) 
+					{
 						z++;
 						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\r\n", \ 
 							z, env2->kalib[i].m, env2->kalib[i].C, (int)(i/2)+1);
@@ -287,6 +279,7 @@ void set_env_default() {
 	env2->magic2 = 0x77;
 	sprintf(env2->SN, "-");
 	sprintf(env2->berkas, "/");
+	printf("KANALNYA enviro.c : %d\r\n", KANALNYA);
 	for (i=0; i<KANALNYA; i++) {
 		env2->kalib[i].m = 1.00;
 		env2->kalib[i].C = 0.00;

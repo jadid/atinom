@@ -989,6 +989,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 		
 		#ifdef BOARD_KOMON_KONTER
 		int w=1,z=0;
+		printf("KANALNYA: %d, i: %d\r\n", KANALNYA, 7*2-1);
 		for (i=0; i<KANALNYA; i++)		{
 		//*
 			// Kanal, id & Keterangan

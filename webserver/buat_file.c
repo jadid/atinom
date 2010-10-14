@@ -974,6 +974,9 @@ void buat_file_setting(unsigned int flag, char *kata)
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
 		strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
 		strcat(tot_buf, "<th width=\"150px\">Keterangan</th>\n");
+		#ifdef BOARD_KOMON_KONTER
+		strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
+		#endif
 		strcat(tot_buf, "<th width=\"130px\">Status Kirim</th>\n");
 		strcat(tot_buf, "<th width=\"50x\">Ganti</th>\n");
 		
@@ -1027,12 +1030,13 @@ void buat_file_setting(unsigned int flag, char *kata)
 			if (i>6) {
 				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
 								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n" \
+								"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n<td align=\"right\">%.3f</td>" \
 								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 					z+1, i*2+1, konfig[i*2].id, \
 					i+1, \
+					data_f[i*2],
 					i+1, (konfig[i*2].status?"checked":""), \
 					i+1, (konfig[i*2].status?"":"checked"));
 				strcat(tot_buf, head_buf);
@@ -1040,12 +1044,13 @@ void buat_file_setting(unsigned int flag, char *kata)
 				
 				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
 								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\">Pulsa konter kanal %d</td>\n" \
+								"<td align=\"left\">Pulsa konter kanal %d</td>\n<td align=\"right\">%.0f</td>" \
 								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 					z+1, i*2+2, konfig[i*2+1].id, \
 					i+1, \
+					data_f[i*2+1],
 					i+1, (konfig[i*2+1].status?"checked":""), \
 					i+1, (konfig[i*2+1].status?"":"checked"));
 				strcat(tot_buf, head_buf);

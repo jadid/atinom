@@ -695,7 +695,7 @@ void buat_file_index(void) {
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO
-	for (i=0; i< 10; i++)
+	for (i=0; i< KANALNYA; i++)
 	{		
 		/*  tegangan */		
 		temp_rpm = st_adc.data[i] * faktor_pengali / 0xffff;
@@ -720,10 +720,10 @@ void buat_file_index(void) {
 	konfig = (char *) ALMT_KONFIG;
 
 	//for (i=0; i< KANALNYA; i++)	{
-	for (i=0; i< 10; i++)	{		
+	for (i=0; i< KANALNYA; i++)	{		
 		if (i>6) {
 			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.0f</td><td align=\"right\">%10.2f</td>\n<td>Pulsa dan Konter</td>\n</tr>\n", \
-				i+1, data_f[i*2], data_f[(i*2)+1]);
+				i+1, data_f[i*2+1], data_f[(i*2)]);
 			strcat(tot_buf, head_buf);	
 		}
 		#if (KONTER_MALINGPING == 1)
@@ -802,19 +802,16 @@ void buat_file_setting(unsigned int flag, char *kata)
 	strcat(tot_buf, "<th bgcolor=""white"">Status</th>\n</tr>\n");
 	#endif
 	
-	if (flag == 1)
-	{
+	if (flag == 1)	{
 		mulai = 0;
 		akhir = 50;
 	}
-	if (flag == 2)
-	{
+	if (flag == 2)	{
 		mulai = 50;
 		akhir = TIAP_MESIN;
 	}
 	
-	for (i=mulai; i<akhir; i++)
-	{
+	for (i=mulai; i<akhir; i++)	{
 		// titik & sumber
 		sprintf(head_buf, "<tr>\n<th>%d</th>\n<td>%d</td>\n", (i+1+cek_mesin), titik[i+cek_mesin].ID_sumber);
 		strcat(tot_buf, head_buf);
@@ -840,7 +837,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 	#ifdef BOARD_KOMON_WEB
 	
 	#ifdef PAKAI_ADC
-		strcat(tot_buf, "<br><h3>Faktor kalibrasi (y = mx + C)</h3>\n");
+		strcat(tot_buf, "<h3>Faktor kalibrasi (y = mx + C)</h3>\n");
 
 		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
 		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
@@ -874,6 +871,42 @@ void buat_file_setting(unsigned int flag, char *kata)
 				i+1, (env2->kalib[i].status==0)?"checked":"", \
 				i+1, (env2->kalib[i].status==0)?"":"checked");
 			strcat(tot_buf, head_buf);
+		}
+		strcat(tot_buf, "</tbody>\n</table>\n");
+	#endif
+	
+	#ifdef BOARD_KOMON_KONTER
+		strcat(tot_buf, "<h3>Faktor kalibrasi (y = mx + C)</h3>\n");
+
+		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
+		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
+		strcat(tot_buf, "<th width=\"60px\">m</th>\n");		// klo pake input 40 aja
+		strcat(tot_buf, "<th width=\"60px\">C</th>\n");		// klo pake input 40 aja
+		//strcat(tot_buf, "<th width=\"60px\">Ganti</th>\n");
+		strcat(tot_buf, "</tr>\n");
+		
+		for (i=0; i<KANALNYA; i++)	{
+			if (i>6) {
+				// Kanal, m & C
+				/*
+				sprintf(head_buf,	"<tr>\n<form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />\n" \
+									"<th>%d</th>\n<td><input type=\"text\" name=\"m%d\" value=\"%f\" size=\"10\"/></td>\n" \
+									"<td><input type=\"text\" name=\"c%d\" value=\"%f\" size=\"10\"/></td>\n" \
+									"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Suhu/Tekanan" \
+									"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>OnOff</td>\n" \
+									"<td><input type=\"submit\" value=\"Ganti\" /></td></form></tr>\n", \
+					i+1, i+1, env2->kalib[i].m, \
+					i+1, env2->kalib[i].C, \
+					i+1, (env2->kalib[i].status==0)?"checked":"", \
+					i+1, (env2->kalib[i].status==0)?"":"checked");
+				//*/
+				sprintf(head_buf,	"<tr>\n<th>%d</th>\n<td align=\"right\">%6.3f\n" \
+									"<td align=\"right\">%6.3f</td>\n" \
+									"</tr>\n", \
+					i+1, env2->kalib[i].m, env2->kalib[i].C);
+				strcat(tot_buf, head_buf);
+			}
 		}
 		strcat(tot_buf, "</tbody>\n</table>\n");
 	#endif
@@ -988,29 +1021,33 @@ void buat_file_setting(unsigned int flag, char *kata)
 		
 		
 		#ifdef BOARD_KOMON_KONTER
-		int w=1,z=0;
-		printf("KANALNYA: %d, i: %d\r\n", KANALNYA, 7*2-1);
+		int z=0;
 		for (i=0; i<KANALNYA; i++)		{
-		//*
-			// Kanal, id & Keterangan
-			if (i> (7*2-1)) {
-				//ganti_karakter(ket, konfig[i].ket);
-				w=1-w;
-				if (w==1) {
-					sprintf(ket, "Frekuensi kanal %d", (int)(i/2)+1);
-				} else {
-					sprintf(ket, "Pulsa konter kanal %d", (int)(i/2)+1);
-				}
+
+			if (i>6) {
 				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
 								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\">%s</td>\n" \
+								"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n" \
 								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-					z+1, i+1, konfig[i].id, \
-					ket, \
-					i+1, (konfig[i].status?"checked":""), \
-					i+1, (konfig[i].status?"":"checked"));
+					z+1, i*2+1, konfig[i*2].id, \
+					i+1, \
+					i+1, (konfig[i*2].status?"checked":""), \
+					i+1, (konfig[i*2].status?"":"checked"));
+				strcat(tot_buf, head_buf);
+				z++;
+				
+				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+								"<td align=\"left\">Pulsa konter kanal %d</td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+					z+1, i*2+2, konfig[i*2+1].id, \
+					i+1, \
+					i+1, (konfig[i*2+1].status?"checked":""), \
+					i+1, (konfig[i*2+1].status?"":"checked"));
 				strcat(tot_buf, head_buf);
 				z++;
 			}

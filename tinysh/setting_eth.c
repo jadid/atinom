@@ -91,30 +91,38 @@ void cek_konfig(void)
 		printf("-");
 	printf("\r\n");
 	
+	#ifdef BOARD_KOMON_KONTER
+	for (i=0; i<KANALNYA; i++)	{		
+		//if (i>6) 
+		{
+			z++;
+			printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2].id, "Frek/RPM kanal", i+1);
+			if (konfig[i*2].status == 0)
+				printf("%-16s","Tidak Aktif");
+			else if (konfig[i*2].status == 1)
+				printf("%-16s","Aktif / Normal");
+			else if (konfig[i*2].status == 2)
+				printf("%-16s","TimeOut");
+			else
+				printf("%-16s"," ");
+			printf("\r\n");
+			
+			z++;
+			printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2+1].id, "Pulsa konter kanal", i+1);
+			if (konfig[i*2+1].status == 0)
+				printf("%-16s","Tidak Aktif");
+			else if (konfig[i*2+1].status == 1)
+				printf("%-16s","Aktif / Normal");
+			else if (konfig[i*2+1].status == 2)
+				printf("%-16s","TimeOut");
+			else
+				printf("%-16s"," ");
+			printf("\r\n");
+		}
+	}
+	#else
+	
 	for (i=0; i<PER_SUMBER; i++)	{
-		#ifdef BOARD_KOMON_KONTER
-			
-			
-			if (i> (7*2-1)) {
-				w=1-w;
-				z++;
-				if (w==1) {
-					printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i].id, "Frekuensi kanal", (int)(i/2)+1);
-				} else {
-					printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i].id, "Pulsa konter kanal", (int)(i/2)+1);
-				}
-				
-				if (konfig[i].status == 0)
-					printf("%-16s","Tidak Aktif");
-				else if (konfig[i].status == 1)
-					printf("%-16s","Aktif / Normal");
-				else if (konfig[i].status == 2)
-					printf("%-16s","TimeOut");
-				else
-					printf("%-16s"," ");
-				printf("\r\n");
-			}
-		#else
 			#ifdef PAKAI_PM
 				printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, judulnya_pm[i]);
 			#else
@@ -131,8 +139,8 @@ void cek_konfig(void)
 			else
 				printf("%-16s"," ");
 			printf("\r\n");
-		#endif
 	}
+	#endif
 }							 
 //*
 static tinysh_cmd_t cek_konfig_cmd={0,"cek_konfig","menampilkan konfig modul","[args]", cek_konfig,0,0,0};
@@ -334,22 +342,19 @@ void read_konfig(void)
 	printf("%s(): OK\r\n", __FUNCTION__);		
 }
 
-void set_awal_konfig(void)
-{
+void set_awal_konfig(void)	{
 	int i;	
 	struct t_setting *p_sbr;
 	int jmlData = (sizeof(data_f)/sizeof(float));
 	//judul(" Set Sumber ke Default\r\n");
-	
+	printf("Jml data: %d\r\n", jmlData);
 	p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
-	if (p_sbr == NULL)
-	{
+	if (p_sbr == NULL)	{
 		printf("%s(): Err allok memory gagal !\r\n");
 		return;
 	}
 	
-	for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)
-	{
+	for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)	{
 		sprintf(p_sbr[i].ket, "-");
 		p_sbr[i].id = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_sbr[i].status = 0;	

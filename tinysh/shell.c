@@ -414,8 +414,12 @@ void data_frek_rpm() {
 	float temp_f;
 	float temp_rpm;
 	
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+	
 	for (i=0; i<10; i++)	{
-		if (i>6) {
+//		if (i>6) 
+		{
 			if (data_putaran[i])	{
 				// cari frekuensi
 				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
@@ -424,11 +428,10 @@ void data_frek_rpm() {
 			}
 			else	{
 				temp_f = 0;
-				data_f[i*2] = 0;
 				temp_rpm = 0;
 			}
-			data_f[i*2] = konter.t_konter[i].hit;
-			data_f[(i*2)+1] = temp_rpm;
+			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
+			data_f[i*2] = (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
 		}
 	}	
 }
@@ -438,7 +441,7 @@ static void cek_rpm(){
 	unsigned int i;
 	float temp_f;
 	float temp_rpm;
-
+	
 	printf("Global hit = %d\n", konter.global_hit);
 	printf("Ov flow = %d\n", konter.ovflow);
 
@@ -454,9 +457,8 @@ static void cek_rpm(){
 				temp_f = 0;
 				temp_rpm = 0;
 			}	
-			
-			printf(" %2d : F = %4.2f Hz, rpm = %4.2f, hit = %d\n", (i+1), \
-				temp_f, temp_rpm, konter.t_konter[i].hit);			
+	
+			printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\n", (i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
 		}
 	}
 	

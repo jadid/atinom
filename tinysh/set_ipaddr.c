@@ -58,6 +58,19 @@ static void setenv_fnt(int argc, char **argv)
 				//set_dafault_env_lain();
 				set_env_default();
 				return;
+			}
+			else if (strcmp(argv[1], "reset") == 0)			{
+				printf(" set environment dengan data default !\n");
+				set_env_default();
+				vTaskDelay(2);
+				printf("set konfig menjadi default\r\n");
+				set_awal_konfig();
+				vTaskDelay(2);
+				#ifdef PAKAI_PM
+					printf("set konfig pm menjadi default\r\n");
+					set_awal_pm();
+				#endif
+				return;
 			}	
 		}
 		printf(" ERR: argument kurang !\r\n");

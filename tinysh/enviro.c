@@ -177,12 +177,11 @@ int baca_env(char tampil)
 			//printf("KANALNYA: %d, i: %d\r\n", KANALNYA, 7*2-1);
 			if (tampil == 1)	{
 				printf("   No       Faktor kalibrasi     Keterangan kanal\r\n");
-				for (i=0; i<20; i++)	{
-					//if (i> (7*2-1)) 
-					{
+				for (i=0; i<KANALNYA; i++)	{
+					if (i>6) {
 						z++;
 						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\r\n", \ 
-							z, env2->kalib[i].m, env2->kalib[i].C, (int)(i/2)+1);
+							z, env2->kalib[i].m, env2->kalib[i].C, i+1);
 					}
 				}
 			}
@@ -195,6 +194,7 @@ int baca_env(char tampil)
 			printf(" Magic number2 salah !\r\n");
 			//set_default_ip();
 			set_env_default();
+			
 			printf("set konfig menjadi default\r\n");
 			set_awal_konfig();
 			#ifdef PAKAI_PM

@@ -6,7 +6,7 @@
 typedef void (*IAP)(unsigned int [],unsigned int[]);
 
 #ifdef BOARD_KOMON_KONTER
-	#define KANALNYA 20
+	#define KANALNYA 10
 #else
 	#define KANALNYA 10
 #endif

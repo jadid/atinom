@@ -20,7 +20,7 @@
 	*/
 
 //extern struct t_env env2;
-
+#include "enviro.h"
 
 void set_kanal(int argc, char **argv)
 {
@@ -78,7 +78,7 @@ void set_kanal(int argc, char **argv)
   	sprintf(buf, "%s", argv[1]);
 	ret = sscanf(buf, "%d", &kanal);
 	
-	if (kanal > 10 || ret == NULL) 
+	if (kanal > KANALNYA || ret == NULL) 
 	{
 		vPortFree( p_sbr );
 		printf(" Err kanal !\r\n");
@@ -140,5 +140,4 @@ void set_kanal(int argc, char **argv)
 	vPortFree( p_sbr );
 }
 
-static tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help",
-                              set_kanal,0,0,0};	
+static tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help", set_kanal,0,0,0};	

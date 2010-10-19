@@ -429,7 +429,7 @@ void samb_appcall(void)
 	//*/
 	if (uip_connected())
 	{
-		printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
+		//printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
 		if (status[nomer_sambung].stat == 1)
 		{
 			status[nomer_sambung].stat = 2;
@@ -507,7 +507,7 @@ void samb_appcall(void)
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		printf("newdata = %d %s, stat: %d\n", len, ipne, status[nomer_sambung].stat);
+		//printf("newdata = %d %s, stat: %d\n", len, ipne, status[nomer_sambung].stat);
 		
 		//if (status[nomer_sambung].stat == 3 && len == 248)
 		if (status[nomer_sambung].stat == 3)

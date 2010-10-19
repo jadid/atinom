@@ -71,7 +71,7 @@ static unsigned int nomer_mesin=0;
 
 
 //#ifdef BOARD_TAMPILAN
-#ifdef CARI_SUMBER
+#ifdef CARI_SUMBERNYA
 #define LINK_ATAS "<table border=\"0\" align=\"left\">\n \
   <tbody align=\"center\">\n \
 	<tr>\n \
@@ -328,6 +328,7 @@ float stof(char * str) {
 
 
 void ganti_setting(char *str) {
+#ifndef CARI_SUMBERNYA
 	printf("Data telah diubah: %s\r\n", str);
 	char tmp[30], kets[30];
 	
@@ -384,6 +385,7 @@ void ganti_setting(char *str) {
 		}
 		pch=strchr(pch+1, '&');
 	}
+	
 	
 	//if (titik>0) {
 	if (no>0) {
@@ -452,6 +454,7 @@ void ganti_setting(char *str) {
 	}
 	//printf();
 	#endif
+#endif
 }
 
 #if 0

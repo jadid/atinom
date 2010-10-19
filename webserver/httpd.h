@@ -42,8 +42,13 @@ struct httpd_state {
   unsigned char timer;
   struct psock sin, sout;
   struct pt outputpt, scriptpt;
+#ifndef CARI_SUMBERNYA
   char inputbuf[258];	/* 50 */
   char filename[512];	/* 20 */
+#else
+  char inputbuf[128];	/* 50 */
+  char filename[128];	/* 20 */
+#endif
   char state;
   struct httpd_fs_file file;
   int len;

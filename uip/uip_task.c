@@ -125,7 +125,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 //#ifdef BOARD_TAMPILAN
-#ifdef CARI_SUMBER
+#ifdef CARI_SUMBERNYA
 	printf("MONITA : sambungan_aktif init\r\n");
 	sambungan_init();
 	mul = 0;
@@ -221,7 +221,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
-		#ifdef CARI_SUMBER
+		#ifdef CARI_SUMBERNYA
 		loop++;
 		if (loop > 50) 		// 50, 40, 80
 		{
@@ -404,7 +404,7 @@ void dispatch_tcp_appcall (void)
 		kontrol_appcall();
 #endif
 
-#ifdef CARI_SUMBER
+#ifdef CARI_SUMBERNYA
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
 	{

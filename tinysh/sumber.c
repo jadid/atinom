@@ -44,7 +44,7 @@ void cek_sumber(void)
 	printf("\r\n");
 	
 	
-	for (i=0; i<20; i++)
+	for (i=0; i<JML_SUMBER; i++)
 	{
 		printf(" (%2d): %-10s : ", (i+1), sumber[i].nama);			// rata kiri
 		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
@@ -159,7 +159,7 @@ void set_sumber(int argc, char **argv)
 	if (strcmp(argv[2], "ipaddr") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, 20);
+		sumb = cek_nomer_sumber(buf, JML_SUMBER);
 		if (sumb > 0)		
 		{
 			printf(" sumber = %d\r\n", sumb);
@@ -185,7 +185,7 @@ void set_sumber(int argc, char **argv)
 	{
 		printf("masuk sini\r\n");
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, 20);
+		sumb = cek_nomer_sumber(buf, JML_SUMBER);
 		if (sumb > 0)		
 		{
 			printf(" sumber = %d : ", sumb);
@@ -209,7 +209,7 @@ void set_sumber(int argc, char **argv)
 	else if (strcmp(argv[2], "status") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, 20);
+		sumb = cek_nomer_sumber(buf, JML_SUMBER);
 		if (sumb > 0)		
 		{
 			printf(" sumber = %d : ", sumb);
@@ -236,7 +236,7 @@ void set_sumber(int argc, char **argv)
 	else if (strcmp(argv[2], "alamat") == 0)
 	{
 		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, 20);
+		sumb = cek_nomer_sumber(buf, JML_SUMBER);
 		if (sumb > 0)		
 		{
 			printf(" sumber = %d : ", sumb);

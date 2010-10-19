@@ -195,8 +195,15 @@ int baca_env(char tampil)
 			//set_default_ip();
 			set_env_default();
 			
-			printf("set konfig menjadi default\r\n");
-			set_awal_konfig();
+			#ifndef CARI_SUMBERNYA
+				printf("set konfig menjadi default\r\n");
+				set_awal_konfig();
+			#endif 
+			
+			#ifdef CARI_SUMBERNYA
+				set_awal_sumber();
+			#endif
+
 			#ifdef PAKAI_PM
 				printf("set konfig pm menjadi default\r\n");
 				set_awal_pm();

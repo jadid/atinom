@@ -113,7 +113,7 @@ void monita_appcall(void)
 #endif
 	
 	
-	printf("_______________________________ada yg manggil = \r\n\n");
+	//printf("_______________________________ada yg manggil = \r\n\n");
 	if (uip_newdata())	{
 		len = uip_datalen();
 		printf("newdata = %d %s\n", len, ipne);
@@ -238,7 +238,7 @@ void monita_appcall(void)
 #endif
 
 //#ifdef BOARD_TAMPILAN
-#ifdef CARI_SUMBER		// pengganti BOARD_TAMPILAN
+#ifdef CARI_SUMBERNYA		// pengganti BOARD_TAMPILAN
 ////*************************************** ethernet tampilan **************************************/
 
 //extern struct t_sumber sumber[];
@@ -252,12 +252,10 @@ struct t_xdata 		in_buf;				/* __attribute__ ((section (".eth_test"))); */
 
 int wer = 0;
 
-void sambungan_init(void)
-{
+void sambungan_init(void)	{
 	int i;
 	
-	for (i=0; i < JML_SUMBER ; i++)
-	{
+	for (i=0; i < JML_SUMBER ; i++)	{
 		status[i].stat = 0;
 		status[i].reply = 0;
 	}	
@@ -409,7 +407,7 @@ void samb_appcall(void)
 	
 	unsigned int nomer_sambung = (unsigned int) uip_conn->nomer_sambung;
 	
-	if (nomer_sambung > 19)
+	if (nomer_sambung > (JML_SUMBER-1))
 	{
 		//printf("Nomer sambung invalid !");
 		debug_out_h("Nomer sambung invalid !");
@@ -430,7 +428,7 @@ void samb_appcall(void)
 	//*/
 	if (uip_connected())
 	{
-		//printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
+		printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
 		if (status[nomer_sambung].stat == 1)
 		{
 			status[nomer_sambung].stat = 2;
@@ -508,9 +506,10 @@ void samb_appcall(void)
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		//printf("newdata = %d %s\n", len, ipne);
+		printf("newdata = %d %s, stat: %d\n", len, ipne, status[nomer_sambung].stat);
 		
-		if (status[nomer_sambung].stat == 3 && len == 248)
+		//if (status[nomer_sambung].stat == 3 && len == 248)
+		if (status[nomer_sambung].stat == 3)
 		{
 			portENTER_CRITICAL();
 			memcpy((char *) &in_buf, uip_appdata, len);

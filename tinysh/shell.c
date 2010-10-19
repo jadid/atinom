@@ -286,7 +286,7 @@ void cek_stack(void)
 	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
 	//#ifdef BOARD_TAMPILAN
-	#ifdef CARI_SUMBER
+	#ifdef CARI_SUMBERNYA
 	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
 	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
@@ -742,7 +742,20 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_cron_cmd);
 #endif
 
-#if (VERSI_KONFIG == 2)
+#ifdef CARI_SUMBERNYA
+	tinysh_add_command(&cek_group_cmd);
+	tinysh_add_command(&set_group_cmd);
+	
+	tinysh_add_command(&cek_sumber_cmd);
+	tinysh_add_command(&set_sumber_cmd);
+	
+	// data
+	tinysh_add_command(&set_data_cmd);
+	tinysh_add_command(&cek_data_cmd);
+
+#endif
+
+#if (VERSI_KONFIGx == 2)
 	tinysh_add_command(&cek_group_cmd);
 	tinysh_add_command(&set_group_cmd);
 	
@@ -754,10 +767,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_data_cmd);
 	
 	// simpan file
+#ifdef PAKAI_FILE_SIMPAN	
 	tinysh_add_command(&cek_file_cmd);
 	tinysh_add_command(&set_file_cmd);
 	tinysh_add_command(&del_direktori_cmd);
 	tinysh_add_command(&cari_doku_cmd);
+#endif
 #endif	
 
 
@@ -809,7 +824,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 
-	//#ifdef BOARD_TAMPILAN	
+//#ifdef BOARD_TAMPILAN	
 	#ifdef CARI_SUMBER	
 	// cek ukuran struk
 	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);

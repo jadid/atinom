@@ -42,7 +42,7 @@
 #include "task.h"
 
 #include "../monita/monita_uip.h"
-
+#ifdef PAKAI_FILE_SIMPAN
 static int set_file_default(void);
 static int simpan_sfile( struct t_simpan_file *pgr);
 
@@ -847,3 +847,4 @@ static int simpan_sfile( struct t_simpan_file *pgr) {
 	printf(".. OK\r\n");
 	return 0;
 }
+#endif

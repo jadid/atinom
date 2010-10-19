@@ -116,14 +116,14 @@ void monita_appcall(void)
 	//printf("_______________________________ada yg manggil = \r\n\n");
 	if (uip_newdata())	{
 		len = uip_datalen();
-		printf("newdata = %d %s\n", len, ipne);
+		//printf("newdata = %d %s\n", len, ipne);
 		
 		if (len >= 10)
 		{
 			portENTER_CRITICAL();
 			memcpy(buf, (char *) uip_appdata, 10);
 			portEXIT_CRITICAL();
-			
+			//printf("isi pesan: %s\r\n",buf);
 			if (strncmp(buf, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;
@@ -137,10 +137,11 @@ void monita_appcall(void)
 				#endif
 				
 				#ifdef BOARD_KOMON_420_SAJA
-				hitung_data_float();
+				//hitung_data_float();
 				
 				for (i=0; i<PER_SUMBER;i++)		{
 					data_float.data[i] = data_f[i];
+					//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
 				}		
 				#endif
 				
@@ -201,7 +202,7 @@ void monita_appcall(void)
 				
 				xdata.nomer = loop_kirim;
 				//xdata.flag = 30;		//pulsa
-				xdata.flag = PER_SUMBER;
+				xdata.flag = (unsigned char) PER_SUMBER;
 				xdata.alamat = 1;		// stacking board nomer 1
 				strcpy(xdata.mon, "monita1");
 				

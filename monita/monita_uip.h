@@ -173,7 +173,7 @@ float data_f [ (JML_SUMBER * PER_SUMBER) ];
 //*/
 
 struct t_data_float {
-	float data[20];
+	float data[PER_SUMBER];
 };
 
 

@@ -194,7 +194,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				if (jmlsumbernya==0) {
 					jmlsumbernya=1;
 				}
-				tiapKirim = (int) (950/jmlsumbernya);
+				tiapKirim = (int) (940/jmlsumbernya);
 			#endif
 			if (wclient == tiapKirim) {
 				wclient = 0;

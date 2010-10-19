@@ -328,7 +328,7 @@ float stof(char * str) {
 
 
 void ganti_setting(char *str) {
-	//printf("Data telah diubah: %s\r\n", str);
+	printf("Data telah diubah: %s\r\n", str);
 	char tmp[30], kets[30];
 	
 	int nk=0, no=0, titik=0;
@@ -354,16 +354,16 @@ void ganti_setting(char *str) {
 		if (strncmp(tmp, "i", 1)==0) {
 			ids = strchr(tmp,'i');
 			no = atoi(ids+1);
-			//printf("  no: %d\r\n", no);
+			printf("  no: %d\r\n", no);
 			
 			ids = strchr(tmp,'=');
 			titik = atoi(ids+1);
-			//printf("  id: %d\r\n", titik);
+			printf("  id: %d\r\n", titik);
 		} 
 		if (strncmp(tmp, "k", 1)==0) {
 			ket = strchr(tmp,'=');
 			sprintf(kets, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			printf("  ket: %s, kets: %s\r\n", ket+1, kets);
 		}
 		if (strncmp(tmp, "s", 1)==0) {
 			stat = strchr(tmp,'=')+1;
@@ -385,7 +385,8 @@ void ganti_setting(char *str) {
 		pch=strchr(pch+1, '&');
 	}
 	
-	if (titik>0) {
+	//if (titik>0) {
+	if (no>0) {
 		int jmlData=0;
 		//#if (defined PAKAI_PM)
 			jmlData = (sizeof(data_f)/sizeof(float));
@@ -403,7 +404,7 @@ void ganti_setting(char *str) {
 			vPortFree( p_sbr );
 			return;	// -1
 		}
-		//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+		printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
 
 		portENTER_CRITICAL();
 		memcpy((char *) p_sbr, (char *) ALMT_KONFIG, (jmlData * sizeof (struct t_setting)));
@@ -412,7 +413,7 @@ void ganti_setting(char *str) {
 		p_sbr[no-1].id = titik;
 		sprintf(p_sbr[no-1].ket, kets);
 		p_sbr[no-1].status = (atoi(stat))?1:0;
-		//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
+		printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
 		
 		if (simpan_konfig( p_sbr ) < 0)
 		{
@@ -920,7 +921,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 			sprintf(head_buf, "<font color=\"red\">Data telah diubah: %s</font><br/>", kata);
 			strcat(tot_buf, head_buf);
 		} else {
-			//strcat(tot_buf, "<br/>");
+			strcat(tot_buf, "<br/>");
 		}
 		
 		strcat(tot_buf, "<h3>Info Kanal</h3>\n");

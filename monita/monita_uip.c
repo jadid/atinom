@@ -66,7 +66,7 @@ void monita_init(void)
 {
 	loop_kirim = 0;
 	
-	//printf("Monita init_______________________________\r\n");
+	printf("Monita init_______________________________\r\n");
 	uip_listen(HTONS(PORT_MONITA));
 }
 
@@ -113,11 +113,11 @@ void monita_appcall(void)
 #endif
 	
 	
-	//printf("_______________________________ada yg manggil = \r\n\n");
+	printf("_______________________________ada yg manggil = \r\n\n");
 	if (uip_newdata())
 	{
 		len = uip_datalen();
-		//printf("newdata = %d %s\n", len, ipne);
+		printf("newdata = %d %s\n", len, ipne);
 		
 		if (len >= 10)
 		{
@@ -141,9 +141,8 @@ void monita_appcall(void)
 				#ifdef BOARD_KOMON_420_SAJA
 				hitung_data_float();
 				
-				for (i=0; i<KANALNYA;i++)
-				{
-					data_float.data[i] = st_adc.flt_data[i];
+				for (i=0; i<KANALNYA;i++)		{
+					data_float.data[i] = data_f[i];
 				}		
 				#endif
 				

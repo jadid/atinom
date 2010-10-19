@@ -232,7 +232,7 @@ void set_konfig(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "ket") == 0)
+	else if (strcmp(argv[2], "nama") == 0)
 	{
 		//printf("masuk sini\r\n");
 		sprintf(buf, "%s", argv[1]);	

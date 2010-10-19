@@ -85,7 +85,7 @@ void cek_konfig(void)
 	garis_bawah2();
 	
 	#endif
-	printf("  No.    ID      Nama                  status\r\n");
+	printf("  No.    ID      Nama             status\r\n");
 	int w=1,z=0;
 	for (i=0; i<45; i++)
 		printf("-");

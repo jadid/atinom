@@ -31,8 +31,12 @@
 #define TIAP_MESIN	100
 #define JML_KANAL	20
 
-#ifdef PAKAI_PM
+
+// PER_SUMBER itu menujukkan jml data untuk 10 kanal.
+#if defined(PAKAI_PM)
 	#define PER_SUMBER	33
+#elif defined(BOARD_KOMON_420_SAJA)
+	#define PER_SUMBER 10
 #else
 	#define PER_SUMBER	20
 #endif

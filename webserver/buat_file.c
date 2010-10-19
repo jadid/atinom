@@ -594,7 +594,7 @@ void buat_file_index(void) {
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
-#ifdef BOARD_KOMON_420_SABANG	
+#ifdef BOARD_KOMON_420_SABANG			// buat PM meter
 	strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
 	strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n</tr>\n");
 #endif
@@ -662,6 +662,8 @@ void buat_file_index(void) {
 	
 #endif
 //*/
+
+
 #ifdef BOARD_KOMON_420_SAJA
 #ifdef PAKAI_ADC
 	struct t_setting *konfig;
@@ -671,6 +673,8 @@ void buat_file_index(void) {
 	for (i=0; i< KANALNYA; i++)
 	{		
 		ganti_karakter(ket, konfig[i].ket);
+		//printf("ket: %s\r\n", ket);
+
 		/*  tegangan */		
 		temp_rpm = st_adc.data[i] * faktor_pengali_420 / 0xffff;
 		
@@ -682,11 +686,10 @@ void buat_file_index(void) {
 		
 		/* satuan yang diinginkan */
 		if (env2->kalib[i].status==0) {	// "Tegangan"
-			st_adc.flt_data[i] = (float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
-			sprintf(head_buf, "<td align=\"right\">%3.3f</td>\n<td>%s</td>\n</tr>\n", st_adc.flt_data[i], ket);		
+			sprintf(head_buf, "<td align=\"right\">%3.3f</td>\n<td>%s</td>\n</tr>\n", data_f[i], ket);		
 		} else {
 			sprintf(head_buf, "<td align=\"left\">%s</td>\n<td>%s</td>\n</tr>\n", \
-				(st_adc.data[i]>10000)?"On/Tertutup":"<font color=\"red\">Off/Terbuka</font>", ket);		
+				((int)data_f[i]==1)?"On/Tertutup":"<font color=\"red\">Off/Terbuka</font>", ket);		
 		}
 
 		strcat(tot_buf, head_buf);
@@ -745,7 +748,7 @@ void buat_file_index(void) {
 	strcat(tot_buf, "</table>\n");
 	
 	buat_bottom();
-	
+
 	//printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
@@ -985,7 +988,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 		
 		// buahaya disini !!!! //
 		#ifdef BOARD_KOMON_420_SAJA
-		for (i=0; i<KANALNYA; i++)		{
+		for (i=0; i<PER_SUMBER; i++)		{
 		//*
 			// Kanal, id & Keterangan
 			ganti_karakter(ket, konfig[i].ket);

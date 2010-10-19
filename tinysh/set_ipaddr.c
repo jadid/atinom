@@ -63,9 +63,13 @@ static void setenv_fnt(int argc, char **argv)
 				printf(" set environment dengan data default !\n");
 				set_env_default();
 				vTaskDelay(2);
-				printf("set konfig menjadi default\r\n");
-				set_awal_konfig();
-				vTaskDelay(2);
+				
+				#ifndef CARI_SUMBERNYA
+					printf("set konfig menjadi default\r\n");
+					set_awal_konfig();
+					vTaskDelay(2);
+				#endif
+				
 				#ifdef PAKAI_PM
 					printf("set konfig pm menjadi default\r\n");
 					set_awal_pm();

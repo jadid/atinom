@@ -137,21 +137,17 @@ void monita_appcall(void)
 				#endif
 				
 				#ifdef BOARD_KOMON_420_SAJA
-				//hitung_data_float();
-				
-				for (i=0; i<PER_SUMBER;i++)		{
-					data_float.data[i] = data_f[i];
-					//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
-				}		
+					for (i=0; i<PER_SUMBER;i++)		{
+						data_float.data[i] = data_f[i];
+						//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
+					}		
 				#endif
 				
 				#ifdef BOARD_KOMON_420_SABANG
-				//*
-				for (i=0; i<20;i++)
-				{
-					data_float.data[i] = data_f[i];
-				}
-				//*/		
+					for (i=0; i<PER_SUMBER;i++)		{
+						data_float.data[i] = data_f[i];
+						//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
+					}		
 				#endif
 				
 				#ifdef BOARD_KOMON_B_THERMO
@@ -164,6 +160,11 @@ void monita_appcall(void)
 				#endif
 				
 				#ifdef BOARD_KOMON_KONTER
+					for (i=0; i<PER_SUMBER;i++)		{
+						data_float.data[i] = data_f[i];
+						//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
+					}
+				/*
 				extern unsigned int data_putaran[];
 				extern unsigned int data_hit[];				
 				
@@ -190,14 +191,13 @@ void monita_appcall(void)
 					t++;
 				}
 				#if (KONTER_MALINGPING == 1)
-				/* data kanal 1 adalah adc1 (adc0 internal) */
+				// data kanal 1 adalah adc1 (adc0 internal) //
 				extern float volt_supply;
 				
 				data_float.data[0] = (float) ((volt_supply * env2.kalib[0].m) + env2.kalib[0].C);
-				
-				
+	
 				#endif
-				
+				//*/
 				#endif
 				
 				xdata.nomer = loop_kirim;

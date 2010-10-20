@@ -466,7 +466,7 @@ xComPortHandle serial3_init( unsigned portLONG ulWantedBaud, unsigned portBASE_T
 	}
 	else
 	{
-		//printf(" Tidak bisa init !!");
+		printf(" Tidak bisa init !!");
 		xReturn = ( xComPortHandle ) 0;
 	}
 

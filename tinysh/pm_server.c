@@ -7,17 +7,14 @@
 */
 
 
-//#include "FreeRTOS.h"
-//#include "task.h"
-//#include "queue.h"
-//#include "semphr.h"
 
 #include <math.h>
 #include <float.h>
 
-#define TUNGGU_PM_1	100
-#define TUNGGU_PM_2	100
+#define TUNGGU_PM_TX	100
+#define TUNGGU_PM_RX	100
 //#define  LIAT
+
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
 
@@ -27,9 +24,6 @@
 //unsigned short get_KTA(unsigned short reg, unsigned char uk);
 #endif
 
-
-
-//extern float data [ (JML_SUMBER * PER_SUMBER) ];
 
 struct d_pmod pmod;
 
@@ -114,18 +108,18 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	#endif
 	
 	#ifdef LIAT
-	printf("___Minta ke PM -%d : %d : ", urut_PM710, sizeof(pmod));
+	//printf("___Minta ke PM -%d : %d : ", urut_PM710, sizeof(pmod));
 	#endif
 	
 	st = (char *) &pmod;
 	FIO0SET = TXDE;		// on	---> bisa kirim
 	for (i=0; i< sizeof(pmod); i++)	{
 		#ifdef LIAT
-		printf("%02hX ", *st);
+		//printf("%02hX ", *st);
 		#endif
-		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_1);
+		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
 	}
-	//FIO0SET = TXDE;		// on	---> bisa kirim
+	//FIO0CLR = TXDE;		// on	---> bisa kirim
 	
 	#ifdef LIAT
 	printf("\r\n");
@@ -144,11 +138,11 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 
 	while(1)	{
 		#if (PAKAI_PM == 1) 
-			if (ser1_getchar(1, &buf_rx[i], TUNGGU_PM_2 ) == pdTRUE)
+			if (ser1_getchar(1, &buf_rx[i], TUNGGU_PM_RX ) == pdTRUE)
 		#elif (PAKAI_PM == 2) 			
-			if (ser2_getchar(1, &buf_rx[i], TUNGGU_PM_2 ) == pdTRUE)
+			if (ser2_getchar(1, &buf_rx[i], TUNGGU_PM_RX ) == pdTRUE)
 		#elif (PAKAI_PM == 3)
-			if (ser3_getchar(1, &buf_rx[i], TUNGGU_PM_2 ) == pdTRUE)
+			if (ser3_getchar(1, &buf_rx[i], TUNGGU_PM_RX ) == pdTRUE)
 		#endif 
 
 		{
@@ -158,7 +152,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 			}
 			//*/
 			i++;
-			#if (PAKAI_MAX485 == 1) 
+			#ifdef PAKAI_MAX485
 				if (i == jum_balik+sizeof(pmod)) break;
 			#else
 				if (i == jum_balik) break;
@@ -167,7 +161,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		}	else	{
 			timeout++;
 			if (timeout > 20)	{
-				//printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				break;
 			}
 		}
@@ -218,15 +212,15 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 
 // ambil seluruh data tiap 1 PM. Looping berdasarkan Jml request PM (urut_PM710)
 void ambil_pm(int k) {
-	struct t_sumber_pm *pmx;
+	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
 	int i=0;
 
 	//printf("Ambil data Power Meter ke-%d\r\n", k);
 	while(i<JML_REQ_PM) {
 		vTaskDelay(2);			// MIN: 2
-		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx->pm[k].alamat, k);
-		proses_pm(k, pmx->pm[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
+		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
+		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;
 	}
 }
@@ -236,6 +230,7 @@ void ambil_pm(int k) {
 portTASK_FUNCTION( pm_task, pvParameters )	{
 	int i=0,j=0,k=0;
 	int z=0;
+	int alamatClient=0;
 	//urut_PM710 = 0;
 	konting2 = 0;
 	#ifdef PAKAI_KTA
@@ -256,49 +251,53 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 		#ifdef PAKAI_SERIAL_3
 			ser3_getchar(1, &loop, 20 );
 		#endif
-	
+
 	for(i=0; i<(sizeof(data_f)/sizeof(float)); i++) {
 		data_f[i] = 0.00;
 	}
 	
-	struct t_sumber_pm *pmx;
+	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
 		
 	for (;;)	{
 		vTaskDelay(20);
+		alamatClient = (int) pmx[k].alamat;
 		
-		if(pmx->status==1) {
-			if (k<JML_SUMBER) {
-				if (pmx->pm[k].status==1) {
-					#ifdef PAKAI_PM
-					if (pmx->pm[k].modul==0) {		// 0: ambil power meter
-						ambil_pm(k);
-					}
-					#endif
-					#ifdef PAKAI_KTA
-					
-					#endif
+		if ( (k<JML_SUMBER) && (alamatClient>0) ) {
+			printf("k: %d, alamat: %d\r\n", k, alamatClient);
+			if (pmx[k].status==1) {
+				#ifdef PAKAI_PM
+				if (pmx[k].modul==0) {		// 0: ambil power meter
+					ambil_pm(k);
 				}
+				#endif
+
+				#ifdef PAKAI_KTA
 				
-				portENTER_CRITICAL();
-				memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
-				portEXIT_CRITICAL();
-				
-				k++;
-			} else {
-				k=0;
+				#endif
 			}
+			
+			portENTER_CRITICAL();
+			memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
+			portEXIT_CRITICAL();
 		}
+		
+		k++;
+		if (k>(JML_SUMBER-1)) {
+			k=0;
+		}
+		
 		#ifdef LIAT
 		if (loop==100) {
 			for (z=0; z<JML_SUMBER; z++) {
-				printf("frek %d: %f, asli: %f\r\n", z, data_f[z*PER_SUMBER+10], asli_PM710[z].frek);
+				//printf("frek %d: %f, asli: %f\r\n", z, data_f[z*PER_SUMBER+10], asli_PM710[z].frek);
 			}
 			loop=0;	
 		}
 		#endif 
-		
+		serX_putstring(3, "Testing dari serial 3 ...Testing dari serial 3 ...2x...");	
 		loop++;
+		//printf("masih muter\r\n");
 	}
 		
 }

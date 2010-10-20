@@ -22,6 +22,14 @@
 #include "sfile.c"
 #endif
 
+/*
+#ifdef CARI_SUMBERNYA
+	#include "utils.c"
+	#include "group.c"
+	#include "sumber.c"
+#endif
+//*/
+
 #ifdef CENDOL
 	#include "setting_eth.c"
 #endif
@@ -60,7 +68,8 @@
 
 #ifdef PAKAI_PM
 #include "pm_server.c"
-#include "setting_pm.c"
+//#include "setting_pm.c"
+#include "sumber.c"
 #endif
 
 #ifdef PAKAI_MMC
@@ -723,9 +732,9 @@ portTASK_FUNCTION(shell, pvParameters )
 #endif
 
 #ifdef PAKAI_PM
-	tinysh_add_command(&cek_pm_cmd);
-	tinysh_add_command(&set_pm_cmd);
-	tinysh_add_command(&cek_konfig_pmnya_cmd);
+//	tinysh_add_command(&cek_pm_cmd);
+//	tinysh_add_command(&set_pm_cmd);
+//	tinysh_add_command(&cek_konfig_pmnya_cmd);
 #endif	
 	
 #ifdef PAKAI_GSM_FTP

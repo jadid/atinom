@@ -223,7 +223,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
 		#ifdef CARI_SUMBERNYA
 		loop++;
-		if (loop > 50) 		// 50, 40, 80
+		if (loop > 200) 		// 50, 40, 80
 		{
 			loop = 0;
 			

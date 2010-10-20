@@ -42,42 +42,25 @@
 #define _printf	printf2
 #define printf	printf2
 
-//#define PAKE_TELNETD
 #define PAKE_TELNETD
 #define PAKE_HTTP
-//#define CARI_SUMBER						// untuk mencari data sumber via Ethernet
-#define CARI_SUMBERNYA
+
+#define CARI_SUMBERNYA		// untuk mencari data sumber via Ethernet
 
 #define PAKAI_RTC
-//#define PAKAI_MMC
+
 #define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
 
-//#define CENDOL
-//#define PAKAI_FILE_SIMPAN	1
-//#define PAKAI_SELENOID		1		/* ULN2803 */
-
-//#define PAKAI_CRON
-//#define PAKAI_KIRIM_BALIK
-//#define PAKAI_KTA
-//#define DEBUG_DATA
-//#define PAKAI_SERIAL_2		1
-//#define PAKAI_SELENOID		1		/* ULN2803 */
-
-//#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 2
-//#define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
-
 //*
-#define PAKAI_SERIAL_1				// mendefinisikan aktif serial 1
-#define PAKAI_PM			1		// nyambung ke SERIAL 1
+#define PAKAI_MAX485
+#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 3
+#define PAKAI_PM			3		// nyambung ke SERIAL 3
+
 #ifdef PAKAI_PM
 	#define BAUD_PM			19200
 	#define TIPE_PM810
 #endif
-//*/
-//#define PAKAI_WEBCLIENT
-
-//#define TAMPILAN_MALINGPING			1
 
 #define VERSI_KONFIG	2
 

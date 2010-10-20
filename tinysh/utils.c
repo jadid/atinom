@@ -170,13 +170,13 @@ int ganti_kata(char *dest, char *src) {
 	};
 	
 	char * satuannya_pm[] = {
-		"Wh",		// 0 //
-		"VAh",
-		"VArh",
+		"kWh",		// 0 //
+		"kVAh",
+		"kVArh",
 		"Watt",
-		"VA",		
-		"VAr",
-		"",
+		"kVA",		
+		"kVAr",
+		" ",
 		"Volt",
 		"Volt",
 		"Ampere",
@@ -191,17 +191,17 @@ int ganti_kata(char *dest, char *src) {
 		"Volt",
 		"Volt",
 		"Volt",		// 20 //
-		"Watt",
-		"Watt",
-		"Watt",
-		"VA",
-		"VA",
-		"VA",
-		"VAr",
-		"VAr",
-		"VAr",
-		"",			// 30 //
-		"",
-		""
+		"kW",
+		"kW",
+		"kW",
+		"kVA",
+		"kVA",
+		"kVA",
+		"kVAr",
+		"kVAr",
+		"kVAr",
+		" ",			// 30 //
+		" ",
+		" "
 	};
 #endif

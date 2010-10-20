@@ -119,7 +119,7 @@ int cek_data(int argc, char **argv)
 				
 				sumb--;
 		
-				for (i = sumb; i< (sumb + 20); i++)
+				for (i = sumb; i< (sumb + PER_SUMBER); i++)
 				{
 					//if (i >= (JML_SUMBER * PER_SUMBER)) break;
 					if (i >= (sizeof(data_f)/sizeof(float))) break;

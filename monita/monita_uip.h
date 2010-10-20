@@ -212,13 +212,13 @@ struct t_setting {
 };
 
 struct t_sumber {
-	char nama[16];
-	//char ID_sumber;
-	char alamat;		/* untuk alamat/modul Power meter atau stack board (jika ada) */
-	char IP0;
+	char nama[24];
+	char alamat;		/* untuk alamat modbus Power meter atau stack board (jika ada) */
+	char IP0;			// klo sumber berupa modul monita 
 	char IP1;
 	char IP2;
 	char IP3;
+	char modul;			// khusus modbus, jenis modul 0: PM, 1: KTA, 2:????, dst
 	char status;		// tidak aktif, timeout, dll
 };
 

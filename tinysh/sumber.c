@@ -25,10 +25,14 @@
 
 //#include <regex.h>
 #include "../monita/monita_uip.h"
+
+#ifndef __SUMBER__
+#define __SUMBER__
+
 struct t_sumber *sumber;
 int cek_nomer_sumber(char *arg, int maks);
-void set_awal_sumber(void);
-static int simpan_sumber( struct t_sumber *pgr);
+//void set_awal_sumber(void);
+//static int simpan_sumber( struct t_sumber *pgr);
 							  
 void cek_sumber(void)
 {
@@ -242,7 +246,7 @@ void set_sumber(int argc, char **argv)
 			printf(" sumber = %d : ", sumb);
 			
 			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 5);
+			stat = cek_nomer_sumber(buf, 200);
 			
 			if (stat >=0)
 			{
@@ -356,6 +360,7 @@ void set_awal_sumber(void)
 		sprintf(p_sbr[i].nama, "-");
 		p_sbr[i].alamat = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_sbr[i].status = 0;	
+		p_sbr[i].modul  = 0;	
 		
 		p_sbr[i].IP0 = 192;
 		p_sbr[i].IP1 = 168;
@@ -379,8 +384,7 @@ void set_awal_sumber(void)
 	*/
 }
 
-static int simpan_sumber( struct t_sumber *pgr)
-{
+int simpan_sumber( struct t_sumber *pgr)	{
 	printf(" Save struct SUMBER ke flash ..");
 	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return -1;
 	printf("..");
@@ -396,3 +400,4 @@ static int simpan_sumber( struct t_sumber *pgr)
 	printf(".. OK\r\n");
 	return 0;
 }
+#endif

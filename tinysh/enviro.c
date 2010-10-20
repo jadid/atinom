@@ -201,13 +201,16 @@ int baca_env(char tampil)
 			#endif 
 			
 			#ifdef CARI_SUMBERNYA
+				printf("set konfig sumber menjadi default\r\n");
 				set_awal_sumber();
 			#endif
-
+			
+			/*
 			#ifdef PAKAI_PM
 				printf("set konfig pm menjadi default\r\n");
 				set_awal_pm();
 			#endif
+			//*/
 			return -1;
 		}
 	}

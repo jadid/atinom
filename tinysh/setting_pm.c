@@ -103,7 +103,7 @@ void cek_pm(int argc, char **argv) {
 	printf("   No  :    Parameter    :      Nilai     :  Satuan\r\n", i, judulnya_pm[i], data_f[j*PER_SUMBER+i], satuannya_pm[i]);
 	garis_bawah();
 	for(i=0; i<PER_SUMBER; i++) {
-		printf(" (%3d) : %-15s : %14.2f    %s\r\n", i+1, judulnya_pm[i], data_f[j*PER_SUMBER+i], satuannya_pm[i]);		// 41
+		printf(" (%3d) : %-15s : %14.2f    %s\r\n", i+1, judulnya_pm[i], data_f[j*PER_SUMBER+i], (satuannya_pm[i]!=NULL)?satuannya_pm[i]:" ");		// 41
 	}
 
 }

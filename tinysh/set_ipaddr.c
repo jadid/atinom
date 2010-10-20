@@ -70,10 +70,16 @@ static void setenv_fnt(int argc, char **argv)
 					vTaskDelay(2);
 				#endif
 				
+				#ifdef CARI_SUMBERNYA
+					set_awal_sumber();
+				#endif
+				
+				/*
 				#ifdef PAKAI_PM
 					printf("set konfig pm menjadi default\r\n");
 					set_awal_pm();
 				#endif
+				//*/
 				return;
 			}	
 		}

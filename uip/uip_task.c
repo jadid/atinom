@@ -116,7 +116,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 #ifdef BOARD_KOMON
     printf("MONITA : monita init\r\n");
-    monita_init();
+//    monita_init();
 #endif
 	
 #if (PAKAI_KONTROL == 1)
@@ -125,12 +125,17 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 //#ifdef BOARD_TAMPILAN
-#ifdef CARI_SUMBERNYA
+//#ifdef CARI_SUMBERNYA
+#ifdef SAMPURASUN_SERVER
 	printf("MONITA : sambungan_aktif init\r\n");
 	sambungan_init();
 	mul = 0;
 #endif
 
+#ifdef SAMPURASUN_CLIENT
+    printf("MONITA : monita init\r\n");
+//    monita_init();
+#endif
 
 #ifdef PAKAI_WEBCLIENT
 		webclient_init();
@@ -221,7 +226,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
-		#ifdef CARI_SUMBERNYA
+		#ifdef SAMPURASUN_SERVER
+		//#ifdef CARI_SUMBERNYA
 		loop++;
 		if (loop > 200) 		// 50, 40, 80
 		{
@@ -404,7 +410,8 @@ void dispatch_tcp_appcall (void)
 		kontrol_appcall();
 #endif
 
-#ifdef CARI_SUMBERNYA
+//#ifdef CARI_SUMBERNYA
+#ifdef SAMPURASUN_SERVER
 	// gunakan rport untuk konek ke orang lain
 	if (uip_conn->rport == HTONS(PORT_MONITA))
 	{

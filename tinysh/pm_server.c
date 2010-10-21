@@ -239,7 +239,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	int muternya=0;
 	
 	#ifdef PAKAI_ADC
-		vTaskDelay(700);
+		vTaskDelay(300);
 	#else
 		vTaskDelay(1000);
 	#endif

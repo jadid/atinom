@@ -46,9 +46,11 @@
 #define BOARD_KOMON_420_SABANG
 #define VERSI_KOMON		"1.50"
 
-#define PAKAI_WEBCLIENT
+//#define PAKAI_WEBCLIENT
 #define BANYAK_SUMBER
 
+//#define SAMPURASUN_CLIENT
+#define SAMPURASUN_SERVER
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
@@ -56,7 +58,7 @@
 #define printf	printf2
 
 #define PAKAI_ADC
-//#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 1
+//#define PAKAI_SERIAL_2			// mendefinisikan aktif serial 1
 //#define PAKAI_PM			2		// nyambung ke SERIAL 3
 #define PAKAI_MAX485		1
 #define PAKAI_SERIAL_3				// mendefinisikan aktif serial 1

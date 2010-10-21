@@ -298,13 +298,12 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
 				ganti_setting(s->filename);
 				buat_file_setting(1, s->filename);
-			} else if (strncmp(s->filename,"/setting.html?pm=1",18)==0) {
+			} else if (strncmp(s->filename,"/setting.html?smb=1",19)==0) {
 				buat_file_setting(2, s->filename);
 			} else {
 				buat_file_setting(0,"");
 			}
-			
-			
+
 			s->file.len = strlen(tot_buf);
 			
 			portENTER_CRITICAL();
@@ -313,7 +312,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 
 		} 
 		#ifdef PAKAI_PM
-		else if (strncmp(s->filename, "/index.html?pm=1", 16) == 0) {
+		else if (strncmp(s->filename, "/index.html?sbr=1", 17) == 0) {
 			buat_file_index(1, s->filename);
 			s->file.len = strlen(tot_buf);
 			portENTER_CRITICAL();
@@ -324,11 +323,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 		#endif
 		else {
 			//printf(" Buat file index\r\n");
-			#ifdef PAKAI_PM
-				buat_file_index(0, "");
-			#else
-				buat_file_index();
-			#endif
+			buat_file_index(0, "");
 			s->file.len = strlen(tot_buf);
 			portENTER_CRITICAL();
 			s->file.data = tot_buf;

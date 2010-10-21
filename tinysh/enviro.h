@@ -45,6 +45,7 @@ struct t_env {
 	char SN[20];
 	char berkas[32];
 	char statusWebClient;
+	char banyak_sumber;
 };
 
 #define SEKTOR_ENV	24

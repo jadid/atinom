@@ -49,6 +49,7 @@ static void setenv_fnt(int argc, char **argv)
 				printf(" \r\n");
 				printf("   nama : memberikan nama pada board\r\n");
 				printf("     misalnya $ set_env nama BOARD_RTD_MAK_#3\r\n");
+				printf(" \r\n");
 				 
 				return;
 			} 
@@ -64,15 +65,20 @@ static void setenv_fnt(int argc, char **argv)
 				set_env_default();
 				vTaskDelay(2);
 				
-				#ifndef CARI_SUMBERNYA
+				//#ifndef CARI_SUMBERNYA
+				#ifndef BANYAK_SUMBER
 					printf("set konfig menjadi default\r\n");
 					set_awal_konfig();
 					vTaskDelay(2);
 				#endif
+				//#endif
 				
-				#ifdef CARI_SUMBERNYA
+				//#ifdef CARI_SUMBERNYA
+				#ifdef BANYAK_SUMBER
 					set_awal_sumber();
+					set_data_default();
 				#endif
+				//#endif
 				
 				/*
 				#ifdef PAKAI_PM

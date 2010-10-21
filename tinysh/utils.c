@@ -88,6 +88,34 @@ int cek_nomer_valid(char *arg, int maks)
 	}
 }
 
+int cek_nomer_sumber(char *arg, int maks)	{
+	unsigned char buf[24];
+	int ss;
+	
+	sprintf(buf, "%s", arg);
+	ss = baca_kanal(buf);
+	
+	if (ss > 0 && ss < (maks+1))
+	{
+		return ss;	
+	}	
+	//else if (ss == 0 || ss > maks)
+	else if (ss == 0)
+	{
+		return 0;	
+	}
+	else if (ss > maks)
+	{
+		printf("\r\n ERR: %d diluar range !\r\n", ss);
+		return -1;
+	}
+	else
+	{
+		printf("\r\n ERR: format salah !\r\n");
+		return -2;
+	}
+}
+
 void garis_bawah(void)
 {
 	printf("-----------------------------------------------------\r\n");	

@@ -218,7 +218,7 @@ void ambil_pm(int k) {
 
 	//printf("Ambil data Power Meter ke-%d\r\n", k);
 	while(i<JML_REQ_PM) {
-		vTaskDelay(2);			// MIN: 2
+		vTaskDelay(10);			// MIN: 2
 		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;
@@ -238,7 +238,12 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	#endif
 	int muternya=0;
 	
-	vTaskDelay(100);
+	#ifdef PAKAI_ADC
+		vTaskDelay(700);
+	#else
+		vTaskDelay(1000);
+	#endif
+	
 	printf("Ambil data Power Meter init !\r\n");
 	// flush RX
 	for (i=0; i<100; i++)
@@ -264,7 +269,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 		alamatClient = (int) pmx[k].alamat;
 		
 		if ( (k<JML_SUMBER) && (alamatClient>0) ) {
-			printf("k: %d, alamat: %d\r\n", k, alamatClient);
+			//printf("k: %d, alamat: %d\r\n", k, alamatClient);
 			if (pmx[k].status==1) {
 				#ifdef PAKAI_PM
 				if (pmx[k].modul==0) {		// 0: ambil power meter
@@ -295,7 +300,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 			loop=0;	
 		}
 		#endif 
-		serX_putstring(3, "Testing dari serial 3 ...Testing dari serial 3 ...2x...");	
+		//serX_putstring(3, "Testing dari serial 3 ...Testing dari serial 3 ...2x...");	
 		loop++;
 		//printf("masih muter\r\n");
 	}

@@ -329,6 +329,7 @@ float stof(char * str) {
 
 void ganti_setting(char *str) {
 #ifndef CARI_SUMBERNYA
+#ifndef BANYAK_SUMBER
 	printf("Data telah diubah: %s\r\n", str);
 	char tmp[30], kets[30];
 	
@@ -454,6 +455,7 @@ void ganti_setting(char *str) {
 	}
 	//printf();
 	#endif
+#endif
 #endif
 }
 

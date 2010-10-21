@@ -30,6 +30,15 @@
 #endif
 //*/
 
+#ifdef BOARD_TAMPILAN
+
+#endif
+
+#ifdef BANYAK_SUMBER
+	#include "sumber.c"
+	#include "data_kontrol.c"
+#endif
+
 #ifdef CENDOL
 	#include "setting_eth.c"
 #endif
@@ -38,6 +47,11 @@
 #ifdef CARI_SUMBER
 #include "mesin.c"
 #include "titik.c"
+#endif
+
+#ifdef PAKAI_ADC
+	#include "../adc/command_adc.c"
+	#include "set_kanal.c"
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA
@@ -408,7 +422,7 @@ static void cek_uptime(int argc, char **argv)
 static tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",
                               cek_uptime,0,0,0};
 
-#ifdef BOARD_KOMON_420_SAJA
+#if defined(BOARD_KOMON_420_SAJA)
 void hitung_datanya() {
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
@@ -448,6 +462,48 @@ static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
 
 
 #endif
+
+#if defined(BOARD_KOMON_420_SABANG)
+void hitung_datanya() {
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+	float temp;
+	int fx=0;
+	for (fx=0; fx<KANALNYA; fx++)	{
+		if (env2->kalib[fx].status==0) {	// "Tegangan"
+			temp = st_adc.data[fx] * faktor_pengali_420 / 0xffff;
+			data_f[fx] = (float) (temp * env2->kalib[fx].m) + env2->kalib[fx].C;
+		} else {
+			if (st_adc.data[fx]>10000)
+				data_f[fx] = 1;		// "On/Tertutup"
+			else
+				data_f[fx] = 0;		// "Off/Terbuka"
+		}
+	}
+}
+
+void lihat_datanya() {
+	int dd=0;
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+
+	printf("No       Nilai    Satuan   Status\r\n");
+	garis_bawah2();
+	for (dd=0; dd<KANALNYA; dd++) {
+		if (env2->kalib[dd].status==0) {
+			printf("(%2d) %11.2f   (V)     Tegangan\r\n", dd+1, data_f[dd]);
+		} else {
+			printf("(%2d) %-12s          OnOff\r\n", dd+1, ((int) data_f[dd]==1)?"On/Tertutup":"Off/Terbuka");
+		}
+	}
+}
+
+static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
+                              lihat_datanya,0,0,0};
+
+
+#endif
+
 
 #ifdef BOARD_KOMON_KONTER
 extern unsigned int data_putaran[];
@@ -722,6 +778,14 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 
+#ifdef BOARD_KOMON_420_SABANG
+#ifdef PAKAI_ADC
+	tinysh_add_command(&cek_adc_cmd);
+	//tinysh_add_command(&lihat_data_cmd);
+#endif
+	tinysh_add_command(&set_kanal_cmd);
+#endif
+
 #ifdef BOARD_KOMON_B_THERMO
 	tinysh_add_command(&cek_adc_cmd);
 	tinysh_add_command(&set_kanal_cmd);
@@ -762,6 +826,13 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_data_cmd);
 	tinysh_add_command(&cek_data_cmd);
 
+#endif
+
+#ifdef BANYAK_SUMBER
+	tinysh_add_command(&cek_sumber_cmd);
+	tinysh_add_command(&set_sumber_cmd);
+	tinysh_add_command(&set_data_cmd);
+	tinysh_add_command(&cek_data_cmd);
 #endif
 
 #if (VERSI_KONFIGx == 2)
@@ -849,6 +920,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	#endif
 	
 	#ifdef BOARD_KOMON_420_SABANG
+		#ifdef PAKAI_ADC
+			kalibrasi_adc1();
+			vTaskDelay(100);
+			start_adc_1();
+		#endif
 		vTaskDelay(100);
 	#endif
 	
@@ -894,7 +970,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	/* force untuk tampil prompt */
 	tinysh_char_in('\r');
 	
-	
+
 	/*
 	 * main loop shell
   	 */
@@ -934,7 +1010,11 @@ portTASK_FUNCTION(shell, pvParameters )
 					#ifdef BOARD_KOMON_B_THERMO
 					proses_data_adc();
 					#endif
-					 
+					
+					#ifdef BOARD_KOMON_420_SABANG
+					proses_data_adc();
+					#endif
+					
 					#ifdef BOARD_KOMON_420_SAJA
 					proses_data_adc();
 					hitung_datanya();
@@ -962,6 +1042,10 @@ portTASK_FUNCTION(shell, pvParameters )
 			#ifdef BOARD_KOMON_420_SAJA
 				proses_data_adc();
 				hitung_datanya();
+			#endif
+			
+			#ifdef BOARD_KOMON_420_SABANG
+				proses_data_adc();
 			#endif
 			
 			simpan_ke_data_f();

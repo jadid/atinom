@@ -30,7 +30,7 @@
 #define __SUMBER__
 
 struct t_sumber *sumber;
-int cek_nomer_sumber(char *arg, int maks);
+//int cek_nomer_sumber(char *arg, int maks);
 //void set_awal_sumber(void);
 //static int simpan_sumber( struct t_sumber *pgr);
 							  
@@ -40,9 +40,9 @@ void cek_sumber(void)
 	struct t_sumber *sumber;
 	
 	sumber = (char *) ALMT_SUMBER;
-	printf("  No.    Nama              IPaddr       Alamat   status\r\n");
+	printf("  No :    Nama    :      IPaddr     : Almt : Stack :     Status\r\n");
 
-	for (i=0; i<55; i++)
+	for (i=0; i<67; i++)
 		printf("-");
 	
 	printf("\r\n");
@@ -54,19 +54,19 @@ void cek_sumber(void)
 		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
 		
 		/* alamat */
-		printf("%-2d : ", sumber[i].alamat);
+		printf("%4d : %5d :", sumber[i].alamat, sumber[i].stack);
 		
 		/* status */
 		if (sumber[i].status == 0)
-			printf("%-16s","Tidak Aktif");
+			printf(" %-16s","Tidak Aktif");
 		else if (sumber[i].status == 1)
-			printf("%-16s","Aktif / Normal");
+			printf(" %-16s","Aktif / Normal");
 		else if (sumber[i].status == 2)
-			printf("%-16s","TimeOut");
+			printf(" %-16s","TimeOut");
 		else if (sumber[i].status == 5)
-			printf("%-16s","Aktif / Daytime server");
+			printf(" %-16s","Aktif / Daytime server");
 		else
-			printf("%-16s"," ");
+			printf(" %-16s"," ");
 		
 		if (sumber[i].status == 1) {
 			if (sumber[i].alamat>0) {
@@ -218,21 +218,24 @@ void set_sumber(int argc, char **argv)
 		{
 			printf(" sumber = %d : ", sumb);
 			
+			if ( strcmp(argv[3], "aktif")==0 || strcmp(argv[3], "hidup")==0 ) {
+				p_sbr[sumb-1].status = 1;
+			} else if ( strcmp(argv[3], "mati")==0 ) 	{
+				p_sbr[sumb-1].status = 0;
+			} else {
 			/* 0 tidak dipakai, 1 dipakai / diaktifkan , 5 daytime */
-			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 5);
-			
-			if (stat >=0)
-			{
-				p_sbr[sumb-1].status = stat;
-				printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3); 
-				if (stat == 0) printf("Tidak diaktifkan\r\n");
-				else if (stat == 1) printf("Diaktifkan\r\n");	
-				else if (stat == 5) printf("Daytime\r\n");	
+				sprintf(buf, "%s", argv[3]);	
+				stat = cek_nomer_sumber(buf, 5);
+				
+				if (stat >=0)	{
+					p_sbr[sumb-1].status = stat;
+					printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3); 
+					if (stat == 0) printf("Tidak diaktifkan\r\n");
+					else if (stat == 1) printf("Diaktifkan\r\n");	
+					else if (stat == 5) printf("Daytime\r\n");	
+				}
 			}
-		}
-		else 
-		{
+		} else 	{
 			vPortFree( p_sbr );
 			return;
 		}	
@@ -253,6 +256,29 @@ void set_sumber(int argc, char **argv)
 				p_sbr[sumb-1].alamat = stat;
 				//printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 				printf("pd modul = %d\r\n", p_sbr[sumb-1].alamat);
+			}
+		}
+		else {
+			vPortFree( p_sbr );
+			return;
+		}
+	}
+	else if (strcmp(argv[2], "stack") == 0)
+	{
+		sprintf(buf, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(buf, JML_SUMBER);
+		if (sumb > 0)		
+		{
+			printf(" sumber = %d : ", sumb);
+			
+			sprintf(buf, "%s", argv[3]);	
+			stat = cek_nomer_sumber(buf, 10);
+			
+			if (stat >=0)
+			{
+				p_sbr[sumb-1].stack = stat;
+				//printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
+				printf("pd modul = %d\r\n", p_sbr[sumb-1].stack);
 			}
 		}
 		else {
@@ -281,9 +307,8 @@ void set_sumber(int argc, char **argv)
 //static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama status alamat default","[args]",
 static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","set sumber untuk beberapa hal","help ipaddr nama status alamat default",
                               set_sumber,0,0,0};
-
-int cek_nomer_sumber(char *arg, int maks)
-{
+/*
+int cek_nomer_sumber(char *arg, int maks)	{
 	unsigned char buf[24];
 	int ss;
 	
@@ -310,6 +335,7 @@ int cek_nomer_sumber(char *arg, int maks)
 		return -2;
 	}
 }
+//*/
 
 void save_sumber(void)
 {
@@ -361,6 +387,7 @@ void set_awal_sumber(void)
 		p_sbr[i].alamat = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_sbr[i].status = 0;	
 		p_sbr[i].modul  = 0;	
+		p_sbr[i].stack  = 1;
 		
 		p_sbr[i].IP0 = 192;
 		p_sbr[i].IP1 = 168;

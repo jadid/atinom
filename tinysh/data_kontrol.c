@@ -40,6 +40,7 @@
 	*/
 //#include "monita_uip.h"
 #include "../monita/monita_uip.h"
+
 #include "uip.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +50,8 @@
 
 
 
-
+extern char * judulnya_pm[];
+extern char * satuannya_pm[];
 
 //float data_sumber[ JML_SUMBER ][ PER_SUMBER ];
 //float data_f [ (JML_SUMBER * PER_SUMBER) ];
@@ -83,15 +85,25 @@ int cek_data(int argc, char **argv)
 		p_dt = (char *) ALMT_DT_SET;
 	
 		judul(" Data Setting\r\n");
-	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-		printf(" no.  : Nama       : Data : Stat : Satuan : Alr_H : Alr_HH : Rly : &Memory\r\n");
+		printf(" no.  :       Nama       :    Data    : Satuan");
+		#ifdef PAKAI_SELENOID
+			printf(": Alr_H : Alr_HH");
+			printf("Rly : ");
+		#endif
+		printf(" : &Memory\r\n");
 		garis_bawah();
 	
-		for (i=0; i< (sizeof(data_f)/sizeof(float)); i++)
-		{
+		for (i=0; i< (sizeof(data_f)/sizeof(float)); i++)	{
+			#if 0
 			printf(" (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
+			#endif
+			
+			printf(" (%3d): %-16s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+			p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
+			//printf(" (%3d): %-10s :  %10.2f : %5s: %-6s : (%X)\r\n", (i+1), \
+			//	p_dt[i].nama, 6,data_f[i], (p_dt[i].aktif==1)?"aktif":"mati", p_dt[i].satuan, &p_dt[i]);	
 		}
 	}
 	else if (argc > 1)
@@ -105,10 +117,42 @@ int cek_data(int argc, char **argv)
 		}		
 		else
 		{
-			sprintf(buf, "%s", argv[1]);	
+			sprintf(buf, "%s", argv[1]);
+			struct t_sumber *sumber;
+			sumber = (char *) ALMT_SUMBER;
+			
+			sumb = cek_nomer_valid(buf, JML_SUMBER);
+			if (sumber[sumb-1].status==0) {
+				printf("Sumber ke-%d TIDAK AKTIF\r\n", sumb);
+				return;
+			}
+			
+			if (sumb > 0 && sumb < (JML_SUMBER+1)) {
+				struct t_dt_set *p_dt;
+				p_dt = (char *) ALMT_DT_SET;
+				
+				judul(" Data Setting\r\n");
+				printf(" no.  :       Nama       :    Data    : Satuan : &Memory\r\n");
+				garis_bawah();
+				if (sumber[sumb-1].alamat==0) {		// Modul Monita
+					for (i=0; i<20; i++) {
+						printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", (i+1), \
+						p_dt[i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[i].satuan, &p_dt[i]);	
+					}
+				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
+					if (sumber[sumb-1].modul==0) {		// Power Meter
+						for (i=0; i<PER_SUMBER; i++) {
+							printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", (i+1), \
+							judulnya_pm[i], data_f[(sumb-1)*PER_SUMBER+i], satuannya_pm[i], &p_dt[i]);	
+						}
+						printf("Data Power Meter Alamat %d\r\n", sumber[sumb-1].alamat);
+					}
+				}
+			} else
+				printf(" ERR: Perintah tidak dikenali !\r\n");
+			/*
 			sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-			if (sumb > 0 && sumb < (sizeof(data_f)/sizeof(float)))		
-			{
+			if (sumb > 0 && sumb < (sizeof(data_f)/sizeof(float)))		{
 				struct t_dt_set *p_dt;
 				p_dt = (char *) ALMT_DT_SET;
 		
@@ -126,15 +170,15 @@ int cek_data(int argc, char **argv)
 					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 						p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
-					/*
-					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
-						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
-					//*/
+
+					//printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+					//	p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
+					//	p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
 				}
 			}
 			else
 				printf(" ERR: Perintah tidak dikenali !\r\n");
+			//*/
 		}
 	}
 	
@@ -143,8 +187,7 @@ int cek_data(int argc, char **argv)
 static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer",
                               cek_data,0,0,0};
 
-static int set_data_default(void)
-{
+int set_data_default(void) {
 	int i,j=0;
 	struct t_dt_set *p_gr;
 	

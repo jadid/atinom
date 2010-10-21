@@ -11,7 +11,7 @@
 
 #define false	0
 #define true	1
-
+#ifdef PAKAI_ADC
 char kalibrasi_adc1(int fdy)
 {
 	unsigned char er;
@@ -120,3 +120,4 @@ char kalibrasi_adc1(int fdy)
 		return 0;
 	}
 }
+#endif

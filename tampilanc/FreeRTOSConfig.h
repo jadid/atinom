@@ -46,7 +46,7 @@
 #define PAKE_HTTP
 
 #define CARI_SUMBERNYA		// untuk mencari data sumber via Ethernet
-
+#define BANYAK_SUMBER
 #define PAKAI_RTC
 
 #define TAMPILAN_LPC_43

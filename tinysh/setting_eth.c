@@ -14,55 +14,53 @@
 
 #ifdef PAKAI_PM	
 extern char * judulnya_pm[];	
-
-			  
-void cek_konfig(int argc, char **argv)
-
-#else
-void cek_konfig(void)
 #endif
-{
+			  
+void cek_konfig(int argc, char **argv)	{
 	int i=0,j=0;
 	struct t_setting *konfig;
 	int jmlData = (sizeof(data_f)/sizeof(float));
 	konfig = (char *) ALMT_KONFIG;
 	
-	#ifdef PAKAI_PM
+	//#ifdef PAKAI_PM
 	int t=0;
 	unsigned char buf[24];
 	
-	struct t_sumber_pm *p_sbr;
+	struct t_sumber *p_sbr;
 	p_sbr = (char *) ALMT_SUMBER;
 
 	if (argc < 3) {
 		printf("Perintah salah!!!\r\n");
 		printf("Gunakan : \r\n");
-		printf("cek_konfig alamat [alamat PM]\r\n");
-		printf("cek_konfig no [urutan Sumber PM]\r\n");
+		printf("cek_konfig alamat [alamat client Modbus] <---- khusus client Modbus\r\n");
+		printf("cek_konfig no     [urutan modul Sumber]\r\n");
 		return;
 	} else {
-		if (strcmp(argv[1], "alamat") == 0)	{
+		if (strcmp(argv[1], "alamat") == 0)	{			// khusus modul MODBUS
 			sprintf(buf, "%s", argv[2]);	
 
 			t = cek_nomer_sumber(buf, 250);
 			if (t > 0)	{
 				for(j=0; j<JML_SUMBER; j++) {
-					if (((int)p_sbr->pm[j].alamat)==t) {
+					if (((int)p_sbr[j].alamat)==t) {
 						break;
 					}
 				}
-				
-				if (j==JML_SUMBER) {
-					printf("Alamat PM tidak ditemukan\r\n");
-					return;
+
+				#ifdef PAKAI_PM
+				if (p_sbr[j].modul==0) {		// modul Power Meter
+					if (j==JML_SUMBER) {
+						printf("Alamat PM tidak ditemukan\r\n");
+						return;
+					}
+					
+					if (p_sbr[j].status==0) {
+						printf("PM Alamat %d tidak aktif\r\n", j);
+						return;
+					}
 				}
+				#endif
 				
-				if (p_sbr->pm[j].status==0) {
-					printf("PM Alamat %d tidak aktif\r\n", j);
-					return;
-				}
-				
-				printf(" alamat: %d, index: %d\r\n", t, j);
 			} else	{
 				printf("Alamat tidak benar !!!\r\n");
 				return;
@@ -79,12 +77,12 @@ void cek_konfig(void)
 			}	
 		}
 	}
-	
+	printf(" alamat: %d, index: %d\r\n", t, j);
 	garis_bawah2();
-	printf("Konfigurasi Sumber ke-%d: %s, Alamat: %d\r\n", j+1, p_sbr->pm[j].nama, p_sbr->pm[j].alamat);
+	printf("Konfigurasi Sumber ke-%d: %s, Alamat: %d\r\n", j, p_sbr[j].nama, p_sbr[j].alamat);
 	garis_bawah2();
-	
-	#endif
+
+	//#endif
 	printf("  No.    ID      Nama             status\r\n");
 	int w=1,z=0;
 	for (i=0; i<45; i++)
@@ -120,28 +118,66 @@ void cek_konfig(void)
 			printf("\r\n");
 		}
 	}
-	#else
-	
-	for (i=0; i<PER_SUMBER; i++)	{
-			#ifdef PAKAI_PM
-				printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, judulnya_pm[i]);
-			#else
-				printf(" (%2d): %4d : %-16s : ", (i+1), konfig[i].id, konfig[i].ket);			// rata kiri
-			#endif
-			
-			/* status */
-			if (konfig[i].status == 0)
-				printf("%-16s","Tidak Aktif");
-			else if (konfig[i].status == 1)
-				printf("%-16s","Aktif / Normal");
-			else if (konfig[i].status == 2)
-				printf("%-16s","TimeOut");
-			else
-				printf("%-16s"," ");
-			printf("\r\n");
-	}
 	#endif
-}							 
+	
+	#ifdef BOARD_KOMON_420_SABANG
+	if (t>0) {
+		#ifdef PAKAI_PM
+			if (p_sbr[j-1].modul==0) {	// Power Meter
+				for (i=0; i<PER_SUMBER; i++)	{
+					printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
+					// status //
+					if (konfig[j*PER_SUMBER+i].status == 0)
+						printf("%-16s","Tidak Aktif");
+					else if (konfig[j*PER_SUMBER+i].status == 1)
+						printf("%-16s","Aktif / Normal");
+					else if (konfig[j*PER_SUMBER+i].status == 2)
+						printf("%-16s","TimeOut");
+					else
+						printf("%-16s"," ");
+					printf("\r\n");
+				}
+			}
+		#endif
+	} else  {//if (t==0) {
+		if (p_sbr[j-1].alamat==0) {		// Modul Monita
+			for (i=0; i<20; i++)	{
+				printf(" (%2d): %4d : %-16s : ", (((j-1)*PER_SUMBER)+i+1), konfig[(j-1)*PER_SUMBER+i].id, konfig[(j-1)*PER_SUMBER+i].ket );			// rata kiri
+				
+				// status //
+				if (konfig[(j-1)*PER_SUMBER+i].status == 0)
+					printf("%-16s","Tidak Aktif");
+				else if (konfig[(j-1)*PER_SUMBER+i].status == 1)
+					printf("%-16s","Aktif / Normal");
+				else if (konfig[(j-1)*PER_SUMBER+i].status == 2)
+					printf("%-16s","TimeOut");
+				else
+					printf("%-16s"," ");
+				printf("\r\n");
+			}
+		} else if (p_sbr[j-1].alamat>0) {	// Modul Modbus
+			#ifdef PAKAI_PM
+			if (p_sbr[j-1].modul==0) {	// Power Meter
+				for (i=0; i<PER_SUMBER; i++)	{
+					printf(" (%2d): %4d : %-16s : ", (((j-1)*PER_SUMBER)+i+1), konfig[(j-1)*PER_SUMBER+i].id, judulnya_pm[i]);
+					// status //
+					if (konfig[(j-1)*PER_SUMBER+i].status == 0)
+						printf("%-16s","Tidak Aktif");
+					else if (konfig[(j-1)*PER_SUMBER+i].status == 1)
+						printf("%-16s","Aktif / Normal");
+					else if (konfig[(j-1)*PER_SUMBER+i].status == 2)
+						printf("%-16s","TimeOut");
+					else
+						printf("%-16s"," ");
+					printf("\r\n");
+				}
+			}
+			#endif
+		}
+	}
+}	
+#endif
+							 
 //*
 static tinysh_cmd_t cek_konfig_cmd={0,"cek_konfig","menampilkan konfig modul","[args]", cek_konfig,0,0,0};
 //*/
@@ -304,7 +340,7 @@ void set_konfig(int argc, char **argv)
 //*
 static tinysh_cmd_t set_konfig_cmd={0,"set_konfig","set konfig untuk beberapa hal","help id ket status",
                               set_konfig,0,0,0};
-//*/
+/*
 int cek_nomer_sumber(char *arg, int maks)
 {
 	unsigned char buf[24];
@@ -333,7 +369,7 @@ int cek_nomer_sumber(char *arg, int maks)
 		return -2;
 	}
 }
-
+//*/
 void read_konfig(void)
 {
 	struct t_setting *setting;

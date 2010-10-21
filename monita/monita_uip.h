@@ -20,7 +20,8 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
-#ifdef PAKAI_PM
+//#ifdef PAKAI_PM
+#ifdef BANYAK_SUMBER
 	// di sektor 26, harusnya bisa nyampe 120 sumber
 	#define JML_SUMBER	10
 #else
@@ -33,6 +34,10 @@
 
 
 // PER_SUMBER itu menujukkan jml data untuk 10 kanal.
+#define SUMBER_420		10
+#define SUMBER_KONTER	20
+#define SUMBER_PM		33
+
 #if defined(PAKAI_PM)
 	#define PER_SUMBER	33
 #elif defined(BOARD_KOMON_420_SAJA)
@@ -214,11 +219,12 @@ struct t_setting {
 struct t_sumber {
 	char nama[24];
 	char alamat;		/* untuk alamat modbus Power meter atau stack board (jika ada) */
-	char IP0;			// klo sumber berupa modul monita 
-	char IP1;
-	char IP2;
-	char IP3;
+	unsigned char IP0;			// klo sumber berupa modul monita 
+	unsigned char IP1;
+	unsigned char IP2;
+	unsigned char IP3;
 	char modul;			// khusus modbus, jenis modul 0: PM, 1: KTA, 2:????, dst
+	char stack;			// jika modul berisi BANYAK_SUMBER : adc, pm, dll
 	char status;		// tidak aktif, timeout, dll
 };
 

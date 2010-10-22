@@ -77,6 +77,7 @@ void monita_appcall(void)
 	float temp_rpm;
 	int i;
 	int t;
+	char stack;
 	unsigned char ipne[32];
 	
 #if 0	
@@ -127,7 +128,8 @@ void monita_appcall(void)
 			if (strncmp(buf, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;
-				
+				stack = buf[10];
+				printf("stack: %d\r\n", stack);
 				#ifdef BOARD_KOMON_A_RTD
 				hitung_data_float();
 				
@@ -144,10 +146,17 @@ void monita_appcall(void)
 				#endif
 				
 				#ifdef BOARD_KOMON_420_SABANG
+					#ifdef BANYAK_SUMBER
+						for (i=0; i<PER_SUMBER;i++)		{
+							data_float.data[i] = data_f[(stack-1)*PER_SUMBER+i];
+							//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
+						}
+					#else
 					for (i=0; i<PER_SUMBER;i++)		{
 						data_float.data[i] = data_f[i];
 						//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
-					}		
+					}
+					#endif
 				#endif
 				
 				#ifdef BOARD_KOMON_B_THERMO
@@ -203,7 +212,7 @@ void monita_appcall(void)
 				xdata.nomer = loop_kirim;
 				//xdata.flag = 30;		//pulsa
 				xdata.flag = (unsigned char) PER_SUMBER;
-				xdata.alamat = 1;		// stacking board nomer 1
+				xdata.alamat = stack;		// stacking board nomer 1
 				strcpy(xdata.mon, "monita1");
 				
 				portENTER_CRITICAL();
@@ -321,7 +330,7 @@ void sambungan_connect(int no)
 		//printf("..%X..L=%d, R=%d .. OK\r\n", conn, conn->lport, conn->rport);
 		
 		conn->nomer_sambung = no;
-		status[no].stat = sumber[no].stack;
+		status[no].stat = 1;
 		status[no].lport = conn->lport;
 		status[no].timer = 0;
 		status[no].reply_lama = 0;
@@ -500,7 +509,7 @@ void samb_appcall(void)
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 			//debug_out_h("invalid acknoledge %s", ipne);
-			printf("invalid acknoledge %s", ipne);
+			//printf("invalid acknoledge %s", ipne);
 			uip_close();	
 		}
 	}
@@ -515,7 +524,7 @@ void samb_appcall(void)
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 			//debug_out_h("pool timeout %s", ipne);
-			printf("pool timeout %s", ipne);
+			//printf("pool timeout %s", ipne);
 			uip_close();		
 		}			
 	}
@@ -531,7 +540,7 @@ void samb_appcall(void)
 			memcpy((char *) &in_buf, uip_appdata, len);
 			portEXIT_CRITICAL();
 			
-			if (strncmp(in_buf.mon, "monita1", 7) == 0)
+			if (strncmp(in_buf.mon, "monita", 6) == 0)
 			{
 				//printf("Data MOMON\n");	
 				status[nomer_sambung].reply++;
@@ -545,7 +554,7 @@ void samb_appcall(void)
 				#endif
 				
 				//debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
-				printf("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
+				//printf("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);
 				
 				#ifdef DEBUG_DATA
 				printf(" %d:", sbg->nomer_samb);

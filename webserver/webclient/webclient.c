@@ -134,9 +134,9 @@ webclient_close(void)
   s.state = WEBCLIENT_STATE_CLOSE;
 }
 /*-----------------------------------------------------------------------------------*/
-int kirimModul(int sumber, char *il, char *dl) {
-	char id[10], dt[10];
-	int i=0;
+int kirimModul(int burst, int sumber, char *il, char *dl) {
+	char id[30], dt[30];
+	int i=0,z=0;
 	int jmlAktif=0;
 		
 	struct t_setting *konfig;
@@ -144,19 +144,47 @@ int kirimModul(int sumber, char *il, char *dl) {
 		
 	strcpy(il,"il=");
 	strcpy(dl,"dl=");
-	for (i=0; i<PER_SUMBER; i++) {
-		if (konfig[PER_SUMBER*sumber+i].status) {
-			jmlAktif++;
-			//if (i==0) {
-			if (jmlAktif==1) {
-				sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
-				sprintf(dt, "%.2f", data_f[PER_SUMBER*sumber+i]);
-			} else {
-				sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
-				sprintf(dt, "~%.2f", data_f[PER_SUMBER*sumber+i]);
+	if (burst==1) {
+		struct t_sumber *psbr;
+		psbr = (char *) ALMT_SUMBER;
+		
+		for (z=0; z<JML_SUMBER; z++) {
+			if (psbr[z].status==1) {
+				for (i=0; i<PER_SUMBER; i++) {
+					if (konfig[(PER_SUMBER*z)+i].status==1) {
+						jmlAktif++;
+						//if (i==0) {
+						if (jmlAktif==1) {
+							sprintf(id, "%d", konfig[(PER_SUMBER*z)+i].id);
+							sprintf(dt, "%.2f", data_f[(PER_SUMBER*z)+i]);
+							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
+						} else {
+							sprintf(id, "~%d", konfig[(PER_SUMBER*z)+i].id);
+							sprintf(dt, "~%.2f", data_f[(PER_SUMBER*z)+i]);
+							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
+						}
+						
+						strcat(il,id);
+						strcat(dl,dt);
+					}
+				}
 			}
-			strcat(il,id);
-			strcat(dl,dt);
+		}
+	} else {
+		for (i=0; i<PER_SUMBER; i++) {
+			if (konfig[PER_SUMBER*sumber+i].status) {
+				jmlAktif++;
+				//if (i==0) {
+				if (jmlAktif==1) {
+					sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
+					sprintf(dt, "%.2f", data_f[PER_SUMBER*sumber+i]);
+				} else {
+					sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
+					sprintf(dt, "~%.2f", data_f[PER_SUMBER*sumber+i]);
+				}
+				strcat(il,id);
+				strcat(dl,dt);
+			}
 		}
 	}
 	return jmlAktif;

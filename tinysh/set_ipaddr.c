@@ -50,7 +50,19 @@ static void setenv_fnt(int argc, char **argv)
 				printf("   nama : memberikan nama pada board\r\n");
 				printf("     misalnya $ set_env nama BOARD_RTD_MAK_#3\r\n");
 				printf(" \r\n");
-				 
+				#ifdef PAKAI_WEBCLIENT
+				printf("   webclient : aktivasi pengiriman data via webclient\r\n");
+				printf("     misalnya $ set_env webclient [0|mati|1|aktif]\r\n");
+				printf(" \r\n");
+				printf("   file : tujuan file pengiriman data via webclient\r\n");
+				printf("     misalnya $ set_env file /monita3/monita_loket.php\r\n");
+				printf(" \r\n");
+				printf("   burst : metode pengiriman data via webclient\r\n");
+				printf("     mode burst sebaiknya digunakan jika mengirim beberapa data titik ukur\r\n");
+				printf("	 dari beberapa sumber modul. Jml total data terkirim <20 titik.");
+				printf("     misalnya $ set_env burst [0|mati|1|aktif]\r\n");
+				printf(" \r\n");
+				#endif
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)			{
@@ -170,6 +182,7 @@ static void setenv_fnt(int argc, char **argv)
 			printf(" SN : %s\n", p_sbr->SN);
 		}
 	}
+	#ifdef PAKAI_WEBCLIENT
 	else if (strcmp(argv[1], "file") == 0)	{
 		printf(" set file");
 		//memset(env2.SN, 0, sizeof (env2.SN));
@@ -195,9 +208,23 @@ static void setenv_fnt(int argc, char **argv)
 		} else {
 			p_sbr->statusWebClient = 0;
 		}
-		
 		printf(" Status webclient : %s\r\n", (p_sbr->statusWebClient==1)?"aktif":"mati");
 	}
+	else if (strcmp(argv[1], "burst") == 0)	{
+		printf(" set status burst\r\n");
+  		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {
+			p_sbr->burst = (argv[2][0] - '0');
+		} 
+		else if (strcmp(argv[2], "aktif")==0 || strcmp(argv[2], "hidup")==0) {
+			p_sbr->burst = 1;
+		} else if (strcmp(argv[2], "mati")==0)  {
+			p_sbr->burst = 0;
+		} else {
+			p_sbr->burst = 0;
+		}
+		printf(" Status burst : %s\r\n", (p_sbr->burst==1)?"aktif":"mati");
+	}
+	#endif
 	else if (strcmp(argv[1], "kanal") == 0)	{
 		int kanal;
 		

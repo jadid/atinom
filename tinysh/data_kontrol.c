@@ -136,14 +136,14 @@ int cek_data(int argc, char **argv)
 				garis_bawah();
 				if (sumber[sumb-1].alamat==0) {		// Modul Monita
 					for (i=0; i<20; i++) {
-						printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", (i+1), \
-						p_dt[i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[i].satuan, &p_dt[i]);	
+						printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
+						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
 					if (sumber[sumb-1].modul==0) {		// Power Meter
 						for (i=0; i<PER_SUMBER; i++) {
-							printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", (i+1), \
-							judulnya_pm[i], data_f[(sumb-1)*PER_SUMBER+i], satuannya_pm[i], &p_dt[i]);	
+							printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
+							judulnya_pm[i], data_f[(sumb-1)*PER_SUMBER+i], satuannya_pm[i], &p_dt[(sumb-1)*PER_SUMBER+i]);	
 						}
 						printf("Data Power Meter Alamat %d\r\n", sumber[sumb-1].alamat);
 					}

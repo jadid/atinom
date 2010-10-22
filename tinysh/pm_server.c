@@ -61,27 +61,21 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	#ifdef TIPE_PM710
 	if (urut_PM710 == 0)	{
 	   jum_balik = get_PM710(alamatPM, reg_satuan, 4);
-	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 1)	{
 	   jum_balik = get_PM710(alamatPM, reg_kva, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
-	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 2)	{
 	   jum_balik = get_PM710(alamatPM, reg_ampA, 4); //ampA, B, C & N								// 4020
-	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 3) {
 	   jum_balik = get_PM710(alamatPM, reg_voltA_C, 6); //voltA_B, B_C, A_C, A_N, B_N & C_N
-	   //printf("_________masuk  urut %d, jmlBalik: %d\r\n", urut_PM710, jum_balik );
 	} else if (urut_PM710 == 4)	{
 	   jum_balik = get_PM710(alamatPM, reg_kwh, 6);  //kWh, kVAh, & kVArh
 	} else if (urut_PM710 == 5) {
 		#ifdef PAKAI_KTA
 		jum_balik = get_KTA(alamatPM, reg_KTA, 9);			// 30, 9
-		//printf("_________masuk  urut 5, jmlBalik: %d\r\n", jum_balik );
 		#endif
 	} else if (urut_PM710 == 6) {
 		#ifdef PAKAI_KTA
 		jum_balik = get_KTA(alamatPM, reg_satuan_KTA, 6);
-		//printf("_________masuk  urut 6, jmlBalik: %d\r\n", jum_balik );
 		#endif
 	}
 	#endif
@@ -119,7 +113,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
 	}
-	//FIO0CLR = TXDE;		// on	---> bisa kirim
+	FIO0CLR = TXDE;		// on	---> bisa kirim
 	
 	#ifdef LIAT
 	printf("\r\n");
@@ -161,7 +155,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		}	else	{
 			timeout++;
 			if (timeout > 20)	{
-				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				//printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				break;
 			}
 		}
@@ -218,7 +212,7 @@ void ambil_pm(int k) {
 
 	//printf("Ambil data Power Meter ke-%d\r\n", k);
 	while(i<JML_REQ_PM) {
-		vTaskDelay(10);			// MIN: 2
+		vTaskDelay(2);			// MIN: 2
 		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;

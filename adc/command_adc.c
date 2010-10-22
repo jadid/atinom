@@ -62,7 +62,10 @@ void simpan_ke_data_f() {
 							if (sumber[g].IP2==envx->IP2) {
 								//printf("..3");
 								if (sumber[g].IP3==envx->IP3) {
-									sararumber=g;
+									if (sumber[g].alamat==0) {
+										sararumber=g;
+										break;
+									}
 									//printf("\r\n");
 								}
 							}

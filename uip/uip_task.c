@@ -186,41 +186,43 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
 			wclient++;
-			#ifdef PAKAI_PM
-				struct t_sumber_pm *pmx;
-				pmx = (char *) ALMT_SUMBER;
-				jmlsumbernya=0;
-				for(selang=0; selang<JML_SUMBER; selang++) {
-					if (pmx->pm[selang].status==1) {
-						noPMaktif[jmlsumbernya]=selang;
-						jmlsumbernya++;
+			if (envx->burst==1) {
+				jmlData=kirimModul(1, 0, il, dl);
+				jmlsumbernya=1;
+				tiapKirim = 500;
+			} else 
+			{			// kirim 1-1
+				#ifdef BANYAK_SUMBER
+					struct t_sumber *pmx;
+					pmx = (char *) ALMT_SUMBER;
+					jmlsumbernya=0;
+					for(selang=0; selang<JML_SUMBER; selang++) {
+						if (pmx[selang].status==1) {
+							noPMaktif[jmlsumbernya]=selang;
+							jmlsumbernya++;
+						}
 					}
-				}
-				if (jmlsumbernya==0) {
-					jmlsumbernya=1;
-				}
-				tiapKirim = (int) (940/jmlsumbernya);
-			#endif
+					if (jmlsumbernya==0) {
+						jmlsumbernya=1;
+					}
+					jmlData=kirimModul(0, noPMaktif[sumbernya], il, dl);
+					tiapKirim = (int) (940/jmlsumbernya);
+				#endif
+			}	
 			if (wclient == tiapKirim) {
 				wclient = 0;
-				
-				#ifdef PAKAI_PM
-				jmlData=kirimModul(noPMaktif[sumbernya], il, dl);
-				
-				if (sumbernya+1==jmlsumbernya) {
+
+				if (sumbernya+1==jmlsumbernya) {		// dipakai buat kirim modul sumber lainnya 
 					sumbernya=0;
 				} else {
 					sumbernya++;
 				}
-				#else
-				jmlData=kirimModul(0, il, dl);
-				#endif
 				
-				sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
-				sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
-				webclient_get(ipdest, 80, datakeserver);
-				kirimURL++;
-				//printf("____Kirim : %d\r\n", kirimURL);
+				if (jmlData>0) {
+					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
+					webclient_get(ipdest, 80, datakeserver);
+				}
 			}
 		}
 		#endif

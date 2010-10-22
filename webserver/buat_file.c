@@ -328,8 +328,7 @@ float stof(char * str) {
 
 
 void ganti_setting(char *str) {
-#ifndef CARI_SUMBERNYA
-#ifndef BANYAK_SUMBER
+//#ifndef BANYAK_SUMBER
 	printf("Data telah diubah: %s\r\n", str);
 	char tmp[30], kets[30];
 	
@@ -455,8 +454,7 @@ void ganti_setting(char *str) {
 	}
 	//printf();
 	#endif
-#endif
-#endif
+//#endif
 }
 
 #if 0
@@ -864,7 +862,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 	#ifdef BOARD_KOMON_WEB
 	
 	#ifdef PAKAI_ADC
-		strcat(tot_buf, "[<a href=\"setting.html\">Faktor Kalibrasi</a>] [<a href=\"setting.html\">Info Titik Ukur</a>]<br/>\n");
+		strcat(tot_buf, "[<a href=\"setting.html\">Info Titik Ukur</a>] [<a href=\"setting.html\">Info Modul Sumber</a>] [<a href=\"setting.html\">Faktor Kalibrasi</a>]<br/>\n");
 	#else
 		
 	#endif
@@ -1053,7 +1051,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-						no+1, i+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+						no+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
 						i+1, ket, \
 						i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
 						i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
@@ -1071,7 +1069,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 									"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 									"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 									"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-						no+1, i+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+						no+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
 						judulnya_pm[i], \
 						i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
 						i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));

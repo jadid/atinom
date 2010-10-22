@@ -153,6 +153,7 @@ int baca_env(char tampil)
 			#ifdef PAKAI_WEBCLIENT
 				printf(" WebClient  = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 
 				printf(" File       = %s\r\n", env2->berkas); 
+				printf(" Mode Burst = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
 			#endif
 			garis_bawah();
 			
@@ -313,6 +314,8 @@ void set_env_default() {
 	env2->GW3 = 75;
 	
 	env2->statusWebClient = 0;
+	env2->banyak_sumber=0;
+	env2->burst = 0;
 	
 	if (simpan_env( env2 ) < 0) {
 		vPortFree( env2 );

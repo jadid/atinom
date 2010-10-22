@@ -295,26 +295,37 @@ void set_konfig(int argc, char **argv)
 	}
 	else if (strcmp(argv[2], "status") == 0)
 	{
+		printf(" set status konfig\r\n");
+
 		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, jmlData);
-		if (sumb > 0)		
-		{
+		if (sumb > 0)	{
 			printf(" sumber = %d : ", sumb);
 			
 			/* 0 tidak dipakai, 1 dipakai / diaktifkan , 5 daytime */
 			sprintf(buf, "%s", argv[3]);	
+			
+			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
+				p_sbr[sumb-1].status = (argv[3][0] - '0');
+			} 
+			else if (strcmp(argv[3], "aktif")==0 || strcmp(argv[3], "hidup")==0) {
+				p_sbr[sumb-1].status = 1;
+			} else if (strcmp(argv[3], "mati")==0)  {
+				p_sbr[sumb-1].status = 0;
+			} else {
+				p_sbr[sumb-1].status = 0;
+			}
+			/*
 			stat = cek_nomer_sumber(buf, 5);
 			
-			if (stat >=0)
-			{
+			if (stat >=0)	{
 				p_sbr[sumb-1].status = stat;
 				printf("ID %d : ", p_sbr[sumb-1].id); 
 				if (stat == 0) printf("Tidak diaktifkan\r\n");
 				else if (stat == 1) printf("Diaktifkan\r\n");	
 			}
-		}
-		else 
-		{
+			//*/
+		}	else {
 			vPortFree( p_sbr );
 			return;
 		}	

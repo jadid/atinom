@@ -14,7 +14,7 @@
 #ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	100
-#define  LIAT
+//#define  LIAT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
@@ -114,7 +114,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
 	}
-	FIO0CLR = TXDE;		// on	---> bisa kirim
+	//FIO0CLR = TXDE;		// on	---> bisa kirim, kasih delay klo mau pake ini !!!!
 	
 	#ifdef LIAT
 	printf("\r\n");
@@ -216,7 +216,7 @@ void ambil_pm(int k) {
 	//printf("Ambil data Power Meter ke-%d\r\n", k);
 	while(i<JML_REQ_PM) {
 		vTaskDelay(2);			// MIN: 2
-		printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
+		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;
 	}
@@ -266,7 +266,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 		alamatClient = (int) pmx[k].alamat;
 		
 		if ( (k<JML_SUMBER) && (alamatClient>0) ) {
-			printf("k: %d, alamat: %d\r\n", k, alamatClient);
+			//printf("k: %d, alamat: %d\r\n", k, alamatClient);
 			if (pmx[k].status==1) {
 				#ifdef PAKAI_PM
 				if (pmx[k].modul==0) {		// 0: ambil power meter

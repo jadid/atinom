@@ -46,7 +46,7 @@
 #ifndef __WEBCLIENT_H__
 #define __WEBCLIENT_H__
 
-
+#ifdef PAKAI_WEBCLIENT
 #include "webclient-strings.h"
 #include "uipopt.h"
 
@@ -222,7 +222,7 @@ char *webclient_hostname(void);
 unsigned short webclient_port(void);
 
 
-
+#endif
 #endif /* __WEBCLIENT_H__ */
 
 /** @} */

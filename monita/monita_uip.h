@@ -50,8 +50,8 @@
 //#define ALMT_ENV	0x7A000
 
 #ifdef PAKAI_FILE_SIMPAN
-	#define SEKTOR_SFILE	24
-	#define ALMT_SFILE		0x7A000
+	#define SEKTOR_SFILE	16
+	#define ALMT_SFILE		0x48000		//0x7A000
 #endif
 
 
@@ -228,80 +228,8 @@ struct t_sumber {
 	char status;		// tidak aktif, timeout, dll
 };
 
-#ifdef PAKAI_PM
 /*
-	char * judulnya_pm[] = {
-		"kWh",				// 0 //
-		"kVAh",
-		"kVArh",
-		"kW",
-		"kVA",		
-		"kVAr",
-		"Power Faktor",
-		"Volt1",
-		"Volt2",
-		"Arus",
-		"Frek",				// 10 //
-		"Arus R",
-		"Arus S",
-		"Arus T",
-		"Arus Netral",
-		"Tegangan Vab",
-		"Tegangan Vbc",
-		"Tegangan Vac",
-		"Tegangan Van",
-		"Tegangan Vbn",
-		"Tegangan Vcn",		// 20 //
-		"Daya kW R",
-		"Daya kW S",
-		"Daya kW T",
-		"Daya kVA R",
-		"Daya kVA S",
-		"Daya kVA T",
-		"Daya kVAr R",
-		"Daya kVAr S",
-		"Daya kVAr T",
-		"Power Faktor R",	// 30 //
-		"Power Faktor S",
-		"Power Faktor T"
-	};
-	
-	char * satuannya_pm[] = {
-		"kWh",		// 0 //
-		"kVAh",
-		"kVArh",
-		"kW",
-		"kVA",		
-		"kVAr",
-		"",
-		"V",
-		"V",
-		"A",
-		"Hz",		// 10 //
-		"A",
-		"A",
-		"A",
-		"A",
-		"V",
-		"V",
-		"V",
-		"V",
-		"V",
-		"V",		// 20 //
-		"kW",
-		"kW",
-		"kW",
-		"kVA",
-		"kVA",
-		"kVA",
-		"kVAr",
-		"kVAr",
-		"kVAr",
-		"",			// 30 //
-		"",
-		""
-	};
-//*/
+#ifdef PAKAI_PM
 	struct t_sumber_pmx {
 		char nama[32];
 		char alamat;		// alamat PM //
@@ -316,7 +244,7 @@ struct t_sumber {
 		struct t_sumber_pmx pm[JML_SUMBER];
 	};
 #endif
-
+//*/
 struct t_titik {
 	char ID_sumber;			// sumber mulai dari 1, 1 untuk array sumber ke nol
 	char kanal;				// kanal mulai dari 1, bukan nol, kanal 1 untuk array ke nol
@@ -395,6 +323,7 @@ struct t_simpan_file {
 	short 	no_data[ JML_SUMBER * PER_SUMBER ];
 	char	nama_file[16];	// awalan nama file, misalnya angin
 	char	flag[80];
+	char	direktori[40];
 };
 #endif
 

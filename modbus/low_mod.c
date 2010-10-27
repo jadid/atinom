@@ -7,6 +7,10 @@
 //#define		TIPE_PM710
 
 #include 	"FreeRTOS.h"
+
+
+#ifdef AMBIL_PM
+
 #include 	"low_mod.h"
 #include 	"mbcrc.h"
 #include 	"mbcrc.c"
@@ -1133,3 +1137,6 @@ void taruh_data(int no_slave, int urt)
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+
+
+#endif

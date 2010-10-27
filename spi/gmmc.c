@@ -50,8 +50,9 @@
 
 //extern struct konfig_mesin kfg_mesin;
 #include "../tinysh/enviro.h"
-extern struct t_env env2;
-
+//extern struct t_env env2;
+//struct t_env *env2;
+//env2 = (char *) ALMT_EN
 //#define kirim_word(c) kirim_word_mmc(c)
 
 //get_cid_csd diambil dari kernel Uclinux
@@ -81,25 +82,22 @@ struct csd_str {				/* __csd field name__*/
 struct cid_str cid;
 struct csd_str csd;
 
-unsigned int get_sector_count(void)
-{
+unsigned int get_sector_count(void)	{
 	return csd.capacity;	
 }
 
-void copy_csd(void *buf)
-{
+void copy_csd(void *buf)	{
+	portENTER_CRITICAL();
 	memcpy(buf, (char *) &csd, sizeof (csd));
+	portEXIT_CRITICAL();
 }
 
-void copy_cid(void *buf)
-{
+void copy_cid(void *buf)	{
+	portENTER_CRITICAL();
 	memcpy(buf, (char *) &cid, sizeof (cid));
+	portEXIT_CRITICAL();
 }
-
-
-
-BOOL getbit(void* ptr, unsigned int n) 
-{
+BOOL getbit(void* ptr, unsigned int n) {
 	unsigned int byte_nr;
 	unsigned int bit_nr;
 
@@ -217,7 +215,9 @@ unsigned char get_cid_csd(void)
 	unsigned short read_bl_len=0;
 	unsigned int cap = 0;
    	int t;
-   
+   	
+   	
+   	
    	temp = mmc_respon2();
 	cs_mmc();
 		
@@ -225,11 +225,9 @@ unsigned char get_cid_csd(void)
 	temp = mmc_respon2();
 	t=0;
 		
-	if (temp == 0)
-	{
+	if (temp == 0)	{
 		temp = ambil_word_mmc();
-		while (temp != 0xfe)
-		{
+		while (temp != 0xfe)	{
 				portYIELD();
 				temp = ambil_word_mmc();
 				t++;
@@ -241,8 +239,7 @@ unsigned char get_cid_csd(void)
 					return -1;
 				}
 		}
-		for (t=0; t<18; t++)
-		{
+		for (t=0; t<18; t++)	{
 			buf_mmc[t] = ambil_word_mmc();
 		}
 		uncs_mmc();	
@@ -263,11 +260,9 @@ unsigned char get_cid_csd(void)
 	temp = mmc_respon2();
 	t=0;
 		
-	if (temp == 0)
-	{
+	if (temp == 0)	{
 		temp = ambil_word_mmc();
-		while (temp != 0xfe)
-		{
+		while (temp != 0xfe)	{
 				portYIELD();
 				temp = ambil_word_mmc();
 				t++;
@@ -279,8 +274,7 @@ unsigned char get_cid_csd(void)
 					return -1;
 				}
 		}
-		for (t=0; t<18; t++)
-		{
+		for (t=0; t<18; t++)	{
 			raw_csd[t] = ambil_word_mmc();
 		}
 		
@@ -314,7 +308,12 @@ unsigned char get_cid_csd(void)
 		*/
 	}
 	
-	env2.mmc_serial = cid.serial;
+	struct t_env *p_env;
+	p_env = pvPortMalloc( sizeof (struct t_env) );
+	memcpy((char *) p_env, (char *) ALMT_ENV, (sizeof (struct t_env)));
+	
+	//env2.mmc_serial = cid.serial;
+	p_env->mmc_serial = cid.serial;
 	uncs_mmc();
 	
 	return 0;
@@ -329,13 +328,11 @@ unsigned char stop_mmc(void)
 	//ssync();
 	komand_mmc(12, 0x00, 0x23);		//cmd12, STOP TRANSMISION	
 	respone = mmc_respon2();
-	if (respone == 0x00)
-	{
+	if (respone == 0x00)	{
 		uncs_mmc();
 	   return 0;
 	}
-	else
-	{
+	else	{
 		uncs_mmc();
 	   return respone;
 	}
@@ -357,16 +354,14 @@ unsigned short mmc_status(void)
    unsigned short stat;
 	int count=0;
 	
-   cs_mmc();
+	cs_mmc();
 	komand_mmc(13, 0x0000, 0xff);
 	resp =  ambil_word_mmc();
 	
-	while((resp & 0x80) == 0x80)
-	{
+	while((resp & 0x80) == 0x80)	{
 		resp = ambil_word_mmc();
 		count++;
-		if (count > 500)
-		{
+		if (count > 500)	{
 			uncs_mmc();
 		   return resp; //error
 		}
@@ -380,8 +375,7 @@ unsigned short mmc_status(void)
 }
 
 
-short tes_mmc_awal(void)
-{
+short tes_mmc_awal(void)	{
 	short t;
    	short coba=1;
 	char resp_mmc;
@@ -409,8 +403,7 @@ short tes_mmc_awal(void)
    		cs_mmc();
    		komand_mmc(0x00, 0x00, 0x95); 
 		coba++;
-		if (coba > 20) 
-		{
+		if (coba > 20) 	{
 		   //kemungkinan MMC sedang error, harusnya di hardware reset (power ON/OFF)
 		   //coba cek status dulu
 		   
@@ -424,8 +417,7 @@ short tes_mmc_awal(void)
    	}
 }
 
-short init_mmc(void)
-{
+short init_mmc(void)	{
 	short t;
    short coba=1;
 	char resp_mmc;

@@ -41,13 +41,15 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifndef __SFILE__
+#define __SFILE__
+
 #include "../monita/monita_uip.h"
-#ifdef PAKAI_FILE_SIMPAN
+#ifdef PAKAI_FILE_SIMPAN	
 static int set_file_default(void);
 static int simpan_sfile( struct t_simpan_file *pgr);
 
-static int cek_file(int argc, char **argv)
-{
+static int cek_file(int argc, char **argv)	{
 	int i;
 	struct t_simpan_file *psfile;
 	struct t_dt_set *dt;
@@ -59,8 +61,7 @@ static int cek_file(int argc, char **argv)
 	dt = (char *) ALMT_DT_SET;
 	
 	printf(" Ukuran %d !\r\n", sizeof (struct t_simpan_file));
-	if (argc == 1)
-	{
+	if (argc == 1)		{
 		judul(" Setting Simpan File\r\n");
 		
 		printf("  Nama     = %s\r\n", psfile->nama_file);
@@ -76,10 +77,9 @@ static int cek_file(int argc, char **argv)
 		{
 			y = psfile->no_data[i];
 			
-			if ( y != 0) 
-			{
+			if ( y != 0) {
 				sumb++;
-				printf(" %2d  : %7d : %-16s : %-8s\r\n", sumb, y, dt[y - 1].nama, dt[y - 1].satuan );
+				printf(" %2d  : %7d : %-16s : %-8s\r\n", sumb, y, dt[y-1].nama, dt[y-1].satuan );
 			}
 		}
 		
@@ -91,8 +91,7 @@ static int cek_file(int argc, char **argv)
 			printf(" Perintah untuk menampilkan setting file !\r\n");
 			printf("    cek_file help  : untuk menampilkan ini.\r\n");
 		}		
-		else
-		{
+		else	{
 			/*
 			sumb = 0;
 			sprintf(buf, "%s", argv[1]);	
@@ -200,8 +199,9 @@ int set_file(int argc, char **argv)
 	}
 	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_gr);
 	
+	portENTER_CRITICAL();
 	memcpy((char *) p_gr, (char *) ALMT_SFILE, (sizeof (struct t_simpan_file)));
-	
+	portEXIT_CRITICAL();
 	
 	
 	if (argc>2) {
@@ -335,8 +335,7 @@ static tinysh_cmd_t set_file_cmd={0,"set_file","konfigurasi SIMPAN_FILE","help d
                               set_file,0,0,0};
 
 
-static int set_file_default(void)
-{
+static int set_file_default(void)	{
 	int i;
 	int y;
 	struct t_simpan_file *p_gr;
@@ -344,24 +343,23 @@ static int set_file_default(void)
 	judul(" Set SIMPAN_FILE ke Default\r\n");
 	
 	p_gr = pvPortMalloc( sizeof (struct t_simpan_file) );
-	if (p_gr == NULL)
-	{
+	if (p_gr == NULL)	{
 		printf("%s(): Err allok memory gagal !\r\n");
+		vPortFree( p_gr );	
 		return -1;
 	}
 	
 	sprintf(p_gr->nama_file, "Monita");
+	sprintf(p_gr->direktori, "data");
 	p_gr->periode = 10;
 	p_gr->detik = 1;
 	p_gr->set = 0;
 	
-	for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
-	{
+	for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 		p_gr->no_data[i] = 0;
 	}
 	
-	if (simpan_sfile( p_gr ) < 0)
-	{
+	if (simpan_sfile( p_gr ) < 0)	{
 		vPortFree( p_gr );
 		return -1;
 	}
@@ -531,8 +529,8 @@ void cari_waktu(char *dest, char *posisi) {
 		return;
 	}
 
-	struct t_gsm_ftp *p_dt;
-	p_dt = (char *) ALMT_GSM_FTP;
+	struct t_simpan_file *p_gr;
+	p_gr = (char *) ALMT_SFILE;
 	
 	time_t timeval;
 	struct tm timeinfo;
@@ -573,8 +571,7 @@ void cari_waktu(char *dest, char *posisi) {
 			count = cek_waktu(&tmp, 4);
 			ithn = tmp;
 		}
-		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", p_dt->direktori,  \ 
-				ithn, bulan[ibulan], itgl);
+		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d", p_gr->direktori, ithn, bulan[ibulan], itgl);
 	} else if ( (posisi[0]=='J') || (posisi[0]=='j') ) {
 		tmp = atoi(str);
 		count = cek_waktu(&tmp, 1);					// x tgl sebelumnya, count = 2
@@ -597,8 +594,7 @@ void cari_waktu(char *dest, char *posisi) {
 			count = cek_waktu(&tmp, 4);
 			ithn = tmp;
 		}
-		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", p_dt->direktori,  \ 
-				ithn, bulan[ibulan], itgl, ijam);
+		sprintf(dest,"\\%s\\tahun_%d\\%s\\tgl_%d\\jam_%02d", p_gr->direktori, ithn, bulan[ibulan], itgl, ijam);
 	} else if ( (posisi[0]=='B') || (posisi[0]=='b') ) {
 		printf("%d Bulan sebelumnya: %d\r\n", atoi(str), timeinfo.tm_mon+1-atoi(str));
 	} else {
@@ -725,7 +721,9 @@ FRESULT cari_files (char* path, char *aksi) {
             } else {
 				if (strcmp(aksi,"kirim_ftp")==0) {
 					sprintf(abs_path, "%s\\%s", path, fn);
+					#ifdef PAKAI_GSM_FTP
 					kirim_file_ke_ftp(abs_path, fn);
+					#endif
 					printf("kirim_ftpnya nama file: %s  %s\r\n", abs_path, fn);
 				} else
 	                printf("%s\\%s\r\n", path, fn);
@@ -755,6 +753,7 @@ int cari_doku(int argc, char **argv) {
 	//printf("isi buf: %s\r\n");
 	
 	if (strcmp(argv[2], "ftp") == 0) {
+		#ifdef PAKAI_GSM_FTP
 		if (konek_ftp_awal()==0) 
 		{
 			printf("Koneksi GPRS gagal !!!\r\n");
@@ -767,6 +766,7 @@ int cari_doku(int argc, char **argv) {
 		cari_berkas(buf, "kirim_ftp");
 		
 		tutup_koneksi_ftp();
+		#endif
 	} else if (strcmp(argv[2], "lihat") == 0) {
 		cari_berkas(buf, "lihat");
 	} else {
@@ -847,4 +847,6 @@ static int simpan_sfile( struct t_simpan_file *pgr) {
 	printf(".. OK\r\n");
 	return 0;
 }
+#endif
+
 #endif

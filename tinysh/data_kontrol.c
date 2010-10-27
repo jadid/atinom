@@ -51,11 +51,11 @@
 #ifndef __DATA_KONTROL__
 #define __DATA_KONTROL__
 
+#ifdef PAKAI_PM
 extern char * judulnya_pm[];
 extern char * satuannya_pm[];
+#endif
 
-//float data_sumber[ JML_SUMBER ][ PER_SUMBER ];
-//float data_f [ (JML_SUMBER * PER_SUMBER) ];
 
 static int simpan_data( struct t_dt_set *pgr);
 /*	
@@ -84,7 +84,7 @@ int cek_data(int argc, char **argv)
 	{
 		struct t_dt_set *p_dt;
 		p_dt = (char *) ALMT_DT_SET;
-	
+
 		judul(" Data Setting\r\n");
 		printf(" no.  :       Nama       :    Data    : Satuan");
 		#ifdef PAKAI_SELENOID
@@ -93,22 +93,24 @@ int cek_data(int argc, char **argv)
 		#endif
 		printf(" : &Memory\r\n");
 		garis_bawah();
-	
-		for (i=0; i< (sizeof(data_f)/sizeof(float)); i++)	{
+		
+		//*
+		for (i=0; i<(sizeof(data_f)/sizeof(float)); i++)	{
 			#if 0
 			printf(" (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
 				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#endif
 			
-			printf(" (%3d): %-16s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+			printf(" (%3d): %-16s : % 8.2f : %-6s : (%X)\r\n", (i+1), \
 			p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
 			//printf(" (%3d): %-10s :  %10.2f : %5s: %-6s : (%X)\r\n", (i+1), \
 			//	p_dt[i].nama, 6,data_f[i], (p_dt[i].aktif==1)?"aktif":"mati", p_dt[i].satuan, &p_dt[i]);	
 		}
+		//*/
+		return;
 	}
-	else if (argc > 1)
-	{
+	else if (argc > 1)	{
 		if (strcmp(argv[1], "help") == 0)
 		{
 				printf(" Perintah untuk menampilkan setting data !\r\n");
@@ -121,6 +123,7 @@ int cek_data(int argc, char **argv)
 			sprintf(buf, "%s", argv[1]);
 			struct t_sumber *sumber;
 			sumber = (char *) ALMT_SUMBER;
+			int jmlTitik=20;
 			
 			sumb = cek_nomer_valid(buf, JML_SUMBER);
 			if (sumber[sumb-1].status==0) {
@@ -135,12 +138,14 @@ int cek_data(int argc, char **argv)
 				judul(" Data Setting\r\n");
 				printf(" no.  :       Nama       :    Data    : Satuan : &Memory\r\n");
 				garis_bawah();
+
 				if (sumber[sumb-1].alamat==0) {		// Modul Monita
-					for (i=0; i<20; i++) {
+					for (i=0; i<PER_SUMBER; i++) {
 						printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
 						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
+					#ifdef PAKAI_PM
 					if (sumber[sumb-1].modul==0) {		// Power Meter
 						for (i=0; i<PER_SUMBER; i++) {
 							printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
@@ -148,6 +153,7 @@ int cek_data(int argc, char **argv)
 						}
 						printf("Data Power Meter Alamat %d\r\n", sumber[sumb-1].alamat);
 					}
+					#endif
 				}
 			} else
 				printf(" ERR: Perintah tidak dikenali !\r\n");
@@ -316,7 +322,9 @@ int set_data(int argc, char **argv)
 	}
 	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_dt);
 	
+	portENTER_CRITICAL();
 	memcpy((char *) p_dt, (char *) ALMT_DT_SET, ((sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set)));
+	portEXIT_CRITICAL();
 	
 	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
 	if (strcmp(argv[2], "nama") == 0)

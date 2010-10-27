@@ -60,6 +60,8 @@
 #define PAKAI_ADC
 //#define PAKAI_SERIAL_2			// mendefinisikan aktif serial 1
 //#define PAKAI_PM			2		// nyambung ke SERIAL 3
+
+#define AMBIL_PM
 #define PAKAI_MAX485		1
 #define PAKAI_SERIAL_3				// mendefinisikan aktif serial 1
 #define PAKAI_PM			3		// nyambung ke SERIAL 3

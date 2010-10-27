@@ -120,7 +120,7 @@ int prepare_flash(int sektor_start, int sektor_end)
 			printf(" prepare error !\r\n");
 			return result[0];
 	}
-	
+	printf("-%");
 	return result[0];	
 }
 
@@ -145,6 +145,7 @@ int hapus_flash(int sektor_start, int sektor_end)
 			printf(" hapus error !\r\n");
 			return result[0];
 	}	
+	printf("-%%");
 	return result[0];
 }
 
@@ -185,7 +186,7 @@ int tulis_flash(int dst, unsigned short *data, int pjg)
 			printf(" flash write error %d!\r\n", result[0]);
 			return result[0];
 		}	
-		printf("%%");
+		printf("-%%%%");
 		posisi = posisi + (uk / 2);		// karena dalam word / short
 		pjg = pjg - uk;	
 		

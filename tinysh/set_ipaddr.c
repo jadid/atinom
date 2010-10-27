@@ -77,18 +77,19 @@ static void setenv_fnt(int argc, char **argv)
 				set_env_default();
 				vTaskDelay(2);
 				
-				//#ifndef CARI_SUMBERNYA
 				#ifndef BANYAK_SUMBER
 					printf("set konfig menjadi default\r\n");
 					set_awal_konfig();
 					vTaskDelay(2);
 				#endif
-				//#endif
-				
-				//#ifdef CARI_SUMBERNYA
+
 				#ifdef BANYAK_SUMBER
 					set_awal_sumber();
 					set_data_default();
+				#endif
+				
+				#ifdef PAKAI_FILE_SIMPAN
+					//set_file_default();
 				#endif
 				//#endif
 				

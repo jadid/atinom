@@ -22,6 +22,10 @@
 #include "sfile.c"
 #endif
 
+#ifdef PAKAI_FILE_SIMPAN
+	#include "sfile.c"
+#endif
+
 /*
 #ifdef CARI_SUMBERNYA
 	#include "utils.c"
@@ -114,8 +118,8 @@
 
 void reset_cpu(void);
 
-extern struct t_mesin mesin[];
-extern struct t_titik titik[];
+//extern struct t_mesin mesin[];
+//extern struct t_titik titik[];
 //extern struct t_sumber sumber[];
 
 extern struct sambungan_state samb;
@@ -329,11 +333,9 @@ void cek_stack(void)
 	
 }							 
 
-static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]",
-                              cek_stack,0,0,0};
+static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]", cek_stack,0,0,0};
 
-void cek_versi(void)
-{
+void cek_versi(void)	{
 	printf("\n %s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
 	
   	printf(" ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
@@ -341,8 +343,7 @@ void cek_versi(void)
   	printf(" FreeRTOS 5.1.1\r\n");	
 }							 
 
-static tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]",
-                              cek_versi,0,0,0};
+static tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]", cek_versi,0,0,0};
 							  
 unsigned int uptime_ovflow=0;
 unsigned int tik_lama=0;
@@ -849,15 +850,15 @@ vTaskDelay(100);
 	// data
 	tinysh_add_command(&set_data_cmd);
 	tinysh_add_command(&cek_data_cmd);
-	
-	// simpan file
+#endif	
+
+// simpan file
 #ifdef PAKAI_FILE_SIMPAN	
 	tinysh_add_command(&cek_file_cmd);
 	tinysh_add_command(&set_file_cmd);
 	tinysh_add_command(&del_direktori_cmd);
 	tinysh_add_command(&cari_doku_cmd);
 #endif
-#endif	
 
 
 #ifdef CENDOL
@@ -974,7 +975,7 @@ vTaskDelay(100);
 	//tinysh_set_prompt( PROMPT );
 	/* force untuk tampil prompt */
 	tinysh_char_in('\r');
-	
+	int perdetiknya=0;
 
 	/*
 	 * main loop shell
@@ -1002,8 +1003,12 @@ vTaskDelay(100);
 					if (proses_passwd( &c ) == 1) break;
 				}
 				#ifdef PAKAI_MMC
-					#if (PAKAI_FILE_SIMPAN == 1)
-						proses_simpan_file();
+					#ifdef PAKAI_FILE_SIMPAN
+						perdetiknya++;
+						if (perdetiknya==10) {
+							proses_simpan_file();
+							perdetiknya=0;
+						}
 					#endif
 				#endif
 				
@@ -1060,11 +1065,15 @@ vTaskDelay(100);
 			data_frek_rpm();
 		#endif
 	  
-	  #ifdef PAKAI_MMC
-		  #if (PAKAI_FILE_SIMPAN == 1)
-		  	proses_simpan_file();
-		  #endif
-	  #endif
+		#ifdef PAKAI_MMC
+			#ifdef PAKAI_FILE_SIMPAN
+				perdetiknya++;
+				if (perdetiknya==10) {
+					proses_simpan_file();
+					perdetiknya=0;
+				}
+			#endif
+		#endif
 	  
 	  #ifdef USB_TEST
 	  c = HC_INT_STAT ;

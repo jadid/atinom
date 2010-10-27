@@ -11,9 +11,10 @@
 #include <math.h>
 #include <float.h>
 
+#ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	100
-//#define  LIAT
+#define  LIAT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
@@ -109,7 +110,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	FIO0SET = TXDE;		// on	---> bisa kirim
 	for (i=0; i< sizeof(pmod); i++)	{
 		#ifdef LIAT
-		//printf("%02hX ", *st);
+		printf("%02hX ", *st);
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
 	}
@@ -119,12 +120,14 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	printf("\r\n");
 	#endif
 	
-	/*
+	//*
+	
+	#ifdef LIAT
 	st = (char *) &pmod;
-	for (i=0; i< sizeof(pmod); i++)
-	{
+	for (i=0; i< sizeof(pmod); i++)	{
 		printf("%2X ", (unsigned char) *st++);
 	}
+	#endif
 	//*/
 	
 	
@@ -155,7 +158,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		}	else	{
 			timeout++;
 			if (timeout > 20)	{
-				//printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				break;
 			}
 		}
@@ -213,7 +216,7 @@ void ambil_pm(int k) {
 	//printf("Ambil data Power Meter ke-%d\r\n", k);
 	while(i<JML_REQ_PM) {
 		vTaskDelay(2);			// MIN: 2
-		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
+		printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;
 	}
@@ -263,7 +266,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 		alamatClient = (int) pmx[k].alamat;
 		
 		if ( (k<JML_SUMBER) && (alamatClient>0) ) {
-			//printf("k: %d, alamat: %d\r\n", k, alamatClient);
+			printf("k: %d, alamat: %d\r\n", k, alamatClient);
 			if (pmx[k].status==1) {
 				#ifdef PAKAI_PM
 				if (pmx[k].modul==0) {		// 0: ambil power meter
@@ -348,4 +351,4 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk) {
 //*/
 
 
-
+#endif

@@ -23,8 +23,11 @@
 #include "task.h"
 #include "semphr.h"
 
-#include "ff.h"
+
 #include "../monita/monita_uip.h"
+#ifdef PAKAI_FILE_SIMPAN
+
+#include "ff.h"
 
 //#define debug_printf		printf
 #define debug_printf(...)	do{} while(0)
@@ -306,6 +309,7 @@ void webclient_connected(void)
 	}
 }
 
+#ifdef BUAT_FOTO
 void tulis_foto(char *data, unsigned int len)
 {
 	int ret;
@@ -325,3 +329,6 @@ void tulis_foto(char *data, unsigned int len)
 			f_close( &fd_foto );
 	}
 }
+#endif
+
+#endif

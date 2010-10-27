@@ -48,7 +48,7 @@
 #define debug		printf
 //#define debug(...)	do{} while(0)
 
-static int simpan_data( struct t_dt_set *pgr);
+//static int simpan_data( struct t_dt_set *pgr);
 
 int set_relay(int argc, char **argv)
 {
@@ -111,7 +111,7 @@ int set_relay(int argc, char **argv)
 	}
 	
 }
-
+/*
 static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer",
                               cek_data,0,0,0};
-
+//*/

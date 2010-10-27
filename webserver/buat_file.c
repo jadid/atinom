@@ -22,12 +22,16 @@
 //	#include "../tinysh/setting_eth.c" 
 #endif
 
-//extern struct t_env *env2;
-//env2 = (char *) ALMT_ENV;
-#define BESAR_BUF_HTTP	8192		//8192
-//unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
-unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+#ifdef BOARD_TAMPILAN
+	#define BESAR_BUF_HTTP	1024		//8192
+#else
+	#define BESAR_BUF_HTTP	8192		//8192
+#endif
+	unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+//#endif
 char ket[30];
+
+
 //#define		tot_buf	buffer
 
 
@@ -70,8 +74,9 @@ static unsigned int nomer_mesin=0;
 #endif
 
 
-//#ifdef BOARD_TAMPILAN
-#ifdef CARI_SUMBERNYA
+#ifdef BOARD_TAMPILAN
+//#ifdef BOARD_DISPLAY
+//#ifdef CARI_SUMBERNYA
 #define LINK_ATAS "<table border=\"0\" align=\"left\">\n \
   <tbody align=\"center\">\n \
 	<tr>\n \
@@ -417,12 +422,14 @@ void ganti_setting(char *str) {
 		p_sbr[no-1].status = (atoi(stat))?1:0;
 		printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
 		
+		#ifndef BOARD_TAMPILAN
 		if (simpan_konfig( p_sbr ) < 0)
 		{
 			vPortFree( p_sbr );
 			return;
 		}
 		vPortFree( p_sbr );
+		#endif
 	}
 	#ifdef PAKAI_ADCx
 	if (kanal>0) {

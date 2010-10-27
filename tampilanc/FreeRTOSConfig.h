@@ -45,7 +45,10 @@
 #define PAKE_TELNETD
 #define PAKE_HTTP
 
-#define CARI_SUMBERNYA		// untuk mencari data sumber via Ethernet
+#define BOARD_TAMPILAN 
+//#define CARI_SUMBERNYA		// untuk mencari data sumber via Ethernet
+#define SAMPURASUN_SERVER
+
 #define BANYAK_SUMBER
 #define PAKAI_RTC
 

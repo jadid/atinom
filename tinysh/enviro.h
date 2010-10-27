@@ -23,8 +23,9 @@ struct t_webclient {
 	unsigned char IP1;
 	unsigned char IP2;
 	unsigned char IP3;
-	char hostname[32];
-	char berkas[32];
+	char hostname[16];
+	char berkas[16];
+	char burst;
 	char status;		// status 0: default (pake IP), 1: pake URL.
 };
 
@@ -47,6 +48,10 @@ struct t_env {
 	char statusWebClient;
 	char banyak_sumber;
 	char burst;
+	unsigned char wIP0;
+	unsigned char wIP1;
+	unsigned char wIP2;
+	unsigned char wIP3;
 };
 
 #define SEKTOR_ENV	24

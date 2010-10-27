@@ -77,8 +77,11 @@
 #define ISO_colon   0x3a
 
 /*---------------------------------------------------------------------------*/
-
-#define BESAR_BUF_HTTP	8192
+#ifdef BOARD_TAMPILAN
+	#define BESAR_BUF_HTTP	1024  //	8192
+#else
+	#define BESAR_BUF_HTTP	8192  //	8192
+#endif
 //extern unsigned char head_buf[1024] 				; /*__attribute__ ((section (".eth_test"))); */
 extern unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 
@@ -398,7 +401,6 @@ handle_connection(struct httpd_state *s)
 
 	handle_input(s);
 	if(s->state == STATE_OUTPUT) {
-		//printf("__________masuk handle connection: %d\r\n", nEth++);
 		handle_output(s);
   }	
 }

@@ -54,7 +54,8 @@
  * $Id: webclient.c,v 1.2 2006/06/11 21:46:37 adam Exp $
  *
  */
-
+//#ifdef PAKAI_WEBCLIENT
+#if 1
 #include "uip.h"
 #include "uiplib.h"
 #include "webclient.h"
@@ -537,3 +538,4 @@ void webclient_datahandler(char *data, u16_t len)
 	//	printf("\r\n");
 		
 }
+#endif

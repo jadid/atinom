@@ -308,8 +308,8 @@ void cek_stack(void)
 	printf(" Shell    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
 	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
-	//#ifdef BOARD_TAMPILAN
-	#ifdef CARI_SUMBERNYA
+	#ifdef BOARD_TAMPILAN
+	//#ifdef CARI_SUMBERNYA
 	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
 	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
@@ -754,14 +754,14 @@ portTASK_FUNCTION(shell, pvParameters )
 #ifdef CARI_SUMBER
 	tinysh_add_command(&cek_sumber_cmd);
 	tinysh_add_command(&set_sumber_cmd);
-	tinysh_add_command(&cek_mesin_cmd);
-	tinysh_add_command(&set_mesin_cmd);
+	//tinysh_add_command(&cek_mesin_cmd);
+	//tinysh_add_command(&set_mesin_cmd);
 	//tinysh_add_command(&cek_titik_cmd);
-	tinysh_add_command(&set_titik_cmd);
+	//tinysh_add_command(&set_titik_cmd);
 	
 	tinysh_add_command(&save_sumber_cmd);
-	tinysh_add_command(&save_mesin_cmd);
-	tinysh_add_command(&save_titik_cmd);
+	//tinysh_add_command(&save_mesin_cmd);
+	//tinysh_add_command(&save_titik_cmd);
 #endif
 
 
@@ -815,25 +815,29 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_cron_cmd);
 #endif
 
-#ifdef CARI_SUMBERNYA
+//#ifdef CARI_SUMBERNYA
+#ifdef BOARD_TAMPILAN
 	tinysh_add_command(&cek_group_cmd);
 	tinysh_add_command(&set_group_cmd);
 	
-	tinysh_add_command(&cek_sumber_cmd);
-	tinysh_add_command(&set_sumber_cmd);
+	//tinysh_add_command(&cek_sumber_cmd);
+	//tinysh_add_command(&set_sumber_cmd);
 	
 	// data
-	tinysh_add_command(&set_data_cmd);
-	tinysh_add_command(&cek_data_cmd);
+	//tinysh_add_command(&set_data_cmd);
+	//tinysh_add_command(&cek_data_cmd);
+	//printf("board_tampilan\r\n");
 
 #endif
-
+vTaskDelay(100);
 #ifdef BANYAK_SUMBER
 	tinysh_add_command(&cek_sumber_cmd);
 	tinysh_add_command(&set_sumber_cmd);
 	tinysh_add_command(&set_data_cmd);
 	tinysh_add_command(&cek_data_cmd);
+	//printf("banyak sumber\r\n");
 #endif
+vTaskDelay(100);
 
 #if (VERSI_KONFIGx == 2)
 	tinysh_add_command(&cek_group_cmd);
@@ -903,9 +907,9 @@ portTASK_FUNCTION(shell, pvParameters )
 		tinysh_add_command(&set_relay_cmd);
 	#endif
 	
-
+	
 //#ifdef BOARD_TAMPILAN	
-	#ifdef CARI_SUMBER	
+	#ifdef CARI_SUMBERx	
 	// cek ukuran struk
 	printf("size struct Mesin  = %d\r\n", sizeof (struct t_mesin) * JML_MESIN);
 	printf("size struct Sumber = %d\r\n", sizeof (struct t_sumber) * JML_SUMBER);
@@ -940,6 +944,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	start_adc_1();
 	#endif
 	
+	//printf("sampe sini !!!\r\n");
 	#ifdef PAKAI_MMC
 	tinysh_add_command(&util_ls_cmd);
 	tinysh_add_command(&util_mkdir_cmd);

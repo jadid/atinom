@@ -52,8 +52,8 @@ extern struct t_adc st_adc;
 #define PAKE_HTTP
 #endif
 
-//#ifdef BOARD_TAMPILAN
-#ifdef CARI_SUMBER
+#ifdef BOARD_TAMPILAN
+//#ifdef CARI_SUMBER
 #define PAKE_HTTP
 #endif
 
@@ -67,7 +67,7 @@ unsigned int paket_kita=0;
 
 			
 extern xTaskHandle hdl_ether;
-unsigned char datakeserver[512];
+
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
@@ -133,13 +133,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 #ifdef SAMPURASUN_CLIENT
-    printf("MONITA : monita init\r\n");
-//    monita_init();
+    //printf("MONITA : monita init\r\n");
+    printf("Monita : sampurasun client init !\r\n");
+    monita_init();
 #endif
 
 #ifdef PAKAI_WEBCLIENT
 		webclient_init();
 		printf("webclient inited !\r\n");
+		unsigned char datakeserver[512];
 		int wclient=0, jmlData=0, selang, jmlsumbernya, sumbernya=0;
 		int noPMaktif[JML_SUMBER];
 		char il[256], dl[512];

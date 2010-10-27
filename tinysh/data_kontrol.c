@@ -48,7 +48,8 @@
 #define debug		printf
 //#define debug(...)	do{} while(0)
 
-
+#ifndef __DATA_KONTROL__
+#define __DATA_KONTROL__
 
 extern char * judulnya_pm[];
 extern char * satuannya_pm[];
@@ -518,3 +519,5 @@ static int simpan_data( struct t_dt_set *pgr)
 	printf(".. OK\r\n");
 	return 0;
 }
+
+#endif

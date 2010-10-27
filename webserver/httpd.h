@@ -42,7 +42,7 @@ struct httpd_state {
   unsigned char timer;
   struct psock sin, sout;
   struct pt outputpt, scriptpt;
-#ifndef CARI_SUMBERNYA
+#ifndef BOARD_TAMPILAN
   char inputbuf[258];	/* 50 */
   char filename[512];	/* 20 */
 #else

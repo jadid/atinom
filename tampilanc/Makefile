@@ -95,7 +95,7 @@ THUMB_SOURCE= \
 #		../GPIO/gpio.c \
 
 GSM_FTP_SOURCE = \
-#		../gsm/system_ftp/kirim_file_ftp.c \
+		../gsm/system_ftp/kirim_file_ftp.c \
 
 MONITA_SOURCE = \
 		../monita/monita_uip.c \
@@ -126,12 +126,12 @@ WEBCLIENT_SOURCE = \
 		../webserver/webclient/webclient-strings.c	\
 
 FATFS_SOURCE = \
-#		../fatfs/ff.c	\
-#		../fatfs/spi_mmc.c	\
-#		../fatfs/option/ccsbcs.c	\
-#		../spi/low_ss1.c	\
-#		../spi/gmmc.c	\
-#		../fatfs/simpan_file.c
+		../fatfs/ff.c	\
+		../fatfs/spi_mmc.c	\
+		../fatfs/option/ccsbcs.c	\
+		../spi/low_ss1.c	\
+		../spi/gmmc.c	\
+		../fatfs/simpan_file.c
 			
 
 #THUMB_SOURCE += $(FATFS_SOURCE)

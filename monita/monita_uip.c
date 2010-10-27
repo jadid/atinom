@@ -66,7 +66,7 @@ void monita_init(void)
 {
 	loop_kirim = 0;
 	
-	printf("Monita : sampurasun init !\r\n");
+	//printf("Monita : sampurasun client init !\r\n");
 	uip_listen(HTONS(PORT_MONITA));
 }
 
@@ -122,14 +122,14 @@ void monita_appcall(void)
 		if (len >= 10)
 		{
 			portENTER_CRITICAL();
-			memcpy(buf, (char *) uip_appdata, 10);
+			memcpy(buf, (char *) uip_appdata, 11);
 			portEXIT_CRITICAL();
-			//printf("isi pesan: %s\r\n",buf);
+			//printf("isi pesan: %s: %s\r\n",buf, buf[10]);
 			if (strncmp(buf, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;
-				stack = buf[10];
-				printf("stack: %d\r\n", stack);
+				stack = buf[10]-'0';
+				//printf("stack: %d\r\n", stack);
 				#ifdef BOARD_KOMON_A_RTD
 				hitung_data_float();
 				
@@ -149,13 +149,13 @@ void monita_appcall(void)
 					#ifdef BANYAK_SUMBER
 						for (i=0; i<PER_SUMBER;i++)		{
 							data_float.data[i] = data_f[(stack-1)*PER_SUMBER+i];
-							//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
+							//printf("data_f[%d]: %.2f\r\n", (stack-1)*PER_SUMBER+i+1, data_f[(stack-1)*PER_SUMBER+i]);
 						}
 					#else
-					for (i=0; i<PER_SUMBER;i++)		{
-						data_float.data[i] = data_f[i];
-						//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
-					}
+						for (i=0; i<PER_SUMBER;i++)		{
+							data_float.data[i] = data_f[i];
+							//printf("data_f[%d]: %.2f\r\n", i+1, data_f[i]);
+						}
 					#endif
 				#endif
 				
@@ -270,7 +270,7 @@ void sambungan_init(void)	{
 		status[i].stat = 0;
 		status[i].reply = 0;
 	}	
-	printf("sambungan ethernet init\n");	
+	printf("Monita : sampurasun server init !!\n");	
 }
 
 /* 
@@ -318,6 +318,7 @@ void sambungan_connect(int no)
 		
 		}
 		//*/
+		
 		conn = uip_connect(ip_modul, HTONS(PORT_MONITA));
 		if (conn == NULL)
 		{
@@ -338,7 +339,7 @@ void sambungan_connect(int no)
 		//debug_out_h("init %d lport %d, rport %d\n", no+1, status[no].lport, conn->rport);
 		sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", no+1, uip_conn->rport, \
 			sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);
-		
+		//printf("Konek %s\r\n", ipne);	
 		#ifdef BOARD_TAMPIL
 		debug_out_h("Konek %s", ipne);	
 		#endif
@@ -418,8 +419,7 @@ void sambungan_connect(int no)
  * menemukan paket untuk port 5001
  */
 
-void samb_appcall(void)
-{
+void samb_appcall(void)	{
 	int len;
 	char buf[64];
 	int i;
@@ -429,8 +429,7 @@ void samb_appcall(void)
 	
 	unsigned int nomer_sambung = (unsigned int) uip_conn->nomer_sambung;
 	
-	if (nomer_sambung > (JML_SUMBER-1))
-	{
+	if (nomer_sambung > (JML_SUMBER-1))	{
 		printf("Nomer sambung invalid !");
 		//debug_out_h("Nomer sambung invalid !");
 		uip_close();
@@ -464,7 +463,7 @@ void samb_appcall(void)
 			/* sampurasun + nomor modul (dalam karakter) */
 			sprintf(buf, "sampurasun%d", sumber[nomer_sambung].stack);	
 			//debug_out_h("%s->%s", buf, ipne);
-			//printf("%s->%s", buf, ipne);
+			//printf("%s->%s\r\n", buf, ipne);
 			uip_send((char *) buf, 11);		// 10
 		}
 		else
@@ -479,31 +478,25 @@ void samb_appcall(void)
 			return;
 		}
 	}
-	if (uip_closed())
-	{
+	if (uip_closed())	{
 		status[nomer_sambung].stat = 0;
 		//printf("close %s\n", ipne);
 	}
-	if (uip_aborted())
-	{
+	if (uip_aborted())	{
 		status[nomer_sambung].stat = 0;
 		//printf("abort %s\n", ipne);
 	}
-	if (uip_timedout())
-	{
+	if (uip_timedout())	{
 		status[nomer_sambung].stat = 0;
 		//printf("timeout %s\n", ipne);
 	}	
-	if(uip_acked()) 
-	{
+	if(uip_acked()) 	{
 		//printf("ack %s\n", ipne);
-		if (status[nomer_sambung].stat == 2)
-		{
+		if (status[nomer_sambung].stat == 2)		{
 			status[nomer_sambung].stat = 3;
 			//printf("sampur ack\n");
 		}
-		else
-		{
+		else		{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -550,7 +543,11 @@ void samb_appcall(void)
 				memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
 				
 				#ifdef BOARD_KOMON_420_SABANG
+					
+					
+					portENTER_CRITICAL();
 					//memcpy( (char *) &datanya[0], in_buf.buf, (PER_SUMBER*sizeof (float)) );
+					portEXIT_CRITICAL();
 				#endif
 				
 				//debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);

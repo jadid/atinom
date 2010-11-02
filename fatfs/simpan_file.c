@@ -42,8 +42,14 @@ static FIL fd;
 extern float data_f[];
 static FIL fd_foto;
 
-int proses_simpan_file(void)
-{
+/*
+time_t timeval;
+struct tm timeinfo;
+get_tm_time( &timeinfo );
+return timeinfo.tm_hour;	
+//*/
+
+int proses_simpan_file(void)	{
 	time_t timeval;
 	struct tm tw;
 	char path[64];
@@ -53,6 +59,7 @@ int proses_simpan_file(void)
 	int i;
 	struct t_simpan_file *ts;
 	struct t_dt_set *dt;
+	char waktus[15];
 		
 	jum_dipanggil++;
 	ts = (char *) ALMT_SFILE;
@@ -77,16 +84,17 @@ int proses_simpan_file(void)
 				if (jum_detik >= ts->detik)		{
 					get_tm_time( &tw );
 					timeval = mktime( &tw );
-				
+					
+					sprintf(path, "%04d%02d%02d_%02d%02d", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min);
 					/* kasih tag waktu */
-					sprintf(path, "%s", ctime(&timeval));
+					//sprintf(path, "%s", ctime(&timeval));
 					
 					/* buang new linenya */
-					path[24] = ' ';
+					//path[24] = ' ';
 					
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
-								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-								return ;
+						printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+						return ;
 					}
 					
 					/* tulis data */
@@ -120,41 +128,49 @@ int proses_simpan_file(void)
 			}			
 			else /* file belum dibuat */
 			{
+				//int tahunx=0,bulanx=0,tglx=0,jamx=0,menitx=0;
 				get_tm_time( &tw );
 				timeval = mktime( &tw );
 				
 				//debug
 				//printf("TIMEVAL = %d\r\n", timeval);
-				//printf("cek %s\r\n",  ctime(&timeval));
-		
+				//printf("cek %s, %04d%02d%02d_%02d%02d\r\n",  ctime(&timeval), tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min);
+				sprintf(waktus, "%04d%02d%02d_%02d%02d", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min);
 				/* close file */
 				//printf("test buat %s\r\n", buat_direktori( timeval ));
 							
 				/* buat file baru */
 				//sprintf(temp, "angin_%s", ctime(&timeval));
-				sprintf(temp, "%s_%s", ts->nama_file, ctime(&timeval));
+				//sprintf(temp, "%s_%s", ts->nama_file, ctime(&timeval));
+				sprintf(temp, "%s_%s", ts->nama_file, waktus);
 				
 				/* cari spasi dan jadikan underscore */
+				/*
 				jm = strlen(temp);
 				for (i=0; i<jm; i++)	{
 					if ( temp[i] == ' ' ) temp[i] = '_';
 					if ( temp[i] == ':' ) temp[i] = '_';
 				}
-				
+				//*/
 				/* buat direktori */
 				sprintf(path, "%s\\%s", buat_direktori("data", timeval, 0), temp);
 				//printf("OK SAAT FILE %s\r\n", path);
 				if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))		{
-					printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);
+					printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);				
+					reset_cpu();		// 
+					return;
 				}
 				else	{
 					sudah_buka = 1;
 					jum_detik = 0;
 					
 					/* kasih tag waktu */
-					sprintf(path, "Hari Bln Tgl Jam Tahun ");
+					//sprintf(path, "Hari Bln Tgl Jam Tahun ");
+					sprintf(path, "Waktu ");
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+						reset_cpu();
+						return;
 					}
 					
 					/* print out nama dan satuan dan nomer data dulu */
@@ -173,8 +189,8 @@ int proses_simpan_file(void)
 					/* kasih new line */
 					sprintf(path, "\r\n");
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
-								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-								return ;
+						printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
+						return ;
 					}
 					/* di sync dulu */
 					f_sync( &fd );

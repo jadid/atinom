@@ -121,15 +121,15 @@ static void setenv_fnt(int argc, char **argv)
 		return -1;
 	}
 	
-	unsigned char buf[24];
+	unsigned char str_ip_iddr[24];
 	unsigned int ret_ip;
 	
   	if (strcmp(argv[1], "ipaddr") == 0)  	{
 		printf(" set IP address ");  
-		//memset(buf, 0, sizeof (buf));
-		sprintf(buf, "%s", argv[2]);
+
+		sprintf(str_ip_iddr, "%s", argv[2]);
 		
-		ret_ip = baca_ip(buf);
+		ret_ip = baca_ip(str_ip_iddr);
 		
 		p_sbr->IP0 = (unsigned char)(ret_ip >> 24);
 		p_sbr->IP1 = (unsigned char)(ret_ip >> 16);
@@ -140,10 +140,10 @@ static void setenv_fnt(int argc, char **argv)
 	}
 	else if (strcmp(argv[1], "gateway") == 0)  	{
 		printf(" set GATEWAY address ");  
-		//memset(buf, 0, sizeof (buf));
-		sprintf(buf, "%s", argv[2]);
+
+		sprintf(str_ip_iddr, "%s", argv[2]);
 		
-		ret_ip = baca_ip(buf);
+		ret_ip = baca_ip(str_ip_iddr);
 		
 		p_sbr->GW0 = (unsigned char)(ret_ip >> 24);
 		p_sbr->GW1 = (unsigned char)(ret_ip >> 16);
@@ -156,14 +156,12 @@ static void setenv_fnt(int argc, char **argv)
 		printf(" set nama_board\r\n");
 		//memset(env2.nama_board, 0, sizeof (env2.nama_board));
 		
-		if (strlen(argv[2]) > sizeof (p_sbr->nama_board))
-		{
+		if (strlen(argv[2]) > sizeof (p_sbr->nama_board))		{
 			printf("Nama board terlalu panjang !");
 			vPortFree( p_sbr );
 			return;	
 		}
-		else
-		{
+		else	{
 			sprintf(p_sbr->nama_board, "%s", argv[2]);
 			printf(" Nama board : %s\n", p_sbr->nama_board);
 		}
@@ -230,17 +228,16 @@ static void setenv_fnt(int argc, char **argv)
 		int kanal;
 		
 		printf(" set param kanal \r\n");
-		//memset(buf, 0, sizeof (buf));
-		sprintf(buf, "%s", argv[2]);
+
+		sprintf(str_ip_iddr, "%s", argv[2]);
 		
-		kanal = baca_kanal(buf);
+		kanal = baca_kanal(str_ip_iddr);
 		
 		if (kanal > 0 && kanal < 21)
 		{
 			printf(" kanal terbaca = %d\r\n", kanal);
 			
-			if (strcmp(argv[3], "ket") == 0)
-			{
+			if (strcmp(argv[3], "ket") == 0)	{
 				printf(" keterangan kanal :");
 				if (strlen(argv[4]) > p_sbr->kalib[kanal-1].ket)
 				{

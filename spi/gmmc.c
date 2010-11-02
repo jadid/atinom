@@ -86,15 +86,15 @@ unsigned int get_sector_count(void)	{
 	return csd.capacity;	
 }
 
-void copy_csd(void *buf)	{
+void copy_csd(void *str_gmmc)	{
 	portENTER_CRITICAL();
-	memcpy(buf, (char *) &csd, sizeof (csd));
+	memcpy(str_gmmc, (char *) &csd, sizeof (csd));
 	portEXIT_CRITICAL();
 }
 
-void copy_cid(void *buf)	{
+void copy_cid(void *str_gmmc)	{
 	portENTER_CRITICAL();
-	memcpy(buf, (char *) &cid, sizeof (cid));
+	memcpy(str_gmmc, (char *) &cid, sizeof (cid));
 	portEXIT_CRITICAL();
 }
 BOOL getbit(void* ptr, unsigned int n) {

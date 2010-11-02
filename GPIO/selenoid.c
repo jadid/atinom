@@ -32,16 +32,14 @@
 
 #define RLY_8	BIT(7)			/* P2 */
 
-void init_selenoid(void)
-{
+void init_selenoid(void)	{
 	FIO3DIR = FIO3DIR | RLY_1 | RLY_2;
 	FIO1DIR = FIO1DIR | RLY_3 | RLY_4 | RLY_5;
 	FIO4DIR = FIO4DIR | RLY_6 | RLY_7;
 	FIO2DIR = FIO2DIR | RLY_8;	
 }
 
-void set_selenoid( unsigned int no )
-{
+void set_selenoid( unsigned int no )	{
 	if (no>0 && no<=JML_RELAY) {		// 1-8 
 		data_f[JML_SUMBER*PER_SUMBER+no-1] = 1;
 	}
@@ -68,8 +66,7 @@ void set_selenoid( unsigned int no )
 	
 }
 
-void unset_selenoid(unsigned int no )
-{
+void unset_selenoid(unsigned int no )	{
 	if (no>0 && no<=JML_RELAY) {
 		data_f[JML_SUMBER*PER_SUMBER+no-1] = 0;
 	}
@@ -98,23 +95,23 @@ void unset_selenoid(unsigned int no )
 
 void set_relay(int argc, char **argv) {
 	int sumb=0;
-	unsigned char buf[24];
+	unsigned char str_selenoid[24];
 	
 	if (argc < 3) {
 		printf("Perintah salah atau Parameter kurang !!\r\n");
 		return;
 	} else {
-		sprintf(buf, "%s", argv[1]);			// no cron
-		sumb = cek_nomer_valid(buf, JML_RELAY);
+		sprintf(str_selenoid, "%s", argv[1]);			// no cron
+		sumb = cek_nomer_valid(str_selenoid, JML_RELAY);
 		if (sumb <= 0)	{
 			printf("No relay salah !\r\n");
 			return;	
 		}
 		
-		sprintf(buf, "%s", argv[2]);
-		if ( (strcmp(buf, "aktif") == 0) || (buf[0]=='1') || (strcmp(buf, "hidup") == 0) )	{
+		sprintf(str_selenoid, "%s", argv[2]);
+		if ( (strcmp(str_selenoid, "aktif") == 0) || (str_selenoid[0]=='1') || (strcmp(str_selenoid, "hidup") == 0) )	{
 			set_selenoid(sumb);
-		} else if ( (strcmp(buf, "mati")  == 0) || (buf[0]=='0') ) {
+		} else if ( (strcmp(str_selenoid, "mati")  == 0) || (str_selenoid[0]=='0') ) {
 			unset_selenoid(sumb);
 		}
 	}

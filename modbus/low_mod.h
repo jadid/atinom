@@ -222,13 +222,7 @@ struct f_PM710 {
    float pfC;
 
 } ;
-/*
-struct dpm_eth {
-   unsigned int nomer;
-   unsigned short flag;	   //10 - 20 (data 10 kanal & 20 kanal), 30 untuk data power meter
-   unsigned char alamat;
-   char buf[232];
-}; */
+
 
 //17 januari 2008
 struct dpm_eth {

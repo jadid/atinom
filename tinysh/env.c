@@ -21,26 +21,23 @@
 
 static int simpan_env( struct t_env *pgr);
 
-static int uname(int argc, char **argv)
-{
+static int uname(int argc, char **argv)	{
 	int i;
 	struct t_env *p_env;
 	int sumb;
-	unsigned char buf[24];
+	//unsigned char str_env[24];
 	int y=0;
 	
 	p_env = (char *) ALMT_ENV;
 	p_env = pvPortMalloc(sizeof (struct t_env) );
 	
-	if (p_env == NULL)
-	{
+	if (p_env == NULL)	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
 		return -1;
 	}
 	
 	printf(" Ukuran %d !\r\n", (sizeof (struct t_env)));
-	if (argc == 1)
-	{
+	if (argc == 1)	{
 		judul(" Lingkungan Setting\r\n");
 		printf(" ID  : Nama       : Status : Keterangan : Jum Data : &Memory\r\n");
 		garis_bawah();

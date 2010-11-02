@@ -73,15 +73,14 @@ int reset_data_sumber(void)
 int cek_data(int argc, char **argv)
 {
 	int i;
-	unsigned char buf[24];
+	unsigned char str_data[24];
 	int sumb=0;
 	
 	/* jika hanya cek_data
 	 * maka akam ditampilkan semua 
 	 * sekitar 400 items
 	 */
-	if (argc == 1)
-	{
+	if (argc == 1)		{
 		struct t_dt_set *p_dt;
 		p_dt = (char *) ALMT_DT_SET;
 
@@ -120,12 +119,12 @@ int cek_data(int argc, char **argv)
 		}		
 		else
 		{
-			sprintf(buf, "%s", argv[1]);
+			sprintf(str_data, "%s", argv[1]);
 			struct t_sumber *sumber;
 			sumber = (char *) ALMT_SUMBER;
 			int jmlTitik=20;
 			
-			sumb = cek_nomer_valid(buf, JML_SUMBER);
+			sumb = cek_nomer_valid(str_data, JML_SUMBER);
 			if (sumber[sumb-1].status==0) {
 				printf("Sumber ke-%d TIDAK AKTIF\r\n", sumb);
 				return;
@@ -157,35 +156,6 @@ int cek_data(int argc, char **argv)
 				}
 			} else
 				printf(" ERR: Perintah tidak dikenali !\r\n");
-			/*
-			sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-			if (sumb > 0 && sumb < (sizeof(data_f)/sizeof(float)))		{
-				struct t_dt_set *p_dt;
-				p_dt = (char *) ALMT_DT_SET;
-		
-				judul(" Data Setting\r\n");
-				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-				printf(" no.  : Nama       :  Data  : Stat : Satuan : Alr_H : Alr_HH : Rly : &Memory\r\n");
-				garis_bawah();
-				
-				sumb--;
-		
-				for (i = sumb; i< (sumb + PER_SUMBER); i++)
-				{
-					//if (i >= (JML_SUMBER * PER_SUMBER)) break;
-					if (i >= (sizeof(data_f)/sizeof(float))) break;
-					printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-						p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
-						p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
-
-					//printf(" (%3d): %-10s :  % 4.1f  :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-					//	p_dt[i].nama, data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
-					//	p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
-				}
-			}
-			else
-				printf(" ERR: Perintah tidak dikenali !\r\n");
-			//*/
 		}
 	}
 	
@@ -253,19 +223,16 @@ int set_data_default(void) {
 
 int set_data(int argc, char **argv)
 {
-	unsigned char buf[24];
+	unsigned char str_data[24];
 	int sumb=0;
 	unsigned int ret_ip;
 	struct t_dt_set *p_dt;
 	
 	judul(" Setting Data\r\n");
 	
-	if (argc < 4) 
-	{
-		if (argc > 1)
-		{
-			if (strcmp(argv[1], "help") == 0)
-			{
+	if (argc < 4) 	{
+		if (argc > 1)	{
+			if (strcmp(argv[1], "help") == 0)	{
 				printf(" Perintah untuk setting group !\r\n");
 				printf(" 1. set_data help/default\r\n");
 				printf("    help    : printout keterangan ini\r\n");
@@ -296,8 +263,7 @@ int set_data(int argc, char **argv)
 				
 				return ;
 			}
-			else if (strcmp(argv[1], "default") == 0)
-			{
+			else if (strcmp(argv[1], "default") == 0)	{
 				printf("set DATA dengan data default !\n");
 				set_data_default();
 				
@@ -311,12 +277,11 @@ int set_data(int argc, char **argv)
 	
   	display_args(argc,argv);
 	
-	/* copy dulu yang lama kedalam buffer */
+
 	p_dt = pvPortMalloc( (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set) );
 	printf("Jml alokasi : %d, p_dt: %d, isi: %d\r\n", (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
-	if (p_dt == NULL)
-	{
+	if (p_dt == NULL)	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
 		return;
 	}
@@ -327,15 +292,12 @@ int set_data(int argc, char **argv)
 	portEXIT_CRITICAL();
 	
 	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
-	if (strcmp(argv[2], "nama") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-		if (sumb > 0)		
-		{
+	if (strcmp(argv[2], "nama") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
 			printf(" Data %d : nama : %s\r\n", sumb, argv[3]);			
-			if (strlen(argv[3]) > 16)
-			{
+			if (strlen(argv[3]) > 16)	{
 				printf(" ERR: nama terlalu panjang (Maks 16 karakter)!\r\n");
 				vPortFree( p_dt );
 				return;
@@ -343,15 +305,12 @@ int set_data(int argc, char **argv)
 			sprintf(p_dt[sumb-1].nama, argv[3]);	
 		}
 	}
-	else if (strcmp(argv[2], "satuan") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "satuan") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
 			printf(" Data %d : satuan : %s\r\n", sumb, argv[3]);			
-			if (strlen(argv[3]) > 8)
-			{
+			if (strlen(argv[3]) > 8)	{
 				printf(" ERR: satuan terlalu panjang (Maks 8 karakter)!\r\n");
 				vPortFree( p_dt );
 				return;
@@ -359,12 +318,10 @@ int set_data(int argc, char **argv)
 			sprintf(p_dt[sumb-1].satuan, argv[3]);	
 		}
 	}
-	else if (strcmp(argv[2], "alarmHH") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "alarmHH") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)	{
 			printf(" Data %d : Alarm high high : %s\r\n", sumb, argv[3]);			
 			p_dt[sumb-1].alarm_HH = atof(argv[3]);
 		} else {
@@ -372,12 +329,10 @@ int set_data(int argc, char **argv)
 			return;
 		}
 	}
-	else if (strcmp(argv[2], "alarmH") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "alarmH") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
 			printf(" Data %d : Alarm high : %s\r\n", sumb, argv[3]);			
 			p_dt[sumb-1].alarm_H = atof(argv[3]);
 		} else {
@@ -388,8 +343,8 @@ int set_data(int argc, char **argv)
 	/*
 	else if (strcmp(argv[2], "alarmL") == 0)
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (PER_SUMBER * JML_SUMBER));
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm low : %s\r\n", sumb, argv[3]);			
@@ -401,8 +356,8 @@ int set_data(int argc, char **argv)
 	}
 	else if (strcmp(argv[2], "alarmLL") == 0)
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (PER_SUMBER * JML_SUMBER));
 		if (sumb > 0)		
 		{
 			printf(" Data %d : Alarm low low : %s\r\n", sumb, argv[3]);				
@@ -416,12 +371,13 @@ int set_data(int argc, char **argv)
 	else if (strcmp(argv[2], "relay") == 0)		// 	set_data 4 relay [1|aktif] 7
 	{
 		int slot=0;
-		sprintf(buf, "%s", argv[1]);	sumb = cek_nomer_valid(buf, (PER_SUMBER * JML_SUMBER));
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (PER_SUMBER * JML_SUMBER));
 		
-		if (sumb > 0)		
-		{
+		if (sumb > 0)		{
 			if (argc == 5) {
-				sprintf(buf, "%s", argv[4]);	slot = cek_nomer_valid(buf, 8);
+				sprintf(str_data, "%s", argv[4]);	
+				slot = cek_nomer_valid(str_data, 8);
 				p_dt[sumb-1].relay = slot;
 			}
 			
@@ -448,10 +404,9 @@ int set_data(int argc, char **argv)
 	/*
 	else if ((strcmp(argv[2], "set") == 0) || (strcmp(argv[2], "aktif") == 0))
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, 10);
+		if (sumb > 0)		{
 			printf(" Group %d : set : %s\r\n", sumb, argv[3]);	
 			if (( argv[3][0] == '1') || (argv[3][0] == '0'))
 			{
@@ -467,10 +422,9 @@ int set_data(int argc, char **argv)
 	}
 	else if ((strcmp(argv[2], "ket") == 0) || (strcmp(argv[2], "desc") == 0))
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, 10);
+		if (sumb > 0)				{
 			printf(" Group %d : ket : %s\r\n", sumb, argv[3]);			
 			if (strlen(argv[3]) > 32)
 			{
@@ -491,15 +445,13 @@ int set_data(int argc, char **argv)
 	*/
 	
 	/* cek apakah pemeriksaan angka valid */
-	if (sumb <= 0)
-	{
+	if (sumb <= 0)	{
 		vPortFree( p_dt );
 		return ;	
 	}
 	
 	// SEMUA TRUE dan sampai disini
-	if (simpan_data( p_dt ) < 0)
-	{
+	if (simpan_data( p_dt ) < 0)	{
 		vPortFree( p_dt );
 		return;
 	}

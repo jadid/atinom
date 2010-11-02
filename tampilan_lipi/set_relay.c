@@ -38,10 +38,10 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	serX_putstring(2, "AT+CUSD=1,*888#\"\r\n");		// cek pulsa
 	
 	
-	char buf[128];
-	baca_serial(buf, 3, 10);
-	if (strncmp(buf,"OK",2)==0) {
-		//lihat_isi_pulsa_nya(buf);
+	char str_relay[128];
+	baca_serial(str_relay, 3, 10);
+	if (strncmp(str_relay,"OK",2)==0) {
+		//lihat_isi_pulsa_nya(str_relay);
 	}
 	// Tampilan ini punya fasilitas command shell ke serial 2 (modem)
 	// coba ketik: serial 2 AT\r\n

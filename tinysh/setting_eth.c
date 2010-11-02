@@ -24,7 +24,7 @@ void cek_konfig(int argc, char **argv)	{
 	
 	//#ifdef PAKAI_PM
 	int t=0;
-	unsigned char buf[24];
+	unsigned char str_eth[24];
 	
 	struct t_sumber *p_sbr;
 	p_sbr = (char *) ALMT_SUMBER;
@@ -37,9 +37,9 @@ void cek_konfig(int argc, char **argv)	{
 		return;
 	} else {
 		if (strcmp(argv[1], "alamat") == 0)	{			// khusus modul MODBUS
-			sprintf(buf, "%s", argv[2]);	
+			sprintf(str_eth, "%s", argv[2]);	
 
-			t = cek_nomer_sumber(buf, 250);
+			t = cek_nomer_sumber(str_eth, 250);
 			if (t > 0)	{
 				for(j=0; j<JML_SUMBER; j++) {
 					if (((int)p_sbr[j].alamat)==t) {
@@ -66,9 +66,9 @@ void cek_konfig(int argc, char **argv)	{
 				return;
 			}	
 		} else if (strcmp(argv[1], "no") == 0)	{
-			sprintf(buf, "%s", argv[2]);	
+			sprintf(str_eth, "%s", argv[2]);	
 
-			j = cek_nomer_sumber(buf, JML_SUMBER);
+			j = cek_nomer_sumber(str_eth, JML_SUMBER);
 			if (j > 0)	{
 				printf(" no sumber: %d\r\n", j);
 			} else	{
@@ -182,7 +182,7 @@ void cek_konfig(int argc, char **argv)	{
 static tinysh_cmd_t cek_konfig_cmd={0,"cek_konfig","menampilkan konfig modul","[args]", cek_konfig,0,0,0};
 //*/
 void set_konfig(int argc, char **argv)		{
-	unsigned char buf[24];
+	unsigned char str_eth[24];
 	int sumb;
 	unsigned int ret_ip;
 	int stat;
@@ -231,7 +231,7 @@ void set_konfig(int argc, char **argv)		{
 	
   	display_args(argc,argv);
 	
-	/* copy dulu yang lama kedalam buffer */
+
 	struct t_setting *p_sbr;
 	printf("Jml Data : %d\r\n", jmlData);
 	p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
@@ -245,33 +245,31 @@ void set_konfig(int argc, char **argv)		{
 	
 	
 	if (strcmp(argv[2], "id") == 0)		{
-		sprintf(buf, "%s", argv[1]);	
+		sprintf(str_eth, "%s", argv[1]);	
 		
-		sumb = cek_nomer_sumber(buf, jmlData);
+		sumb = cek_nomer_sumber(str_eth, jmlData);
 		if (sumb >= 0)	{
 			printf(" sumber = %d\r\n", sumb);
-			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 32765);
+			sprintf(str_eth, "%s", argv[3]);	
+			stat = cek_nomer_sumber(str_eth, 32765);
 			
 			p_sbr[sumb-1].id = stat;
 			printf("ID = %d\r\n", p_sbr[sumb-1].id);
 			
 		}
-		else
-		{
+		else	{
 			vPortFree( p_sbr );
 			return;
 		}	
 	}
 	else if (strcmp(argv[2], "nama") == 0)		{
 		//printf("masuk sini\r\n");
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, jmlData);
+		sprintf(str_eth, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_eth, jmlData);
 		if (sumb > 0)		{
 			printf(" sumber = %d : ", sumb);
 			
-			if (strlen(argv[3]) > 15)
-			{
+			if (strlen(argv[3]) > 15)	{
 				printf("\n ERR: nama terlalu panjang !\r\n");
 				vPortFree( p_sbr );
 
@@ -288,13 +286,13 @@ void set_konfig(int argc, char **argv)		{
 	else if (strcmp(argv[2], "status") == 0)	{
 		printf(" set status konfig\r\n");
 
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, jmlData);
+		sprintf(str_eth, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_eth, jmlData);
 		if (sumb > 0)	{
 			printf(" sumber = %d : ", sumb);
 			
 			/* 0 tidak dipakai, 1 dipakai / diaktifkan , 5 daytime */
-			sprintf(buf, "%s", argv[3]);	
+			sprintf(str_eth, "%s", argv[3]);	
 			
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
 				p_sbr[sumb-1].status = (argv[3][0] - '0');
@@ -306,16 +304,7 @@ void set_konfig(int argc, char **argv)		{
 			} else {
 				p_sbr[sumb-1].status = 0;
 			}
-			/*
-			stat = cek_nomer_sumber(buf, 5);
-			
-			if (stat >=0)	{
-				p_sbr[sumb-1].status = stat;
-				printf("ID %d : ", p_sbr[sumb-1].id); 
-				if (stat == 0) printf("Tidak diaktifkan\r\n");
-				else if (stat == 1) printf("Diaktifkan\r\n");	
-			}
-			//*/
+
 		}	else {
 			vPortFree( p_sbr );
 			return;
@@ -340,36 +329,7 @@ void set_konfig(int argc, char **argv)		{
 //*
 tinysh_cmd_t set_konfig_cmd={0,"set_konfig","set konfig untuk beberapa hal","help id ket status",
                               set_konfig,0,0,0};
-/*
-int cek_nomer_sumber(char *arg, int maks)
-{
-	unsigned char buf[24];
-	int ss;
-	
-	sprintf(buf, "%s", arg);
-	ss = baca_kanal(buf);
-	
-	if (ss > 0 && ss < (maks+1))
-	{
-		return ss;	
-	}	
-	//else if (ss == 0 || ss > maks)
-	else if (ss == 0)
-	{
-		return 0;	
-	}
-	else if (ss > maks)
-	{
-		printf("\r\n ERR: %d diluar range !\r\n", ss);
-		return -1;
-	}
-	else
-	{
-		printf("\r\n ERR: format salah !\r\n");
-		return -2;
-	}
-}
-//*/
+
 void read_konfig(void)	{
 	struct t_setting *setting;
 	

@@ -22,20 +22,16 @@
 //extern struct t_env env2;
 #include "enviro.h"
 
-void set_kanal(int argc, char **argv)
-{
-	unsigned char buf[24];
+void set_kanal(int argc, char **argv)	{
+	unsigned char str_kanal[24];
 	unsigned int kanal;
 	float m;
 	float c;
 	int ret;
 	
-	if (argc < 3) 
-	{
-		if (argc > 1)
-		{
-			if (strcmp(argv[1], "help") == 0)
-			{
+	if (argc < 3) 	{
+		if (argc > 1)	{
+			if (strcmp(argv[1], "help") == 0)	{
 				printf(" setting faktor kalibrasi kanal dengan y = mx + c, misalnya : \r\n");
 				printf(" set_kanal 3 1.34 -0.431\r\n");
 				printf(" artinya : setting kanal 3 dengan m = 1.34 dan C = -0.431\r\n");
@@ -48,8 +44,7 @@ void set_kanal(int argc, char **argv)
 				printf(" artinya : setting kanal 3 dengan status OnOff\r\n");
 				return;
 			} 
-			else if (strcmp(argv[1], "default") == 0)
-			{
+			else if (strcmp(argv[1], "default") == 0)	{
 				printf("set kanal dengan data default !\n");
 				//set_dafault_kalib();
 				set_env_default();
@@ -75,24 +70,21 @@ void set_kanal(int argc, char **argv)
 	garis_bawah();
   	display_args(argc,argv);
   	
-  	sprintf(buf, "%s", argv[1]);
-	ret = sscanf(buf, "%d", &kanal);
+  	sprintf(str_kanal, "%s", argv[1]);
+	ret = sscanf(str_kanal, "%d", &kanal);
 	
-	if (kanal > KANALNYA || ret == NULL) 
-	{
+	if (kanal > KANALNYA || ret == NULL) {
 		vPortFree( p_sbr );
 		printf(" Err kanal !\r\n");
 		return ;
 	}
 	
-	if (strcmp(argv[2], "ket") == 0)
-  	{
+	if (strcmp(argv[2], "ket") == 0)  	{
   		printf(" Setting keterangan kanal %d :\r\n", kanal);
   		sprintf(p_sbr->kalib[kanal-1].ket, "%s", argv[3]);
   		printf(" %s", p_sbr->kalib[kanal-1].ket);
   	}
-  	else if (strcmp(argv[2], "status") == 0)
-  	{
+  	else if (strcmp(argv[2], "status") == 0)  	{
   		printf(" Setting status kanal %d :\r\n", kanal);
   		//*
   		if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
@@ -105,23 +97,20 @@ void set_kanal(int argc, char **argv)
 		}
 		//*/
   	}
-  	else
-  	{
-		sprintf(buf, "%s", argv[2]);
-		ret = sscanf(buf, "%f", &m);
+  	else  	{
+		sprintf(str_kanal, "%s", argv[2]);
+		ret = sscanf(str_kanal, "%f", &m);
 	
-		if (ret == NULL) 
-		{
+		if (ret == NULL) {
 			printf(" Err m !\r\n"); 
 			vPortFree( p_sbr );
 			return ;
 		}
 	
-		sprintf(buf, "%s", argv[3]);
-		ret = sscanf(buf, "%f", &c);
+		sprintf(str_kanal, "%s", argv[3]);
+		ret = sscanf(str_kanal, "%f", &c);
 	
-		if (ret == NULL) 
-		{
+		if (ret == NULL) {
 			printf(" Err C !\r\n"); 
 			vPortFree( p_sbr );
 			return ;

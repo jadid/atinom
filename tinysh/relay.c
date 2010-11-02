@@ -53,17 +53,14 @@
 int set_relay(int argc, char **argv)
 {
 	int i;
-	unsigned char buf[24];
+	unsigned char str_relay[24];
 	int sumb=0;
 	
 	/* jika hanya cek_data
 	 * maka akam ditampilkan semua 
 	 * sekitar 400 items
 	 */
-	if (argc == 1)
-	{
-
-	
+	if (argc == 1)	{
 		judul(" Data Setting\r\n");
 	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
 		printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
@@ -71,23 +68,17 @@ int set_relay(int argc, char **argv)
 	
 
 	}
-	else if (argc > 1)
-	{
-		if (strcmp(argv[1], "help") == 0)
-		{
+	else if (argc > 1)	{
+		if (strcmp(argv[1], "help") == 0)	{
 				printf(" Perintah untuk menampilkan setting data !\r\n");
 				printf("    cek_data help  : untuk menampilkan ini.\r\n");
 				printf("    cek_data       : menampilkan seluruh setting data.\r\n");
 				printf("    cek_data 10    : manampikan data ke 10 sampai 30 (20 data saja).\r\n"); 
 		}		
-		else
-		{
-			sprintf(buf, "%s", argv[1]);	
-			sumb = cek_nomer_valid(buf, 400);
-			if (sumb > 0 && sumb < 400)		
-			{
-
-		
+		else	{
+			sprintf(str_relay, "%s", argv[1]);	
+			sumb = cek_nomer_valid(str_relay, 400);
+			if (sumb > 0 && sumb < 400)		{
 				judul(" Data Setting\r\n");
 				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
 				printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");

@@ -60,13 +60,10 @@ int proses_simpan_file(void)
 	
 	//printf("\tts->set: %d, sudah_buka: %d, jml_dipanggil: %d\r\n", ts->set, sudah_buka);
 	
-	if (ts->set == 1)
-	{
+	if (ts->set == 1)		{
 		/* jika sepuluh menit lewat */
-		if (jum_dipanggil > (ts->periode * 60))
-		{						
-			if (sudah_buka == 1)
-			{		
+		if (jum_dipanggil > (ts->periode * 60))	{						
+			if (sudah_buka == 1)		{		
 				f_close( &fd );
 				sudah_buka = 0;
 			}
@@ -75,11 +72,9 @@ int proses_simpan_file(void)
 		}
 		else /* per detik */
 		{
-			if (sudah_buka == 1)
-			{
+			if (sudah_buka == 1)	{
 				jum_detik++;
-				if (jum_detik >= ts->detik)
-				{
+				if (jum_detik >= ts->detik)		{
 					get_tm_time( &tw );
 					timeval = mktime( &tw );
 				
@@ -89,25 +84,21 @@ int proses_simpan_file(void)
 					/* buang new linenya */
 					path[24] = ' ';
 					
-					if (ret = f_write( &fd, path, strlen(path), &jm))
-					{
+					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								return ;
 					}
 					
 					/* tulis data */
-					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
-					{
+					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 						jm = ts->no_data[i];
 			
-						if ( jm != 0) 
-						{
+						if ( jm != 0) {
 							//sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
 							
 							sprintf(path, "%.3f ", data_f[ jm - 1] );
 							
-							if (ret = f_write( &fd, path, strlen(path), &jm))
-							{
+							if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								return ;
 							}							
@@ -116,8 +107,7 @@ int proses_simpan_file(void)
 					
 					/* kasih new line */
 					sprintf(path, "\r\n");
-					if (ret = f_write( &fd, path, strlen(path), &jm))
-					{
+					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								return ;
 					}
@@ -146,8 +136,7 @@ int proses_simpan_file(void)
 				
 				/* cari spasi dan jadikan underscore */
 				jm = strlen(temp);
-				for (i=0; i<jm; i++)
-				{
+				for (i=0; i<jm; i++)	{
 					if ( temp[i] == ' ' ) temp[i] = '_';
 					if ( temp[i] == ':' ) temp[i] = '_';
 				}
@@ -155,33 +144,27 @@ int proses_simpan_file(void)
 				/* buat direktori */
 				sprintf(path, "%s\\%s", buat_direktori("data", timeval, 0), temp);
 				//printf("OK SAAT FILE %s\r\n", path);
-				if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))
-				{
+				if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))		{
 					printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);
 				}
-				else
-				{
+				else	{
 					sudah_buka = 1;
 					jum_detik = 0;
 					
 					/* kasih tag waktu */
 					sprintf(path, "Hari Bln Tgl Jam Tahun ");
-					if (ret = f_write( &fd, path, strlen(path), &jm))
-					{
+					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 					}
 					
 					/* print out nama dan satuan dan nomer data dulu */
-					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
-					{
+					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 						jm = ts->no_data[i];
 			
-						if ( jm != 0) 
-						{
+						if ( jm != 0) 	{
 							/* nomer, nama, satuan, spasi ! */
 							sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
-							if (ret = f_write( &fd, path, strlen(path), &jm))
-							{
+							if (ret = f_write( &fd, path, strlen(path), &jm))		{
 								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								return ;
 							}							
@@ -189,8 +172,7 @@ int proses_simpan_file(void)
 					}
 					/* kasih new line */
 					sprintf(path, "\r\n");
-					if (ret = f_write( &fd, path, strlen(path), &jm))
-					{
+					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								return ;
 					}
@@ -202,8 +184,7 @@ int proses_simpan_file(void)
 	} /* jika set simpan = 1 */
 }
 
-static char * buat_direktori(char *base, time_t timeval, int menit)
-{
+static char * buat_direktori(char *base, time_t timeval, int menit)	{
 	int res;
 	char tek[64];
 	char thn[64];
@@ -216,8 +197,7 @@ static char * buat_direktori(char *base, time_t timeval, int menit)
 	sprintf(jam, "\\%s", base);
 				
 	//if (res = f_mkdir("\\data") != 0)
-	if (res = f_mkdir(jam) != 0)
-	{
+	if (res = f_mkdir(jam) != 0)		{
 		debug_printf("ERR: %s() : %s : %d\r\n", __FUNCTION__, jam, res);
 	}	
 		
@@ -257,8 +237,7 @@ static char * buat_direktori(char *base, time_t timeval, int menit)
 		debug_printf("ERR: %s() : jam : %d\r\n", __FUNCTION__, res);
 	
 	/* menit juga dibuat direktorinya */
-	if (menit == 1)
-	{
+	if (menit == 1)		{
 		sprintf(temp,"");
 		snprintf(temp, 3, "%s", &tek[14]);	// 14
 		sprintf(mnt,"%s\\mnt_%s", jam, temp);
@@ -271,8 +250,8 @@ static char * buat_direktori(char *base, time_t timeval, int menit)
 		return jam;
 }
 
-void webclient_connected(void)
-{
+#ifdef BUAT_FOTO
+void webclient_connected(void)	{
 	char path[128];
 	char temp[64];
 	time_t timeval;
@@ -309,7 +288,7 @@ void webclient_connected(void)
 	}
 }
 
-#ifdef BUAT_FOTO
+
 void tulis_foto(char *data, unsigned int len)
 {
 	int ret;

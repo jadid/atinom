@@ -140,4 +140,5 @@ void set_kanal(int argc, char **argv)
 	vPortFree( p_sbr );
 }
 
-static tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help", set_kanal,0,0,0};	
+// static
+tinysh_cmd_t set_kanal_cmd={0,"set_kanal","setting kanal","help", set_kanal,0,0,0};	

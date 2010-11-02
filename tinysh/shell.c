@@ -86,7 +86,6 @@
 
 #ifdef PAKAI_PM
 #include "pm_server.c"
-//#include "setting_pm.c"
 #include "sumber.c"
 #endif
 
@@ -108,6 +107,10 @@
 
 #ifdef PAKAI_SELENOID
 #include "../GPIO/selenoid.c"
+#endif
+
+#ifdef PAKAI_MULTI_SERIAL
+	#define TXDE	BIT(24)
 #endif
 
 #include "enviro.h"
@@ -160,15 +163,15 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
 
 #ifdef PAKAI_MULTI_SERIAL
 void kirim_serial (int argc, char **argv) {
-	int sumb=0;
-	unsigned char buf[100];
+	int sumb=0, i=0;
+	int lope;
+	unsigned char kirim_ser[100];
 	// serial 2 AT\r\n
-	if (argc < 3) 
-	{
-		if (argc > 1)	
-		{
+	if (argc < 3) {
+		if (argc > 1)	{
 			if (strcmp(argv[1], "help") == 0) {
-				
+				printf("serial 2 AT\r\n");
+				return;
 			}
 		}
 		printf(" ERR: argument kurang !\r\n");
@@ -177,43 +180,46 @@ void kirim_serial (int argc, char **argv) {
 	}
 	
 	display_args(argc,argv);
-	sprintf(buf, "%s", argv[1]);
-	sumb = cek_nomer_valid(buf, 5);
+	sprintf(kirim_ser, "%s", argv[1]);
+	sumb = cek_nomer_valid(kirim_ser, 5);
 
 	#ifdef PAKAI_SERIAL_1
 	if (1 == sumb) {
-		ganti_kata(buf, argv[2]);
-		serX_putstring(1, buf);
+		ganti_kata(kirim_ser, argv[2]);
+		serX_putstring(1, kirim_ser);
 		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP == 1)
 			baca_hasil();			// fitur yang perlu jawaban
 		#endif
+		return;
 	}
 	#endif
 
 	#ifdef PAKAI_SERIAL_2
 	if (2 == sumb) {
-		ganti_kata(buf, argv[2]);
-		serX_putstring(2, buf);
+		for (i=0; i<10; i++)
+			ser2_getchar(1, &lope, 20 );
+		
+		ganti_kata(kirim_ser, argv[2]);
+		serX_putstring(2, kirim_ser);
+		//*
 		#ifdef PAKAI_GSM_FTP
 		if	(PAKAI_GSM_FTP==2)
 			baca_hasil();			// fitur yang perlu jawaban
 		#endif
+		//*/
+		return;
 	}
-	
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3
-	
 	if (3 == sumb) {
-		//printf("KIRIM SERIAL 3   : ........... %s\r\n", argv[2]);
-		ganti_kata(buf, argv[2]);
-		//printf("KIRIM SERIAL 3_2 : ........... %s\r\n", buf);
+		ganti_kata(kirim_ser, argv[2]);
 		
 		#ifdef PAKAI_MAX485
 		FIO0SET = TXDE;		// on	---> bisa kirim
 		#endif
-		serX_putstring(3, buf);
+		serX_putstring(3, kirim_ser);
 		
 		#ifdef PAKAI_MAX485
 		//FIO0SET &= ~TXDE;	// off	---> gak bisa kirim
@@ -224,6 +230,7 @@ void kirim_serial (int argc, char **argv) {
 		if	(PAKAI_GSM_FTP==3)
 			baca_hasil();			// fitur yang perlu jawaban
 		#endif
+		return;
 	}
 	#endif
 	
@@ -237,7 +244,7 @@ static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[a
 #ifdef PAKAI_RTC
 void set_date(int argc, char **argv)
 {	
-	unsigned char *buf;
+	unsigned char *str_rtc;
 	struct rtc_time tmku;
 	int ret;
 	time_t clk;	
@@ -246,35 +253,33 @@ void set_date(int argc, char **argv)
 	rtc_init();
 	rtc_start();
 	
-	buf = pvPortMalloc(512);
-	if (buf == NULL) 
-	{
+	str_rtc = pvPortMalloc(512);
+	if (str_rtc == NULL) {
 		printf("ERR: alok failed\r\n");
-		free(buf);
+		//free(str_rtc);
+		vPortFree(str_rtc);
 		return;
 	}
 	
-	printf("dapat free %X\r\n", buf);	
-	memset(buf, 0, 512);	
+	printf("dapat free %X\r\n", str_rtc);	
+	memset(str_rtc, 0, 512);	
 	
 	printf(" set_date tahun bulan tanggal jam menit\r\n");
 	printf("   misalnya : set_date 2010 3 5 10 22\r\n");
-	printf("   artinya  : set waktu ke tgl 3 Maret 2010, jam 10 22 pagi\r\n");
+	printf("   artinya  : set waktu ke tgl 5 Maret 2010, jam 10:22 pagi\r\n");
 	
-	if (argc < 5) 
-	{
+	if (argc < 5) 	{
 		printf("Argument kurang !\r\n");
-		vPortFree(buf);
+		vPortFree(str_rtc);
 		return;
 	}
 		
 	//display_args(argc, argv);
-	sprintf(buf, "%s:%s:%s:%s:%s", argv[1], argv[2], argv[3], argv[4], argv[5]); 
-	ret = sscanf(buf, "%d:%d:%d:%d:%d", &tmku.tm_year, &tmku.tm_mon, &tmku.tm_mday, &tmku.tm_hour, &tmku.tm_min); 
-	if (ret < 5)
-	{
+	sprintf(str_rtc, "%s:%s:%s:%s:%s", argv[1], argv[2], argv[3], argv[4], argv[5]); 
+	ret = sscanf(str_rtc, "%d:%d:%d:%d:%d", &tmku.tm_year, &tmku.tm_mon, &tmku.tm_mday, &tmku.tm_hour, &tmku.tm_min); 
+	if (ret < 5)	{
 		printf(" ERR: format salah !\r\n");
-		vPortFree(buf);
+		vPortFree(str_rtc);
 		return;
 	}
 
@@ -296,7 +301,7 @@ void set_date(int argc, char **argv)
 	//clk = mktime(&tmku);	
 	//ret = rtc_time_to_bfin(clk);
 	//bfin_write_RTC_STAT(ret);
-	vPortFree(buf);
+	vPortFree(str_rtc);
 	printf(" ..OK\r\n");
 }							 
 
@@ -333,7 +338,8 @@ void cek_stack(void)
 	
 }							 
 
-static tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]", cek_stack,0,0,0};
+//static 
+tinysh_cmd_t cek_stack_cmd={0,"cek_stack","data kounter/rpm","[args]", cek_stack,0,0,0};
 
 void cek_versi(void)	{
 	printf("\n %s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
@@ -343,13 +349,13 @@ void cek_versi(void)	{
   	printf(" FreeRTOS 5.1.1\r\n");	
 }							 
 
-static tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]", cek_versi,0,0,0};
+//static
+tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]", cek_versi,0,0,0};
 							  
 unsigned int uptime_ovflow=0;
 unsigned int tik_lama=0;
 
-void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn)
-{
+void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn)	{
 	unsigned int detik;
 	unsigned int tik;
 	
@@ -378,8 +384,8 @@ void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned in
 	
 }
 
-static void cek_uptime(int argc, char **argv)
-{
+//static 
+void cek_uptime(int argc, char **argv)	{
 	unsigned int sec;
 	unsigned int menit;
 	unsigned int jam;
@@ -420,8 +426,8 @@ static void cek_uptime(int argc, char **argv)
 	return ;
 }
 
-static tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",
-                              cek_uptime,0,0,0};
+//static
+tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",  cek_uptime,0,0,0};
 
 #if defined(BOARD_KOMON_420_SAJA)
 void hitung_datanya() {
@@ -523,7 +529,7 @@ void data_frek_rpm() {
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
 	
-	for (i=0; i<10; i++)	{
+	for (i=0; i<KANALNYA; i++)	{
 //		if (i>6) 
 		{
 			if (data_putaran[i])	{
@@ -543,7 +549,7 @@ void data_frek_rpm() {
 }
 
 //static void cek_rpm(int argc, char **argv)
-static void cek_rpm(){
+void cek_rpm()	{
 	unsigned int i;
 	float temp_f;
 	float temp_rpm;
@@ -575,14 +581,13 @@ static void cek_rpm(){
 	#endif
 }
 
-static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]",
-                              cek_rpm,0,0,0};
+//static 
+tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]", cek_rpm,0,0,0};
 
 #endif
 /*****************************************************************************/
  
-void display_args(int argc, char **argv)
-{
+void display_args(int argc, char **argv)	{
   int i;
   for(i=0;i<argc;i++)
     {
@@ -658,13 +663,14 @@ portTASK_FUNCTION( bg_cmd_thread, pvParameters )
 #endif // contoh shell
 
 #ifdef PAKE_TELNETD
-static void matikan_telnet(int argc, char **argv)
-{
+//static
+void matikan_telnet(int argc, char **argv)	{
 	printf("Quit telnet !\r\n");
 	telnetdDisconnect();
 }
 
-static tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
+//static
+tinysh_cmd_t matikan_telnet_cmd={0,"quit","keluar dari telnet","[args]",
                               matikan_telnet,0,0,0};
 
 /* 	
@@ -998,8 +1004,7 @@ vTaskDelay(100);
 			printf("\r\nPasswd lock!\r\n");
 			while(1)
 			{
-				if (xSerialGetChar(1, &c, 100) == pdTRUE)
-				{
+				if (xSerialGetChar(1, &c, 100) == pdTRUE)	{
 					if (proses_passwd( &c ) == 1) break;
 				}
 				#ifdef PAKAI_MMC
@@ -1090,9 +1095,8 @@ vTaskDelay(100);
   	return;
 }
 
-void init_shell(void)
-{
+void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10),	/* 7 */	\
-		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }
+

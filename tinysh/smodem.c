@@ -32,7 +32,7 @@
 
 
 int fd = 0;
-char buf[128];
+//char serGSM[128];
 
 
 //#define read(a, b, c) serX_getchar(PAKAI_GSM_FTP, a, b, 1000);	\ 
@@ -48,10 +48,8 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","menampilkan konfigurasi modem","[]
                               gsm_ftp,0,0,0};
 
 
-int cek_modem(int argc, char **argv)
-{
-	if (argc == 1)
-	{
+int cek_modem(int argc, char **argv)	{	
+	if (argc == 1)	{
 		struct t_gsm_ftp *p_dt;
 		p_dt = (char *) ALMT_GSM_FTP;
 	
@@ -133,9 +131,8 @@ static int set_modem_ftp_default(void) {
 	
 }
 
-int set_modem_ftp(int argc, char **argv)
-{
-	unsigned char buf[24];
+int set_modem_ftp(int argc, char **argv)	{
+	unsigned char serGSM[24];
 	int sumb=0;
 	unsigned int ret_ip;
 	struct t_gsm_ftp *p_dt;
@@ -185,9 +182,6 @@ int set_modem_ftp(int argc, char **argv)
 				return;
 			}
 	
-  	//display_args(argc,argv);
-	
-	/* copy dulu yang lama kedalam buffer */
 	p_dt = pvPortMalloc( sizeof (struct t_gsm_ftp) );
 	//printf("Jml alikasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
@@ -198,17 +192,6 @@ int set_modem_ftp(int argc, char **argv)
 	printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_dt);
 	
 	memcpy((char *) p_dt, (char *) ALMT_GSM_FTP, (sizeof (struct t_gsm_ftp)));
-	
-	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
-	//*
-/*	
-	char 	ftp_user[40];		// 4 periode data disimpan dalam file
-	char 	ftp_passwd[16];		// 5
-	char 	ftp_server[40];		// 6
-	char	nama_file[40];		// 7 awalan nama file, misalnya angin
-	char	direktori[40];		// 8
-//*/
-
 	
 	if (argc>2) {
 		if (strcmp(argv[1], "user") == 0) 	{				// 3	
@@ -237,8 +220,8 @@ int set_modem_ftp(int argc, char **argv)
 			sprintf(p_dt->ftp_server, argv[2]);	
 		}
 		else if (strcmp(argv[1], "port") == 0)	{			// 3
-			sprintf(buf, "%s", argv[2]);	
-			sumb = cek_nomer_valid(buf, 5000);		// 5 jam
+			sprintf(serGSM, "%s", argv[2]);	
+			sumb = cek_nomer_valid(serGSM, 5000);		// 5 jam
 			if (sumb > 0)		
 			{
 				printf(" Port-nya  : %d\r\n", sumb);			
@@ -249,8 +232,8 @@ int set_modem_ftp(int argc, char **argv)
 			}
 		}
 		else if (strcmp(argv[1], "periode") == 0)  {		// 3
-			sprintf(buf, "%s", argv[2]);	
-			sumb = cek_nomer_valid(buf, 60*5);		// 5 jam
+			sprintf(serGSM, "%s", argv[2]);	
+			sumb = cek_nomer_valid(serGSM, 60*5);		// 5 jam
 			if (sumb > 0)		
 			{
 				printf(" Periodenya  : %d\r\n", sumb);			
@@ -301,63 +284,9 @@ int set_modem_ftp(int argc, char **argv)
 		vPortFree( p_dt );
 		return;
 	}
-	//*/
-	/*
-	else if ((strcmp(argv[2], "set") == 0) || (strcmp(argv[2], "aktif") == 0))
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
-			printf(" Group %d : set : %s\r\n", sumb, argv[3]);	
-			if (( argv[3][0] == '1') || (argv[3][0] == '0'))
-			{
-				p_gr[sumb - 1].stat = (argv[3][0] - '0');
-			}
-			else
-			{
-				printf(" ERR: pilih set 1 atau 0 !\r\n");
-				vPortFree( p_gr );
-				return;
-			} 
-		}
-	}
-	else if ((strcmp(argv[2], "ket") == 0) || (strcmp(argv[2], "desc") == 0))
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
-			printf(" Group %d : ket : %s\r\n", sumb, argv[3]);			
-			if (strlen(argv[3]) > 32)
-			{
-				printf(" ERR: ket terlalu panjang (Maks 32 karakter)!\r\n");
-				vPortFree( p_gr );
-				return;
-			}
-			sprintf(p_gr[sumb-1].ket, argv[3]);	
-		}
-	}
-	else
-	{
-		printf(" ERR: perintah tidak benar !\r\n");
-		printf(" coba set_mesin help \r\n");
-		vPortFree( p_gr );
-		return;
-	}
-	*/
-	
-	/* cek apakah pemeriksaan angka valid */
-	/*
-	if (sumb <= 0) {
-		vPortFree( p_dt );
-		return ;	
-	}
-	//*/
 
 	// SEMUA TRUE dan sampai disini
-	if (simpan_data_gsm_ftp( p_dt ) < 0)
-	{
+	if (simpan_data_gsm_ftp( p_dt ) < 0)	{
 		vPortFree( p_dt );
 		return -1;
 	}
@@ -373,9 +302,8 @@ static tinysh_cmd_t cek_ftp_cmd={0,"cek_ftp","mengecek koneksi modem: gprs dan f
 		"",cek_ftp,0,0,0};
 
 
-int set_modem_gsm(int argc, char **argv)
-{
-	unsigned char buf[24];
+int set_modem_gsm(int argc, char **argv)	{
+	unsigned char serGSM[24];
 	int sumb=0;
 	unsigned int ret_ip;
 	struct t_gsm_ftp *p_dt;
@@ -429,7 +357,6 @@ int set_modem_gsm(int argc, char **argv)
 	
   	//display_args(argc,argv);
 	
-	/* copy dulu yang lama kedalam buffer */
 	p_dt = pvPortMalloc( sizeof (struct t_gsm_ftp) );
 	//printf("Jml alikasi : %d, p_dt: %d, isi: %d\r\n", (JML_SUMBER * PER_SUMBER) * sizeof (struct t_dt_set), p_dt, *p_dt);
 	
@@ -441,16 +368,6 @@ int set_modem_gsm(int argc, char **argv)
 	
 	memcpy((char *) p_dt, (char *) ALMT_GSM_FTP, (sizeof (struct t_gsm_ftp)));
 	
-	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
-	//*
-/*	
-	int		gsm_mode;			// 9 aktif atau tidak mode gsm
-	char	kartu[15];
-	char	gprs_apn1[16];		// 10
-	char	gprs_apn2[16];		// 11
-	char	gprs_user[16];		// 12
-	char	gprs_passwd[16];	// 13
-//*/	
 	if (argc>2) {
 		if (strcmp(argv[1], "user") == 0) 	{		
 			if (strlen(argv[2]) > 16) {
@@ -554,50 +471,44 @@ void cetak_tulisan(char *isi) {
 }
 
 void baca_hasil() {
-	baca_serial(buf, 120, 10);
-	printf(" MODEM: %s\r\n",buf);
+	char serGSM[24];
+	baca_serial(serGSM, 20, 5);
+	printf(" MODEM: %s\r\n",serGSM);
+	if (strncmp(serGSM,"AT",2)==0) {
+		baca_serial(serGSM, 20, 5);
+		printf(" MODEM: %s\r\n",serGSM);
+	}
 }
 
 
-int baca_serial(char *buf, int len, int timeout)
+int baca_serial(char *string_modem, int len, int timeout)
 {
 	int res;
-	int c;
+	char c;
 	int tout=0;
-	int masuk = 0;
-	
-	while(len--)
-	{
-		res = read( fd, &c, 1);
-		if (res != 0)
-		{
-			if ( (char) c == 0x0A || (char) c == 0x0D )
-			{
-				if (masuk > 0) 
-				{	
-					/* supaya buffer lama tidak ikut di printout */
-					buf[masuk] = 0;
+	int masuk = 0;	
+
+	while(len--)	{
+		//res = read( fd, &c, 1);
+		res = ser2_getchar(1, &c, 100);
+		if (res != 0)	{
+			if ( (char) c == 0x0A || (char) c == 0x0D )		{
+				if (masuk > 0) 	{	
+					/* supaya data lama tidak ikut di printout */
+					string_modem[masuk] = 0;
 					return 0;
 				}
 			}
-			else
-			{
-				buf[ masuk ] = (char ) c;								
+			else	{
+				string_modem[ masuk ] = (char ) c;								
 				masuk++;
 				
 				#if (DEBUG == 1)
 				printf(" %s(): res=%d : msk=%02d : 0x%02X : %c\r\n", __FUNCTION__, res, masuk, (char) c, (char) c);
 				#endif
-				/*
-				if ( (char) c == 0x0A && masuk > 2)
-				{
-					if (buf[ masuk - 2 ] == 0x0D)
-					return 0;
-				}*/
 			}
 		}
-		else
-		{
+		else		{
 			//printf(" %s(): %d :timeout\r\n", __FUNCTION__, tout);
 			len++;
 			tout++;

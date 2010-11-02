@@ -21,8 +21,8 @@ static struct sigaction saio;           /* definition of signal action */
 void signal_handler_IO (int status);
 #else
 
-#define read(a, b, c) ser2_getchar(a, b, 1000);	\
-		tendang_wdog();
+//#define read(a, b, c) ser2_getchar(a, b, 1000);	\
+//		tendang_wdog();
 
 int write(int a, char *bf, int len)
 {
@@ -200,7 +200,14 @@ int baca_serial(char *buf, int len, int timeout)
 	
 	while(len--)
 	{
-		res = read( fd, &c, 1);
+		//res = read( fd, &c, 1);
+		#if (PAKAI_GSM_FTP == 1) 
+			res = ser1_getchar(fd, &c, 1 );
+		#elif (PAKAI_GSM_FTP == 2) 			
+			res = ser2_getchar(fd, &c, 1 );
+		#elif (PAKAI_GSM_FTP == 3)
+			res = ser3_getchar(fd, &c, 1 );
+		#endif 
 		if (res != 0)
 		{
 			if ( (char) c == 0x0A || (char) c == 0x0D )
@@ -255,8 +262,7 @@ int tulis_char(char c)
 	write(fd, &c, 1);
 }
 
-int tutup_serial()
-{
+int tutup_serial()	{
 	#if ( PAKAI_LINUX == 1)
 	tcsetattr(fd,TCSANOW,&oldtio);
 	close( fd );

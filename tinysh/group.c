@@ -58,20 +58,18 @@ static int cek_group(int argc, char **argv)
 	int i;
 	struct t_group *pgroup;
 	int sumb;
-	unsigned char buf[24];
+	unsigned char str_group[24];
 	int y=0;
 	
 	pgroup = (char *) ALMT_GROUP;
 	
 	//printf(" Ukuran %d !\r\n", (10 * sizeof (struct t_group)));
-	if (argc == 1)
-	{
+	if (argc == 1)	{
 		judul(" Group Setting\r\n");
 		printf(" ID  : Nama       : Status : Keterangan : Jum Data : &Memory\r\n");
 		garis_bawah();
 	
-		for (i=0; i<10; i++)
-		{
+		for (i=0; i<10; i++)	{
 			/* hitung jumlah data yang berkontribusi pada group ini */
 			sumb = 0;
 			for (y = 0; y<40; y++)
@@ -81,22 +79,18 @@ static int cek_group(int argc, char **argv)
 				pgroup[i].nama, pgroup[i].stat, pgroup[i].ket, sumb, &pgroup[i]);	
 		}
 	}
-	else if (argc > 1)
-	{
-		if (strcmp(argv[1], "help") == 0)
-		{
+	else if (argc > 1)	{
+		if (strcmp(argv[1], "help") == 0)	{
 				printf(" Perintah untuk menampilkan setting group !\r\n");
 				printf("    cek_group help  : untuk menampilkan ini.\r\n");
 				printf("    cek_group       : menampilkan setting global group\r\n");
 				printf("    cek_group 2     : manampikan setting group 2.\r\n"); 
 		}		
-		else
-		{
+		else	{
 			sumb = 0;
-			sprintf(buf, "%s", argv[1]);	
-			sumb = cek_nomer_valid(buf, 10);
-			if (sumb > 0 && sumb < 400)		
-			{		
+			sprintf(str_group, "%s", argv[1]);	
+			sumb = cek_nomer_valid(str_group, 10);
+			if (sumb > 0 && sumb < 400)		{		
 				struct t_dt_set *p_dt;
 				p_dt = (char *) ALMT_DT_SET;
 		
@@ -109,10 +103,8 @@ static int cek_group(int argc, char **argv)
 				printf("  ----- koneksi data ------\r\n");
 				
 				y = 0;
-				for (i=0; i<40; i++)
-				{
-					if ( pgroup[ sumb - 1 ].no_data[i] != 0 )
-					{
+				for (i=0; i<40; i++)	{
+					if ( pgroup[ sumb - 1 ].no_data[i] != 0 )	{
 						y++;
 						printf("  %d. data dari --> %d, %s\r\n", y, pgroup[ sumb - 1 ].no_data[i],\
 							p_dt[ (pgroup[ sumb - 1 ].no_data[i] - 1)].nama );
@@ -130,7 +122,7 @@ static tinysh_cmd_t cek_group_cmd={0,"cek_group","menampilkan konfigurasi mesin"
 
 int set_group(int argc, char **argv)
 {
-	unsigned char buf[24];
+	unsigned char str_group[24];
 	int sumb=0;
 	int ndata=0;
 	unsigned int ret_ip;
@@ -140,12 +132,9 @@ int set_group(int argc, char **argv)
 	
 	judul(" Setting Group\r\n");
 	
-	if (argc < 4) 
-	{
-		if (argc > 1)
-		{
-			if (strcmp(argv[1], "help") == 0)
-			{
+	if (argc < 4) 	{
+		if (argc > 1)	{
+			if (strcmp(argv[1], "help") == 0)	{
 				printf(" Perintah untuk setting group !\r\n");
 				printf(" 1. set_group help/default\r\n");
 				printf("    help    : printout keterangan ini\r\n");
@@ -173,8 +162,7 @@ int set_group(int argc, char **argv)
 				
 				return ;
 			}
-			else if (strcmp(argv[1], "default") == 0)
-			{
+			else if (strcmp(argv[1], "default") == 0)	{
 				printf("set GROUP dengan data default !\n");
 				set_group_default();
 				
@@ -191,8 +179,7 @@ int set_group(int argc, char **argv)
 	/* copy dulu yang lama kedalam buffer */
 	p_gr = pvPortMalloc( 10 * sizeof (struct t_group) );
 	
-	if (p_gr == NULL)
-	{
+	if (p_gr == NULL)	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
 		return -1;
 	}
@@ -201,15 +188,12 @@ int set_group(int argc, char **argv)
 	memcpy((char *) p_gr, (char *) ALMT_GROUP, (10 * sizeof (struct t_group)));
 	
 	/* argumen ke dua adalah nama, argumen pertama adalah nomer */
-	if (strcmp(argv[2], "nama") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
+	if (strcmp(argv[2], "nama") == 0)	{
+		sprintf(str_group, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_group, 10);
+		if (sumb > 0)		{
 			printf(" Group %d : nama : %s\r\n", sumb, argv[3]);			
-			if (strlen(argv[3]) > 10)
-			{
+			if (strlen(argv[3]) > 10)	{
 				printf(" ERR: nama terlalu panjang (Maks 10 karakter)!\r\n");
 				vPortFree( p_gr );
 				return;
@@ -219,32 +203,26 @@ int set_group(int argc, char **argv)
 	}
 	else if ((strcmp(argv[2], "set") == 0) || (strcmp(argv[2], "aktif") == 0))
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
+		sprintf(str_group, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_group, 10);
+		if (sumb > 0)		{
 			printf(" Group %d : set : %s\r\n", sumb, argv[3]);	
-			if (( argv[3][0] == '1') || (argv[3][0] == '0'))
-			{
+			if (( argv[3][0] == '1') || (argv[3][0] == '0'))	{
 				p_gr[sumb - 1].stat = (argv[3][0] - '0');
 			}
-			else
-			{
+			else	{
 				printf(" ERR: pilih set 1 atau 0 !\r\n");
 				vPortFree( p_gr );
 				return;
 			} 
 		}
 	}
-	else if ((strcmp(argv[2], "ket") == 0) || (strcmp(argv[2], "desc") == 0))
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
+	else if ((strcmp(argv[2], "ket") == 0) || (strcmp(argv[2], "desc") == 0))	{
+		sprintf(str_group, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_group, 10);
+		if (sumb > 0)	{
 			printf(" Group %d : ket : %s\r\n", sumb, argv[3]);			
-			if (strlen(argv[3]) > 32)
-			{
+			if (strlen(argv[3]) > 32)	{
 				printf(" ERR: ket terlalu panjang (Maks 32 karakter)!\r\n");
 				vPortFree( p_gr );
 				return;
@@ -252,12 +230,10 @@ int set_group(int argc, char **argv)
 			sprintf(p_gr[sumb-1].ket, argv[3]);	
 		}
 	}
-	else if (strcmp(argv[2], "data") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_valid(buf, 10);
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "data") == 0)	{
+		sprintf(str_group, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_group, 10);
+		if (sumb > 0)	{
 			// cek jika argumen selanjutnya adalah clear, maka direset
 			if (strcmp(argv[3], "clear") == 0)	{
 				printf(" Reset koneksi data dari group %d !\r\n", sumb);
@@ -268,16 +244,15 @@ int set_group(int argc, char **argv)
 			}
 			else 	{
 				/* cek jika ini bilangan nomer data */
-				sprintf(buf, "%s", argv[3]);	
-				ndata = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
+				sprintf(str_group, "%s", argv[3]);	
+				ndata = cek_nomer_valid(str_group, (sizeof(data_f)/sizeof(float)));
 
 				if (ndata > 0) 		{
 					/* jika argument terakhir masih ada unset maka hanya pada 
 					* nomer data itu saja yang dihapus */
 		
 					if (argc>4) {
-						if (strcmp(argv[4], "unset") == 0)		
-						{
+						if (strcmp(argv[4], "unset") == 0)	{
 							printf(" Unset koneksi data %d dari group %d !\r\n", ndata, sumb);
 							for (i=0; i<40; i++)	{
 								if ( p_gr[ sumb - 1 ].no_data[i] == ndata )		{
@@ -303,8 +278,7 @@ int set_group(int argc, char **argv)
 			} /* else clear */
 		} /* nomer group valid */
 	}
-	else
-	{
+	else	{
 		printf(" ERR: perintah tidak benar !\r\n");
 		printf(" coba set_mesin help \r\n");
 		vPortFree( p_gr );
@@ -312,15 +286,13 @@ int set_group(int argc, char **argv)
 	}
 	
 	/* cek apakah pemeriksaan angka valid */
-	if (sumb <= 0)
-	{
+	if (sumb <= 0)	{
 		vPortFree( p_gr );
 		return ;	
 	}
 	
 	// SEMUA TRUE dan sampai disini
-	if (simpan_group( p_gr ) < 0)
-	{
+	if (simpan_group( p_gr ) < 0)	{
 		vPortFree( p_gr );
 		return -1;
 	}
@@ -332,8 +304,7 @@ static tinysh_cmd_t set_group_cmd={0,"set_group","menampilkan konfigurasi mesin"
                               set_group,0,0,0};
 
 
-static int set_group_default(void)
-{
+static int set_group_default(void)	{
 	int i;
 	int y;
 	struct t_group *p_gr;
@@ -341,14 +312,12 @@ static int set_group_default(void)
 	judul(" Set Group ke Default\r\n");
 	
 	p_gr = pvPortMalloc( 10 * sizeof (struct t_group) );
-	if (p_gr == NULL)
-	{
+	if (p_gr == NULL)	{
 		printf("%s(): Err allok memory gagal !\r\n");
 		return -1;
 	}
 	
-	for (i=0; i<10; i++)
-	{
+	for (i=0; i<10; i++)	{
 		sprintf(p_gr[i].nama, "Equip_%d", (i+1));
 		p_gr[i].ID_group = (i+1);
 		p_gr[i].stat = 0;			// pasif/unset
@@ -358,8 +327,7 @@ static int set_group_default(void)
 			p_gr[i].no_data[y] = 0;
 	}
 	
-	if (simpan_group( p_gr ) < 0)
-	{
+	if (simpan_group( p_gr ) < 0)	{
 		vPortFree( p_gr );
 		return -1;
 	}
@@ -367,8 +335,7 @@ static int set_group_default(void)
 	
 }
 
-static int simpan_group( struct t_group *pgr)
-{
+static int simpan_group( struct t_group *pgr)	{
 	printf(" Save struct GROUP ke flash ..");
 	if(prepare_flash(SEKTOR_GROUP, SEKTOR_GROUP)) return -1;
 	printf("..");

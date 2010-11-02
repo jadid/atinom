@@ -14,7 +14,7 @@
 #ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	100
-//#define  LIAT
+#define  LIAT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
@@ -67,9 +67,12 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	} else if (urut_PM710 == 2)	{
 	   jum_balik = get_PM710(alamatPM, reg_ampA, 4); //ampA, B, C & N								// 4020
 	} else if (urut_PM710 == 3) {
-	   jum_balik = get_PM710(alamatPM, reg_voltA_C, 6); //voltA_B, B_C, A_C, A_N, B_N & C_N
+	   jum_balik = get_PM710(alamatPM, reg_voltA_C, 6); //voltA_B, VB_C, VA_C, VA_N, VB_N, VC_N, P_A, P_B, P_C	// 4030
 	} else if (urut_PM710 == 4)	{
-	   jum_balik = get_PM710(alamatPM, reg_kwh, 6);  //kWh, kVAh, & kVArh
+	   jum_balik = get_PM710(alamatPM, reg_kwh, 6);  //kWh, kVAh, & kVArh		// 4000
+	} else if (urut_PM710 == 5)	{
+	   jum_balik = get_PM710(alamatPM, reg_kwA, 9);  //kW_A, kW_B, kW_C, kva_A, kva_B, kva_C, kVAr_A, kVAr_B, kVAr_C		// 4000
+/*
 	} else if (urut_PM710 == 5) {
 		#ifdef PAKAI_KTA
 		jum_balik = get_KTA(alamatPM, reg_KTA, 9);			// 30, 9
@@ -78,6 +81,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		#ifdef PAKAI_KTA
 		jum_balik = get_KTA(alamatPM, reg_satuan_KTA, 6);
 		#endif
+//*/
 	}
 	#endif
 	
@@ -158,7 +162,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		}	else	{
 			timeout++;
 			if (timeout > 20)	{
-				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				//printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				break;
 			}
 		}

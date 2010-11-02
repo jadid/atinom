@@ -44,7 +44,8 @@
 #define VERSI_KOMON		"1.50"
 //#define KONTER_MALINGPING	1
 
-#define DEBUG_KONTER	0
+//#define DEBUG_KONTER	0
+#define BANYAK_SUMBER
 
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2
@@ -52,7 +53,7 @@
 
 #define PAKE_TELNETD
 #define PAKAI_WEBCLIENT
-
+#define SAMPURASUN_CLIENT
 
 #define PROMPT 		"Konter@"
 #define NAMA_BOARD	"Babelan Komon Konter"

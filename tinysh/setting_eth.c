@@ -9,8 +9,8 @@
 
 #include "../monita/monita_uip.h"
 
-
-
+#ifndef __SETTING_ETH__
+#define __SETTING_ETH__
 
 #ifdef PAKAI_PM	
 extern char * judulnya_pm[];	
@@ -71,16 +71,15 @@ void cek_konfig(int argc, char **argv)	{
 			j = cek_nomer_sumber(buf, JML_SUMBER);
 			if (j > 0)	{
 				printf(" no sumber: %d\r\n", j);
-				
 			} else	{
 				return;
 			}	
 		}
 	}
 	printf(" alamat: %d, index: %d\r\n", t, j);
-	garis_bawah2();
+	//garis_bawah2();
 	printf("Konfigurasi Sumber ke-%d: %s, Alamat: %d\r\n", j, p_sbr[j].nama, p_sbr[j].alamat);
-	garis_bawah2();
+	//garis_bawah2();
 
 	//#endif
 	printf("  No.    ID      Nama             status\r\n");
@@ -90,7 +89,7 @@ void cek_konfig(int argc, char **argv)	{
 	printf("\r\n");
 	
 	#ifdef BOARD_KOMON_KONTER
-	for (i=0; i<KANALNYA; i++)	{		
+	for (i=0; i<KANALNYA; i++)	{
 		//if (i>6) 
 		{
 			z++;
@@ -175,14 +174,14 @@ void cek_konfig(int argc, char **argv)	{
 			#endif
 		}
 	}
-}	
-#endif
+	#endif
+}
+//
 							 
 //*
 static tinysh_cmd_t cek_konfig_cmd={0,"cek_konfig","menampilkan konfig modul","[args]", cek_konfig,0,0,0};
 //*/
-void set_konfig(int argc, char **argv)
-{
+void set_konfig(int argc, char **argv)		{
 	unsigned char buf[24];
 	int sumb;
 	unsigned int ret_ip;
@@ -191,12 +190,9 @@ void set_konfig(int argc, char **argv)
 	
 	judul(" Setting Konfig\r\n");
 	
-	if (argc < 4) 
-	{
-		if (argc > 1)
-		{
-			if (strcmp(argv[1], "help") == 0)
-			{
+	if (argc < 4) 	{
+		if (argc > 1)	{
+			if (strcmp(argv[1], "help") == 0)	{
 				printf(" Setting konfig data\r\n");
 				garis_bawah();
 				printf(" argument : id, ket, status, help\r\n");
@@ -248,8 +244,7 @@ void set_konfig(int argc, char **argv)
 	memcpy((char *) p_sbr, (char *) ALMT_KONFIG, (jmlData * sizeof (struct t_setting)));
 	
 	
-	if (strcmp(argv[2], "id") == 0)
-	{
+	if (strcmp(argv[2], "id") == 0)		{
 		sprintf(buf, "%s", argv[1]);	
 		
 		sumb = cek_nomer_sumber(buf, jmlData);
@@ -268,13 +263,11 @@ void set_konfig(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "nama") == 0)
-	{
+	else if (strcmp(argv[2], "nama") == 0)		{
 		//printf("masuk sini\r\n");
 		sprintf(buf, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(buf, jmlData);
-		if (sumb > 0)		
-		{
+		if (sumb > 0)		{
 			printf(" sumber = %d : ", sumb);
 			
 			if (strlen(argv[3]) > 15)
@@ -287,14 +280,12 @@ void set_konfig(int argc, char **argv)
 			sprintf(p_sbr[sumb-1].ket, argv[3]);
 			printf(" Nama : %s\r\n", p_sbr[sumb-1].ket); 
 		}
-		else
-		{
+		else	{
 			vPortFree( p_sbr );
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "status") == 0)
-	{
+	else if (strcmp(argv[2], "status") == 0)	{
 		printf(" set status konfig\r\n");
 
 		sprintf(buf, "%s", argv[1]);	
@@ -330,8 +321,7 @@ void set_konfig(int argc, char **argv)
 			return;
 		}	
 	}
-	else
-	{
+	else	{
 		printf(" ERR: perintah tidak benar !\r\n");
 		printf(" coba set_sumber help \r\n");
 		
@@ -340,16 +330,15 @@ void set_konfig(int argc, char **argv)
 	}
 	
 	// SEMUA TRUE dan sampai disini
-	if (simpan_konfig( p_sbr ) < 0)
-	{
+	if (simpan_konfig( p_sbr ) < 0)		{
 		vPortFree( p_sbr );
 		return;
 	}
 	vPortFree( p_sbr );
-}							 
+}			 
 
 //*
-static tinysh_cmd_t set_konfig_cmd={0,"set_konfig","set konfig untuk beberapa hal","help id ket status",
+tinysh_cmd_t set_konfig_cmd={0,"set_konfig","set konfig untuk beberapa hal","help id ket status",
                               set_konfig,0,0,0};
 /*
 int cek_nomer_sumber(char *arg, int maks)
@@ -381,8 +370,7 @@ int cek_nomer_sumber(char *arg, int maks)
 	}
 }
 //*/
-void read_konfig(void)
-{
+void read_konfig(void)	{
 	struct t_setting *setting;
 	
 	setting = (char *) ALMT_KONFIG;
@@ -408,8 +396,7 @@ void set_awal_konfig(void)	{
 
 	}	
 	
-	if (simpan_konfig( p_sbr ) < 0)
-	{
+	if (simpan_konfig( p_sbr ) < 0)		{
 		vPortFree( p_sbr );
 		return;
 	}
@@ -417,8 +404,7 @@ void set_awal_konfig(void)	{
 	
 }
 
- int simpan_konfig( struct t_setting *pgr)
-{
+ int simpan_konfig( struct t_setting *pgr)	{
 	printf(" Save struct KONFIG ke flash ..");
 	if(prepare_flash(SEKTOR_KONFIG, SEKTOR_KONFIG)) return -1;
 	printf("..");
@@ -434,3 +420,5 @@ void set_awal_konfig(void)	{
 	printf(".. OK\r\n");
 	return 0;
 }
+
+#endif

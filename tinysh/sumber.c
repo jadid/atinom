@@ -89,7 +89,7 @@ static tinysh_cmd_t cek_sumber_cmd={0,"cek_sumber","menampilkan konfigurasi sumb
 
 void set_sumber(int argc, char **argv)
 {
-	unsigned char buf[24];
+	unsigned char str_sumber[24];
 	int sumb;
 	unsigned int ret_ip;
 	int stat;
@@ -146,13 +146,11 @@ void set_sumber(int argc, char **argv)
 	
   	display_args(argc,argv);
 	
-	/* copy dulu yang lama kedalam buffer */
 	struct t_sumber *p_sbr;
 	p_sbr = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
 	
 	
-	if (p_sbr == NULL)
-	{
+	if (p_sbr == NULL)	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
 		return -1;
 	}
@@ -162,14 +160,13 @@ void set_sumber(int argc, char **argv)
 	
 	if (strcmp(argv[2], "ipaddr") == 0)
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, JML_SUMBER);
-		if (sumb > 0)		
-		{
+		sprintf(str_sumber, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
+		if (sumb > 0)		{
 			printf(" sumber = %d\r\n", sumb);
-			sprintf(buf, "%s", argv[3]);
+			sprintf(str_sumber, "%s", argv[3]);
 		
-			ret_ip = baca_ip(buf);
+			ret_ip = baca_ip(str_sumber);
 			
 			p_sbr[sumb-1].IP0 = (unsigned char) (ret_ip >> 24);
 			p_sbr[sumb-1].IP1 = (unsigned char) (ret_ip >> 16);
@@ -179,43 +176,35 @@ void set_sumber(int argc, char **argv)
 			printf("IP = %d.%d.%d.%d\r\n", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 			
 		}
-		else
-		{
+		else	{
 			vPortFree( p_sbr );
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "nama") == 0)
-	{
-		printf("masuk sini\r\n");
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, JML_SUMBER);
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "nama") == 0)	{
+		sprintf(str_sumber, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
+		if (sumb > 0)	{
 			printf(" sumber = %d : ", sumb);
 			
-			if (strlen(argv[3]) > 15)
-			{
+			if (strlen(argv[3]) > 15)	{
 				printf("\n ERR: nama terlalu panjang !\r\n");
 				vPortFree( p_sbr );
-
 				return;
 			}
 			sprintf(p_sbr[sumb-1].nama, argv[3]);
 			printf(" Nama : %s\r\n", p_sbr[sumb-1].nama); 
 		}
-		else
-		{
+		else	{
 			vPortFree( p_sbr );
 			return;
 		}	
 	}
 	else if (strcmp(argv[2], "status") == 0)
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, JML_SUMBER);
-		if (sumb > 0)		
-		{
+		sprintf(str_sumber, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
+		if (sumb > 0)		{
 			printf(" sumber = %d : ", sumb);
 			
 			if ( strcmp(argv[3], "aktif")==0 || strcmp(argv[3], "hidup")==0 ) {
@@ -224,8 +213,8 @@ void set_sumber(int argc, char **argv)
 				p_sbr[sumb-1].status = 0;
 			} else {
 			/* 0 tidak dipakai, 1 dipakai / diaktifkan , 5 daytime */
-				sprintf(buf, "%s", argv[3]);	
-				stat = cek_nomer_sumber(buf, 5);
+				sprintf(str_sumber, "%s", argv[3]);	
+				stat = cek_nomer_sumber(str_sumber, 5);
 				
 				if (stat >=0)	{
 					p_sbr[sumb-1].status = stat;
@@ -240,19 +229,16 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "alamat") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, JML_SUMBER);
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "alamat") == 0)	{
+		sprintf(str_sumber, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
+		if (sumb > 0)		{
 			printf(" sumber = %d : ", sumb);
 			
-			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 200);
+			sprintf(str_sumber, "%s", argv[3]);	
+			stat = cek_nomer_sumber(str_sumber, 200);
 			
-			if (stat >=0)
-			{
+			if (stat >=0)	{
 				p_sbr[sumb-1].alamat = stat;
 				//printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 				printf("pd modul = %d\r\n", p_sbr[sumb-1].alamat);
@@ -265,17 +251,15 @@ void set_sumber(int argc, char **argv)
 	}
 	else if (strcmp(argv[2], "stack") == 0)
 	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, JML_SUMBER);
-		if (sumb > 0)		
-		{
+		sprintf(str_sumber, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
+		if (sumb > 0)		{
 			printf(" sumber = %d : ", sumb);
 			
-			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 10);
+			sprintf(str_sumber, "%s", argv[3]);	
+			stat = cek_nomer_sumber(str_sumber, 10);
 			
-			if (stat >=0)
-			{
+			if (stat >=0)	{
 				p_sbr[sumb-1].stack = stat;
 				//printf("%d.%d.%d.%d : ", p_sbr[sumb-1].IP0, p_sbr[sumb-1].IP1, p_sbr[sumb-1].IP2, p_sbr[sumb-1].IP3);
 				printf("pd modul = %d\r\n", p_sbr[sumb-1].stack);
@@ -286,8 +270,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}
 	}
-	else
-	{
+	else	{
 		printf(" ERR: perintah tidak benar !\r\n");
 		printf(" coba set_sumber help \r\n");
 		
@@ -296,8 +279,7 @@ void set_sumber(int argc, char **argv)
 	}
 	
 	// SEMUA TRUE dan sampai disini
-	if (simpan_sumber( p_sbr ) < 0)
-	{
+	if (simpan_sumber( p_sbr ) < 0)	{
 		vPortFree( p_sbr );
 		return -1;
 	}
@@ -307,35 +289,6 @@ void set_sumber(int argc, char **argv)
 //static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","help ipaddr nama status alamat default","[args]",
 static tinysh_cmd_t set_sumber_cmd={0,"set_sumber","set sumber untuk beberapa hal","help ipaddr nama status alamat default",
                               set_sumber,0,0,0};
-/*
-int cek_nomer_sumber(char *arg, int maks)	{
-	unsigned char buf[24];
-	int ss;
-	
-	sprintf(buf, "%s", arg);
-	ss = baca_kanal(buf);
-	
-	if (ss > 0 && ss < (maks+1))
-	{
-		return ss;	
-	}	
-	//else if (ss == 0 || ss > maks)
-	else if (ss == 0)
-	{
-		return 0;	
-	}
-	else if (ss > maks)
-	{
-		printf("\r\n ERR: %d diluar range !\r\n", ss);
-		return -1;
-	}
-	else
-	{
-		printf("\r\n ERR: format salah !\r\n");
-		return -2;
-	}
-}
-//*/
 
 void save_sumber(void)
 {
@@ -375,14 +328,12 @@ void set_awal_sumber(void)
 	//judul(" Set Sumber ke Default\r\n");
 	
 	p_sbr = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
-	if (p_sbr == NULL)
-	{
+	if (p_sbr == NULL)	{
 		printf("%s(): Err allok memory gagal !\r\n");
 		return -1;
 	}
 	
-	for (i=0; i<JML_SUMBER; i++)
-	{
+	for (i=0; i<JML_SUMBER; i++)	{
 		sprintf(p_sbr[i].nama, "-");
 		p_sbr[i].alamat = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_sbr[i].status = 0;	
@@ -395,8 +346,7 @@ void set_awal_sumber(void)
 		p_sbr[i].IP3 = 254;
 	}	
 	
-	if (simpan_sumber( p_sbr ) < 0)
-	{
+	if (simpan_sumber( p_sbr ) < 0)		{
 		vPortFree( p_sbr );
 		return -1;
 	}

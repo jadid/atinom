@@ -22,8 +22,9 @@
 
 //#ifdef PAKAI_PM
 #ifdef BANYAK_SUMBER
-	// di sektor 26, harusnya bisa nyampe 120 sumber
-	#define JML_SUMBER	10
+	// di sektor 26, harusnya bisa nyampe 120 sumber		--> masalahnya jml datanya terbatas
+	#define JML_SUMBER	5
+	//#define JML_SUMBER	10
 #else
 	#define JML_SUMBER	1
 #endif
@@ -180,6 +181,10 @@ float data_f [ (JML_SUMBER * PER_SUMBER) ];
 struct t_data_float {
 	float data[PER_SUMBER];
 };
+
+#ifdef PAKAI_GSM_FTP
+	int status_modem;
+#endif
 
 
 struct t_xdata {

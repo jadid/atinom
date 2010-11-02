@@ -97,6 +97,7 @@ static unsigned int dog_hang = 0;
 extern unsigned int loop_kirim;
 unsigned int mati_total = 0;
 
+#ifdef PAKAI_RELAY_KONTER
 /* konektor P8 */
 #define P8_1		BIT(19)
 #define P8_2		BIT(20)
@@ -113,43 +114,35 @@ unsigned int mati_total = 0;
 #define ADC_2		BIT(1)
 #define ADC_DONE	BIT(31)
 
-void init_gpio_relay(void)
-{
+void init_gpio_relay(void)	{
 	FIO1DIR = FIO1DIR | P8_1 | P8_2 | P8_3 | P8_4 | P8_5 | P8_6;
 }
 
-void blok_1_up(void)
-{
+void blok_1_up(void)	{
 	FIO1SET = (P8_1 | P8_2);
 }
 
-void blok_1_down(void)
-{
+void blok_1_down(void)	{
 	FIO1CLR = (P8_1 | P8_2);
 }
 
-void blok_2_up(void)
-{
+void blok_2_up(void)	{
 	FIO1SET = (P8_3 | P8_4);
 }
 
-void blok_2_down(void)
-{
+void blok_2_down(void)	{
 	FIO1CLR = (P8_3 | P8_4);
 }
 
-void blok_3_up(void)
-{
+void blok_3_up(void)	{
 	FIO1SET = (P8_5 | P8_6);
 }
 
-void blok_3_down(void)
-{
+void blok_3_down(void)	{
 	FIO1CLR = (P8_5 | P8_6);
 }
 
-void setup_adc(void)
-{
+void setup_adc(void)	{
 	/* 19 Juni 2009, ADC power dinyalakan */
 	PCONP |= PCADC;
 	
@@ -159,18 +152,15 @@ void setup_adc(void)
 	PINSEL1 |= (BIT(14) | BIT(16));
 }
 
-void start_adc_1(void)
-{
+void start_adc_1(void)	{
 	AD0CR = (ADC_CLKDIV | ADC_PDN | ADC_START | ADC_1);
 }
 
-void start_adc_2(void)
-{
+void start_adc_2(void)	{
 	AD0CR = (ADC_CLKDIV | ADC_PDN | ADC_START | ADC_2);
 }
 
-unsigned short read_adc_1(void)
-{
+unsigned short read_adc_1(void)	{
 	unsigned int stat;
 	/*
 	stat = AD0STAT;
@@ -193,8 +183,7 @@ unsigned short read_adc_1(void)
 		return 0;
 }
 
-unsigned short read_adc_2(void)
-{
+unsigned short read_adc_2(void)	{
 	unsigned int stat;
 	
 	stat = AD0DR1;
@@ -206,13 +195,12 @@ unsigned short read_adc_2(void)
 		return 0;
 }
 
+#endif
+
 /*-----------------------------------------------------------*/
 #define jalankan
 
-
-
-int main( void )
-{
+int main( void )	{
 	sysInit();
 
 	/* USB Power dinyalakan supaya memory USB bisa dipakai */
@@ -263,65 +251,59 @@ int main( void )
 #endif
 }
 
-void togle_led_utama(void)
-{
-	if (tog)
-	{
+void togle_led_utama(void)	{
+	if (tog)	{
 		FIO0SET = LED_UTAMA;
 		tog = 0;
 		
-		/* kalkulasi idle loop */
+		// kalkulasi idle loop //
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
 		
-		/* reset wdog setiap detik */
+		// reset wdog setiap detik //
 		tendang_wdog();
 		
 		//blok_1_up();
 		//blok_2_down();
 		//blok_3_up();
 		
-		/* wdog malimping */
+		// wdog malimping //
+		/*
 		dog_menit++;
-		if (dog_menit > (60 * 5)) /* 5 menit */
-		//if (dog_menit > 10) /* 5 menit */
+		if (dog_menit > (60 * 5)) // 5 menit //
+		//if (dog_menit > 10) // 5 menit //
 		{
-			/* 	jika 5 menit tidak ada perubahan jumlah request
-			 	berarti server ngehang */
+			// 	jika 5 menit tidak ada perubahan jumlah request
+			// 	berarti server ngehang 
 			 	
-			if (dog_lama == loop_kirim)
-			{
-				/* 
-					normally close, sehingga jadi open
-					supply tegangan ke server putus, jadi hard reset */
+			if (dog_lama == loop_kirim)		{ 
+				//	normally close, sehingga jadi open
+				//	supply tegangan ke server putus, jadi hard reset //
 				
 				if (mati_total == 0)	
 					blok_2_up();						
 				
 				dog_hang = 1;
 			}
-			else
-			{
+			else	{
 				dog_lama = loop_kirim;
 				dog_hang = 0;
 			}
 			dog_menit = 0;
 		}
 		
-		/* tunggu sekitar 10 detik baru release relaynya */
-		if (dog_hang == 1 && dog_menit > 5)
-		{
-			/* release relay, sehingga close lagi */
+		// tunggu sekitar 10 detik baru release relaynya //
+		if (dog_hang == 1 && dog_menit > 5)		{
+			// release relay, sehingga close lagi //
 			if (mati_total == 0)
 				blok_2_down();
 			
 			dog_hang = 0;
 		}
-		
+		//*/
 		
 	}
-	else
-	{
+	else	{
 		FIO0CLR = LED_UTAMA;
 		tog = 1;
 		
@@ -334,8 +316,7 @@ void togle_led_utama(void)
 	}
 }
 
-static portTASK_FUNCTION(task_led2, pvParameters )
-{
+static portTASK_FUNCTION(task_led2, pvParameters )	{
 	unsigned int muter=0;
 	
 	tog = 0;
@@ -344,8 +325,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	
 	vTaskDelay(2000);
 	
-	for (;;)
-	{		
+	for (;;)	{
 		/* 
 			setiap 100 ms, cek apakah rpm masih jalan,
 			dicek satu per satu, supaya tidak balapan 
@@ -359,8 +339,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		hitung_rpm();
 		
 		muter++;		
-		if (muter > 5)
-		{
+		if (muter > 5)		{
 			togle_led_utama();
 			muter = 0;
 		}	
@@ -368,8 +347,8 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 		vTaskDelay(100);
 	}
 }
-void init_led_utama(void)
-{
+
+void init_led_utama(void)	{
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
 		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
@@ -380,8 +359,7 @@ void init_led_utama(void)
 
 float volt_supply;
 
-static portTASK_FUNCTION( task_adc , pvParameters )
-{
+static portTASK_FUNCTION( task_adc , pvParameters )	{
 	int loop=0;
 	unsigned long tot=0;
 	int loop_mati = 1000;
@@ -464,8 +442,7 @@ static portTASK_FUNCTION( task_adc , pvParameters )
 	}
 }
 
-void init_task_adc(void)
-{
+void init_task_adc(void)	{
 	xTaskCreate(task_adc, ( signed portCHAR * ) "on_adc",  (configMINIMAL_STACK_SIZE * 2) , NULL, \
 		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }

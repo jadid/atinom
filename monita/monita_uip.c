@@ -73,7 +73,7 @@ void monita_init(void)
 void monita_appcall(void)
 {
 	int len;
-	unsigned char buf[32];
+	unsigned char str_monita[32];
 	float temp_rpm;
 	int i;
 	int t;
@@ -87,28 +87,22 @@ void monita_appcall(void)
 			
 	loop_kirim++;
 	printf("\n * %d:", loop_kirim);
-	if (uip_connected())
-	{
+	if (uip_connected())	{
 		printf("konek %s\n", ipne);
 	}
-	if (uip_closed())
-	{
+	if (uip_closed())	{
 		printf("close %s\n", ipne);
 	}
-	if (uip_aborted())
-	{
+	if (uip_aborted())	{
 		printf("abort %s\n", ipne);
 	}
-	if (uip_timedout())
-	{
+	if (uip_timedout())	{
 		printf("timeout %s\n", ipne);
 	}	
-	if(uip_acked()) 
-	{
+	if(uip_acked()) 	{
 		printf("ack %s\n", ipne);
 	}
-	if (uip_poll())
-	{
+	if (uip_poll())	{
 		printf("poll %s\n", ipne);	
 	}
 #endif
@@ -119,17 +113,15 @@ void monita_appcall(void)
 		len = uip_datalen();
 		//printf("newdata = %d %s\n", len, ipne);
 		
-		if (len >= 10)
-		{
+		if (len >= 10)		{
 			portENTER_CRITICAL();
-			memcpy(buf, (char *) uip_appdata, 11);
+			memcpy(str_monita, (char *) uip_appdata, 11);
 			portEXIT_CRITICAL();
-			//printf("isi pesan: %s: %s\r\n",buf, buf[10]);
-			if (strncmp(buf, "sampurasun", 10) == 0)
+			if (strncmp(str_monita, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;
-				stack = buf[10]-'0';
-				//printf("stack: %d\r\n", stack);
+				stack = str_monita[10]-'0';
+
 				#ifdef BOARD_KOMON_A_RTD
 				hitung_data_float();
 				
@@ -320,8 +312,7 @@ void sambungan_connect(int no)
 		//*/
 		
 		conn = uip_connect(ip_modul, HTONS(PORT_MONITA));
-		if (conn == NULL)
-		{
+		if (conn == NULL)	{
 			#ifdef BOARD_TAMPIL
 			debug_out_h("ERR: Koneksi Penuh");	
 			#endif
@@ -345,8 +336,7 @@ void sambungan_connect(int no)
 		#endif
 		return;
 	}
-	else if (sumber[no].status == 1 && sumber[no].alamat == 0 && status[no].stat != 0)
-	{
+	else if (sumber[no].status == 1 && sumber[no].alamat == 0 && status[no].stat != 0)		{
 		/* 
 		 * kemungkinan tidak close, tidak dpt acknoledge dll, 
 		 * di increment reply_lama
@@ -354,17 +344,14 @@ void sambungan_connect(int no)
 		 */	
 		
 		status[no].reply_lama++;
-		if (status[no].reply_lama > 60)
-		{
+		if (status[no].reply_lama > 60)		{
 			/* cari dulu koneksi yang lama
 			 * dan set menjadi belum konek */
 			#ifdef BOARD_TAMPIL
 			debug_out_h("forced to connect ");
 			#endif
-			for(i = 0; i < UIP_CONNS; i++) 
-			{
-		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_MONITA))
-				{
+			for(i = 0; i < UIP_CONNS; i++) 		{
+		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_MONITA))		{
 					uip_conns[i].tcpstateflags = UIP_CLOSED;
 		  			uip_conns[i].nomer_sambung = 0;
 					
@@ -421,7 +408,7 @@ void sambungan_connect(int no)
 
 void samb_appcall(void)	{
 	int len;
-	char buf[64];
+	char str_monita[64];
 	int i;
 	
 	struct t_sumber *sumber;
@@ -447,27 +434,21 @@ void samb_appcall(void)	{
 	//loop_kirim++;
 	//printf("\n * %d:%s", loop_kirim, ipne);
 	//*/
-	if (uip_connected())
-	{
+	if (uip_connected())	{
 		//printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
-		if (status[nomer_sambung].stat == 1)
-		{
+		if (status[nomer_sambung].stat == 1)	{
 			status[nomer_sambung].stat = 2;
 			
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
-			//sprintf(buf, "sampurasun");
-			
 			/* sampurasun + nomor modul (dalam karakter) */
-			sprintf(buf, "sampurasun%d", sumber[nomer_sambung].stack);	
-			//debug_out_h("%s->%s", buf, ipne);
-			//printf("%s->%s\r\n", buf, ipne);
-			uip_send((char *) buf, 11);		// 10
+			sprintf(str_monita, "sampurasun%d", sumber[nomer_sambung].stack);	
+
+			uip_send((char *) str_monita, 11);		// 10
 		}
-		else
-		{
+		else	{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -506,12 +487,10 @@ void samb_appcall(void)	{
 			uip_close();	
 		}
 	}
-	if (uip_poll())
-	{
+	if (uip_poll())		{
 		//printf("poll %s\n", ipne);
 		status[nomer_sambung].timer++;
-		if (status[nomer_sambung].timer > 5)
-		{
+		if (status[nomer_sambung].timer > 5)		{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -521,14 +500,12 @@ void samb_appcall(void)	{
 			uip_close();		
 		}			
 	}
-	if (uip_newdata())
-	{
+	if (uip_newdata())	{
 		len = uip_datalen();
 		//printf("newdata = %d %s, stat: %d\n", len, ipne, status[nomer_sambung].stat);
 		
 		//if (status[nomer_sambung].stat == 3 && len == 248)
-		if (status[nomer_sambung].stat == 3)
-		{
+		if (status[nomer_sambung].stat == 3)	{
 			portENTER_CRITICAL();
 			memcpy((char *) &in_buf, uip_appdata, len);
 			portEXIT_CRITICAL();
@@ -555,26 +532,12 @@ void samb_appcall(void)	{
 				
 				#ifdef DEBUG_DATA
 				printf(" %d:", sbg->nomer_samb);
-				for (i=0; i<10; i++)
-				{
+				for (i=0; i<10; i++)	{
 					printf("%3.3f ", s_data[sbg->nomer_samb].data[i]);	
 				}
 				printf("\n");
 				#endif
 				
-				//cari titik pemilik data ini 
-				/*
-				for (i=0; i<(TIAP_MESIN * JML_MESIN); i++)
-				{
-					if (titik[i].ID_sumber == (nomer_sambung + 1))
-					{
-						titik[i].data = s_data[nomer_sambung].data[titik[i].kanal -1];	
-					}	
-				}
-				//*/
-				//for (i=0; i<(PER_SUMBER); i++) {
-				//	data_f[nomer_sambung*PER_SUMBER+i] = ;
-				//}
 			}
 			
 			uip_close();
@@ -594,54 +557,43 @@ void samb_appcall(void)	{
 	}
 }
 
-void daytime_appcall(void)
-{
+void daytime_appcall(void)	{
 	int len;
 	unsigned int nomer_sambung = (unsigned int) uip_conn->nomer_sambung;
 	
-	if (nomer_sambung > 19)
-	{
+	if (nomer_sambung > (JML_SUMBER-1))	{
 		printf("Nomer sambung invalid !");
 		uip_close();
 		return;	
 	}
 	
-	if (uip_connected())
-	{
-		if (status[nomer_sambung].stat == 1)
-		{
+	if (uip_connected())	{
+		if (status[nomer_sambung].stat == 1)		{
 			status[nomer_sambung].stat = 2;
 		}
-		else
-		{
+		else	{
 			printf("force to close daytime\n");
 			uip_close();
 			return;
 		}
 	}
-	if (uip_closed())
-	{
+	if (uip_closed())	{
 		status[nomer_sambung].stat = 0;
 	}
-	if (uip_aborted())
-	{
+	if (uip_aborted())	{
 		status[nomer_sambung].stat = 0;
 	}
-	if (uip_timedout())
-	{
+	if (uip_timedout())	{
 		status[nomer_sambung].stat = 0;
 	}
-	if (uip_poll())
-	{
+	if (uip_poll())		{
 		status[nomer_sambung].timer++;
-		if (status[nomer_sambung].timer > 5)
-		{
+		if (status[nomer_sambung].timer > 5)		{
 			printf("pool timeout daytime\n");
 			uip_close();		
 		}			
 	}
-	if (uip_newdata())
-	{
+	if (uip_newdata())		{
 		len = uip_datalen();
 		if (len == 26)
 		{
@@ -677,8 +629,7 @@ void kirim_balik_init(void)
 {
 	int i;
 	
-	for (i=0; i < JML_SUMBER ; i++)
-	{
+	for (i=0; i < JML_SUMBER ; i++)	{
 		status[i].stat = 0;
 		status[i].reply = 0;
 	}	
@@ -754,8 +705,7 @@ void kirim_balik_connect(int no)		// sumber_datanya, target_kirim
 		
 		return;
 	}
-	else if (sumber[no].status == 1 && status[no].stat != 0)
-	{
+	else if (sumber[no].status == 1 && status[no].stat != 0)	{
 		/* 
 		 * kemungkinan tidak close, tidak dpt acknoledge dll, 
 		 * di increment reply_lama
@@ -763,15 +713,12 @@ void kirim_balik_connect(int no)		// sumber_datanya, target_kirim
 		 */	
 		
 		status[no].reply_lama++;
-		if (status[no].reply_lama > 60)
-		{
+		if (status[no].reply_lama > 60)		{
 			/* cari dulu koneksi yang lama
 			 * dan set menjadi belum konek */
 			debug_out_h("forced to connect ");
-			for(i = 0; i < UIP_CONNS; i++) 
-			{
-		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_KIRIM_BALIK))
-				{
+			for(i = 0; i < UIP_CONNS; i++) 	{
+		  		if (uip_conns[i].nomer_sambung == no && uip_conn[i].lport == HTONS(PORT_KIRIM_BALIK))	{
 					uip_conns[i].tcpstateflags = UIP_CLOSED;
 		  			uip_conns[i].nomer_sambung = 0;
 					
@@ -798,8 +745,7 @@ void kirim_balik_connect(int no)		// sumber_datanya, target_kirim
 		uip_ipaddr(ip_modul, sumber[no].IP0, sumber[no].IP1, sumber[no].IP2, sumber[no].IP3);	
 		
 		conn = uip_connect(ip_modul, HTONS(PORT_DAYTIME));
-		if (conn == NULL)
-		{
+		if (conn == NULL)	{
 			debug_out_h("ERR: Koneksi Penuh");	
 			return ;
 		}
@@ -823,7 +769,7 @@ void kirim_balik_connect(int no)		// sumber_datanya, target_kirim
 
 void kirim_balik_appcall(void) {
 	int len;
-	char buf[64];
+	char str_monita[64];
 	int i;
 	
 	struct t_sumber *sumber;
@@ -831,8 +777,7 @@ void kirim_balik_appcall(void) {
 	
 	unsigned int nomer_sambung = (unsigned int) uip_conn->nomer_sambung;
 	//printf("no sambung KIRIM_BALIK: %d\r\n", nomer_sambung);
-	if (nomer_sambung > 19)
-	{
+	if (nomer_sambung > (JML_SUMBER-1))	{
 		//printf("Nomer sambung invalid !");
 		debug_out_h("Nomer sambung invalid !");
 		uip_close();
@@ -850,21 +795,16 @@ void kirim_balik_appcall(void) {
 	//loop_kirim++;
 	//printf("\n KIRIM BALIK * %d:%s", loop_kirim, ipne);
 	//*/
-	if (uip_connected())
-	{
+	if (uip_connected())	{
 		//printf("konek no:%d IP: %s\n",nomer_sambung, ipne);
-		if (status[nomer_sambung].stat == 1)
-		{
+		if (status[nomer_sambung].stat == 1)	{
 			status[nomer_sambung].stat = 2;
 			
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
-			//sprintf(buf, "sampurasun");
-			
 			/* sampurasun + nomor modul (dalam karakter) */
-			//sprintf(buf, "kirimbalik%d", (char) sumber[nomer_sambung].alamat);	
 			//debug_out_h("%s->%s", buf, ipne);
 			
 			xdata.nomer = loop_kirim;
@@ -882,13 +822,11 @@ void kirim_balik_appcall(void) {
 			portENTER_CRITICAL();
 				memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
 			portEXIT_CRITICAL();
-			//printf("isi buf: %s, data[1]: %f\r\n", xdata.buf, data_float.data[1]);
 			
 			uip_send((char *) &xdata, sizeof (xdata));
 			//uip_send((char *) buf, 11);		// 10
 		}
-		else
-		{
+		else	{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -898,31 +836,25 @@ void kirim_balik_appcall(void) {
 			return;
 		}
 	}
-	if (uip_closed())
-	{
+	if (uip_closed())	{
 		status[nomer_sambung].stat = 0;
 		//printf("close %s\n", ipne);
 	}
-	if (uip_aborted())
-	{
+	if (uip_aborted())	{
 		status[nomer_sambung].stat = 0;
 		//printf("abort %s\n", ipne);
 	}
-	if (uip_timedout())
-	{
+	if (uip_timedout())	{
 		status[nomer_sambung].stat = 0;
 		//printf("timeout %s\n", ipne);
 	}	
-	if(uip_acked()) 
-	{
+	if(uip_acked()) 	{
 		//printf("ack %s\n", ipne);
-		if (status[nomer_sambung].stat == 2)
-		{
+		if (status[nomer_sambung].stat == 2)	{
 			status[nomer_sambung].stat = 3;
 			//printf("sampur ack\n");
 		}
-		else
-		{
+		else	{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -931,12 +863,10 @@ void kirim_balik_appcall(void) {
 			uip_close();	
 		}
 	}
-	if (uip_poll())
-	{
+	if (uip_poll())	{
 		//printf("poll %s\n", ipne);
 		status[nomer_sambung].timer++;
-		if (status[nomer_sambung].timer > 5)
-		{
+		if (status[nomer_sambung].timer > 5)	{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -945,19 +875,16 @@ void kirim_balik_appcall(void) {
 			uip_close();		
 		}			
 	}
-	if (uip_newdata())
-	{
+	if (uip_newdata())	{
 		len = uip_datalen();
 		//printf("newdata = %d %s\n", len, ipne);
 		
-		if (status[nomer_sambung].stat == 3 && len == 248)
-		{
+		if (status[nomer_sambung].stat == 3 && len == 248)		{
 			portENTER_CRITICAL();
 			memcpy((char *) &in_buf, uip_appdata, len);
 			portEXIT_CRITICAL();
 			
-			if (strncmp(in_buf.mon, "OKdata", 6) == 0)
-			{
+			if (strncmp(in_buf.mon, "OKdata", 6) == 0)		{
 				printf("Data MOMON\n");	
 				status[nomer_sambung].reply++;
 				//memcpy((char *) &s_data[nomer_sambung].data, in_buf.buf, sizeof (data_float));
@@ -969,8 +896,7 @@ void kirim_balik_appcall(void) {
 				
 				#ifdef DEBUG_DATA
 				printf(" %d:", sbg->nomer_samb);
-				for (i=0; i<10; i++)
-				{
+				for (i=0; i<10; i++)	{
 					printf("%3.3f ", s_data[sbg->nomer_samb].data[i]);	
 				}
 				printf("\n");
@@ -981,8 +907,7 @@ void kirim_balik_appcall(void) {
 			uip_close();
 			return;
 		}
-		else if (len > 0)
-		{
+		else if (len > 0)	{
 			sprintf(ipne, " [%d][%d]:%d.%d.%d.%d", nomer_sambung+1, uip_conn->lport, \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -1066,7 +991,7 @@ void terima_balik_init(void)
 void terima_balik_appcall(void)
 {
 	int len;
-	unsigned char buf[32];
+	unsigned char str_monita[32];
 	float temp_rpm;
 	int i;
 	int t;
@@ -1080,39 +1005,31 @@ void terima_balik_appcall(void)
 			
 	loop_kirim++;
 	printf("\n * %d:", loop_kirim);
-	if (uip_connected())
-	{
+	if (uip_connected())	{
 		printf("konek %s\n", ipne);
 	}
-	if (uip_closed())
-	{
+	if (uip_closed())	{
 		printf("close %s\n", ipne);
 	}
-	if (uip_aborted())
-	{
+	if (uip_aborted())	{
 		printf("abort %s\n", ipne);
 	}
-	if (uip_timedout())
-	{
+	if (uip_timedout())		{
 		printf("timeout %s\n", ipne);
 	}	
-	if(uip_acked()) 
-	{
+	if(uip_acked()) 	{
 		printf("ack %s\n", ipne);
 	}
-	if (uip_poll())
-	{
+	if (uip_poll())		{
 		printf("poll %s\n", ipne);	
 	}
 #endif
 	
-	if (uip_newdata())
-	{
+	if (uip_newdata())	{
 		len = uip_datalen();
 		//printf("newdata = %d %s\n", len, ipne);
 		
-		if (len >= 17)
-		{
+		if (len >= 17)	{
 			//*
 			portENTER_CRITICAL();
 			memcpy((char *) &temp_data, uip_appdata, len);

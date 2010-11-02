@@ -10,13 +10,16 @@
 	proses_passwd ditambahkan
 	
 */
+
+#ifndef __UTILS__
+#define __UTILS__
+
 static char passin[16];
 static int  passc;
 
 #define DIGANTI 5		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
 
-int proses_passwd(char *c)
-{
+int proses_passwd(char *c)	{
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );
 		
 	if ( *c == 0x0D || *c == 0x0A )			// enter !!
@@ -52,8 +55,7 @@ int proses_passwd(char *c)
 		passc++;
 	}
 	
-	if (passc > sizeof (passin))
-	{
+	if (passc > sizeof (passin))	{
 		passc = 0;
 		printf("%s(): kepanjangan !\r\n", __FUNCTION__);
 		return 0;
@@ -62,27 +64,22 @@ int proses_passwd(char *c)
 	return 0;
 }
 
-int cek_nomer_valid(char *arg, int maks)
-{
+int cek_nomer_valid(char *arg, int maks)	{
 	int ss;
 	
 	ss = baca_kanal(arg);
 	
-	if (ss > 0 && ss < (maks+1))
-	{
+	if (ss > 0 && ss < (maks+1))		{
 		return ss;	
 	}	
-	else if (ss == 0)
-	{
+	else if (ss == 0)		{
 		return 0;	
 	}
-	else if (ss > maks)
-	{
+	else if (ss > maks)		{
 		printf("\r\n ERR: %d diluar range !\r\n", ss);
 		return -1;
 	}
-	else
-	{
+	else	{
 		printf("\r\n ERR: format salah !\r\n");
 		return -2;
 	}
@@ -116,18 +113,15 @@ int cek_nomer_sumber(char *arg, int maks)	{
 	}
 }
 
-void garis_bawah(void)
-{
+void garis_bawah(void)	{
 	printf("-----------------------------------------------------\r\n");	
 }
 
-void garis_bawah2(void)
-{
+void garis_bawah2()	{
 	printf("=====================================================\r\n");	
 }
 
-void judul(char *s)
-{
+void judul(char *s)	{
 	garis_bawah2();
 	printf(s);
 	garis_bawah2();
@@ -233,3 +227,7 @@ int ganti_kata(char *dest, char *src) {
 		" "
 	};
 #endif
+
+#endif
+
+

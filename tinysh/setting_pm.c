@@ -61,7 +61,7 @@ static tinysh_cmd_t cek_konfig_pmnya_cmd={0,"cek_pm_konfig","menampilkan konfig 
 
 void cek_pm(int argc, char **argv) {
 	int i=0,j=0,sumb=0;
-	unsigned char buf[24];
+	unsigned char string_pm[24];
 	
 	if (argc<2) {
 		printf("Perintah salah !!!\r\n");
@@ -69,8 +69,8 @@ void cek_pm(int argc, char **argv) {
 		return;
 	}
 	
-	sprintf(buf, "%s", argv[1]);	
-	sumb = cek_nomer_sumber(buf, 250);
+	sprintf(string_pm, "%s", argv[1]);	
+	sumb = cek_nomer_sumber(string_pm, 250);
 	
 	struct t_sumber_pm *p_sbr;
 	p_sbr = (char *) ALMT_SUMBER;
@@ -112,7 +112,7 @@ static tinysh_cmd_t cek_pm_cmd={0,"cek_pm_data","mengecek nilai parameter PM","[
 
 void set_pm(int argc, char **argv)
 {
-	unsigned char buf[24];
+	unsigned char string_pm[24];
 	int sumb;
 	unsigned int ret_ip;
 	int stat;
@@ -203,13 +203,13 @@ void set_pm(int argc, char **argv)
 	
 	
 	if (strcmp(argv[2], "alamat") == 0) 	{
-		sprintf(buf, "%s", argv[1]);	
+		sprintf(string_pm, "%s", argv[1]);	
 		
-		sumb = cek_nomer_sumber(buf, JML_SUMBER);
+		sumb = cek_nomer_sumber(string_pm, JML_SUMBER);
 		if (sumb > 0)		{
 			printf(" sumber = %d\r\n", sumb);
-			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 250);		// batas max alamat Modbus
+			sprintf(string_pm, "%s", argv[3]);	
+			stat = cek_nomer_sumber(string_pm, 250);		// batas max alamat Modbus
 			
 			p_sbr->pm[sumb-1].alamat = stat;
 			printf("Alamat = %d\r\n", p_sbr->pm[sumb-1].alamat);	
@@ -220,8 +220,8 @@ void set_pm(int argc, char **argv)
 		}	
 	}
 	else if (strcmp(argv[2], "nama") == 0)	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, PER_SUMBER);
+		sprintf(string_pm, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(string_pm, PER_SUMBER);
 		if (sumb > 0)		{
 			printf(" sumber = %d : ", sumb);
 			
@@ -238,10 +238,9 @@ void set_pm(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "modul") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, PER_SUMBER);
+	else if (strcmp(argv[2], "modul") == 0)	{
+		sprintf(string_pm, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(string_pm, PER_SUMBER);
 		if (sumb > 0)		{
 			/* 0 tidak dipakai, 1 dipakai / diaktifkan */
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
@@ -253,12 +252,10 @@ void set_pm(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "status") == 0)
-	{
-		sprintf(buf, "%s", argv[1]);	
-		sumb = cek_nomer_sumber(buf, PER_SUMBER);
-		if (sumb > 0)		
-		{
+	else if (strcmp(argv[2], "status") == 0)	{
+		sprintf(string_pm, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(string_pm, PER_SUMBER);
+		if (sumb > 0)	{
 			printf(" sumber = %d : ", sumb);
 			/* 0 tidak dipakai, 1 dipakai / diaktifkan */
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
@@ -271,17 +268,6 @@ void set_pm(int argc, char **argv)
 			} else {
 				p_sbr->pm[sumb-1].status = 0;
 			}
-			/*
-			sprintf(buf, "%s", argv[3]);	
-			stat = cek_nomer_sumber(buf, 5);
-			
-			if (stat >=0) 	{
-				p_sbr->pm[sumb-1].status = stat;
-				printf("PM berAlamat %d : ", p_sbr->pm[sumb-1].alamat); 
-				if (stat == 0) printf("Tidak diaktifkan\r\n");
-				else if (stat == 1) printf("Diaktifkan\r\n");	
-			}
-			//*/
 		}
 		else {
 			vPortFree( p_sbr );

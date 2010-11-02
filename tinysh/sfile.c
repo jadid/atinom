@@ -54,13 +54,13 @@ static int cek_file(int argc, char **argv)	{
 	struct t_simpan_file *psfile;
 	struct t_dt_set *dt;
 	int sumb;
-	unsigned char buf[24];
+	//unsigned char string_file[24];
 	int y=0;
 	
 	psfile = (char *) ALMT_SFILE;
 	dt = (char *) ALMT_DT_SET;
 	
-	printf(" Ukuran %d !\r\n", sizeof (struct t_simpan_file));
+	//printf(" Ukuran %d !\r\n", sizeof (struct t_simpan_file));
 	if (argc == 1)		{
 		judul(" Setting Simpan File\r\n");
 		
@@ -73,8 +73,7 @@ static int cek_file(int argc, char **argv)	{
 		sumb= 0;
 		printf(" No  : No_Data : Nama             : Satuan \r\n");
 		
-		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)
-		{
+		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 			y = psfile->no_data[i];
 			
 			if ( y != 0) {
@@ -84,45 +83,13 @@ static int cek_file(int argc, char **argv)	{
 		}
 		
 	}
-	else if (argc > 1)
-	{
-		if (strcmp(argv[1], "help") == 0)
-		{
+	else if (argc > 1)	{
+		if (strcmp(argv[1], "help") == 0)	{
 			printf(" Perintah untuk menampilkan setting file !\r\n");
 			printf("    cek_file help  : untuk menampilkan ini.\r\n");
 		}		
 		else	{
-			/*
-			sumb = 0;
-			sprintf(buf, "%s", argv[1]);	
-			sumb = cek_nomer_valid(buf, 10);
-			if (sumb > 0 && sumb < 400)		
-			{		
-				struct t_dt_set *p_dt;
-				p_dt = (char *) ALMT_DT_SET;
-		
-				judul(" Group Setting\r\n");
-				printf("  Nomer      = %d, ID = %d\r\n", sumb, pgroup[ sumb - 1 ].ID_group);
-				printf("  Nama       = %s\r\n", pgroup[ sumb - 1 ].nama);
-				printf("  Status     = %d\r\n", pgroup[ sumb - 1 ].stat);
-				printf("  Keterangan = %s\r\n", pgroup[ sumb - 1 ].ket);
-				
-				printf("  ----- koneksi data ------\r\n");
-				
-				y = 0;
-				for (i=0; i<40; i++)
-				{
-					if ( pgroup[ sumb - 1 ].no_data[i] != 0 )
-					{
-						y++;
-						printf("  %d. data dari --> %d, %s\r\n", y, pgroup[ sumb - 1 ].no_data[i],\
-						p_dt[ (pgroup[ sumb - 1 ].no_data[i] - 1)].nama );
-					}
-				}
-			}
-			else
-				printf(" ERR: Perintah tidak dikenali !\r\n");
-				*/
+			
 		}
 	}	
 }
@@ -130,9 +97,8 @@ static int cek_file(int argc, char **argv)	{
 static tinysh_cmd_t cek_file_cmd={0,"cek_file","menampilkan konfigurasi file simpan","[] nomer",
                               cek_file,0,0,0};
 
-int set_file(int argc, char **argv)
-{
-	unsigned char buf[24];
+int set_file(int argc, char **argv)	{
+	unsigned char string_file[24];
 	int sumb=0;
 	int ndata=0;
 	unsigned int ret_ip;
@@ -188,12 +154,10 @@ int set_file(int argc, char **argv)
 			}
 	
   	//display_args(argc,argv);
-	
-	/* copy dulu yang lama kedalam buffer */
+
 	p_gr = pvPortMalloc( sizeof (struct t_simpan_file) );
 	
-	if (p_gr == NULL)
-	{
+	if (p_gr == NULL)	{
 		printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
 		return -1;
 	}
@@ -206,32 +170,29 @@ int set_file(int argc, char **argv)
 	
 	if (argc>2) {
 		if (strcmp(argv[1], "nama") == 0)	{	// set_file nama monita 3
-			sprintf(buf, "%s", argv[2]);
-			sumb = strlen(buf);
+			sprintf(string_file, "%s", argv[2]);
+			sumb = strlen(string_file);
 			
-			if (sumb > 16)
-			{
-				printf(" ERR: Nama (%s) terlalu panjang !\r\n", buf);
+			if (sumb > 16)	{
+				printf(" ERR: Nama (%s) terlalu panjang !\r\n", string_file);
 				vPortFree( p_gr );
 				return;			
 			}	
-			sprintf( p_gr->nama_file, "%s", buf);
+			sprintf( p_gr->nama_file, "%s", string_file);
 
 		}
 		else if (strcmp(argv[1], "periode") == 0)	{	// set_file periode 10 (simpan file tiap 10 menit ke MMC) 3
-			sprintf(buf, "%s", argv[2]);	
-			sumb = cek_nomer_valid(buf, 60);
-			if (sumb > 0)		
-			{
+			sprintf(string_file, "%s", argv[2]);	
+			sumb = cek_nomer_valid(string_file, 60);
+			if (sumb > 0)	{
 				p_gr->periode = sumb;
 				printf(" Setting periodenya = %d\r\n", sumb);	
 			}
 		}
 		else if (strcmp(argv[1], "detik") == 0) 	{	// set_file detik 10		3
-			sprintf(buf, "%s", argv[2]);	
-			sumb = cek_nomer_valid(buf, 60);
-			if (sumb > 0)		
-			{
+			sprintf(string_file, "%s", argv[2]);	
+			sumb = cek_nomer_valid(string_file, 60);
+			if (sumb > 0)	{
 				p_gr->detik = sumb;
 				printf(" Setting detik = %d\r\n", sumb);	
 			}
@@ -244,28 +205,24 @@ int set_file(int argc, char **argv)
 				printf(" Semua data yang berkontribusi pada file dibersihkan !\r\n");
 				sumb = 2; // supaya true
 			} else	{		
-				sprintf(buf, "%s", argv[2]);	
-				sumb = cek_nomer_valid(buf, (sizeof(data_f)/sizeof(float)));
-				//sumb = cek_nomer_valid(buf, (JML_SUMBER * PER_SUMBER));
-				if (sumb > 0)		
-				{				
+				sprintf(string_file, "%s", argv[2]);	
+				sumb = cek_nomer_valid(string_file, (sizeof(data_f)/sizeof(float)));
+				if (sumb > 0)		{				
 						/* jika argument terakhir masih ada unset maka hanya pada 
 						* nomer data itu saja yang dihapus */
 						if ( argc > 3)
 						{
 							if (strcmp(argv[3], "unset") == 0 )		// set_file data x unset
 							{
-							printf(" Unset koneksi data %d dari setting SIMPAN_FILE !\r\n", sumb);
-							for (i=0; i< ((sizeof(data_f)/sizeof(float))); i++)
-							{
-								if ( p_gr->no_data[i] == sumb )
-								{
-									p_gr->no_data[i] = 0;
-									break;
+								printf(" Unset koneksi data %d dari setting SIMPAN_FILE !\r\n", sumb);
+								for (i=0; i< ((sizeof(data_f)/sizeof(float))); i++)		{
+									if ( p_gr->no_data[i] == sumb )		{
+										p_gr->no_data[i] = 0;
+										break;
+									}
 								}
-							}
-							if (i == ((sizeof(data_f)/sizeof(float))))
-								printf(" nomer data dimaksud tidak ada !\r\n");
+								if (i == ((sizeof(data_f)/sizeof(float))))
+									printf(" nomer data dimaksud tidak ada !\r\n");
 							}
 							else
 								printf(" ERR: Perintah salah !\r\n");
@@ -311,19 +268,9 @@ int set_file(int argc, char **argv)
 		vPortFree( p_gr );
 		return;
 	}
-	
-	/* cek apakah pemeriksaan angka valid */
-	/*
-	if (sumb <= 0)
-	{
-		vPortFree( p_gr );
-		return ;	
-	}
-	//*/
-	
+		
 	// SEMUA TRUE dan sampai disini
-	if (simpan_sfile( p_gr ) < 0)
-	{
+	if (simpan_sfile( p_gr ) < 0)	{
 		vPortFree( p_gr );
 		return -1;
 	}
@@ -742,33 +689,31 @@ int cari_doku(int argc, char **argv) {
 		printf("cari [x-y: H-3 | J-1] [aksinya: ftp | lihat]\r\n");
 		return -1;
 	}
-	char buf[127];
-	sprintf(buf, "%s", argv[1]);
-	if ((buf[0]!='H') && (buf[0]!='h') && (buf[0]!='J') && (buf[0]!='j') && (buf[0]!='B') && (buf[0]!='b') ) {
+	char str_doku[127];
+	sprintf(str_doku, "%s", argv[1]);
+	if ((str_doku[0]!='H') && (str_doku[0]!='h') && (str_doku[0]!='J') && (str_doku[0]!='j') && (str_doku[0]!='B') && (str_doku[0]!='b') ) {
 		printf("Argumen tidak benar !!\r\n");
 		printf("Contoh : H-7, J-2, B-1\r\n");
 		return -1;
 	}
-	
-	//printf("isi buf: %s\r\n");
-	
+
 	if (strcmp(argv[2], "ftp") == 0) {
 		#ifdef PAKAI_GSM_FTP
-		if (konek_ftp_awal()==0) 
-		{
-			printf("Koneksi GPRS gagal !!!\r\n");
-			printf("Create FTP sesssion error !\r\n");
-			return 0;
-		} else {
-			printf("Create FTP sesssion !\r\n");
-		}
-		
-		cari_berkas(buf, "kirim_ftp");
-		
-		tutup_koneksi_ftp();
+			if (konek_ftp_awal()==0) 	{
+				printf("Koneksi GPRS gagal !!!\r\n");
+				printf("Create FTP sesssion error !\r\n");
+				return 0;
+			} else {
+				printf("Create FTP sesssion !\r\n");
+			}
+			
+			cari_berkas(str_doku, "kirim_ftp");			
+			tutup_koneksi_ftp();
+		#else
+			printf("tidak ada #define PAKAI_GSM_FTP\r\n");
 		#endif
 	} else if (strcmp(argv[2], "lihat") == 0) {
-		cari_berkas(buf, "lihat");
+		cari_berkas(str_doku, "lihat");
 	} else {
 		printf("Perintah salah\r\n");
 		printf("cari [x-y: H-3 | J-1] [aksinya: ftp | lihat]\r\n");
@@ -797,8 +742,8 @@ int cari_doku(int argc, char **argv) {
 	//cari_files(path);
 }
 
-int cari_berkas(char *buf, char *aksi) {
-	if ((buf[0]!='H') && (buf[0]!='h') && (buf[0]!='J') && (buf[0]!='j') && (buf[0]!='B') && (buf[0]!='b') ) {
+int cari_berkas(char *str_doku, char *aksi) {
+	if ((str_doku[0]!='H') && (str_doku[0]!='h') && (str_doku[0]!='J') && (str_doku[0]!='j') && (str_doku[0]!='B') && (str_doku[0]!='b') ) {
 		printf("Argumen tidak benar !!\r\n");
 		printf("Contoh : H-7, J-2, B-1\r\n");
 		return -1;
@@ -807,7 +752,7 @@ int cari_berkas(char *buf, char *aksi) {
 	char path[127];
 	char *pch, str[10], waktu[10], aksinya[20];
 	int i=0;
-	strcpy(waktu,buf);
+	strcpy(waktu,str_doku);
 	strcpy(aksinya, aksi);
 	//printf("Awalnya posisi: %s\r\n",waktu);
 	

@@ -263,7 +263,8 @@ static void setenv_fnt(int argc, char **argv)
 	
 	if (simpan_env( p_sbr ) < 0) {
 		vPortFree( p_sbr );
-		return -1;
+		//return -1;
+		return;
 	}
 	vPortFree( p_sbr );
 		

@@ -26,24 +26,28 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifdef PAKAI_CRON
+
+#ifndef __CRON__
+#define __CRON__
+
 static int simpan_cron( struct t_cron *pgr);
 
 int cron(char * data, int cek) {
-	char buf[10];
+	char str_cron[10];
 	char * pch;
 	//printf("__%s__%c__", data, data[2]);
 	if (data[1]=='/' || data[1]==37) {				// s/x		s%x
-		ganti_kata(buf, data);
-		//printf("ganti:__%s__", buf);
-		pch=strchr(buf,'+');
+		ganti_kata(str_cron, data);
+		pch=strchr(str_cron,'+');
 
 		if (pch!=NULL) { 			// s/x+y
-			if ((cek%atoi(buf)==atoi(pch+1))) {
+			if ((cek%atoi(str_cron)==atoi(pch+1))) {
 				return 1;			// menit BENAR
 			} else {
 				return 0;
 			}
-		} else if ((cek%atoi(buf)==0) || cek==0) {  // s/x
+		} else if ((cek%atoi(str_cron)==0) || cek==0) {  // s/x
 			return 1;				// menit BENAR
 		} else {
 			return 0;
@@ -56,11 +60,10 @@ int cron(char * data, int cek) {
 int lihat_cron(int argc, char **argv)
 {
 	int i;
-	unsigned char buf[24];
+	//unsigned char str_cron[24];
 	int sumb=0;
 
-	if (argc == 1)
-	{
+	if (argc == 1)	{
 		struct t_cron *p_dt;
 		p_dt = (char *) ALMT_CRON;
 	
@@ -68,23 +71,18 @@ int lihat_cron(int argc, char **argv)
 		printf("  no. :  Cron :   Menit  :    Jam   :    Tgl   :   Bulan  :  Perintah  : Almt : Status\r\n");
 		garis_bawah();
 	
-		for (i=0; i<JML_CRON; i++)
-		{
+		for (i=0; i<JML_CRON; i++)	{
 			printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (i+1), \
 				(p_dt[i].set)?"Aktif":"Mati", p_dt[i].mnt, p_dt[i].jam, p_dt[i].tgl, p_dt[i].bln, p_dt[i].cmd, p_dt[i].alamat, p_dt[i].status?"Aktif [1]":"Mati  [0]");	
 		}
 	}
-	else if (argc > 1)
-	{
-		if (strcmp(argv[1], "help") == 0)
-		{
+	else if (argc > 1)	{
+		if (strcmp(argv[1], "help") == 0)	{
 				printf(" Perintah untuk menampilkan setting data !\r\n");
-				printf("    cek_data help  : untuk menampilkan ini.\r\n");
-				printf("    cek_data       : menampilkan seluruh setting data.\r\n");
-				printf("    cek_data 10    : manampikan data ke 10 sampai 30 (20 data saja).\r\n"); 
+				printf("    cek_cron help  : untuk menampilkan ini.\r\n");
+				printf("    cek_cron       : menampilkan seluruh setting data.\r\n");
 		}		
-		else
-		{
+		else	{
 				printf(" ERR: Perintah tidak dikenali !\r\n");
 		}
 	}
@@ -226,6 +224,10 @@ void baca_cron() {
 					hapus_SENDED();
 				}
 				#endif
+				
+				if (strcmp(p_dt[hitung].cmd,"cek")==0) {
+					printf("...............cek_cron, printf ini !!!\r\n");
+				}
 			}
 			
 		}
@@ -290,7 +292,7 @@ void defaultnya(struct t_cron * p_cr) {
 
 int set_cron(int argc, char **argv)
 {
-	unsigned char buf[24];
+	unsigned char str_cron[24];
 	int sumb=0;
 	int ndata=0;
 	unsigned int alamat=0;
@@ -307,32 +309,16 @@ int set_cron(int argc, char **argv)
 	judul(" Setting Cron\r\n");
 	
 			if (strcmp(argv[1], "help") == 0)	{
-				printf(" Perintah untuk setting SIMPAN_FILE !\r\n");
+				printf(" Perintah untuk setting CRON !\r\n");
 				printf(" 1. set_cron help/default\r\n");
 				printf("    help    : printout keterangan ini\r\n");
 				printf("    default : memberikan default setting simpan file\r\n");
 				printf("\r\n");
 				
 				//*
-				printf(" 2. set_cron [opt1] [opt2]\r\n");
-				printf("    set_file [nama|set|periode] [opt2]\r\n");
-				printf("    opt1 : nama, set/aktif, periode, data\r\n");
-				printf("    opt2 : nilai dari opt 1 yang tepat\r\n");
+				printf(" 2. set_cron [no]   [mnt]    [jam]    [tgl]  [bln]    [cmd]                 [alamat] [status] \r\n");
+				printf("    set_cron [1-10] [0-59 s] [0-23 s] [1-30] [1-12 s] [cek|ftp|hapus|relay] [1-8]    [1|aktif|0|mati] \r\n");
 				printf("\r\n");
-				printf("    [opt1]\r\n");				
-				printf("    nama      : memberikan nama file yang akan ditampilkan\r\n");
-				printf("    misalnya  : $ set_file nama MonitaFile. Nama Max 16 karakter.\r\n");
-				printf("    artinya memberikan nama file dengan nilai MonitaFile\r\n");
-				printf("\r\n");
-				printf("    set/aktif : mengaktif/nonaktifkan penyimpanan file ke memori MMC\r\n");
-				printf("    misalnya  : $ set_file [set|aktif]\r\n");
-				printf("    artinya mengaktifkan penyimpanan file\r\n");
-				printf("    misalnya  : $ set_file [unset|mati]\r\n");
-				printf("    artinya me-nonaktifkan penyimpanan file\r\n");
-				printf("\r\n");
-				printf("    periode   : memberikan nilai periode penyimpanan file dalam MMC\r\n");
-				printf("    misalnya  : $ set_file periode 10\r\n");
-				printf("    artinya   : file disimpan dalam MMC setiap 10 menit\r\n");
 				//*/
 
 				return ;
@@ -347,7 +333,6 @@ int set_cron(int argc, char **argv)
 	
   	display_args(argc,argv);
 	
-	/* copy dulu yang lama kedalam buffer */
 	p_gr = pvPortMalloc( JML_CRON * sizeof (struct t_cron) );
 	//printf("JMl cron : %d\r\n", JML_CRON * sizeof (struct t_cron));
 	
@@ -365,18 +350,17 @@ int set_cron(int argc, char **argv)
 	
 	if (argc>8) {
 		//if ()
-		sprintf(buf, "%s", argv[1]);			// no cron
-		sumb = cek_nomer_valid(buf, JML_CRON);
+		sprintf(str_cron, "%s", argv[1]);			// no cron
+		sumb = cek_nomer_valid(str_cron, JML_CRON);
 		if (sumb <= 0)	{
 			printf("No cron salah !\r\n");
 			vPortFree( p_gr );
 			return 0;	
 		}
 		
-		sprintf(buf, "%s", argv[2]);			// menit
-		//ganti_kata(buf, buf);
-		if ((strlen(buf) < 10) ) {
-			if ((atoi(buf)<0 || atoi(buf)>60) && (buf[0]!='s')) {
+		sprintf(str_cron, "%s", argv[2]);			// menit
+		if ((strlen(str_cron) < 10) ) {
+			if ((atoi(str_cron)<0 || atoi(str_cron)>60) && (str_cron[0]!='s')) {
 				printf("Input menit salah !\r\n");
 				vPortFree( p_gr );
 				return 0;
@@ -387,9 +371,9 @@ int set_cron(int argc, char **argv)
 			return 0;
 		}
 		
-		sprintf(buf, "%s", argv[3]);			// jam
-		if ((strlen(buf) < 10) ) {
-			if ((atoi(buf)<0 || atoi(buf)>60)  && (buf[0]!='s')) {
+		sprintf(str_cron, "%s", argv[3]);			// jam
+		if ((strlen(str_cron) < 10) ) {
+			if ((atoi(str_cron)<0 || atoi(str_cron)>60) && (str_cron[0]!='s')) {
 				printf("Input Jam salah !\r\n");
 				vPortFree( p_gr );
 				return 0;
@@ -400,9 +384,9 @@ int set_cron(int argc, char **argv)
 			return 0;
 		}
 		
-		sprintf(buf, "%s", argv[4]);			// tgl
-		if ((strlen(buf) < 10) ) {
-			if ( (atoi(buf)<1 || atoi(buf)>31) && (buf[0]!='s') ) {
+		sprintf(str_cron, "%s", argv[4]);			// tgl
+		if ((strlen(str_cron) < 10) ) {
+			if ( (atoi(str_cron)<1 || atoi(str_cron)>31) && (str_cron[0]!='s') ) {
 				printf("Input Tanggal salah !\r\n");
 				vPortFree( p_gr );
 				return 0;
@@ -413,9 +397,9 @@ int set_cron(int argc, char **argv)
 			return 0;
 		}
 		
-		sprintf(buf, "%s", argv[5]);			// bln
-		if ((strlen(buf) < 10) ) {
-			if ( (atoi(buf)<1 || atoi(buf)>12) && (buf[0]!='s') ) {
+		sprintf(str_cron, "%s", argv[5]);			// bln
+		if ((strlen(str_cron) < 10) ) {
+			if ( (atoi(str_cron)<1 || atoi(str_cron)>12) && (str_cron[0]!='s') ) {
 				printf("Input Bulan salah !\r\n");
 				vPortFree( p_gr );
 				return 0;
@@ -426,27 +410,30 @@ int set_cron(int argc, char **argv)
 			return 0;
 		}
 		
-		sprintf(buf, "%s", argv[6]);			// cmd
-		if( (strcmp(buf, "relay") == 0) || (strcmp(buf, "ftp") == 0) || (strcmp(buf, "hapus") == 0) ) {
+		sprintf(str_cron, "%s", argv[6]);			// cmd
+		if( (strcmp(str_cron, "relay") == 0) || (strcmp(str_cron, "ftp") == 0) || (strcmp(str_cron, "hapus") == 0)  || (strcmp(str_cron, "cek") == 0) ) {
 			sprintf(p_gr[sumb-1].cmd, argv[6]);
 		} else {
-			printf("Input perintah salah !\r\n");
+			printf("Input perintah/COMMAND salah !\r\n");
 			vPortFree( p_gr );
 			return 0;
 		}
 		//*
-		sprintf(buf, "%s", argv[7]);			// alamat
-		alamat = cek_nomer_valid(buf, JML_RELAY);
+		#ifdef PAKAI_SELENOID
+		sprintf(str_cron, "%s", argv[7]);			// alamat
+		alamat = cek_nomer_valid(str_cron, JML_RELAY);
 		if (alamat <= 0)	{
 			printf("Alamat salah. Range Relay 1 s/d %d !\r\n", JML_RELAY);
 			vPortFree( p_gr );
 			return 0;	
 		}
+		#endif
+		
 		//*/
-		sprintf(buf, "%s", argv[8]);			// status
-		if ( (strcmp(buf, "aktif") == 0) || (buf[0]=='1') || (strcmp(buf, "hidup") == 0) )	{
+		sprintf(str_cron, "%s", argv[8]);			// status
+		if ( (strcmp(str_cron, "aktif") == 0) || (str_cron[0]=='1') || (strcmp(str_cron, "hidup") == 0) )	{
 			p_gr[sumb-1].status = 1;
-		} else if ( (strcmp(buf, "mati")  == 0) || (buf[0]=='0') ) {
+		} else if ( (strcmp(str_cron, "mati")==0) || (str_cron[0]=='0') ) {
 			printf("perintah cron %d mati !\r\n", sumb-1);
 			p_gr[sumb-1].status = 0;
 		} else {
@@ -469,8 +456,8 @@ int set_cron(int argc, char **argv)
 		//sprintf(p_gr[sumb-1].status, argv[7]);
 		
 	} else if (argc==3) {
-		sprintf(buf, "%s", argv[1]);			// alamat
-		sumb = cek_nomer_valid(buf, JML_CRON);
+		sprintf(str_cron, "%s", argv[1]);			// alamat
+		sumb = cek_nomer_valid(str_cron, JML_CRON);
 		if (sumb <= 0)	{
 			printf("No cron salah !\r\n");
 			vPortFree( p_gr );
@@ -534,3 +521,7 @@ static int simpan_cron( struct t_cron *pgr)
 	printf(".. OK\r\n");
 	return 0;
 }
+
+#endif
+
+#endif

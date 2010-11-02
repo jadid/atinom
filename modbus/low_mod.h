@@ -31,7 +31,7 @@
 //#define TIPE_PM810
 
 #ifdef TIPE_PM710
-#define JML_REQ_PM	5
+#define JML_REQ_PM	6
 #define reg_test	7006
 //#define reg_kwh   1000     // 2 register		//harusnya 4000
 #define reg_kwh   4001     // 2 register		//harusnya 4000
@@ -48,6 +48,7 @@
 #define reg_ampA  4020
 #define meter_current reg_ampA
 #define reg_voltA_C  4030
+#define reg_kwA  4036
 
 #define reg_frek_f	1000
 

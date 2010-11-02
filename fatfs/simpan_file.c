@@ -85,7 +85,7 @@ int proses_simpan_file(void)	{
 					get_tm_time( &tw );
 					timeval = mktime( &tw );
 					
-					sprintf(path, "%04d%02d%02d_%02d%02d", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min);
+					sprintf(path, "%04d%02d%02d_%02d%02d%02d ", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min, tw.tm_sec);
 					/* kasih tag waktu */
 					//sprintf(path, "%s", ctime(&timeval));
 					
@@ -136,6 +136,7 @@ int proses_simpan_file(void)	{
 				//printf("TIMEVAL = %d\r\n", timeval);
 				//printf("cek %s, %04d%02d%02d_%02d%02d\r\n",  ctime(&timeval), tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min);
 				sprintf(waktus, "%04d%02d%02d_%02d%02d", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min);
+				//printf("waktus: %s\r\n", waktus);
 				/* close file */
 				//printf("test buat %s\r\n", buat_direktori( timeval ));
 							

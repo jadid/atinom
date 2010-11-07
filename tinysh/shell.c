@@ -132,6 +132,10 @@ extern xTaskHandle *hdl_lcd;
 extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
+
+#ifdef PAKAI_GSM_FTP
+	extern xTaskHandle *hdl_gsm;
+#endif
 //extern struct t_env env2;
 
 
@@ -332,10 +336,13 @@ void cek_stack(void)
 	#endif
 	
 	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
-	#if (PAKAI_SELENOID == 1)
+	#ifdef PAKAI_SELENOID
 		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
-	
+		
+	#ifdef PAKAI_GSM_FTP
+		printf(" GSM      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_gsm));
+	#endif
 }							 
 
 //static 
@@ -700,7 +707,13 @@ void mulai_gsm_ftp(void)
 	return;
 }
 
-static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp","proses gsm ftp","[args]",
+void gsm_ftp_exe() {
+	saat_gsm_aksi=1;
+	vTaskDelay(200);
+	
+}
+
+static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp_exe","proses gsm_ftp","[args]",
                               mulai_gsm_ftp,0,0,0};
 #endif
 
@@ -814,7 +827,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_modem_gsm_cmd);
 	tinysh_add_command(&gsm_ftp_cmd);
 	tinysh_add_command(&cek_ftp_cmd);
-	//tinysh_add_command(&gsm_ftp_cmd);
+	tinysh_add_command(&hapus_filenya_cmd);
 #endif	
 
 #ifdef PAKAI_CRON
@@ -904,7 +917,7 @@ vTaskDelay(100);
   	//xTaskCreate( bg_cmd_thread, "bg_cmd", 1000, NULL, 2, &xHandle);
 
 	#ifdef PAKAI_MMC
-  	vTaskDelay(40);
+  	vTaskDelay(340);
   	#else
   	vTaskDelay(450);
   	#endif

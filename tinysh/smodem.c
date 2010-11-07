@@ -29,7 +29,7 @@
 
 #include "../monita/monita_uip.h"
 #include "../gsm/system_ftp.c"
-
+//#include "../gsm/kirim_ftp.c"
 
 int fd = 0;
 //char serGSM[128];
@@ -122,8 +122,7 @@ static int set_modem_ftp_default(void) {
 	sprintf(p_gr->gprs_passwd, 	"wap123");
 //*/
 	
-	if (simpan_data_gsm_ftp( p_gr ) < 0)
-	{
+	if (simpan_data_gsm_ftp( p_gr ) < 0)	{
 		vPortFree( p_gr );
 		return -1;
 	}

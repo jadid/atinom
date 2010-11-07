@@ -31,6 +31,11 @@
 #ifndef __CRON__
 #define __CRON__
 
+#ifdef PAKAI_GSM_FTP
+	int saat_gsm_aksi;
+	int status_modem;
+#endif
+
 static int simpan_cron( struct t_cron *pgr);
 
 int cron(char * data, int cek) {
@@ -183,9 +188,8 @@ void baca_cron() {
 		if (cekCron(p_dt[hitung])==1) {	
 			
 			if (p_dt[hitung].set) {
-				//*
 				printf("sekarang:  %d:%d %d-%d\r\n",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
-				
+				/*
 				//printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
 				//		p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
 				//		p_dt[hitung].cmd, p_dt[hitung].alamat, p_dt[hitung].status?"Aktif [1]":"Mati [0]");
@@ -212,16 +216,24 @@ void baca_cron() {
 				
 				#ifdef PAKAI_GSM_FTP
 				if (strcmp(p_dt[hitung].cmd,"ftp")==0) {
-					printf(".....................................KIRIM ftp\r\n");
-					gsm_ftp();			// kirim ftp : 2 menit untuk 11 file
+					saat_gsm_aksi=1;
+					printf("......KIRIM ftp\r\n");
 				}
 				#endif
 				
 				#ifdef PAKAI_FILE_SIMPAN
 				if (strcmp(p_dt[hitung].cmd,"hapus")==0) {
-					printf(".....................................HAPUS file\r\n");			
-					//sleep(10);
-					hapus_SENDED();
+					if (status_modem==1)		// biar nggak konflik baca file
+						return;
+					printf("......HAPUS file J-12\r\n");			
+					cari_berkas("J-12", "lihat");
+					vTaskDelay(100);
+					
+				}
+				
+				if (strcmp(p_dt[hitung].cmd,"list")==0) {
+					printf("......list file J-12\r\n");			
+					cari_berkas("J-12", "lihat");
 				}
 				#endif
 				
@@ -317,7 +329,7 @@ int set_cron(int argc, char **argv)
 				
 				//*
 				printf(" 2. set_cron [no]   [mnt]    [jam]    [tgl]  [bln]    [cmd]                 [alamat] [status] \r\n");
-				printf("    set_cron [1-10] [0-59 s] [0-23 s] [1-30] [1-12 s] [cek|ftp|hapus|relay] [1-8]    [1|aktif|0|mati] \r\n");
+				printf("    set_cron [1-10] [0-59 s] [0-23 s] [1-30] [1-12 s] [cek|ftp|hapus|relay|list] [1-8]    [1|aktif|0|mati] \r\n");
 				printf("\r\n");
 				//*/
 
@@ -411,7 +423,7 @@ int set_cron(int argc, char **argv)
 		}
 		
 		sprintf(str_cron, "%s", argv[6]);			// cmd
-		if( (strcmp(str_cron, "relay") == 0) || (strcmp(str_cron, "ftp") == 0) || (strcmp(str_cron, "hapus") == 0)  || (strcmp(str_cron, "cek") == 0) ) {
+		if( (strcmp(str_cron, "list") == 0) || (strcmp(str_cron, "relay") == 0) || (strcmp(str_cron, "ftp") == 0) || (strcmp(str_cron, "hapus") == 0)  || (strcmp(str_cron, "cek") == 0) ) {
 			sprintf(p_gr[sumb-1].cmd, argv[6]);
 		} else {
 			printf("Input perintah/COMMAND salah !\r\n");
@@ -434,7 +446,7 @@ int set_cron(int argc, char **argv)
 		if ( (strcmp(str_cron, "aktif") == 0) || (str_cron[0]=='1') || (strcmp(str_cron, "hidup") == 0) )	{
 			p_gr[sumb-1].status = 1;
 		} else if ( (strcmp(str_cron, "mati")==0) || (str_cron[0]=='0') ) {
-			printf("perintah cron %d mati !\r\n", sumb-1);
+			printf("perintah cron %d mati !\r\n", sumb);
 			p_gr[sumb-1].status = 0;
 		} else {
 			printf("Input perintah salah !\r\n");

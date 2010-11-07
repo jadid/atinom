@@ -47,6 +47,11 @@
 	#define PER_SUMBER	20
 #endif
 
+#ifdef PAKAI_GSM_FTP
+	int saat_gsm_aksi;
+	int status_modem;
+#endif
+
 //#define SEKTOR_ENV	24
 //#define ALMT_ENV	0x7A000
 
@@ -182,9 +187,7 @@ struct t_data_float {
 	float data[PER_SUMBER];
 };
 
-#ifdef PAKAI_GSM_FTP
-	int status_modem;
-#endif
+
 
 
 struct t_xdata {

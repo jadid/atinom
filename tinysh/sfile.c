@@ -333,7 +333,7 @@ int hapus_SENDED() {
 	char isi[10];
 
 	//cari_2jam_lalu(path);
-	cari_waktu(path, "J-2");
+	cari_waktu(path, "J-24");
 	//printf("Posisi: %s\r\n",path);
 	fileInfo.lfname = buf_lfn;
 	fileInfo.lfsize = 255;//sizeof (buf_lfn);
@@ -455,6 +455,8 @@ int dihapus(char *nama) {
 	}
 	return flag;
 }
+
+static tinysh_cmd_t hapus_filenya_cmd={0,"hapus_SENDED","hapus file terkirim","[args]", hapus_SENDED,0,0,0};
 
 /*
 	posisi 
@@ -630,61 +632,115 @@ int cek_waktu(int *waktu, int opsi) {
 }
 
 int hapus_paksa() {
-	
+	printf("File sudah terkirim ke FTP dihapus !!\r\n");
+	cari_berkas("J-12","hapus");
 }
 
 
-FRESULT cari_files (char* path, char *aksi) {
-    FRESULT res;
-    FILINFO fno;
-    DIR dir;
+#define __POINTER_FILES__
+//static FRESULT cari_files (char* pathxx, char *aksi) {
+int cari_files (char* pathxx, char *aksi) {
+    FRESULT resxx;
+    FILINFO fnoxx;
+    DIR dirxx;
     int i;
-    char *fn;
-    char abs_path[128];
+    
+    #ifdef __POINTER_FILES__
+    char *fnxx;
+    #endif
+    
+    #ifdef __ARRAY__
+    	char fnxx[64];
+    #endif
+    char abs_pathxx[128];
 #if _USE_LFN
-    static char lfn[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
-    fno.lfname = lfn;
-    fno.lfsize = sizeof(lfn);
+	static char lfnxx[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
+    fnoxx.lfname = lfnxx;
+    fnoxx.lfsize = sizeof(lfnxx);
 #endif
 
+	portENTER_CRITICAL();
+    resxx = f_opendir(&dirxx, pathxx);
+    portEXIT_CRITICAL();
+    
+    if (resxx == FR_OK) {
+        i = strlen(pathxx);
 
-    res = f_opendir(&dir, path);
-    if (res == FR_OK) {
-        i = strlen(path);
         for (;;) {
-            res = f_readdir(&dir, &fno);
-            if (res != FR_OK || fno.fname[0] == 0) break;
-            if (fno.fname[0] == '.') continue;
+			portENTER_CRITICAL();
+            resxx = f_readdir(&dirxx, &fnoxx);
+            portEXIT_CRITICAL();
+            
+            if (resxx != FR_OK || fnoxx.fname[0] == 0) break;
+            if (fnoxx.fname[0] == '.') continue;
 #if _USE_LFN
-            fn = *fno.lfname ? fno.lfname : fno.fname;
+			#ifdef __POINTER_FILES__
+            fnxx = *fnoxx.lfname ? fnoxx.lfname : fnoxx.fname;
+            #endif
+            
+            #ifdef __ARRAY__
+				if (*fnoxx.lfname!=NULL) {
+					strcpy(fnxx,fnoxx.lfname);
+				} else {
+					strcpy(fnxx,fnoxx.fname);
+				}
+			#endif
+			
 #else
-            fn = fno.fname;
+			#ifdef __POINTER_FILES__
+            fnxx = fnoxx.fname;
+            #endif
+            
+            #ifdef __ARRAY__
+	            strcpy(fnxx,fnoxx.fname);
+            #endif
 #endif
-            if (fno.fattrib & AM_DIR) {
-                sprintf(&path[i], "\\%s", fn);
-                res = cari_files(path, aksi);
-                if (res != FR_OK) break;
-                path[i] = 0;
+			sprintf(abs_pathxx, "%s\\%s", pathxx, fnxx);
+			#ifdef PAKAI_GSM_FTP
+				if (strcmp(aksi,"kirim_ftp")==0) {
+					kirim_file_ke_ftp(abs_pathxx, fnxx);
+				} else if (strcmp(aksi,"hapus")==0) {
+					i=dihapus(abs_pathxx);
+					if (i==0) {
+						printf("%s dihapus\r\n", abs_pathxx);
+					} else {
+						printf("%s GAGAL dihapus\r\n", abs_pathxx);
+					}
+				} else {
+					printf("%s\\%s\r\n", pathxx, fnxx);
+				}
+			#endif
+			printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+			
+			/*
+            if (fnoxx.fattrib & AM_DIR) {
+                sprintf(&pathxx[i], "\\%s", fnxx);
+                resxx = cari_files(pathxx, aksi);
+                if (resxx != FR_OK) break;
+                pathxx[i] = 0;
             } else {
 				if (strcmp(aksi,"kirim_ftp")==0) {
-					sprintf(abs_path, "%s\\%s", path, fn);
+					sprintf(abs_pathxx, "%s\\%s", pathxx, fnxx);
 					#ifdef PAKAI_GSM_FTP
-					kirim_file_ke_ftp(abs_path, fn);
+					kirim_file_ke_ftp(abs_pathxx, fnxx);
 					#endif
-					printf("kirim_ftpnya nama file: %s  %s\r\n", abs_path, fn);
+					printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
 				} else
-	                printf("%s\\%s\r\n", path, fn);
+	                printf("%s\\%s\r\n", pathxx, fnxx);
             }
+            //*/
+            vTaskDelay(10);
         }
     }
 
-    return res;
+    //return resxx;
+    return 1;
 }
 
 int cari_doku(int argc, char **argv) {
 	display_args(argc,argv);
 	printf("Jml arg: %d\r\n", argc);
-	if (argc<2) {
+	if (argc<1) {
 		printf("Argumen kurang.\r\n");
 		printf("cari [x-y: H-3 | J-1] [aksinya: ftp | lihat]\r\n");
 		return -1;
@@ -696,9 +752,16 @@ int cari_doku(int argc, char **argv) {
 		printf("Contoh : H-7, J-2, B-1\r\n");
 		return -1;
 	}
-
+	
+	if (argc==2) {
+		cari_berkas(str_doku, "lihat");
+		return 1;
+	}
+	
 	if (strcmp(argv[2], "ftp") == 0) {
 		#ifdef PAKAI_GSM_FTP
+			gsm_ftp();
+		/*
 			if (konek_ftp_awal()==0) 	{
 				printf("Koneksi GPRS gagal !!!\r\n");
 				printf("Create FTP sesssion error !\r\n");
@@ -709,6 +772,7 @@ int cari_doku(int argc, char **argv) {
 			
 			cari_berkas(str_doku, "kirim_ftp");			
 			tutup_koneksi_ftp();
+		//*/
 		#else
 			printf("tidak ada #define PAKAI_GSM_FTP\r\n");
 		#endif
@@ -749,30 +813,27 @@ int cari_berkas(char *str_doku, char *aksi) {
 		return -1;
 	}
 	
-	char path[127];
+	char path_bk[127];
 	char *pch, str[10], waktu[10], aksinya[20];
 	int i=0;
 	strcpy(waktu,str_doku);
 	strcpy(aksinya, aksi);
-	//printf("Awalnya posisi: %s\r\n",waktu);
-	
 	
 	pch=strstr(waktu,"-");
   	if (pch!=NULL)
   		strcpy(str, pch+1);
-	//printf("______aksinya: %s, waktu: %s, str: %s_________\r\n\r\n", aksinya, waktu, str);
-	//*
+
   	for(i=atoi(str); i>0; i--) {
 		sprintf(waktu, "%c-%d", waktu[0],i);
-		cari_waktu(path, waktu);
-		//printf("_______________path: %s\r\n",path);
-		cari_files(path, aksinya);
+		cari_waktu(path_bk, waktu);
+		printf("_______________path: %s\r\n",path_bk);
+		cari_files(path_bk, aksinya);
 	}
 	
 	//*/
 }
 
-static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_SENDED,0,0,0};
+static tinysh_cmd_t del_direktori_cmd={0,"rm","hapus file","", hapus_paksa,0,0,0};
 
 static tinysh_cmd_t cari_doku_cmd={0,"cari","cari file","", cari_doku,0,0,0};
 

@@ -277,9 +277,9 @@ unsigned char get_cid_csd(void)
 		for (t=0; t<18; t++)	{
 			raw_csd[t] = ambil_word_mmc();
 		}
-		
-		uncs_mmc();
-		
+	
+	uncs_mmc();
+	vTaskDelay(5);	
 	csd.mmca_vsn = (raw_csd[0] & 0x3c) >> 2;
 	csd.cmdclass = (((unsigned short)raw_csd[4]) << 4) | ((raw_csd[5] & 0xf0) >> 4);
 	csd.tacc_clks = raw_csd[1];
@@ -287,11 +287,12 @@ unsigned char get_cid_csd(void)
 	csd.max_dtr = raw_csd[3];
 	csd.read_blkbits = raw_csd[5] & 0x0f;
 	
+	
 	// for calculating capacity(in blocks)
 	c_size = ((((unsigned short)raw_csd[6]) & 0x03) << 10) | (((unsigned short)raw_csd[7]) << 2) | (((unsigned short)raw_csd[8]) & 0xc0) >> 6;
 	c_size_mult = ((raw_csd[9] & 0x03) << 1) | ((raw_csd[10] & 0x80) >> 7);
 	csd.capacity = (c_size+1) * (1 << (c_size_mult + 2));
-	
+	vTaskDelay(5);
 	printf("\n MMC total sektor = %d", csd.capacity);
 	
 	// for printing capacity in bytes
@@ -306,6 +307,11 @@ unsigned char get_cid_csd(void)
 		sprintf(tek," MMC : %dM : %s Rev: %d.%d : %d/%d", cap/(1024*1024), cid.prod_name, cid.hwrev, cid.fwrev, cid.year, cid.month);
 		sprintf(tek, "Serial : 0x%x : %d : %d MHz", cid.serial, (unsigned int)pow(2, read_bl_len), csd.max_dtr);
 		*/
+	//if (cid.serial!=0)
+	//		masuk=1;
+			
+	//	}
+	
 	}
 	
 	struct t_env *p_env;
@@ -315,6 +321,7 @@ unsigned char get_cid_csd(void)
 	//env2.mmc_serial = cid.serial;
 	p_env->mmc_serial = cid.serial;
 	uncs_mmc();
+		
 	
 	return 0;
 	//sti(mask_d);
@@ -389,6 +396,7 @@ short tes_mmc_awal(void)	{
    	komand_mmc(0x00, 0x00, 0x95); 
   	while(1)
    	{
+   		//for (t = 0; t < 20; t++)
    		for (t = 0; t < 20; t++)
    		{
    			resp_mmc = mmc_respon2();

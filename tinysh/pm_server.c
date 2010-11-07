@@ -14,7 +14,7 @@
 #ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	100
-#define  LIAT
+//#define  LIAT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"

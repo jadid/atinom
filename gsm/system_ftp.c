@@ -307,6 +307,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==70)	return flag;
 	
+	sleep(1);
 	flag=80;		// FTP
 	for (oz=0; oz<20; oz++) {
 		if (flag == 80) {
@@ -648,19 +649,35 @@ int stop_gprs(void) {
 	
 	baca_serial(str_ftp, 20, 10);
 	
-	if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
-		printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-		return -1;
-	}	
-	
-	if (strncmp(str_ftp, "OK", 2) == 0)	{
-		printf(" %s(): OK\r\n", __FUNCTION__);
-		return 0;
-	}
-	else	{
-		printf(str_ftp);
-		printf(" %s(): ERR ??\r\n", __FUNCTION__);
-		return -1;
+	if (strncmp(str_ftp, "AT+", 3) == 0) {		// ambil lagi datanya
+		baca_serial(str_ftp, 20, 20);
+		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}	
+		
+		if (strncmp(str_ftp, "OK", 2) == 0)	{
+			printf(" %s(): OK\r\n", __FUNCTION__);
+			return 0;
+		}
+		else	{
+			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}
+	} else {
+		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}	
+		
+		if (strncmp(str_ftp, "OK", 2) == 0)	{
+			printf(" %s(): OK\r\n", __FUNCTION__);
+			return 0;
+		}
+		else	{
+			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}
 	}
 }
 
@@ -678,18 +695,35 @@ int create_ftp_sess(void) {
 	// timeout 10 menit jika koneksi buruk //
 	baca_serial(str_ftp, 20, 120);
 	
-	if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	 {
-		printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-		return -1;
-	}	
-	
-	if (strncmp(str_ftp, "OK", 2) == 0) {
-		printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
-		return 0;
-	}
-	else	{
-		printf(" %s(): ERR ??\r\n", __FUNCTION__);
-		return -1;
+	if (strncmp(str_ftp, "AT+", 3) == 0) {		// ambil lagi datanya
+		baca_serial(str_ftp, 20, 20);
+		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}	
+		
+		if (strncmp(str_ftp, "OK", 2) == 0)	{
+			printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
+			return 0;
+		}
+		else	{
+			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}
+	} else {
+		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}	
+		
+		if (strncmp(str_ftp, "OK", 2) == 0)	{
+			printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
+			return 0;
+		}
+		else	{
+			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}
 	}
 }
 //*/
@@ -698,25 +732,41 @@ int upload_file(char *nama_file) {
 	//struct t_gsm_ftp *p_dt;
 	//p_dt = (char *) ALMT_GSM_FTP;
 	//printf("Nama file upload_file(): %s", nama_file);
-	sprintf(str_ftp, "AT+WIPFILE=4,1,2,\"%s.xls\"\r\n", nama_file);
+	sprintf(str_ftp, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", nama_file);
 	//printf(str_ftp);
 	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
 	serX_putstring(PAKAI_GSM_FTP, str_ftp);
 	
 	baca_serial(str_ftp, 20, 20);
-	
-	if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
-		printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-		return -1;
-	}	
-	
-	if (strncmp(str_ftp, "CONNECT", 6) == 0)	{
-		printf(" %s(): CONNECT OK\r\n", __FUNCTION__);
-		return 0;
-	}
-	else	{
-		printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
-		return -1;
+	if (strncmp(str_ftp, "AT+", 3) == 0) {		// ambil lagi datanya
+		baca_serial(str_ftp, 20, 20);
+		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}	
+		
+		if (strncmp(str_ftp, "CONNECT", 6) == 0)	{
+			printf(" %s(): CONNECT OK\r\n", __FUNCTION__);
+			return 0;
+		}
+		else	{
+			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}
+	} else {
+		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
+			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}	
+		
+		if (strncmp(str_ftp, "CONNECT", 6) == 0)	{
+			printf(" %s(): CONNECT OK\r\n", __FUNCTION__);
+			return 0;
+		}
+		else	{
+			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
+			return -1;
+		}
 	}
 }
 

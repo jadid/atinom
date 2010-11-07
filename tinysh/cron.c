@@ -211,6 +211,11 @@ void baca_cron() {
 							printf(".......................MATI %d\r\n", p_dt[hitung].alamat);
 						#endif
 					}
+				} else if (strcmp(p_dt[hitung].cmd,"reset")==0) {
+					printf("reset relay 1");
+					unset_selenoid(1);
+					vTaskDelay(1000);
+					set_selenoid(1);
 				}
 				#endif
 				
@@ -423,7 +428,7 @@ int set_cron(int argc, char **argv)
 		}
 		
 		sprintf(str_cron, "%s", argv[6]);			// cmd
-		if( (strcmp(str_cron, "list") == 0) || (strcmp(str_cron, "relay") == 0) || (strcmp(str_cron, "ftp") == 0) || (strcmp(str_cron, "hapus") == 0)  || (strcmp(str_cron, "cek") == 0) ) {
+		if( (strcmp(str_cron, "reset") == 0) || (strcmp(str_cron, "list") == 0) || (strcmp(str_cron, "relay") == 0) || (strcmp(str_cron, "ftp") == 0) || (strcmp(str_cron, "hapus") == 0)  || (strcmp(str_cron, "cek") == 0) ) {
 			sprintf(p_gr[sumb-1].cmd, argv[6]);
 		} else {
 			printf("Input perintah/COMMAND salah !\r\n");

@@ -253,7 +253,7 @@ void togle_led_utama(void)
 		}
 		
 		#if (PAKAI_SELENOID == 1)
-		//set_selenoid( 1 );
+		set_selenoid( 1 );
 		#endif
 	
 	}

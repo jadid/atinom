@@ -231,7 +231,8 @@ void baca_cron() {
 					if (status_modem==1)		// biar nggak konflik baca file
 						return;
 					printf("......HAPUS file J-12\r\n");			
-					cari_berkas("J-12", "lihat");
+					//cari_berkas("J-12", "lihat");
+					cari_berkas("J-12","hapus");
 					vTaskDelay(100);
 					
 				}

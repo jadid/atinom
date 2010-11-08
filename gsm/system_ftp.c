@@ -49,6 +49,10 @@ int gsm_ftp()	{
 	
 	int fff=0;
 	
+	files=0;
+	file_sudah=0;
+	file_sukses=0;
+	
 	fff=konek_ftp_awal();
 	if (fff!=90) {
 		printf("Koneksi GPRS gagal !!!\r\n");
@@ -59,7 +63,7 @@ int gsm_ftp()	{
 		printf("Create FTP sesssion !\r\n");
 	}
 
-	cari_berkas("J-12", "kirim_ftp");
+	cari_berkas("J-3", "kirim_ftp");
 	
 	//printf("path: %s\r\n", path);	
 	sleep(1);
@@ -71,6 +75,8 @@ int gsm_ftp()	{
 }
 
 int kirim_file_ke_ftp(char *abs_path, char *nf) {
+	char posisifile[128];
+	char namafile[32];
 	int c, res, i, flag, oz;
 	unsigned int size;
 //	unsigned int files;
@@ -83,47 +89,54 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	time_t timeval;
 	struct tm tw;
 	
-	if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE)) {
+	sprintf(posisifile, "%s", abs_path);
+	sprintf(namafile, "%s", nf);
+	//printf("filenya: %s, nama: %s\r\n", posisifile, namafile);
+	if (res = f_open(&fd2, posisifile, FA_READ | FA_WRITE)) {
 		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, res);					
 		return 0;
 	}
 	
 	f_lseek( &fd2, fd2.fsize - 6 );
-	f_read( &fd2, abs_path, 6, &res);
-	printf("___mo dikirim, CEK %s @@@\r\n", abs_path);
+	f_read( &fd2, posisifile, 6, &res);
+	//printf("___mo dikirim, CEK %s @@@, nf: %s\r\n", posisifile, namafile);
 	files++;
-	if (strncmp( abs_path, "SENDED", 6) == 0)  {
-		printf("file %s sudah dikirim !\r\n", abs_path);
+	if (strncmp( posisifile, "SENDED", 6) == 0)  {
+		printf("file %s sudah dikirim !\r\n", posisifile);
 			file_sudah++;
 	}
 	else	{
 		f_lseek( &fd2, 0);				// kembalikan pointer //
 
 		flag=55;
-		if (upload_file(nf)==0) {
+		/*
+		if (upload_file(namafile)==0) {
 			flag = 77;
 		}
-		/*
-		for (oz=0; oz<10; oz++) {
-			printf("...........file: %s\r\n",nf);
-			if (upload_file(nf)==0) {
-				flag = 77;
-				continue;
-				//goto LANJUT_KIRIM;
+		//*/
+		//*
+		vTaskDelay(500);
+		for (oz=0; oz<20; oz++) {
+			//printf("...........file: %s\r\n",nf);
+			if (flag == 55) {
+				vTaskDelay(10);
+				if (upload_file(namafile)==0) {
+					flag = 77;
+					//continue;
+				}
 			}
-			vTaskDelay(10);
 		}
 		//*/
 		//LANJUT_KIRIM:
 		if (flag==77)		{
 						//upload_data_file("AAAAAAAAABBBBBBBB");
-			size = sizeof (abs_path);
+			size = sizeof (posisifile);
 			for (;;)	{
-				f_read( &fd2, abs_path, size, &res);
+				f_read( &fd2, posisifile, size, &res);
 							
 				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
-					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 1000);
+					serX_putchar(PAKAI_GSM_FTP, &posisifile[i], 1000);
 				}	
 		
 				if ( res < size ) break; 
@@ -148,15 +161,15 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			}
 			
 			// tulis SENDED pada akhir file //
-			sprintf(abs_path, "%s", ctime( &timeval ));	
-			sprintf( &abs_path[24], "SENDED");	
-			printf("TULIS %s \r\n", abs_path);
+			sprintf(posisifile, "%s", ctime( &timeval ));	
+			sprintf( &posisifile[24], "SENDED");	
+			printf("TULIS %s \r\n", posisifile);
 									
-			f_write( &fd2, abs_path, strlen(abs_path), &res);
+			f_write( &fd2, posisifile, strlen(posisifile), &res);
 			file_sukses++;
 		}
 		else	{
-			printf("Upload %s file ERROR !\r\n", nama);
+			printf("Upload %s file ERROR !\r\n", namafile);
 			//break;
 		}
 	}
@@ -430,9 +443,12 @@ int cek_awal(void) {
 		printf(" OK modem sudah siap\r\n");
 		return 0;
 	}
-	else
+	else {
 		printf(" Entah kenapa !\r\n");
-	
+		unset_selenoid(1);
+		vTaskDelay(1000);
+		set_selenoid(1);
+	}
 	return -1;
 }
 
@@ -728,12 +744,11 @@ int create_ftp_sess(void) {
 }
 //*/
 int upload_file(char *nama_file) {
-
-	//struct t_gsm_ftp *p_dt;
-	//p_dt = (char *) ALMT_GSM_FTP;
-	//printf("Nama file upload_file(): %s", nama_file);
-	sprintf(str_ftp, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", nama_file);
-	//printf(str_ftp);
+	char namafile[32];
+	
+	sprintf(namafile, "%s", nama_file);
+	sprintf(str_ftp, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", namafile);
+	printf(str_ftp);
 	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
 	serX_putstring(PAKAI_GSM_FTP, str_ftp);
 	

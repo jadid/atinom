@@ -427,8 +427,11 @@ int hapus_SENDED() {
 int dihapus(char *nama) {
 	FRESULT res;
 	int flag=10;
-	printf("________________NAMANYA : %s",nama);
-	res = f_unlink(nama);
+	char namanya[64];
+	
+	sprintf(namanya, "%s", nama);
+	printf("________________NAMANYA : %s",namanya);
+	res = f_unlink(namanya);
 	if (res == FR_OK) {
 		printf("......dihapus\r\n");
 		return 0;
@@ -710,7 +713,7 @@ int cari_files (char* pathxx, char *aksi) {
 					printf("%s\\%s\r\n", pathxx, fnxx);
 				}
 			#endif
-			printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+			//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
 			
 			/*
             if (fnoxx.fattrib & AM_DIR) {
@@ -826,7 +829,7 @@ int cari_berkas(char *str_doku, char *aksi) {
   	for(i=atoi(str); i>0; i--) {
 		sprintf(waktu, "%c-%d", waktu[0],i);
 		cari_waktu(path_bk, waktu);
-		printf("_______________path: %s\r\n",path_bk);
+		//printf("_______________path: %s\r\n",path_bk);
 		cari_files(path_bk, aksinya);
 	}
 	

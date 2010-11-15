@@ -231,9 +231,10 @@ struct t_sumber {
 	unsigned char IP1;
 	unsigned char IP2;
 	unsigned char IP3;
-	char modul;			// khusus modbus, jenis modul 0: PM, 1: KTA, 2:????, dst
+	//char modul;			// khusus modbus, jenis modul 0: PM, 1: KTA, 2:????, dst
 	char stack;			// jika modul berisi BANYAK_SUMBER : adc, pm, dll
 	char status;		// tidak aktif, timeout, dll
+	char tipe;			// 0:PM_710, 1:PM_810, 2:KTA
 };
 
 /*

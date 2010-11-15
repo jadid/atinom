@@ -785,28 +785,6 @@ int cari_doku(int argc, char **argv) {
 		printf("Perintah salah\r\n");
 		printf("cari [x-y: H-3 | J-1] [aksinya: ftp | lihat]\r\n");
 	}
-/*	
-	char path[127];
-	char *pch, str[10];
-	int i=0;
-	sprintf(buf, "%s", argv[1]);
-	printf("Awalnya posisi: %s\r\n",buf);
-	
-	pch=strstr(buf,"-");
-  	if (pch!=NULL)
-  		strcpy(str, pch+1);
-
-  	for(i=atoi(str); i>0; i--) {
-		sprintf(buf, "%c-%d", buf[0],i);
-		cari_waktu(path, buf);
-		//printf("_____________--path: %s\r\n",path);
-		cari_files(path);
-	}
-//*/
-  	//printf("isi: %d\r\n", atoi(str));
-	//	cari_waktu(path, buf);
-	//	printf("Path: %s\r\n", path);
-	//cari_files(path);
 }
 
 int cari_berkas(char *str_doku, char *aksi) {

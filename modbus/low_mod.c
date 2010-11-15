@@ -406,7 +406,7 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 #endif
 
 #ifdef TIPE_PM710
-void taruh_data(int no_slave, int urt)	{
+void taruh_data_710(int no_slave, int urt)	{
 	short satuan_t;
 	int i;
 	/*
@@ -745,7 +745,7 @@ void taruh_data(int no_slave, int urt)	{
 
 
 #ifdef TIPE_PM810
-	void taruh_data(int pm_dibaca, int urt) {
+	void taruh_data_810(int pm_dibaca, int urt) {
 		short satuan_t;
 		int i;
 		unsigned int temp;

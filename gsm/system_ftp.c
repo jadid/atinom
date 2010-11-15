@@ -79,9 +79,6 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	char namafile[32];
 	int c, res, i, flag, oz;
 	unsigned int size;
-//	unsigned int files;
-//	unsigned int file_sudah=0;
-//	unsigned int file_sukses=0;
 	unsigned int jum_dirs;
 	FILINFO fileInfo;
 	char *nama;
@@ -109,27 +106,18 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		f_lseek( &fd2, 0);				// kembalikan pointer //
 
 		flag=55;
-		/*
-		if (upload_file(namafile)==0) {
-			flag = 77;
-		}
-		//*/
 		//*
-		vTaskDelay(500);
+		//vTaskDelay(500);
 		for (oz=0; oz<20; oz++) {
-			//printf("...........file: %s\r\n",nf);
 			if (flag == 55) {
 				vTaskDelay(10);
 				if (upload_file(namafile)==0) {
 					flag = 77;
-					//continue;
 				}
 			}
 		}
-		//*/
-		//LANJUT_KIRIM:
+
 		if (flag==77)		{
-						//upload_data_file("AAAAAAAAABBBBBBBB");
 			size = sizeof (posisifile);
 			for (;;)	{
 				f_read( &fd2, posisifile, size, &res);
@@ -148,7 +136,6 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 				if ( flag == 0) {
 					printf("...........send ETX   %d, flag: %d\r\n", oz+1, flag);
 					if (send_etx() == 0) {
-					//if (TRUE) {
 						flag = 1;
 						continue;
 					}

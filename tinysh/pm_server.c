@@ -53,6 +53,9 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	int i,j, k;
 	char *st;
 	int timeout=0;
+	
+	struct t_sumber *pmx;
+	pmx = (char *) ALMT_SUMBER;
 
 	konting2++;
 	k=0;
@@ -61,17 +64,17 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	
 	#ifdef TIPE_PM710
 	if (urut_PM710 == 0)	{
-	   jum_balik = get_PM710(alamatPM, reg_satuan, 4);
+	   jum_balik = get_PM710(alamatPM, reg_satuan_710, 4);
 	} else if (urut_PM710 == 1)	{
-	   jum_balik = get_PM710(alamatPM, reg_kva, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
+	   jum_balik = get_PM710(alamatPM, reg_kva_710, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
 	} else if (urut_PM710 == 2)	{
-	   jum_balik = get_PM710(alamatPM, reg_ampA, 4); //ampA, B, C & N								// 4020
+	   jum_balik = get_PM710(alamatPM, reg_ampA_710, 4); //ampA, B, C & N								// 4020
 	} else if (urut_PM710 == 3) {
-	   jum_balik = get_PM710(alamatPM, reg_voltA_C, 6); //voltA_B, VB_C, VA_C, VA_N, VB_N, VC_N, P_A, P_B, P_C	// 4030
+	   jum_balik = get_PM710(alamatPM, reg_voltA_C_710, 6); //voltA_B, VB_C, VA_C, VA_N, VB_N, VC_N, P_A, P_B, P_C	// 4030
 	} else if (urut_PM710 == 4)	{
-	   jum_balik = get_PM710(alamatPM, reg_kwh, 6);  //kWh, kVAh, & kVArh		// 4000
+	   jum_balik = get_PM710(alamatPM, reg_kwh_710, 6);  //kWh, kVAh, & kVArh		// 4000
 	} else if (urut_PM710 == 5)	{
-	   jum_balik = get_PM710(alamatPM, reg_kwA, 9);  //kW_A, kW_B, kW_C, kva_A, kva_B, kva_C, kVAr_A, kVAr_B, kVAr_C		// 4000
+	   jum_balik = get_PM710(alamatPM, reg_kwA_710, 9);  //kW_A, kW_B, kW_C, kva_A, kva_B, kva_C, kVAr_A, kVAr_B, kVAr_C		// 4000
 /*
 	} else if (urut_PM710 == 5) {
 		#ifdef PAKAI_KTA
@@ -87,21 +90,21 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	
 	#ifdef TIPE_PM810
 		if (urut_PM710==0)    {
-   	    	jum_balik = get_PM710(alamatPM, reg_satuan, 6);
+   	    	jum_balik = get_PM710(alamatPM, reg_satuan_810, 6);
    	    } else if (urut_PM710==1)		{
-     		jum_balik = get_PM710(alamatPM, meter_current, 6);  //Current A, B, C, N, - , & ave
+     		jum_balik = get_PM710(alamatPM, meter_current_810, 6);  //Current A, B, C, N, - , & ave
    		} else if (urut_PM710==2)		{
-     	    jum_balik = get_PM710(alamatPM, meter_voltage, 9);  //Voltage A-B, B-C, C-A, L-L, A-N, B-N, C-N , L-N
+     	    jum_balik = get_PM710(alamatPM, meter_voltage_810, 9);  //Voltage A-B, B-C, C-A, L-L, A-N, B-N, C-N , L-N
    		} else if (urut_PM710==3)		{
-     	    jum_balik = get_PM710(alamatPM, meter_power, 12); // kwA, kwB, kwC, kW, kvarA, kvarB, kvarC, kvar, kvaA, kvaB, kvaC, kva
+     	    jum_balik = get_PM710(alamatPM, meter_power_810, 12); // kwA, kwB, kwC, kW, kvarA, kvarB, kvarC, kvar, kvaA, kvaB, kvaC, kva
    		} else if (urut_PM710==4)		{
-     	    jum_balik = get_PM710(alamatPM, meter_faktor, 4);   //pfA, pfB, pfC, pf
+     	    jum_balik = get_PM710(alamatPM, meter_faktor_810, 4);   //pfA, pfB, pfC, pf
    		} else if (urut_PM710==5)		{
-     	    jum_balik = get_PM710(alamatPM, reg_frek, 1); //Hz
+     	    jum_balik = get_PM710(alamatPM, reg_frek_810, 1); //Hz
    		} else if (urut_PM710==6)		{
-   		   jum_balik = get_PM710(alamatPM, meter_energi2, 8);
+   		   jum_balik = get_PM710(alamatPM, meter_energi2_810, 8);
    		} else if (urut_PM710==7)		{
-   		   jum_balik = get_PM710(alamatPM, meter_energi_vah, 8);
+   		   jum_balik = get_PM710(alamatPM, meter_energi_vah_810, 8);
    		}
 
 	#endif
@@ -184,8 +187,11 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		printf("\r\n");
 	}
 	//*/
-	
-	taruh_data(no, urut_PM710);
+	if (pmx[no].tipe==0)	{	// 710
+		taruh_data_710(no, urut_PM710);
+	} else if (pmx[no].tipe==1) {
+		taruh_data_810(no, urut_PM710);
+	}
 	/*
 	// simpan data //
 	for (i=0; i<JML_SUMBER; i++) {
@@ -216,9 +222,18 @@ void ambil_pm(int k) {
 	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
 	int i=0;
-
+	
+	int req;
+	if (pmx[k].tipe==0) {				// PM710
+		req = 6;
+	} else if (pmx[k].tipe==1) {		// PM810
+		req = 8;
+	}
+		
+	
 	//printf("Ambil data Power Meter ke-%d\r\n", k);
-	while(i<JML_REQ_PM) {
+	//while(i<JML_REQ_PM) {
+	while(i<req) {
 		vTaskDelay(2);			// MIN: 2
 		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
@@ -273,7 +288,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 			//printf("k: %d, alamat: %d\r\n", k, alamatClient);
 			if (pmx[k].status==1) {
 				#ifdef PAKAI_PM
-				if (pmx[k].modul==0) {		// 0: ambil power meter
+				if (pmx[k].tipe==0 || pmx[k].tipe==1) {		// 0: ambil power meter
 					ambil_pm(k);
 				}
 				#endif

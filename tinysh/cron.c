@@ -201,18 +201,18 @@ void baca_cron() {
 						data_f[(PER_SUMBER*JML_SUMBER)+p_dt[hitung].alamat] = 1;
 						#ifdef DEBUG_DATA
 							//set_selenoid(2);
-							printf("...................................NYALA %d\r\n", p_dt[hitung].alamat);
+							printf(".......NYALA %d\r\n", p_dt[hitung].alamat);
 						#endif
 					} else {
 						unset_selenoid((uint)p_dt[hitung].alamat);
 						data_f[(PER_SUMBER*JML_SUMBER)+p_dt[hitung].alamat] = 0;
 						#ifdef DEBUG_DATA
 							//unset_selenoid(2);
-							printf(".......................MATI %d\r\n", p_dt[hitung].alamat);
+							printf(".......MATI %d\r\n", p_dt[hitung].alamat);
 						#endif
 					}
 				} else if (strcmp(p_dt[hitung].cmd,"reset")==0) {
-					printf("reset relay 1");
+					printf("reset relay 1\r\n");
 					unset_selenoid(1);
 					vTaskDelay(1000);
 					set_selenoid(1);
@@ -221,8 +221,9 @@ void baca_cron() {
 				
 				#ifdef PAKAI_GSM_FTP
 				if (strcmp(p_dt[hitung].cmd,"ftp")==0) {
-					saat_gsm_aksi=1;
+					//saat_gsm_aksi=1;
 					printf("......KIRIM ftp\r\n");
+					gsm_ftp();
 				}
 				#endif
 				
@@ -234,7 +235,6 @@ void baca_cron() {
 					//cari_berkas("J-12", "lihat");
 					cari_berkas("J-12","hapus");
 					vTaskDelay(100);
-					
 				}
 				
 				if (strcmp(p_dt[hitung].cmd,"list")==0) {

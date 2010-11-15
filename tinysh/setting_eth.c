@@ -48,7 +48,7 @@ void cek_konfig(int argc, char **argv)	{
 				}
 
 				#ifdef PAKAI_PM
-				if (p_sbr[j].modul==0) {		// modul Power Meter
+				if (p_sbr[j].tipe==0) {		// modul Power Meter
 					if (j==JML_SUMBER) {
 						printf("Alamat PM tidak ditemukan\r\n");
 						return;
@@ -122,7 +122,7 @@ void cek_konfig(int argc, char **argv)	{
 	#ifdef BOARD_KOMON_420_SABANG
 	if (t>0) {
 		#ifdef PAKAI_PM
-			if (p_sbr[j-1].modul==0) {	// Power Meter
+			if (p_sbr[j-1].tipe==0 || p_sbr[j-1].tipe==1) {	// Power Meter 0:PM710, 1:PM810
 				for (i=0; i<PER_SUMBER; i++)	{
 					printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
 					// status //
@@ -156,7 +156,7 @@ void cek_konfig(int argc, char **argv)	{
 			}
 		} else if (p_sbr[j-1].alamat>0) {	// Modul Modbus
 			#ifdef PAKAI_PM
-			if (p_sbr[j-1].modul==0) {	// Power Meter
+			if (p_sbr[j-1].tipe==0 || p_sbr[j-1].tipe==1) {	// Power Meter
 				for (i=0; i<PER_SUMBER; i++)	{
 					printf(" (%2d): %4d : %-16s : ", (((j-1)*PER_SUMBER)+i+1), konfig[(j-1)*PER_SUMBER+i].id, judulnya_pm[i]);
 					// status //

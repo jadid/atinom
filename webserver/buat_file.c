@@ -679,7 +679,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 	}
 
 #ifdef PAKAI_PM
-	else if (pmx[no].modul==0) {		// Power Meter
+	else if (pmx[no].tipe==0 || pmx[no].tipe==1) {		// Power Meter
 		for (i=0; i< PER_SUMBER; i++)	{
 			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
 			strcat(tot_buf, head_buf);
@@ -1066,7 +1066,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 				}
 			}
 			#ifdef PAKAI_PM
-			else if (pmx[no].modul==0) {
+			else if (pmx[no].tipe==0 || pmx[no].tipe==1) {
 				for (i=0; i<PER_SUMBER; i++) {
 					sprintf(head_buf, "<tr><form action=\"setting.html\">" \
 									"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 

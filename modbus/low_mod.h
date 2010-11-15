@@ -31,53 +31,53 @@
 //#define TIPE_PM810
 
 #ifdef TIPE_PM710
-#define JML_REQ_PM	6
-#define reg_test	7006
+//#define JML_REQ_PM	6
+#define reg_test_710	7006
 //#define reg_kwh   1000     // 2 register		//harusnya 4000
-#define reg_kwh   4001     // 2 register		//harusnya 4000
-#define reg_kvah  4002     // 2 register
-#define reg_kvarh  4004    // 2 reactive energy consumption
-#define reg_kw    4006     // total real power
-#define reg_kva   4007     // total apparent power
-#define reg_kvar  4008     // total reactive power
-#define reg_pf    4009     // total power faktor
-#define reg_volt1 4010     // voltage L-L, ave of 3 phase
-#define reg_volt2  4011    // voltage L-N, ave of 3 phase
-#define reg_amp   4012     // average 3 phase
-#define reg_frek  4013
-#define reg_ampA  4020
+#define reg_kwh_710   4001     // 2 register		//harusnya 4000
+#define reg_kvah_710  4002     // 2 register
+#define reg_kvarh_710  4004    // 2 reactive energy consumption
+#define reg_kw_710    4006     // total real power
+#define reg_kva_710   4007     // total apparent power
+#define reg_kvar_710  4008     // total reactive power
+#define reg_pf_710    4009     // total power faktor
+#define reg_volt1_710 4010     // voltage L-L, ave of 3 phase
+#define reg_volt2_710  4011    // voltage L-N, ave of 3 phase
+#define reg_amp_710   4012     // average 3 phase
+#define reg_frek_710  4013
+#define reg_ampA_710  4020
 #define meter_current reg_ampA
-#define reg_voltA_C  4030
-#define reg_kwA  4036
+#define reg_voltA_C_710  4030
+#define reg_kwA_710  4036
 
-#define reg_frek_f	1000
+#define reg_frek_f_710	1000
 
-#define reg_satuan 	4105
+#define reg_satuan_710 	4105
 //#define reg_satuan 	1
-#define reg_speed 	7006
+#define reg_speed_710 	7006
 
-#define meter_voltage	4010
-#define meter_voltage2	4011
-#define meter_power		4006
-#define meter_faktor	4009
-#define meter_energi2	4000
-#define meter_energi_vah	4002
+#define meter_voltage_710	4010
+#define meter_voltage2_710	4011
+#define meter_power_710		4006
+#define meter_faktor_710	4009
+#define meter_energi2_710	4000
+#define meter_energi_vah_710	4002
 
 #endif // tipe_PM710
 
 #ifdef TIPE_PM810
-#define JML_REQ_PM	8
-#define meter_current   1100		// 
-#define meter_voltage   1120
-#define meter_power     1140
-#define meter_faktor    1160
-#define meter_energi2    1701    //harusnya 1700
-#define reg_frek        1180
-#define meter_energi_vah 1725    //harusnya 1724
+//#define JML_REQ_PM	8
+#define meter_current_810   1100		// 
+#define meter_voltage_810   1120
+#define meter_power_810     1140
+#define meter_faktor_810    1160
+#define meter_energi2_810    1701    //harusnya 1700
+#define reg_frek_810        1180
+#define meter_energi_vah_810 1725    //harusnya 1724
 
-#define reg_kwh   4000     // 2 register
+#define reg_kwh_810   4000     // 2 register
 
-#define reg_satuan      3209
+#define reg_satuan_810      3209
 
 #endif //TIPE_PM810
 

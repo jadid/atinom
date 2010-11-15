@@ -40,7 +40,7 @@ void cek_sumber(void)
 	struct t_sumber *sumber;
 	
 	sumber = (char *) ALMT_SUMBER;
-	printf("  No :    Nama    :      IPaddr     : Almt : Stack :     Status\r\n");
+	printf("  No :    Nama    :      IPaddr     : Stack : Almt : Tipe :    Status\r\n");
 
 	for (i=0; i<67; i++)
 		printf("-");
@@ -54,7 +54,18 @@ void cek_sumber(void)
 		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
 		
 		/* alamat */
-		printf("%4d : %5d :", sumber[i].alamat, sumber[i].stack);
+		printf("%5d : %4d : ", sumber[i].stack, sumber[i].alamat);
+		
+		/* tipe */
+		if (sumber[i].tipe==0 && sumber[i].alamat>0) {
+			printf("%-4s :","710");
+		} else if(sumber[i].tipe==1 && sumber[i].alamat>0) {
+			printf("%-4s :","810");
+		} else if(sumber[i].tipe==2 && sumber[i].alamat>0) {
+			printf("%-4s :","KTA");
+		} else {
+			printf("%-4s :","-");
+		}
 		
 		/* status */
 		if (sumber[i].status == 0)
@@ -229,6 +240,27 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
+	else if (strcmp(argv[2], "tipe") == 0)
+	{
+		sprintf(str_sumber, "%s", argv[1]);	
+		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
+		if (sumb > 0)		{
+			printf(" sumber = %d : ", sumb);
+			
+			if ( strcmp(argv[3], "710")==0 || strcmp(argv[3], "0")==0) {
+				p_sbr[sumb-1].tipe = 0;
+			} else if ( strcmp(argv[3], "810")==0 || strcmp(argv[3], "1")==0) 	{
+				p_sbr[sumb-1].tipe = 1;
+			} else if ( strcmp(argv[3], "KTA")==0 || strcmp(argv[3], "2")==0) 	{
+				p_sbr[sumb-1].tipe = 2;
+			} else {
+				p_sbr[sumb-1].tipe = 0;
+			}
+		} else 	{
+			vPortFree( p_sbr );
+			return;
+		}	
+	}
 	else if (strcmp(argv[2], "alamat") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
@@ -337,8 +369,9 @@ void set_awal_sumber(void)
 		sprintf(p_sbr[i].nama, "-");
 		p_sbr[i].alamat = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_sbr[i].status = 0;	
-		p_sbr[i].modul  = 0;	
+		//p_sbr[i].modul  = 0;	
 		p_sbr[i].stack  = 1;
+		p_sbr[i].tipe  = 0;
 		
 		p_sbr[i].IP0 = 192;
 		p_sbr[i].IP1 = 168;

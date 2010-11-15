@@ -68,7 +68,7 @@
 
 #ifdef PAKAI_PM
 	#define BAUD_PM			19200
-	//#define TIPE_PM810
+	#define TIPE_PM810
 	#define TIPE_PM710
 #endif
 

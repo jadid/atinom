@@ -438,6 +438,7 @@ tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",  cek_uptime,0,0,0};
 
 #if defined(BOARD_KOMON_420_SAJA)
 void hitung_datanya() {
+	#ifdef PAKAI_ADC
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
 	float temp;
@@ -453,6 +454,7 @@ void hitung_datanya() {
 				data_f[fx] = 0;		// "Off/Terbuka"
 		}
 	}
+	#endif
 }
 
 void lihat_datanya() {
@@ -479,6 +481,7 @@ static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
 
 #if defined(BOARD_KOMON_420_SABANG)
 void hitung_datanya() {
+	#ifdef PAKAI_ADC
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
 	float temp;
@@ -494,6 +497,7 @@ void hitung_datanya() {
 				data_f[fx] = 0;		// "Off/Terbuka"
 		}
 	}
+	#endif
 }
 
 void lihat_datanya() {
@@ -802,8 +806,9 @@ portTASK_FUNCTION(shell, pvParameters )
 #ifdef PAKAI_ADC
 	tinysh_add_command(&cek_adc_cmd);
 	//tinysh_add_command(&lihat_data_cmd);
-#endif
+
 	tinysh_add_command(&set_kanal_cmd);
+#endif
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO

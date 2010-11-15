@@ -14,7 +14,7 @@
 #ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	100
-//#define  LIAT
+#define  LIAT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
@@ -89,10 +89,13 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	#endif
 	
 	#ifdef TIPE_PM810
+	#ifdef LIAT
+	printf("\r\n___810 ....");
+	#endif
 		if (urut_PM710==0)    {
-   	    	jum_balik = get_PM710(alamatPM, reg_satuan_810, 6);
+   	    	jum_balik = get_PM710(alamatPM, reg_satuan_810, 5);		// 
    	    } else if (urut_PM710==1)		{
-     		jum_balik = get_PM710(alamatPM, meter_current_810, 6);  //Current A, B, C, N, - , & ave
+     		jum_balik = get_PM710(alamatPM, meter_current_810, 5);  //Current A, B, C, N, - , & ave
    		} else if (urut_PM710==2)		{
      	    jum_balik = get_PM710(alamatPM, meter_voltage_810, 9);  //Voltage A-B, B-C, C-A, L-L, A-N, B-N, C-N , L-N
    		} else if (urut_PM710==3)		{
@@ -110,7 +113,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	#endif
 	
 	#ifdef LIAT
-	//printf("___Minta ke PM -%d : %d : ", urut_PM710, sizeof(pmod));
+	printf("___Minta ke PM -%d : %d : \r\n", urut_PM710, sizeof(pmod));
 	#endif
 	
 	st = (char *) &pmod;
@@ -127,8 +130,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	printf("\r\n");
 	#endif
 	
-	//*
-	
+	/*
 	#ifdef LIAT
 	st = (char *) &pmod;
 	for (i=0; i< sizeof(pmod); i++)	{
@@ -136,7 +138,6 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	#endif
 	//*/
-	
 	
 	i=0;
 
@@ -150,11 +151,10 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		#endif 
 
 		{
-			/*
-			if (urut_PM710==4) {
-				printf("%02hX ",buf_rx[i]);
-			}
-			//*/
+			#ifdef LIAT
+			printf("%02hX ",buf_rx[i]);
+			#endif
+	
 			i++;
 			#ifdef PAKAI_MAX485
 				if (i == jum_balik+sizeof(pmod)) break;
@@ -165,7 +165,9 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		}	else	{
 			timeout++;
 			if (timeout > 20)	{
-				//printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				#ifdef LIAT
+				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				#endif
 				break;
 			}
 		}
@@ -188,9 +190,13 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	//*/
 	if (pmx[no].tipe==0)	{	// 710
+	#ifdef TIPE_PM710
 		taruh_data_710(no, urut_PM710);
+	#endif
 	} else if (pmx[no].tipe==1) {
+	#ifdef TIPE_PM810
 		taruh_data_810(no, urut_PM710);
+	#endif
 	}
 	/*
 	// simpan data //
@@ -231,11 +237,11 @@ void ambil_pm(int k) {
 	}
 		
 	
-	//printf("Ambil data Power Meter ke-%d\r\n", k);
+	//printf("Ambil data Power Meter ke-%d / %d\r\n", k+1, req);
 	//while(i<JML_REQ_PM) {
 	while(i<req) {
 		vTaskDelay(2);			// MIN: 2
-		//printf("%s() almt %d, k: %d\r\n", __FUNCTION__, pmx[k].alamat, k);
+		//printf("%s() almt %d, k: %d, i: %d\r\n", __FUNCTION__, pmx[k].alamat, k, i);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;
 	}
@@ -254,11 +260,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	#endif
 	int muternya=0;
 	
-	#ifdef PAKAI_ADC
-		vTaskDelay(300);
-	#else
-		vTaskDelay(1000);
-	#endif
+	vTaskDelay(300);
 	
 	printf("Ambil data Power Meter init !\r\n");
 	// flush RX
@@ -279,7 +281,8 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	serX_putstring(3, "Testing dari serial 3 ...Testing dari serial 3 ...2x...");	
 	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
-		
+	
+	vTaskDelay(1000);
 	for (;;)	{
 		vTaskDelay(20);
 		alamatClient = (int) pmx[k].alamat;

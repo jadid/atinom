@@ -355,13 +355,13 @@ PT_THREAD(handle_input(struct httpd_state *s))
   PSOCK_BEGIN(&s->sin);
 
   PSOCK_READTO(&s->sin, ISO_space);
-	printf("http 1: %s\r\n", s->inputbuf);
+	//printf("http 1: %s\r\n", s->inputbuf);
   if(strncmp(s->inputbuf, http_get, 4) != 0) {
 	
     PSOCK_CLOSE_EXIT(&s->sin);
   }
   PSOCK_READTO(&s->sin, ISO_space);
-  printf("http 2: %s\r\n", s->inputbuf);
+  //printf("http 2: %s\r\n", s->inputbuf);
 
   if(s->inputbuf[0] != ISO_slash) {
     PSOCK_CLOSE_EXIT(&s->sin);

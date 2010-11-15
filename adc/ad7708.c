@@ -14,6 +14,11 @@
 #include "../tinysh/enviro.h"
 //extern struct t_env env2;
 
+#ifndef __AD7708__
+#define __AD7708__
+
+#ifdef PAKAI_ADC
+
 struct t_env *env2;
 //env2 = (char *) ALMT_ENV;
 
@@ -499,3 +504,7 @@ void hitung_data_float(void)
 	}
 #endif
 }
+
+#endif		// #define PAKAI_ADC
+
+#endif		// #define __AD7708__

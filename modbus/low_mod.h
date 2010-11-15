@@ -46,7 +46,7 @@
 #define reg_amp_710   4012     // average 3 phase
 #define reg_frek_710  4013
 #define reg_ampA_710  4020
-#define meter_current reg_ampA
+#define meter_current_710 reg_ampA_710
 #define reg_voltA_C_710  4030
 #define reg_kwA_710  4036
 
@@ -67,17 +67,17 @@
 
 #ifdef TIPE_PM810
 //#define JML_REQ_PM	8
-#define meter_current_810   1100		// 
-#define meter_voltage_810   1120
-#define meter_power_810     1140
-#define meter_faktor_810    1160
-#define meter_energi2_810    1701    //harusnya 1700
-#define reg_frek_810        1180
-#define meter_energi_vah_810 1725    //harusnya 1724
+#define meter_current_810    1100		// 1100
+#define meter_voltage_810    1120		// 1120
+#define meter_power_810      1140		// 1140
+#define meter_faktor_810     1160		// 1160
+#define meter_energi2_810    1701    	// 1700
+#define reg_frek_810         1180	 	// 1180 x
+#define meter_energi_vah_810 1725    	// 1724
 
-#define reg_kwh_810   4000     // 2 register
+//#define reg_kwh_810   4000     // 2 register
 
-#define reg_satuan_810      3209
+#define reg_satuan_810      3210		//3209 x
 
 #endif //TIPE_PM810
 

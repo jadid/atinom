@@ -57,7 +57,8 @@
 #define _printf	printf2
 #define printf	printf2
 
-#define PAKAI_ADC
+#define PAKAI_MULTI_SERIAL
+//#define PAKAI_ADC
 //#define PAKAI_SERIAL_2			// mendefinisikan aktif serial 1
 //#define PAKAI_PM			2		// nyambung ke SERIAL 3
 

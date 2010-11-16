@@ -496,7 +496,7 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_amp[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_amp[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_amp[pm_dibaca] = 10000.0;
-			printf("\r\n__sat amp : %d_____%f\r\n", satuan_t, satuan_amp[pm_dibaca]);
+			//printf("\r\n__sat amp : %d_____%f\r\n", satuan_t, satuan_amp[pm_dibaca]);
 
 			//ampere2 (L-N)
 			satuan_t = buf[5+HD];
@@ -526,7 +526,7 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_volt[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_volt[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_volt[pm_dibaca] = 10000.0;
-			printf("\r\n__satuan_volt : %d_____%f\r\n", satuan_t, satuan_volt[pm_dibaca]);
+			//printf("\r\n__satuan_volt : %d_____%f\r\n", satuan_t, satuan_volt[pm_dibaca]);
 
 			// volt2 (L - N)
 			satuan_t = buf[9+HD];
@@ -556,7 +556,7 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 3) satuan_kw[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_kw[pm_dibaca] = 10000.0;
 
-			printf("\r\n__satuan_kw: %d_____%f\r\n", satuan_t, satuan_kw[pm_dibaca]);
+			//printf("\r\n__satuan_kw: %d_____%f\r\n", satuan_t, satuan_kw[pm_dibaca]);
 			
 			//energy
 			satuan_kwh[pm_dibaca] = 10.00;	

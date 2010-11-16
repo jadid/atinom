@@ -198,25 +198,18 @@ int baca_env(char tampil)
 			
 			//#ifndef CARI_SUMBERNYA
 			#ifndef BANYAK_SUMBER
-				printf("set konfig menjadi default\r\n");
-				set_awal_konfig();
+				
 			#endif
 			//#endif 
 			
-			//#ifdef CARI_SUMBERNYA
 			#ifdef BANYAK_SUMBER
-				printf("set konfig sumber menjadi default\r\n");
+				printf("set konfig menjadi default\r\n");
+				set_awal_konfig();
+				printf("set sumber menjadi default\r\n");
 				set_awal_sumber();
 				set_data_default();
 			#endif
-			//#endif
-			
-			/*
-			#ifdef PAKAI_PM
-				printf("set konfig pm menjadi default\r\n");
-				set_awal_pm();
-			#endif
-			//*/
+
 			return -1;
 		}
 	}

@@ -76,14 +76,12 @@ static void setenv_fnt(int argc, char **argv)
 				printf(" set environment dengan data default !\n");
 				set_env_default();
 				vTaskDelay(2);
-				
-				#ifndef BANYAK_SUMBER
-					printf("set konfig menjadi default\r\n");
-					set_awal_konfig();
-					vTaskDelay(2);
-				#endif
 
 				#ifdef BANYAK_SUMBER
+					#ifdef CENDOL
+					set_awal_konfig();
+					#endif
+					
 					set_awal_sumber();
 					set_data_default();
 				#endif
@@ -91,14 +89,7 @@ static void setenv_fnt(int argc, char **argv)
 				#ifdef PAKAI_FILE_SIMPAN
 					//set_file_default();
 				#endif
-				//#endif
 				
-				/*
-				#ifdef PAKAI_PM
-					printf("set konfig pm menjadi default\r\n");
-					set_awal_pm();
-				#endif
-				//*/
 				return;
 			}	
 		}

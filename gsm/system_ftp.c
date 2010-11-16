@@ -435,6 +435,7 @@ int cek_awal(void) {
 		unset_selenoid(1);
 		vTaskDelay(1000);
 		set_selenoid(1);
+		vTaskDelay(2000);		// kasih jeda buat start up modem
 	}
 	return -1;
 }

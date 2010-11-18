@@ -40,7 +40,7 @@ void cek_sumber(void)
 	struct t_sumber *sumber;
 	
 	sumber = (char *) ALMT_SUMBER;
-	printf("  No :    Nama    :      IPaddr     : Stack : Almt : Tipe :    Status\r\n");
+	printf("  No :    Nama    :      IPaddr     : Stack : Almt :   Tipe   :    Status\r\n");
 
 	for (i=0; i<67; i++)
 		printf("-");
@@ -54,7 +54,7 @@ void cek_sumber(void)
 		printf("%3d.%3d.%3d.%3d : ", sumber[i].IP0, sumber[i].IP1, sumber[i].IP2, sumber[i].IP3);
 		
 		/* alamat */
-		printf("%5d : %4d : ", sumber[i].stack, sumber[i].alamat);
+		printf("%5d : %4d : %3d ", sumber[i].stack, sumber[i].alamat, sumber[i].tipe);
 		
 		/* tipe */
 		if (sumber[i].tipe==0 && sumber[i].alamat>0) {
@@ -371,7 +371,7 @@ void set_awal_sumber(void)
 		p_sbr[i].status = 0;	
 		//p_sbr[i].modul  = 0;	
 		p_sbr[i].stack  = 1;
-		p_sbr[i].tipe  = 0;
+		p_sbr[i].tipe  = 100;
 		
 		p_sbr[i].IP0 = 192;
 		p_sbr[i].IP1 = 168;

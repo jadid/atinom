@@ -283,7 +283,7 @@ void set_env_default() {
 		vPortFree( env2 );	
 		return -1;
 	}
-	
+
 	env2->magic1 = 0xAA;
 	env2->magic2 = 0x77;
 	sprintf(env2->SN, "-");
@@ -295,7 +295,7 @@ void set_env_default() {
 		env2->kalib[i].status = 0;
 		sprintf(env2->kalib[i].ket, "--");
 	}
-	sprintf(env2->nama_board, "Gantilah namanya !");
+	sprintf(env2->nama_board, "Gantilah namanya.");
 	env2->IP0 = 192;
 	env2->IP1 = 168;
 	env2->IP2 = 1;
@@ -304,7 +304,7 @@ void set_env_default() {
 	env2->GW0 = 192;
 	env2->GW1 = 168;
 	env2->GW2 = 1;
-	env2->GW3 = 75;
+	env2->GW3 = 140;
 	
 	env2->statusWebClient = 0;
 	env2->banyak_sumber=0;

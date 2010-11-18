@@ -73,6 +73,7 @@
 	#define TIPE_PM710
 #endif
 
+//#define TES_GET_WEB
 
 #define PROMPT 		"Sabang@"
 #define NAMA_BOARD	"Babelan Komon-420"

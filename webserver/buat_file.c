@@ -162,8 +162,22 @@ void buat_kepala() {
 	sprintf(head_buf, "%s\n</head>\n<body>\n\n<h1>Monita Online Monitoring System</h1>\n", judul);	
 	sprintf(tot_buf, "%s", head_buf);
 	
-	sprintf(head_buf, "%s<br/>", LINK_ATAS);
+	sprintf(head_buf, "%s<br />", LINK_ATAS);
 	strcat(tot_buf, head_buf);
+//*	
+	strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+		"<!--\r\n" \
+		"function Titik(str){\r\n" \
+		"   var hasil=str.replace(/\\./gi, \",\");\r\n" \
+		"   return hasil;\r\n" \
+		"}\r\n" \
+		"-->\r\n" \
+		"</script>\r\n");
+	/*
+	var str=document.mF.q.value;
+	var hasil=str.replace(/\\./gi, \",\");
+	document.mF.q.value = hasil;
+	//*/
 }
 
 void buat_bottom(void) {
@@ -212,13 +226,13 @@ void buat_bottom(void) {
     strcat(tot_buf, head_buf);
 }
 
-#define DIGANTI 1
+#define DIGANTI 3
 
 //int ganti(char* input);
 
 int ganti_karakter(char *dest, char *src) {
-	char *asli[] = {"+"};
-	char *pengganti[] = {" "};
+	char *asli[] = {"+", "%2F", "%2C"};
+	char *pengganti[] = {" ","/", "."};
 	char * pch;
 
 	int i=0, j=0, k=0;
@@ -348,7 +362,8 @@ float stof(char * str) {
 int ganti_setting(char *str) {
 //#ifndef BANYAK_SUMBER
 	//printf("Data telah diubah: %s\r\n", str);
-	char tmp[30], kets[30];
+	char tmp[30], kets[30], keta[30], ketb[30], ketc[30], ketd[30];
+	unsigned int ret_ip;
 	
 	int nk=0, no=0, titik=0, z=0;
 	char aa=0, bb=0, cc=0, gg=0;
@@ -382,7 +397,27 @@ int ganti_setting(char *str) {
 		} 
 		else if (strncmp(tmp, "k", 1)==0) {
 			ket = strchr(tmp,'=');
-			sprintf(kets, ket+1);
+			ganti_karakter(kets, ket+1);
+			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+		}
+		else if (strncmp(tmp, "f", 1)==0) {
+			ket = strchr(tmp,'=');
+			ganti_karakter(keta, ket+1);
+			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+		}
+		else if (strncmp(tmp, "q", 1)==0) {
+			ket = strchr(tmp,'=');
+			ganti_karakter(ketb, ket+1);
+			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+		}
+		else if (strncmp(tmp, "p", 1)==0) {
+			ket = strchr(tmp,'=');
+			ganti_karakter(ketc, ket+1);
+			printf("  ket: %s, ketc: %s\r\n", ket+1, ketc);
+		}
+		else if (strncmp(tmp, "t", 1)==0) {
+			ket = strchr(tmp,'=');
+			ganti_karakter(ketd, ket+1);
 			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
 		}
 		else if (strncmp(tmp, "z", 1)==0) {
@@ -427,7 +462,6 @@ int ganti_setting(char *str) {
 	
 	
 	if (z==3) {
-		printf("Ganti setting modul sumber\r\n");
 		struct t_sumber *p_sbry;
 		//*	
 		p_sbry = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
@@ -449,11 +483,11 @@ int ganti_setting(char *str) {
 		sprintf(p_sbry[no].nama,"%s", kets);
 		p_sbry[no].tipe  = gg;
 		
-		//p_sbr[no].IP0 = 192;
-		//p_sbr[no].IP1 = 168;
-		//p_sbr[no].IP2 = 1;
-		//p_sbr[no].IP3 = 252;
-		//*/
+		ret_ip = baca_ip(ketc);	
+		p_sbry[no].IP0 = (unsigned char)(ret_ip >> 24);
+		p_sbry[no].IP1 = (unsigned char)(ret_ip >> 16);
+		p_sbry[no].IP2 = (unsigned char)(ret_ip >> 8);
+		p_sbry[no].IP3 = (unsigned char)(ret_ip);
 		
 		//*
 		if (simpan_sumber(p_sbry) < 0)		{
@@ -465,8 +499,52 @@ int ganti_setting(char *str) {
 		//*/
 		return 1;
 	} else if (z==4) {
-		printf("Ganti Setting Modul\r\n");
+		struct t_env *p_sbr;
+		
+		p_sbr = pvPortMalloc( sizeof (struct t_env) );
+		
+		portENTER_CRITICAL();
+		memcpy((char *) p_sbr, (char *) ALMT_ENV, (sizeof (struct t_env)));
+		portEXIT_CRITICAL();
+		
+		//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+		sprintf(p_sbr->nama_board,"%s", kets);
+		//*
+		
+		ret_ip = baca_ip(ketc);	
+		p_sbr->IP0 = (unsigned char)(ret_ip >> 24);
+		p_sbr->IP1 = (unsigned char)(ret_ip >> 16);
+		p_sbr->IP2 = (unsigned char)(ret_ip >> 8);
+		p_sbr->IP3 = (unsigned char)(ret_ip);
+		
+		ret_ip = baca_ip(ketd);	
+		p_sbr->GW0 = (unsigned char)(ret_ip >> 24);
+		p_sbr->GW1 = (unsigned char)(ret_ip >> 16);
+		p_sbr->GW2 = (unsigned char)(ret_ip >> 8);
+		p_sbr->GW3 = (unsigned char)(ret_ip);
+		//*/
+		sprintf(p_sbr->SN,"%s", ketb);
+		sprintf(p_sbr->berkas,"%s", keta);
+		p_sbr->statusWebClient = aa;
+		p_sbr->burst = bb;
+		
+		if (p_sbr == NULL) {
+			vPortFree(p_sbr);
+			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			return -1;
+		}
+		if (simpan_env(p_sbr) < 0) {
+			vPortFree(p_sbr);
+			return -1;
+		}		
+		vPortFree(p_sbr);
+		
 		return 1;
+	#ifdef TES_GET_WEB 
+	} else if (z==5) {
+		printf("Ganti Setting Modul\r\n");		
+		return 1;
+	#endif
 	} else {
 		if (no>0) {
 			int jmlData=0;
@@ -869,6 +947,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 #endif
 
 
+
 #if 1
 void buat_file_setting(unsigned int flag, char *kata)
 {
@@ -878,7 +957,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 	unsigned int akhir = 0;
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
-	char head_buf[1024];
+	char head_buf[1024]; char ketr[30];
 	char tmp[5]; char *pch, *pch2;
 	//buat_head(0);
 	
@@ -962,7 +1041,10 @@ void buat_file_setting(unsigned int flag, char *kata)
 	#ifdef BANYAK_SUMBER
 		strcat(tot_buf, ": <a href=\"setting.html?smb=3\">Info Sumber</a> :");
 	#endif
-
+	
+	#ifdef TES_GET_WEB
+	strcat(tot_buf, ": <a href=\"setting.html?smb=5\">Info Tes</a> :");
+	#endif
 	strcat(tot_buf, "<br/>\n");
 	
 	#ifdef PAKAI_ADCx
@@ -1043,7 +1125,8 @@ void buat_file_setting(unsigned int flag, char *kata)
 	#ifdef CENDOL		// akses php
 
 		if (flag==1) {
-			sprintf(head_buf, "<font color=\"red\">Data telah diubah: %s</font><br/>", kata);
+			ganti_karakter(ket, kata);
+			sprintf(head_buf, "<font color=\"red\">Data telah diubah: %s</font><br/>", ket);
 			strcat(tot_buf, head_buf);
 			//printf("kata: %s\r\n", kata);
 			pch=strchr(kata,'z');
@@ -1054,6 +1137,10 @@ void buat_file_setting(unsigned int flag, char *kata)
 					flag=3;
 				} else if (i==4) {		// setting modul
 					flag=4;
+				#ifdef TES_GET_WEB
+				} else if (i==5) {		// tes web
+					flag=5;
+				#endif
 				}
 			} 
 		} else {
@@ -1064,6 +1151,17 @@ void buat_file_setting(unsigned int flag, char *kata)
 				struct t_sumber *p_sbrw;
 				p_sbrw = (char *) ALMT_SUMBER;
 				
+				strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+					"<!--\r\n" \
+					"function gantiTitik(F){\r\n" \
+					"   var str;\r\n" \
+					"   var Fx=F;\r\n" \
+					"	str=Titik(Fx.p.value);\r\n" \
+					"	Fx.p.value = str;\r\n" \
+					"}\r\n" \
+					"-->\r\n" \
+					"</script>\r\n");
+				
 				strcat(tot_buf, "<h3>Info Modul Sumber</h3>\n");				
 				strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\r\n" \
 						"<tr><th width=\"40\">No</th>\r\n<th width=\"150\">Nama Modul</th>\r\n" \
@@ -1073,91 +1171,122 @@ void buat_file_setting(unsigned int flag, char *kata)
 
 				for (i=0; i<JML_SUMBER; i++) {					
 					ganti_karakter(ket, p_sbrw[i].nama);
-					sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
+					
+					sprintf(head_buf, "%d.%d.%d.%d", p_sbrw[i].IP0, p_sbrw[i].IP1, p_sbrw[i].IP2, p_sbrw[i].IP3);
+					ganti_karakter(ketr, head_buf);
+					
+					sprintf(head_buf, "<tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
 						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
 						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
 						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
 						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\"></td>\r\n" \
-						"<td align=\"right\"><input type=\"text\" name=\"p\" value=\"%d.%d.%d.%d\" size=\"10\"></td>\r\n" \
+						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"3\"></td>\r\n" \
 						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 <input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 <input type=\"radio\" name=\"g\" value=\"2\" %s/>KTA <input type=\"radio\" name=\"g\" value=\"100\" %s/>Modul Monita &nbsp;</td>\r\n" \
 						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif <input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td></td>\r\n" \
-						"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+						"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"/>\r\n</td>" \
 						"</form></tr>\r\n", \
-						i+1, i+1, i+1, \
+						i+1, i+1, i+1, i+1, \
 						ket, \
-						p_sbrw[i].IP0, p_sbrw[i].IP1, p_sbrw[i].IP2, p_sbrw[i].IP3, \
+						ketr, \
 						p_sbrw[i].stack, \
 						p_sbrw[i].alamat, \
 						(p_sbrw[i].tipe==0?"checked":" "), (p_sbrw[i].tipe==1?"checked":" "), (p_sbrw[i].tipe==2?"checked":" "), (p_sbrw[i].tipe==100?"checked":" "), \
-						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked") \
-						);
+						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked"), \
+						i+1 );
 					strcat(tot_buf, head_buf);
 					//printf("%2d. tipe: %d, status: %d\r\n", i+1, p_sbrw[i].tipe, p_sbrw[i].status);
 				}
-				//*/
-				//sprintf(head_buf, "</tbody></table>\r\n");
-				//strcat(tot_buf, head_buf);
+				strcat(tot_buf, "</tbody></table>\r\n");
 			#endif
+		#ifdef TES_GET_WEB
+		} else if (flag==5) {
+			struct t_env *env2ww;
+			env2ww = (char *) ALMT_ENV;
+			
+			
+		#endif
 		} else if (flag==4) {
+			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+				"<!--\r\n" \
+				"function gantiTitik(){\r\n" \
+				"	var strx;\r\n" \
+				"	strx=document.mF.q.value;\r\n" \
+				"   document.mF.q.value=Titik(strx);\r\n" \
+				"	strx=document.mF.f.value;\r\n" \
+				"   document.mF.f.value=Titik(strx);\r\n" \
+				"	strx=document.mF.p.value;\r\n" \
+				"   document.mF.p.value=Titik(strx);\r\n" \
+				"	strx=document.mF.t.value;\r\n" \
+				"   document.mF.t.value=Titik(strx);\r\n" \
+				"	strx=document.mF.k.value;\r\n" \
+				"   document.mF.k.value=Titik(strx);\r\n" \
+				"}\r\n" \
+				"-->\r\n" \
+				"</script>\r\n");
+			
 			struct t_env *env2ww;
 			env2ww = (char *) ALMT_ENV;
 			
 			strcat(tot_buf, "<h3>Info Modul</h3>\n");
+			strcat(tot_buf, "<form action=\"setting.html\"  name=\"mF\">\r\n" \
+					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n");
+			
 			strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\r\n" \
 					"<tr><th width=\"120\">Keterangan</th>\r\n" \
-					"<th width=\"200\">Status</th>\r\n<th width=\"50\">Ganti</th></tr>\r\n");
+					"<th width=\"200\">Status</th></tr>\r\n");
 			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
+			ganti_karakter(ket, env2ww->nama_board);
+			sprintf(head_buf, "<tr>" \
 					"<td>Nama Board</td><td><input type=\"text\" name=\"k\" value=\"%s\"></td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->nama_board);
+					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
 			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
-					"<td>No Seri</td><td><input type=text value=\"%s\"></td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->SN);
+			ganti_karakter(ket, env2ww->SN);
+			sprintf(head_buf, "<tr>" \
+					"<td>No Seri</td><td><input type=\"text\" name=\"q\" value=\"%s\"></td>" \
+					"</tr>\r\n", ket);
+			strcat(tot_buf, head_buf);
+
+			sprintf(head_buf, "%d.%d.%d.%d", env2ww->IP0, env2ww->IP1, env2ww->IP2, env2ww->IP3);
+			ganti_karakter(ket, head_buf);
+			sprintf(head_buf, "<tr>" \ 
+					"<td>Alamat IP</td><td><input type=\"text\" name=\"p\" value=\"%s\"></td>" \
+					"</tr>\r\n", ket);
+			strcat(tot_buf, head_buf);
+		
+			sprintf(head_buf, "%d.%d.%d.%d", env2ww->GW0, env2ww->GW1, env2ww->GW2, env2ww->GW3);
+			ganti_karakter(ket, head_buf);
+			sprintf(head_buf, "<tr>" \
+					"<td>Gateway IP</td><td><input type=\"text\" name=\"t\" value=\"%s\"></td>" \
+					"</tr>\r\n", ket);
+			strcat(tot_buf, head_buf);
+
+			sprintf(head_buf, "<tr>" \
+					"<td>Status Webclient</td><td><input type=\"radio\" name=\"a\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"w\" value=\"0\" %s>Mati</td>" \
+					"</tr>\r\n", env2ww->statusWebClient?"checked":" ", env2ww->statusWebClient?" ":"checked");
 			strcat(tot_buf, head_buf);
 			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
-					"<td>Alamat IP</td><td><input type=\"text\" name=\"p\" value=\"%d.%d.%d.%d\"></td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->IP0, env2ww->IP1, env2ww->IP2, env2ww->IP3);
-			strcat(tot_buf, head_buf);
-			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
-					"<td>Gateway IP</td><td><input type=\"text\" name=\"p\" value=\"%d.%d.%d.%d\"></td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->GW0, env2ww->GW1, env2ww->GW2, env2ww->GW3);
-			strcat(tot_buf, head_buf);
-			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
-					"<td>Status Webclient</td><td><input type=\"radio\" name=\"w\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"w\" value=\"0\" %s>Mati</td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->statusWebClient?"checked":" ", env2ww->statusWebClient?" ":"checked");
-			strcat(tot_buf, head_buf);
-			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
+			sprintf(head_buf, "<tr>" \
 					"<td>Mode Burst</td><td><input type=\"radio\" name=\"b\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"b\" value=\"0\" %s>Mati</td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->burst?"checked":" ", env2ww->burst?" ":"checked");
+					"</tr>\r\n", env2ww->burst?"checked":" ", env2ww->burst?" ":"checked");
 			strcat(tot_buf, head_buf);
+			//*
+			ganti_karakter(ket, env2ww->berkas);
+			sprintf(head_buf, "<tr>" \
+					"<td>Lokasi File</td><td><input type=\"text\" name=\"f\" value=\"%s\" size=\"30\"></td>" \
+					"</tr>\r\n", ket);
+			strcat(tot_buf, head_buf);
+			//*/
+			strcat(tot_buf, "</tbody></table>\r\n");
+			strcat(tot_buf, "<input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik()\"/>\r\n</form>\r\n");
 			
-			sprintf(head_buf, "<tr><form action=\"setting.html\">\r\n" \
-					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-					"<input type=\"hidden\" name=\"z\" value=\"4\" />\r\n" \ 
-					"<td>Lokasi File</td><td><input type=text value=\"%s\" size=\"20\"></td>" \
-					"<td><input type=\"submit\" value=\"Ganti\" /></td></tr>\r\n", env2ww->berkas);
-			strcat(tot_buf, head_buf);
-			strcat(tot_buf, "<tr><td colspan=\"3\"><input type=\"submit\" value=\"Ganti\" /></td></tr>");
+			#ifdef PAKAI_ADC
+			
+			#endif
+			
 		} else {
 		strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
 
@@ -1249,6 +1378,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 			strcat(tot_buf, head_buf);
 		//*/
 		}
+		strcat(tot_buf, "</tbody>\n</table>\n");
 		#endif
 		
 		#ifdef BOARD_KOMON_420_SABANG
@@ -1276,48 +1406,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 					strcat(tot_buf, head_buf);
 				}
 			}
-			
-			#if 0
-			if (pmx[no].alamat==0) {			// Modul Monita
-				for (i=0; i<PER_SUMBER; i++)	{
-					ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-					sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
-							"<th>%d</th><th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-							"<td align=\"left\"><input type=\"text\" name=\"i%d\" value=\"%s\" size=\"20\"/></td>\n" \
-							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
-							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-						no+1, (no*PER_SUMBER+i)+1, i+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
-						i+1, ket, \
-						i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
-						i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
-					strcat(tot_buf, head_buf);
-				}
-			}
-			#endif
-			
-			#if 0
-			//#ifdef PAKAI_PM
-			if (pmx[no].tipe==0 || pmx[no].tipe==1) {
-				for (i=0; i<PER_SUMBER; i++) {
-					sprintf(head_buf, "<tr><form action=\"setting.html\">" \
-									"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
-									"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-									"<td align=\"left\">%s</td>\n" \
-									"<td align=\"left\">" \
-									"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-									"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
-									"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-						no+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
-						judulnya_pm[i], \
-						i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
-						i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
-					strcat(tot_buf, head_buf);
-				}
-				printf("strlen: %d\r\n", strlen(tot_buf));
-			}
-			#endif
-		
+			strcat(tot_buf, "</tbody>\n</table>\n");
 		#endif
 		
 		
@@ -1356,17 +1445,18 @@ void buat_file_setting(unsigned int flag, char *kata)
 			}
 		//*/
 		}
+		strcat(tot_buf, "</tbody>\n</table>\n");
 		#endif
 		
 		}
-		strcat(tot_buf, "</tbody>\n</table>\n");
+		//strcat(tot_buf, "</tbody>\n</table>\n");
 
 	#endif	
 	#endif
 
 	buat_bottom();
 	
-	printf("pjg setting = %d\r\n", strlen(tot_buf));
+	//printf("pjg setting = %d\r\n", strlen(tot_buf));
 	
 	return;
 }

@@ -226,13 +226,13 @@ void buat_bottom(void) {
     strcat(tot_buf, head_buf);
 }
 
-#define DIGANTI 3
+#define DIGANTI 4
 
 //int ganti(char* input);
 
 int ganti_karakter(char *dest, char *src) {
-	char *asli[] = {"+", "%2F", "%2C"};
-	char *pengganti[] = {" ","/", "."};
+	char *asli[] = {"+", "%2F", "%2C", "%23"};
+	char *pengganti[] = {" ","/", ".", "#"};
 	char * pch;
 
 	int i=0, j=0, k=0;
@@ -479,7 +479,7 @@ int ganti_setting(char *str) {
 		no-=1;
 		p_sbry[no].alamat = bb;
 		p_sbry[no].status = (atoi(stat))?1:0;
-		p_sbry[no].stack  = aa;
+		p_sbry[no].stack  = (aa==0?1:aa);
 		sprintf(p_sbry[no].nama,"%s", kets);
 		p_sbry[no].tipe  = gg;
 		
@@ -1146,7 +1146,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 		} else {
 			strcat(tot_buf, "<br/>");
 		}
-		if (flag==3) {
+		if (flag==3) {			// konfig modul sumber 
 			#ifdef BANYAK_SUMBER
 				struct t_sumber *p_sbrw;
 				p_sbrw = (char *) ALMT_SUMBER;
@@ -1207,7 +1207,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 			
 			
 		#endif
-		} else if (flag==4) {
+		} else if (flag==4) {	// info modul
 			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
 				"<!--\r\n" \
 				"function gantiTitik(){\r\n" \
@@ -1265,7 +1265,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 			strcat(tot_buf, head_buf);
 
 			sprintf(head_buf, "<tr>" \
-					"<td>Status Webclient</td><td><input type=\"radio\" name=\"a\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"w\" value=\"0\" %s>Mati</td>" \
+					"<td>Status Webclient</td><td><input type=\"radio\" name=\"a\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"a\" value=\"0\" %s>Mati</td>" \
 					"</tr>\r\n", env2ww->statusWebClient?"checked":" ", env2ww->statusWebClient?" ":"checked");
 			strcat(tot_buf, head_buf);
 			
@@ -1387,23 +1387,47 @@ void buat_file_setting(unsigned int flag, char *kata)
 			
 			//printf("no: %d, pmx[no].alamat: %d\r\n", no, pmx[no].alamat);
 			if (pertamax>0) {
-				for (i=0; i<PER_SUMBER; i++)	{
-					ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-					//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
-					sprintf(head_buf, "<tr><form action=\"setting.html\">" \
-						"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
-						"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-						"<td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"/></td>\n" \
-						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
-						"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
-						"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
-						"</form>\n</tr>", \
-						no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
-						ket, \
-						(konfig[PER_SUMBER*no+i].status?"checked":" "), \
-						(konfig[PER_SUMBER*no+i].status?" ":"checked") \
-						);
-					strcat(tot_buf, head_buf);
+				for (i=0; i<PER_SUMBER; i++)	{	
+					if (pmx[no].alamat==0) { 		// Modul Monita
+						ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+						//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
+						sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+							"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+							"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+							"<td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"/></td>\n" \
+							"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+							"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
+							"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+							"</form>\n</tr>", \
+							no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+							ket, \
+							(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+							(konfig[PER_SUMBER*no+i].status?" ":"checked") \
+							);
+						strcat(tot_buf, head_buf);
+					}
+					else {
+						#ifdef PAKAI_PM
+						if (pmx[no].alamat>0 && (pmx[no].tipe==0 || pmx[no].tipe==1)) {
+							ganti_karakter(ket, judulnya_pm[i]);
+							//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
+							sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+								"<td align=\"left\">%s</td>\n" \
+								"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+								"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+								"</form>\n</tr>", \
+								no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+								ket, \
+								(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+								(konfig[PER_SUMBER*no+i].status?" ":"checked") \
+								);
+							strcat(tot_buf, head_buf);
+						}
+						#endif
+					}
 				}
 			}
 			strcat(tot_buf, "</tbody>\n</table>\n");

@@ -139,9 +139,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 #endif
 
 #ifdef PAKAI_WEBCLIENT
+		int ngitung=0;
 		webclient_init();
 		printf("webclient inited !\r\n");
-		unsigned char datakeserver[512];
+		unsigned char datakeserver[1024];
 		int wclient=0, jmlData=0, selang, jmlsumbernya, sumbernya=0;
 		int noPMaktif[JML_SUMBER];
 		char il[256], dl[512];
@@ -208,11 +209,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 						jmlsumbernya=1;
 					}
 					jmlData=kirimModul(0, noPMaktif[sumbernya], il, dl);
-					tiapKirim = (int) (940/jmlsumbernya);
+					
+					// kenapa ini ??? harusnya tiap detik, knapa jadi tiap 4 detik ????
+					//tiapKirim = (int) (940/jmlsumbernya);
+					tiapKirim = (int) (190/jmlsumbernya);
 				#endif
 			}	
 			if (wclient == tiapKirim) {
 				wclient = 0;
+				//ngitung++;
+				//printf("kirim: %d\r\n", ngitung);
 
 				if (sumbernya+1==jmlsumbernya) {		// dipakai buat kirim modul sumber lainnya 
 					sumbernya=0;
@@ -221,9 +227,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				}
 				
 				if (jmlData>0) {
+					
 					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					portENTER_CRITICAL();
 					sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
 					webclient_get(ipdest, 80, datakeserver);
+					portEXIT_CRITICAL();
 				}
 			}
 		}

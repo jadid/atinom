@@ -203,8 +203,11 @@ int baca_env(char tampil)
 			//#endif 
 			
 			#ifdef BANYAK_SUMBER
+				#ifndef BOARD_TAMPILAN 
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
+				#endif
+				
 				printf("set sumber menjadi default\r\n");
 				set_awal_sumber();
 				set_data_default();

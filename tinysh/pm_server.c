@@ -191,11 +191,14 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	//*/
 	if (pmx[no].tipe==0)	{	// 710
 	#ifdef TIPE_PM710
+		portENTER_CRITICAL();
 		taruh_data_710(no, urut_PM710);
 	#endif
 	} else if (pmx[no].tipe==1) {
 	#ifdef TIPE_PM810
+		portENTER_CRITICAL();
 		taruh_data_810(no, urut_PM710);
+		portEXIT_CRITICAL();
 	#endif
 	}
 	/*

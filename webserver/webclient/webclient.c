@@ -228,11 +228,12 @@ webclient_get(char *host, u16_t port, char *file)
   strncpy(s.file, file, sizeof(s.file));
   strncpy(s.host, host, sizeof(s.host));
   
-  //printf("___%s(): %s, port %d, %s, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, file, sizeof(s.file));
+  //printf("___%s(): %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
   init_connection();
   
   //printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
+  printf("___%s(): strlen(s.file): %d\r\n", __FUNCTION__, strlen(s.file));
   
   return 1;
 }

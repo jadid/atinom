@@ -283,7 +283,8 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			   send_file(s));
 
 	} else {
-//*
+//*		
+		#ifdef PAKAI_HTTP
 		if (strncmp(s->filename, "/about", 6) == 0) {
 			//printf(" Buat file about\r\n");
 			
@@ -340,6 +341,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			s->file.data = tot_buf;
 			portEXIT_CRITICAL();
 		}
+		#endif
 	
 		PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_200));
 		ptr = strchr(s->filename, ISO_period);

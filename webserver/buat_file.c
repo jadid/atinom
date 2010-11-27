@@ -14,6 +14,13 @@
 #include "task.h"
 #include "queue.h"
 
+#ifdef BOARD_TAMPILAN
+	#define BESAR_BUF_HTTP	1024		//8192
+#else
+	#define BESAR_BUF_HTTP	8192		//8192
+#endif
+
+#ifdef PAKE_HTTP
 
 #include "../tinysh/enviro.h"
 #include "../adc/ad7708.h"
@@ -22,11 +29,7 @@
 //	#include "../tinysh/setting_eth.c" 
 #endif
 
-#ifdef BOARD_TAMPILAN
-	#define BESAR_BUF_HTTP	1024		//8192
-#else
-	#define BESAR_BUF_HTTP	8192		//8192
-#endif
+
 	unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 //#endif
 char ket[30];
@@ -1630,3 +1633,5 @@ void buat_file_sumber(void)	{
 }
 
 #endif
+
+#endif //PAKE_HTTP

@@ -31,6 +31,7 @@
 #ifdef BOARD_KOMON_420_SABANG
 #define LED_UTAMA	BIT(27)
 #define TXDE	BIT(24)
+#define RXDE	BIT(23)
 #endif
 
 //xSemaphoreHandle lcd_sem;
@@ -94,6 +95,9 @@ int main( void )
 	//FIO0SET &= ~TXDE;		// off	---> gak bisa kirim
 	//FIO0CLR = TXDE;
 	FIO0SET = TXDE;
+	
+	FIO0DIR |= RXDE;
+	FIO0SET  = RXDE;
 	#endif
 
 	#ifdef PAKAI_SERIAL_2

@@ -133,6 +133,7 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 #endif
 #ifdef PAKAI_MAX485
 	#define HD	sizeof(pmod)
+	//#define HD	0
 #else
 	#define HD	0
 #endif

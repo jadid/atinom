@@ -47,6 +47,7 @@ struct t_kontrol_PM kontrol_PM[JML_SUMBER];
 
 
 #define TXDE	BIT(24)
+#define RXDE	BIT(23)
 
 static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	unsigned int jum_balik;
@@ -63,19 +64,24 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	//printf("%s() no: %d, almt %d, urut_PM710: %d\r\n", __FUNCTION__, no, alamatPM, urut_PM710);
 	
 	#ifdef TIPE_PM710
-	if (urut_PM710 == 0)	{
-	   jum_balik = get_PM710(alamatPM, reg_satuan_710, 4);
-	} else if (urut_PM710 == 1)	{
-	   jum_balik = get_PM710(alamatPM, reg_kva_710, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
-	} else if (urut_PM710 == 2)	{
-	   jum_balik = get_PM710(alamatPM, reg_ampA_710, 4); //ampA, B, C & N								// 4020
-	} else if (urut_PM710 == 3) {
-	   jum_balik = get_PM710(alamatPM, reg_voltA_C_710, 6); //voltA_B, VB_C, VA_C, VA_N, VB_N, VC_N, P_A, P_B, P_C	// 4030
-	} else if (urut_PM710 == 4)	{
-	   jum_balik = get_PM710(alamatPM, reg_kwh_710, 6);  //kWh, kVAh, & kVArh		// 4000
-	} else if (urut_PM710 == 5)	{
-	   jum_balik = get_PM710(alamatPM, reg_kwA_710, 9);  //kW_A, kW_B, kW_C, kva_A, kva_B, kva_C, kVAr_A, kVAr_B, kVAr_C		// 4000
-/*
+	if (pmx[no].tipe==0) {
+		#ifdef LIAT
+		printf("\r\n___710 ....");
+		#endif
+		if (urut_PM710 == 0)	{
+		   jum_balik = get_PM710(alamatPM, reg_satuan_710, 4);
+		} else if (urut_PM710 == 1)	{
+		   jum_balik = get_PM710(alamatPM, reg_kva_710, 7);  //kVA, kVAR, PF, volt L-L, L-N, A, Hz		// 4010
+		} else if (urut_PM710 == 2)	{
+		   jum_balik = get_PM710(alamatPM, reg_ampA_710, 4); //ampA, B, C & N								// 4020
+		} else if (urut_PM710 == 3) {
+		   jum_balik = get_PM710(alamatPM, reg_voltA_C_710, 6); //voltA_B, VB_C, VA_C, VA_N, VB_N, VC_N, P_A, P_B, P_C	// 4030
+		} else if (urut_PM710 == 4)	{
+		   jum_balik = get_PM710(alamatPM, reg_kwh_710, 6);  //kWh, kVAh, & kVArh		// 4000
+		} else if (urut_PM710 == 5)	{
+		   jum_balik = get_PM710(alamatPM, reg_kwA_710, 9);  //kW_A, kW_B, kW_C, kva_A, kva_B, kva_C, kVAr_A, kVAr_B, kVAr_C		// 4000
+		}
+	/*
 	} else if (urut_PM710 == 5) {
 		#ifdef PAKAI_KTA
 		jum_balik = get_KTA(alamatPM, reg_KTA, 9);			// 30, 9
@@ -89,6 +95,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	#endif
 	
 	#ifdef TIPE_PM810
+	if (pmx[no].tipe==1) {
 	#ifdef LIAT
 	printf("\r\n___810 ....");
 	#endif
@@ -109,7 +116,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
    		} else if (urut_PM710==7)		{
    		   jum_balik = get_PM710(alamatPM, meter_energi_vah_810, 8);
    		}
-
+	}
 	#endif
 	
 	#ifdef LIAT
@@ -140,8 +147,9 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	//*/
 	
 	i=0;
-
+	//FIO0CLR = RXDE;
 	while(1)	{
+		
 		#if (PAKAI_PM == 1) 
 			if (ser1_getchar(1, &buf_rx[i], TUNGGU_PM_RX ) == pdTRUE)
 		#elif (PAKAI_PM == 2) 			
@@ -171,8 +179,9 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 				break;
 			}
 		}
+		
 	}
-	
+	//FIO0SET = RXDE;
 	/*
 	if (urut_PM710==5) {
 		printf("Nilai KTA   : ");
@@ -235,13 +244,17 @@ void ambil_pm(int k) {
 	int req;
 	if (pmx[k].tipe==0) {				// PM710
 		req = 6;
+		
 	} else if (pmx[k].tipe==1) {		// PM810
 		req = 8;
 	}
 		
+	#ifdef LIAT
+	printf("Ambil data Power Meter ke-%d / %d\r\n", k+1, req);
+	#endif
 	
-	//printf("Ambil data Power Meter ke-%d / %d\r\n", k+1, req);
 	//while(i<JML_REQ_PM) {
+	FIO0CLR = RXDE;
 	while(i<req) {
 		vTaskDelay(2);			// MIN: 2
 		//printf("%s() almt %d, k: %d, i: %d\r\n", __FUNCTION__, pmx[k].alamat, k, i);
@@ -263,9 +276,12 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	#endif
 	int muternya=0;
 	
-	vTaskDelay(300);
+	vTaskDelay(1000);
 	
+	#ifdef LIAT
 	printf("Ambil data Power Meter init !\r\n");
+	#endif
+	
 	// flush RX
 	for (i=0; i<100; i++)
 		#ifdef PAKAI_SERIAL_1

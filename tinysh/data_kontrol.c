@@ -385,7 +385,7 @@ int set_data(int argc, char **argv)
 				p_dt[sumb-1].relay = slot;
 			}
 			
-			printf(" Data %d : Status Relay : %s pada %d\r\n", sumb, argv[3]);			
+			printf(" Data %d : Status Relay : %s pada %d\r\n", sumb, argv[3], p_dt[sumb-1].relay);			
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
 				p_dt[sumb - 1].aktif = (argv[3][0] - '0');
 			} 

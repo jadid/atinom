@@ -156,10 +156,16 @@ int kirimModul(int burst, int sumber, char *il, char *dl) {
 						jmlAktif++;
 						//if (i==0) {
 						if (jmlAktif==1) {
+							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
+							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
 							sprintf(id, "%d", konfig[(PER_SUMBER*z)+i].id);
 							sprintf(dt, "%.2f", data_f[(PER_SUMBER*z)+i]);
 							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
 						} else {
+							//strcat(id, "~");
+							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
+							//strcat(dt, "~");
+							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
 							sprintf(id, "~%d", konfig[(PER_SUMBER*z)+i].id);
 							sprintf(dt, "~%.2f", data_f[(PER_SUMBER*z)+i]);
 							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
@@ -233,7 +239,7 @@ webclient_get(char *host, u16_t port, char *file)
   init_connection();
   
   //printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
-  printf("___%s(): strlen(s.file): %d\r\n", __FUNCTION__, strlen(s.file));
+  //printf("___%s(): strlen(s.file): %d\r\n", __FUNCTION__, strlen(s.file));
   
   return 1;
 }

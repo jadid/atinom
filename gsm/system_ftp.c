@@ -45,7 +45,7 @@ int gsm_ftp()	{
 	struct tm tw;
 	
 	char abs_path[128];
-	char path[64];
+	char pathfile[64];
 	
 	int fff=0;
 	
@@ -53,6 +53,7 @@ int gsm_ftp()	{
 	file_sudah=0;
 	file_sukses=0;
 	
+	//fff=90;
 	fff=konek_ftp_awal();
 	if (fff!=90) {
 		printf("Koneksi GPRS gagal !!!\r\n");
@@ -65,8 +66,9 @@ int gsm_ftp()	{
 
 	cari_berkas("J-3", "kirim_ftp");
 	
-	//printf("path: %s\r\n", path);	
-	sleep(1);
+	//printf("path: %s\r\n", pathfile);	
+	//sleep(1);
+	//vTaskDelay(2000);
 	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
 	//printf("fff: %d\r\n", fff);
 	tutup_koneksi_ftp(fff);
@@ -735,7 +737,7 @@ int upload_file(char *nama_file) {
 	char namafile[32];
 	
 	sprintf(namafile, "%s", nama_file);
-	sprintf(str_ftp, "AT+WIPFILE=4,1,2,\"%s.txt\"\r\n", namafile);
+	sprintf(str_ftp, "AT+WIPFILE=4,1,2,\"%s\"\r\n", namafile);
 	printf(str_ftp);
 	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
 	serX_putstring(PAKAI_GSM_FTP, str_ftp);

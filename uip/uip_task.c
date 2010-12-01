@@ -146,7 +146,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		int wclient=0, jmlData=0, selang, jmlsumbernya, sumbernya=0;
 		int noPMaktif[JML_SUMBER];
 		char il[256], dl[512];
-		char ipdest[15];
+		char ipdest[15], angkaangka[5];
 		extern int kirimURL;
 		extern char terkirimURL;
 		int tiapKirim=950;
@@ -211,15 +211,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					jmlData=kirimModul(0, noPMaktif[sumbernya], il, dl);
 					
 					// kenapa ini ??? harusnya tiap detik, knapa jadi tiap 4 detik ????
-					//tiapKirim = (int) (940/jmlsumbernya);
-					tiapKirim = (int) (190/jmlsumbernya);
+					//tiapKirim = (int) (100/jmlsumbernya);
+					tiapKirim = (int) (195/jmlsumbernya);
+					//printf("wclient: %d\r\n", wclient);
 				#endif
 			}	
 			if (wclient == tiapKirim) {
-				wclient = 0;
-				//ngitung++;
-				//printf("kirim: %d\r\n", ngitung);
+				ngitung++;
+				//printf("kirim: %d, jmlSumber: %d, wclient: %d, sumbernya: %d\r\n", ngitung, jmlsumbernya, wclient, sumbernya);
 
+				wclient = 0;				
 				if (sumbernya+1==jmlsumbernya) {		// dipakai buat kirim modul sumber lainnya 
 					sumbernya=0;
 				} else {
@@ -230,9 +231,21 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					
 					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
 					portENTER_CRITICAL();
-					sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
-					webclient_get(ipdest, 80, datakeserver);
+					//sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
+					strcpy(datakeserver, envx->berkas);
+					strcat(datakeserver, "?i=");
+					strcat(datakeserver, envx->SN);
+					strcat(datakeserver, "&p=diesel&j=");
+					sprintf(angkaangka, "%d", jmlData);
+					strcat(datakeserver, angkaangka);
+					strcat(datakeserver, "&");
+					strcat(datakeserver, il);
+					strcat(datakeserver, "&");
+					strcat(datakeserver, dl);
 					portEXIT_CRITICAL();
+					//printf("datakeserver: %s\r\n",datakeserver);
+					webclient_get(ipdest, 80, datakeserver);
+					
 				}
 			}
 		}

@@ -143,7 +143,7 @@ int proses_simpan_file(void)	{
 				/* buat file baru */
 				//sprintf(temp, "angin_%s", ctime(&timeval));
 				//sprintf(temp, "%s_%s", ts->nama_file, ctime(&timeval));
-				sprintf(temp, "%s_%s", ts->nama_file, waktus);
+				sprintf(temp, "%s_%s.txt", ts->nama_file, waktus);
 				
 				/* cari spasi dan jadikan underscore */
 				/*

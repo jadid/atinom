@@ -14,7 +14,7 @@
 #ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	100
-//#define  LIAT
+#define  LIAT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
@@ -54,6 +54,8 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	int i,j, k;
 	char *st;
 	int timeout=0;
+	unsigned char lo, hi;
+	unsigned short cekcrc;
 	
 	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
@@ -111,6 +113,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
      	    jum_balik = get_PM710(alamatPM, meter_faktor_810, 4);   //pfA, pfB, pfC, pf
    		} else if (urut_PM710==5)		{
      	    jum_balik = get_PM710(alamatPM, reg_frek_810, 1); //Hz
+     	    printf("jml balik frek urut 5: %d \r\n", jum_balik);
    		} else if (urut_PM710==6)		{
    		   jum_balik = get_PM710(alamatPM, meter_energi2_810, 8);
    		} else if (urut_PM710==7)		{
@@ -131,6 +134,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
 	}
+
 	//FIO0CLR = TXDE;		// on	---> bisa kirim, kasih delay klo mau pake ini !!!!
 	
 	#ifdef LIAT
@@ -147,7 +151,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	//*/
 	
 	i=0;
-	//FIO0CLR = RXDE;
+	FIO0CLR = RXDE;
 	while(1)	{
 		
 		#if (PAKAI_PM == 1) 
@@ -181,7 +185,8 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		}
 		
 	}
-	//FIO0SET = RXDE;
+	vTaskDelay(5);
+	FIO0SET = RXDE;
 	/*
 	if (urut_PM710==5) {
 		printf("Nilai KTA   : ");
@@ -198,6 +203,15 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		printf("\r\n");
 	}
 	//*/
+	/*
+		st = (char *) &pmod;
+	cekcrc = usMBCRC16((unsigned char *) &st, sizeof (st)-2);
+    lo = (unsigned char) ((cekcrc & 0xFF00) >> 8);
+    hi = (unsigned char) (cekcrc & 0x00FF);
+    
+    printf("\r\nisi crc lo: %02hX, hi: %02hX\r\n", lo, hi);
+    //*/
+    
 	if (pmx[no].tipe==0)	{	// 710
 	#ifdef TIPE_PM710
 		portENTER_CRITICAL();
@@ -254,7 +268,7 @@ void ambil_pm(int k) {
 	#endif
 	
 	//while(i<JML_REQ_PM) {
-	FIO0CLR = RXDE;
+	//FIO0CLR = RXDE;		// mode brutal
 	while(i<req) {
 		vTaskDelay(2);			// MIN: 2
 		//printf("%s() almt %d, k: %d, i: %d\r\n", __FUNCTION__, pmx[k].alamat, k, i);
@@ -303,7 +317,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	
 	vTaskDelay(1000);
 	for (;;)	{
-		vTaskDelay(20);
+		//vTaskDelay(20);
 		alamatClient = (int) pmx[k].alamat;
 		
 		if ( (k<JML_SUMBER) && (alamatClient>0) ) {

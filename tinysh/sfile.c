@@ -493,8 +493,8 @@ void cari_waktu(char *dest, char *posisi) {
 	int tmp, tmpx;
 	int ijam, itgl, ibulan, ithn, count;
 
-	printf("%s sekarang: %d:%d %d-%d[%s]-%d\r\n", posisi, timeinfo.tm_hour, timeinfo.tm_min, \ 
-			timeinfo.tm_mday, timeinfo.tm_mon+1, bulan[timeinfo.tm_mon], timeinfo.tm_year+1900);
+	//printf("%s sekarang: %d:%d %d-%d[%s]-%d\r\n", posisi, timeinfo.tm_hour, timeinfo.tm_min, \ 
+	//		timeinfo.tm_mday, timeinfo.tm_mon+1, bulan[timeinfo.tm_mon], timeinfo.tm_year+1900);
 	
 	pch=strstr(posisi,"-");
   	if (pch!=NULL)
@@ -639,7 +639,79 @@ int hapus_paksa() {
 	cari_berkas("J-12","hapus");
 }
 
+int cari_files (char* pathxx, char *aksi) {
+	char buf_lfn[255];
+	FRESULT res;
+	FILINFO fnoxx;
+	DIR dirs;
+	char *nama;
+	int i;
+	static char aaaa[64];
+	static char bbbb[128];
+	strcpy(aaaa, pathxx);
+	unsigned int jum_dirs=0;
+	//fileInfo.lfname = buf_lfn;
+	//fileInfo.lfsize = 255;//sizeof (buf_lfn);
+	static char lfnxx[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
+    fnoxx.lfname = lfnxx;
+    fnoxx.lfsize = sizeof(lfnxx);
+    
+	if ((res = f_opendir (&dirs,  pathxx)))		{ 
+		printf("%s(): ERROR = %d\r\n", __FUNCTION__, res);
+		return 0;
+	}
+	//printf("%s(): Open dir %s OK\r\n", __FUNCTION__, pathxx);
+	
+	if (res == FR_OK) {
+		for(;;) {
+			res = f_readdir(&dirs, &fnoxx);
+			
+			if (res != FR_OK || fnoxx.fname[0] == 0) break;
+			if (fnoxx.lfname[0] == 0)
+				nama = &(fnoxx.fname [0]);
+			else
+				nama = &(fnoxx.lfname[0]);
 
+			//sprintf(bbbb,"%s\\%s", aaaa, nama);		//
+			//sprintf(bbbb,"%s\\",aaaa);
+			strcpy(bbbb,aaaa);
+			strcat(bbbb,"\\");
+			strcat(bbbb,nama);
+			//printf("path: %s, %s, nama: %s\r\n",aaaa, bbbb, nama);
+			/*
+			printf ("\r\n%c%c%c%c%c %u/%02u/%02u %02u:%02u %9u  %s",
+					(fnoxx.fattrib & AM_DIR) ? 'D' : '-',
+					(fnoxx.fattrib & AM_RDO) ? 'R' : '-',
+					(fnoxx.fattrib & AM_HID) ? 'H' : '-',
+					(fnoxx.fattrib & AM_SYS) ? 'S' : '-',
+					(fnoxx.fattrib & AM_ARC) ? 'A' : '-',
+					(fnoxx.fdate >> 9) + 1980, (fnoxx.fdate >> 5) & 15, fnoxx.fdate & 31,
+					(fnoxx.ftime >> 11), (fnoxx.ftime >> 5) & 63,
+					fnoxx.fsize, nama);
+			//*/
+			//*
+			#ifdef PAKAI_GSM_FTP
+				if (strncmp(aksi,"kirim_ftp", 9)==0) {
+					kirim_file_ke_ftp(bbbb, nama);
+					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+					//printf(ngomong);
+				} else if (strncmp(aksi,"hapus", 5)==0) {
+					i=dihapus(aaaa);
+					if (i==0) {
+						printf("%s dihapus\r\n", aaaa);
+					} else {
+						printf("%s GAGAL dihapus\r\n", aaaa);
+					}
+				} else {
+					//printf("%s\\%s\r\n", pathxx, fnxx);
+				}
+			#endif
+			//*/
+		}
+	}
+}
+
+/*
 #define __POINTER_FILES__
 //static FRESULT cari_files (char* pathxx, char *aksi) {
 int cari_files (char* pathxx, char *aksi) {
@@ -656,6 +728,8 @@ int cari_files (char* pathxx, char *aksi) {
     	char fnxx[64];
     #endif
     char abs_pathxx[128];
+    strcpy(abs_pathxx, pathxx);
+    char ngomong[128];
 #if _USE_LFN
 	static char lfnxx[_MAX_LFN * (_DF1S ? 2 : 1) + 1];
     fnoxx.lfname = lfnxx;
@@ -680,6 +754,8 @@ int cari_files (char* pathxx, char *aksi) {
 			#ifdef __POINTER_FILES__
             fnxx = *fnoxx.lfname ? fnoxx.lfname : fnoxx.fname;
             #endif
+            //strcpy(ngomong, fnxx.fname);
+            //printf("ngomong: %s\r\n", ngomong);
             
             #ifdef __ARRAY__
 				if (*fnoxx.lfname!=NULL) {
@@ -694,15 +770,23 @@ int cari_files (char* pathxx, char *aksi) {
             fnxx = fnoxx.fname;
             #endif
             
+            strcpy(ngomong, fnxx);
+            
+            
             #ifdef __ARRAY__
 	            strcpy(fnxx,fnoxx.fname);
             #endif
 #endif
-			sprintf(abs_pathxx, "%s\\%s", pathxx, fnxx);
+			//sprintf(abs_pathxx, "%s\\%s", pathxx, fnxx);
+			strcat(abs_pathxx, fnxx);
+			printf("^^^^^^^^^%s\r\n", abs_pathxx);
+			//printf("ngomong: %s\r\n", ngomong);
 			#ifdef PAKAI_GSM_FTP
-				if (strcmp(aksi,"kirim_ftp")==0) {
-					kirim_file_ke_ftp(abs_pathxx, fnxx);
-				} else if (strcmp(aksi,"hapus")==0) {
+				if (strncmp(aksi,"kirim_ftp", 9)==0) {
+					//kirim_file_ke_ftp(abs_pathxx, fnxx);
+					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+					//printf(ngomong);
+				} else if (strncmp(aksi,"hapus", 5)==0) {
 					i=dihapus(abs_pathxx);
 					if (i==0) {
 						printf("%s dihapus\r\n", abs_pathxx);
@@ -710,36 +794,20 @@ int cari_files (char* pathxx, char *aksi) {
 						printf("%s GAGAL dihapus\r\n", abs_pathxx);
 					}
 				} else {
-					printf("%s\\%s\r\n", pathxx, fnxx);
+					//printf("%s\\%s\r\n", pathxx, fnxx);
 				}
 			#endif
 			//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
 			
-			/*
-            if (fnoxx.fattrib & AM_DIR) {
-                sprintf(&pathxx[i], "\\%s", fnxx);
-                resxx = cari_files(pathxx, aksi);
-                if (resxx != FR_OK) break;
-                pathxx[i] = 0;
-            } else {
-				if (strcmp(aksi,"kirim_ftp")==0) {
-					sprintf(abs_pathxx, "%s\\%s", pathxx, fnxx);
-					#ifdef PAKAI_GSM_FTP
-					kirim_file_ke_ftp(abs_pathxx, fnxx);
-					#endif
-					printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
-				} else
-	                printf("%s\\%s\r\n", pathxx, fnxx);
-            }
-            //*/
-            vTaskDelay(10);
+			
+            //vTaskDelay(10);
         }
     }
 
     //return resxx;
     return 1;
 }
-
+//*/
 int cari_doku(int argc, char **argv) {
 	display_args(argc,argv);
 	printf("Jml arg: %d\r\n", argc);

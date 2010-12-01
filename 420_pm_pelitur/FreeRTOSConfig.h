@@ -37,6 +37,7 @@
 #include "lpc23xx.h"
 
 #define PAKE_TELNETD
+#define PAKAI_HTTP
 
 #define PAKAI_ID
 #define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
@@ -59,6 +60,7 @@
 
 #define PAKAI_MULTI_SERIAL
 #define PAKAI_ADC
+
 //#define PAKAI_SERIAL_2			// mendefinisikan aktif serial 1
 //#define PAKAI_PM			2		// nyambung ke SERIAL 3
 

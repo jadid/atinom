@@ -1115,6 +1115,6 @@ vTaskDelay(100);
 
 void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 16), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }
 

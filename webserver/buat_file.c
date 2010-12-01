@@ -20,7 +20,7 @@
 	#define BESAR_BUF_HTTP	8192		//8192
 #endif
 
-#ifdef PAKE_HTTP
+#ifdef PAKAI_HTTP
 
 #include "../tinysh/enviro.h"
 #include "../adc/ad7708.h"

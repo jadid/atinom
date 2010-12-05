@@ -12,9 +12,11 @@
 #include <float.h>
 
 #ifdef AMBIL_PM
-#define TUNGGU_PM_TX	100
-#define TUNGGU_PM_RX	100
-#define  LIAT
+#define TUNGGU_PM_TX	10
+#define TUNGGU_PM_RX	10
+//#define  LIAT
+
+//#define TIMEOUT
 
 #include "../monita/monita_uip.h"
 #include "../modbus/low_mod.h"
@@ -25,7 +27,7 @@
 //unsigned short get_KTA(unsigned short reg, unsigned char uk);
 #endif
 
-
+char pm_sukses=0;
 struct d_pmod pmod;
 
 xTaskHandle hdl_proses_pm;
@@ -56,6 +58,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	int timeout=0;
 	unsigned char lo, hi;
 	unsigned short cekcrc;
+	
 	
 	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
@@ -109,11 +112,19 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
      	    jum_balik = get_PM710(alamatPM, meter_voltage_810, 9);  //Voltage A-B, B-C, C-A, L-L, A-N, B-N, C-N , L-N
    		} else if (urut_PM710==3)		{
      	    jum_balik = get_PM710(alamatPM, meter_power_810, 12); // kwA, kwB, kwC, kW, kvarA, kvarB, kvarC, kvar, kvaA, kvaB, kvaC, kva
+   			#ifdef LIAT
+   			printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+   			#endif
    		} else if (urut_PM710==4)		{
      	    jum_balik = get_PM710(alamatPM, meter_faktor_810, 4);   //pfA, pfB, pfC, pf
+   			#ifdef LIAT
+   			printf("jml balik PF urut 4: %d \r\n", jum_balik);
+   			#endif
    		} else if (urut_PM710==5)		{
      	    jum_balik = get_PM710(alamatPM, reg_frek_810, 1); //Hz
+     	    #ifdef LIAT
      	    printf("jml balik frek urut 5: %d \r\n", jum_balik);
+     	    #endif
    		} else if (urut_PM710==6)		{
    		   jum_balik = get_PM710(alamatPM, meter_energi2_810, 8);
    		} else if (urut_PM710==7)		{
@@ -122,22 +133,24 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	#endif
 	
-	#ifdef LIAT
+	#ifdef LIATx
 	printf("___Minta ke PM -%d : %d : \r\n", urut_PM710, sizeof(pmod));
 	#endif
 	
 	st = (char *) &pmod;
 	FIO0SET = TXDE;		// on	---> bisa kirim
 	for (i=0; i< sizeof(pmod); i++)	{
-		#ifdef LIAT
+		#ifdef LIATx
 		printf("%02hX ", *st);
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
+		//if (i==sizeof(pmod)-2)
+		//	FIO0CLR = RXDE;
 	}
 
 	//FIO0CLR = TXDE;		// on	---> bisa kirim, kasih delay klo mau pake ini !!!!
 	
-	#ifdef LIAT
+	#ifdef LIATx
 	printf("\r\n");
 	#endif
 	
@@ -149,9 +162,9 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	#endif
 	//*/
-	
-	i=0;
 	FIO0CLR = RXDE;
+	i=0;
+	
 	while(1)	{
 		
 		#if (PAKAI_PM == 1) 
@@ -173,6 +186,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 			#else
 				if (i == jum_balik) break;
 			#endif
+			pm_sukses=1;
 
 		}	else	{
 			timeout++;
@@ -180,6 +194,11 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 				#ifdef LIAT
 				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				#endif
+				#ifdef TIMEOUT
+				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				#endif
+				
+				pm_sukses=0;
 				break;
 			}
 		}
@@ -187,24 +206,9 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	vTaskDelay(5);
 	FIO0SET = RXDE;
+
 	/*
-	if (urut_PM710==5) {
-		printf("Nilai KTA   : ");
-		for (i=0; i<jum_balik; i++) {
-			printf("%02hhX ", buf_rx[i]);	
-		}
-		printf("\r\n");
-	}
-	if (urut_PM710==6) {
-		printf("Satuan  KTA : ");
-		for (i=0; i<jum_balik; i++) {
-			printf("%02hhX ", buf_rx[i]);	
-		}
-		printf("\r\n");
-	}
-	//*/
-	/*
-		st = (char *) &pmod;
+		st = (char *) &buf_rx;
 	cekcrc = usMBCRC16((unsigned char *) &st, sizeof (st)-2);
     lo = (unsigned char) ((cekcrc & 0xFF00) >> 8);
     hi = (unsigned char) (cekcrc & 0x00FF);
@@ -212,12 +216,13 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
     printf("\r\nisi crc lo: %02hX, hi: %02hX\r\n", lo, hi);
     //*/
     
-	if (pmx[no].tipe==0)	{	// 710
+	if (pmx[no].tipe==0 && pm_sukses)	{	// 710
 	#ifdef TIPE_PM710
 		portENTER_CRITICAL();
 		taruh_data_710(no, urut_PM710);
+		portEXIT_CRITICAL();
 	#endif
-	} else if (pmx[no].tipe==1) {
+	} else if (pmx[no].tipe==1 && pm_sukses) {
 	#ifdef TIPE_PM810
 		portENTER_CRITICAL();
 		taruh_data_810(no, urut_PM710);
@@ -235,17 +240,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	//*/
 	
-/*
-	//urut_PM710++;
-	//if (urut_PM710 > 6) urut_PM710 = 0;
-	urut_PM710++;
-	#ifdef PAKAI_KTA
-	if (urut_PM710 > 6) 
-	#else
-	if (urut_PM710 > 4) 
-	#endif
-	urut_PM710 = 0;
-//*/
+
 }
 
 
@@ -270,7 +265,7 @@ void ambil_pm(int k) {
 	//while(i<JML_REQ_PM) {
 	//FIO0CLR = RXDE;		// mode brutal
 	while(i<req) {
-		vTaskDelay(2);			// MIN: 2
+		vTaskDelay(5);			// MIN: 2
 		//printf("%s() almt %d, k: %d, i: %d\r\n", __FUNCTION__, pmx[k].alamat, k, i);
 		proses_pm(k, pmx[k].alamat, i);		// i: PM810: 8 request (0-7), k: 
 		i++;
@@ -317,7 +312,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	
 	vTaskDelay(1000);
 	for (;;)	{
-		//vTaskDelay(20);
+		vTaskDelay(200);
 		alamatClient = (int) pmx[k].alamat;
 		
 		if ( (k<JML_SUMBER) && (alamatClient>0) ) {

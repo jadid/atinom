@@ -143,7 +143,7 @@ int main( void )
 	init_led_utama();
 	start_ether();
 
-#ifdef PAKAI_PM	
+#if (defined(PAKAI_PM) && defined(AMBIL_PM))
 	init_task_pm();
 #endif
 	init_shell();

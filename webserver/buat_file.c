@@ -15,7 +15,7 @@
 #include "queue.h"
 
 #ifdef BOARD_TAMPILAN
-	#define BESAR_BUF_HTTP	10		//8192
+	#define BESAR_BUF_HTTP	1024		//8192
 #else
 	#define BESAR_BUF_HTTP	8192		//8192
 #endif

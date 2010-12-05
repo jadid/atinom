@@ -230,7 +230,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				if (jmlData>0) {
 					
 					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
-					portENTER_CRITICAL();
+					//portENTER_CRITICAL();
 					//sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
 					strcpy(datakeserver, envx->berkas);
 					strcat(datakeserver, "?i=");
@@ -242,7 +242,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					strcat(datakeserver, il);
 					strcat(datakeserver, "&");
 					strcat(datakeserver, dl);
-					portEXIT_CRITICAL();
+					//portEXIT_CRITICAL();
 					//printf("datakeserver: %s\r\n",datakeserver);
 					webclient_get(ipdest, 80, datakeserver);
 					

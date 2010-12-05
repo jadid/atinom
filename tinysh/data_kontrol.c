@@ -85,7 +85,7 @@ int cek_data(int argc, char **argv)
 		p_dt = (char *) ALMT_DT_SET;
 
 		judul(" Data Setting\r\n");
-		printf(" no.  :       Nama       :    Data    : Satuan");
+		printf("  No  : ID.  :       Nama       :    Data    : Satuan");
 		#ifdef PAKAI_SELENOID
 			printf(": Alr_H : Alr_HH");
 			printf("Rly : ");
@@ -96,7 +96,7 @@ int cek_data(int argc, char **argv)
 		//*
 		for (i=0; i<(sizeof(data_f)/sizeof(float)); i++)	{
 			#if 0
-			printf(" (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
+			printf("%3d : (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", i+1, (i+1), \
 				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#endif
@@ -135,12 +135,12 @@ int cek_data(int argc, char **argv)
 				p_dt = (char *) ALMT_DT_SET;
 				
 				judul(" Data Setting\r\n");
-				printf(" no.  :       Nama       :    Data    : Satuan : &Memory\r\n");
+				printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
 				garis_bawah();
 
 				if (sumber[sumb-1].alamat==0) {		// Modul Monita
 					for (i=0; i<PER_SUMBER; i++) {
-						printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
+						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
 						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus

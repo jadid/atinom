@@ -151,7 +151,7 @@ int ganti_kata(char *dest, char *src) {
 }
 
 #ifdef PAKAI_PM
-	char * judulnya_pm[] = {
+	char * judulnya_pm[] __attribute__ ((section (".lokasi_font"))) = {
 		"kWh",				// 0 //
 		"kVAh",
 		"kVArh",
@@ -187,7 +187,7 @@ int ganti_kata(char *dest, char *src) {
 		"Power Faktor T"
 	};
 	
-	char * satuannya_pm[] = {
+	char * satuannya_pm[] __attribute__ ((section (".lokasi_font"))) = {
 		"kWh",		// 0 //
 		"kVAh",
 		"kVArh",

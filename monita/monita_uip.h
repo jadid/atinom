@@ -23,7 +23,12 @@
 //#ifdef PAKAI_PM
 #ifdef BANYAK_SUMBER
 	// di sektor 26, harusnya bisa nyampe 120 sumber		--> masalahnya jml datanya terbatas
-	#define JML_SUMBER	5
+	#if defined(TAMPILAN_MONITA_STD)
+		#define JML_SUMBER	15
+	#else
+		#define JML_SUMBER	5
+	#endif
+	//#define JML_SUMBER	5
 	//#define JML_SUMBER	10
 #else
 	#define JML_SUMBER	1

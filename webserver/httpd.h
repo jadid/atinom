@@ -46,8 +46,8 @@ struct httpd_state {
   char inputbuf[258];	/* 50 */
   char filename[512];	/* 20 */
 #else
-  char inputbuf[128];	/* 50 */
-  char filename[128];	/* 20 */
+  char inputbuf[512];	/* 50 */
+  char filename[512];	/* 20 */
 #endif
   char state;
   struct httpd_fs_file file;

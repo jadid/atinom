@@ -12,10 +12,10 @@
 #include <float.h>
 
 #ifdef AMBIL_PM
-#define TUNGGU_PM_TX	10
-#define TUNGGU_PM_RX	10
-//#define  LIAT
+#define TUNGGU_PM_TX	100
+#define TUNGGU_PM_RX	200
 
+#define  LIAT
 //#define TIMEOUT
 
 #include "../monita/monita_uip.h"
@@ -206,14 +206,20 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	vTaskDelay(5);
 	FIO0SET = RXDE;
-
+	
+	st = (char *) &buf_rx;
+	printf("\r\nIsi bufrx: ");
+	for (i=0; i< sizeof(buf_rx); i++)	{
+		printf("%2X ", (unsigned char) *st++);
+	}
+	printf("\r\n");
 	/*
-		st = (char *) &buf_rx;
+	st = (char *) &buf_rx;
 	cekcrc = usMBCRC16((unsigned char *) &st, sizeof (st)-2);
     lo = (unsigned char) ((cekcrc & 0xFF00) >> 8);
     hi = (unsigned char) (cekcrc & 0x00FF);
     
-    printf("\r\nisi crc lo: %02hX, hi: %02hX\r\n", lo, hi);
+    printf("\r\nisi crc lo: %02hX, hi: %02hX, %s\r\n", lo, hi, buf_rx);
     //*/
     
 	if (pmx[no].tipe==0 && pm_sukses)	{	// 710
@@ -228,6 +234,8 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		taruh_data_810(no, urut_PM710);
 		portEXIT_CRITICAL();
 	#endif
+	} else {
+		printf("^^^^GAGAL sedot PM !!!!\r\n");
 	}
 	/*
 	// simpan data //
@@ -327,11 +335,14 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 				#ifdef PAKAI_KTA
 				
 				#endif
+				vTaskDelay(10);
+				//*
+				portENTER_CRITICAL();
+				memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
+				portEXIT_CRITICAL();
+				//*/
 			}
 			
-			portENTER_CRITICAL();
-			memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
-			portEXIT_CRITICAL();
 		}
 		
 		k++;
@@ -342,7 +353,8 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 		#ifdef LIAT
 		if (loop==100) {
 			for (z=0; z<JML_SUMBER; z++) {
-				//printf("frek %d: %f, asli: %f\r\n", z, data_f[z*PER_SUMBER+10], asli_PM710[z].frek);
+				if (pmx[z].status==1 && pmx[z].tipe<2)
+					printf("frek %d: %f, asli: %f\r\n", z, data_f[z*PER_SUMBER+10], asli_PM710[z].frek);
 			}
 			loop=0;	
 		}
@@ -357,7 +369,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 void init_task_pm(void)
 {
 	xTaskCreate( pm_task, ( signed portCHAR * ) "PM_S", (configMINIMAL_STACK_SIZE * 10), \
-		NULL, tskIDLE_PRIORITY + 1, &hdl_proses_pm );	
+		NULL, tskIDLE_PRIORITY - 10, &hdl_proses_pm );	
 }
 
  

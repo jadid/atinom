@@ -83,7 +83,11 @@
 
 int kirimURL=0;
 char terkirimURL=0;
+int noawal;
+
 static struct webclient_state s;
+
+extern int noawal;
 
 /*-----------------------------------------------------------------------------------*/
 char *
@@ -135,7 +139,7 @@ webclient_close(void)
   s.state = WEBCLIENT_STATE_CLOSE;
 }
 /*-----------------------------------------------------------------------------------*/
-int kirimModul(int burst, int sumber, char *il, char *dl) {
+int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	char id[30], dt[30];
 	int i=0,z=0;
 	int jmlAktif=0;
@@ -178,7 +182,8 @@ int kirimModul(int burst, int sumber, char *il, char *dl) {
 			}
 		}
 	} else {
-		for (i=0; i<PER_SUMBER; i++) {
+		for (i=noawal; i<PER_SUMBER; i++) {
+			noawal=i+1;
 			if (konfig[PER_SUMBER*sumber+i].status) {
 				jmlAktif++;
 				//if (i==0) {
@@ -191,9 +196,13 @@ int kirimModul(int burst, int sumber, char *il, char *dl) {
 				}
 				strcat(il,id);
 				strcat(dl,dt);
-			}
+			} 
+			if (jmlAktif==12)
+				break; 
+				
 		}
 	}
+	//printf("no awal: %d\r\n", noawal);
 	return jmlAktif;
 }
 

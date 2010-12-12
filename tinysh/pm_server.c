@@ -15,7 +15,7 @@
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	200
 
-#define  LIAT
+//#define  LIAT
 //#define TIMEOUT
 
 #include "../monita/monita_uip.h"
@@ -207,12 +207,15 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	vTaskDelay(5);
 	FIO0SET = RXDE;
 	
+	#ifdef LIAT
 	st = (char *) &buf_rx;
 	printf("\r\nIsi bufrx: ");
 	for (i=0; i< sizeof(buf_rx); i++)	{
 		printf("%2X ", (unsigned char) *st++);
 	}
 	printf("\r\n");
+	
+	#endif
 	/*
 	st = (char *) &buf_rx;
 	cekcrc = usMBCRC16((unsigned char *) &st, sizeof (st)-2);

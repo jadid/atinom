@@ -143,13 +143,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		webclient_init();
 		printf("webclient inited !\r\n");
 		unsigned char datakeserver[1024];
-		int wclient=0, jmlData=0, selang, jmlsumbernya, sumbernya=0;
-		int noPMaktif[JML_SUMBER];
+		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
+		//int noPMaktif[JML_SUMBER];
 		char il[256], dl[512];
 		char ipdest[15], angkaangka[5];
 		extern int kirimURL;
 		extern char terkirimURL;
+		extern int  noawal;
 		int tiapKirim=950;
+		int maxkirim=12;
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -160,6 +162,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	extern int target_kirim;
 	target_kirim = 4-1;
 	sumber_datanya=3-1;
+
 	//giliran=1-1;
 	
 	printf("Kirim Balik inited, Target data: sumber %d, target kirim: %d !\r\n", sumber_datanya+1, target_kirim+1);
@@ -190,17 +193,19 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		if (envx->statusWebClient==1) {
 			wclient++;
 			if (envx->burst==1) {
-				jmlData=kirimModul(1, 0, il, dl);
-				jmlsumbernya=1;
+				jmlData=kirimModul(1, 0, 0, il, dl);
+				//jmlsumbernya=1;
 				tiapKirim = 500;
 			} else 
 			{			// kirim 1-1
+				/*
 				#ifdef BANYAK_SUMBER
 					struct t_sumber *pmx;
 					pmx = (char *) ALMT_SUMBER;
 					jmlsumbernya=0;
 					for(selang=0; selang<JML_SUMBER; selang++) {
 						if (pmx[selang].status==1) {
+							printf("selang: %d, status: %d\r\n", selang, pmx[selang].status);
 							noPMaktif[jmlsumbernya]=selang;
 							jmlsumbernya++;
 						}
@@ -208,25 +213,57 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 					if (jmlsumbernya==0) {
 						jmlsumbernya=1;
 					}
-					jmlData=kirimModul(0, noPMaktif[sumbernya], il, dl);
-					
+					//jmlData=kirimModul(0, noPMaktif[sumbernya], 0, il, dl);
+					printf("jml Data: %d, sumbernya: %d\r\n", jmlData, sumbernya);
 					// kenapa ini ??? harusnya tiap detik, knapa jadi tiap 4 detik ????
 					//tiapKirim = (int) (100/jmlsumbernya);
 					tiapKirim = (int) (195/jmlsumbernya);
 					//printf("wclient: %d\r\n", wclient);
 				#endif
+				//*/
 			}	
 			if (wclient == tiapKirim) {
 				ngitung++;
-				//printf("kirim: %d, jmlSumber: %d, wclient: %d, sumbernya: %d\r\n", ngitung, jmlsumbernya, wclient, sumbernya);
-
-				wclient = 0;				
-				if (sumbernya+1==jmlsumbernya) {		// dipakai buat kirim modul sumber lainnya 
-					sumbernya=0;
-				} else {
-					sumbernya++;
+				
+				struct t_sumber *sumber;
+				sumber = (char *) ALMT_SUMBER;
+				if (!flag_nos) {
+					nos++;
+					while(sumber[nos-1].status!=1) {	// cari modul sumber aktif
+						if (nos>JML_SUMBER) {
+							nos=0;
+							jmlsumbernya=0;
+						}
+						nos++;
+					}
+				}
+				jmlsumbernya++;
+				//printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
+				
+				// cek datanya PM ?? //
+				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1)	{	// PM710 || PM810
+					jmlData=kirimModul(0, nos-1, noawal, il, dl);
+					if (jmlData==12) {
+						flag_nos=1;
+					} else {		// sudah habis, reset ke 0
+						flag_nos=0;
+						noawal=0;
+					}
+					//printf("nilai noawal: %d, flagnos: %d\r\n", noawal, flag_nos);
+				} else	{
+					jmlData=kirimModul(0, nos-1, 0, il, dl);
+					noawal=0;
 				}
 				
+				// hitung jml loop kirim ke server
+				if (flag_sumber<jmlsumbernya) {
+					flag_sumber=jmlsumbernya;
+					tiapKirim=950/jmlsumbernya;
+				}
+				
+				
+				wclient = 0;				
+
 				if (jmlData>0) {
 					
 					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);

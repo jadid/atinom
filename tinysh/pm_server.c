@@ -235,9 +235,12 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		taruh_data_810(no, urut_PM710);
 		portEXIT_CRITICAL();
 	#endif
-	} else {
+	} 
+	#ifdef LIAT 
+	else {
 		printf("^^^^GAGAL sedot PM !!!!\r\n");
 	}
+	#endif
 	/*
 	// simpan data //
 	for (i=0; i<JML_SUMBER; i++) {

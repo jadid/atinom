@@ -224,8 +224,9 @@ void taruh_data_710(int no_slave, int urt)	{
 
 		data_PM710[no_slave].kvar = buf[5+HD];
 		data_PM710[no_slave].kvar = (data_PM710[no_slave].kvar << 8) | buf[6+HD];
-		asli_PM710[no_slave].kvar = data_PM710[no_slave].kvar * satuan_kw[no_slave];
-
+		asli_PM710[no_slave].kvar = (signed) data_PM710[no_slave].kvar * satuan_kw[no_slave];
+		printf("kvar asli: %.2f, kvar data: %d\r\n", asli_PM710[no_slave].kvar, (signed) data_PM710[no_slave].kvar);
+		
 		data_PM710[no_slave].pf = buf[7+HD];
 		data_PM710[no_slave].pf = (data_PM710[no_slave].pf << 8) | buf[8+HD];
 		asli_PM710[no_slave].pf = data_PM710[no_slave].pf * 0.0001;
@@ -726,28 +727,29 @@ void taruh_data_710(int no_slave, int urt)	{
 			if (data_PM710[pm_dibaca].kvarA == 32768)
 				asli_PM710[pm_dibaca].kvarA = 0;
 			else
-				asli_PM710[pm_dibaca].kvarA = data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca];
+				asli_PM710[pm_dibaca].kvarA = (signed short) data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca];
 
 			data_PM710[pm_dibaca].kvarB = buf[13+HD];
 			data_PM710[pm_dibaca].kvarB = (data_PM710[pm_dibaca].kvarB << 8) + buf[14+HD];
 			if (data_PM710[pm_dibaca].kvarB == 32768)
 				asli_PM710[pm_dibaca].kvarB = 0;
 			else
-				asli_PM710[pm_dibaca].kvarB = data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca];
+				asli_PM710[pm_dibaca].kvarB = (signed short) data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca];
 
 			data_PM710[pm_dibaca].kvarC = buf[15+HD];
 			data_PM710[pm_dibaca].kvarC = (data_PM710[pm_dibaca].kvarC << 8) + buf[16+HD];
 			if (data_PM710[pm_dibaca].kvarC == 32768)
 				asli_PM710[pm_dibaca].kvarC = 0;
 			else
-				asli_PM710[pm_dibaca].kvarC = data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca];
+				asli_PM710[pm_dibaca].kvarC = (signed short) data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca];
 
 			data_PM710[pm_dibaca].kvar = buf[17+HD];
 			data_PM710[pm_dibaca].kvar = (data_PM710[pm_dibaca].kvar << 8) + buf[18+HD];
 			if (data_PM710[pm_dibaca].kvar == 32768)
 				asli_PM710[pm_dibaca].kvar = 0;
 			else
-				asli_PM710[pm_dibaca].kvar = data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca];
+				asli_PM710[pm_dibaca].kvar = (signed short) data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca];
+			//printf("kvar asli: %.2f, kvar data: %d\r\n", asli_PM710[pm_dibaca].kvar, (signed short) data_PM710[pm_dibaca].kvar);
 
 			// kvaA, kvaB, kvaC, kva
 			data_PM710[pm_dibaca].kvaA = buf[19+HD];

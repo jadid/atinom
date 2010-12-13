@@ -218,22 +218,26 @@ void monita_appcall(void)
 		}
 		else 
 		{
+			/*
 			sprintf(ipne, " :%d.%d.%d.%d", \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 			printf("Unknown request dari %s\n", ipne);
+			//*/
 			uip_close();	
 		}	
 	}
 	
 	if (uip_poll())
 	{
+		/*
 		sprintf(ipne, " :%d.%d.%d.%d", \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 		printf("Invalid pool %s\n", ipne);
+		//*/
 		uip_close();	
 	}
 }
@@ -454,7 +458,7 @@ void samb_appcall(void)	{
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 			//debug_out_h("force to close %s", ipne);
-			printf("force to close %s", ipne);
+			//printf("force to close %s", ipne);
 			uip_close();
 			return;
 		}
@@ -1061,22 +1065,26 @@ void terima_balik_appcall(void)
 		}
 		else 
 		{
+			/*
 			sprintf(ipne, " :%d.%d.%d.%d", \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 			printf("Unknown request dari %s\n", ipne);
+			//*/
 		}
 		uip_close();	
 	}
 	
 	if (uip_poll())
 	{
+		/*
 		sprintf(ipne, " :%d.%d.%d.%d", \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
 			
 		printf("Invalid pool %s\n", ipne);
+		//*/
 		uip_close();	
 	}
 }	

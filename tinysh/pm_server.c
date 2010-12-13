@@ -54,7 +54,7 @@ struct t_kontrol_PM kontrol_PM[JML_SUMBER];
 static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	unsigned int jum_balik;
 	int i,j, k;
-	char *st;
+	unsigned char *st, *cst, *aasd;
 	int timeout=0;
 	unsigned char lo, hi;
 	unsigned short cekcrc;
@@ -139,6 +139,7 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	
 	st = (char *) &pmod;
 	FIO0SET = TXDE;		// on	---> bisa kirim
+	//FIO0CLR = RXDE;
 	for (i=0; i< sizeof(pmod); i++)	{
 		#ifdef LIATx
 		printf("%02hX ", *st);
@@ -206,25 +207,22 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	}
 	vTaskDelay(5);
 	FIO0SET = RXDE;
-	
-	#ifdef LIAT
-	st = (char *) &buf_rx;
-	printf("\r\nIsi bufrx: ");
-	for (i=0; i< sizeof(buf_rx); i++)	{
-		printf("%2X ", (unsigned char) *st++);
-	}
-	printf("\r\n");
-	
-	#endif
-	/*
-	st = (char *) &buf_rx;
-	cekcrc = usMBCRC16((unsigned char *) &st, sizeof (st)-2);
+
+	//printf("\r\njml balik: %d ", jum_balik);
+	cekcrc = usMBCRC16((unsigned char *) &buf_rx[8], jum_balik-2);
     lo = (unsigned char) ((cekcrc & 0xFF00) >> 8);
     hi = (unsigned char) (cekcrc & 0x00FF);
     
-    printf("\r\nisi crc lo: %02hX, hi: %02hX, %s\r\n", lo, hi, buf_rx);
+    //printf("isi crc hi: %02hX, lo: %02hX\r\n", hi, lo);
+    //*
+    if (hi==buf_rx[jum_balik+6] && lo==buf_rx[jum_balik+7])
+    	pm_sukses=1;
+    	//printf("______SAMA_______");
+    else {
+    	//printf("______TIDAK_____SAMA_______\r\n");
+    	pm_sukses=0;
+    }
     //*/
-    
 	if (pmx[no].tipe==0 && pm_sukses)	{	// 710
 	#ifdef TIPE_PM710
 		portENTER_CRITICAL();

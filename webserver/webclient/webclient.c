@@ -140,7 +140,7 @@ webclient_close(void)
 }
 /*-----------------------------------------------------------------------------------*/
 int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
-	char id[30], dt[30];
+	char id[16], dt[16];
 	int i=0,z=0;
 	int jmlAktif=0;
 		

@@ -142,10 +142,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		int ngitung=0;
 		webclient_init();
 		printf("webclient inited !\r\n");
-		unsigned char datakeserver[1024];
+		unsigned char datakeserver[512];
 		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
-		char il[256], dl[512];
+		char il[256], dl[256];
 		char ipdest[15], angkaangka[5];
 		extern int kirimURL;
 		extern char terkirimURL;
@@ -445,7 +445,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 
 void start_ether(void)
 {	//8
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 15), \
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 12), \
 		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 

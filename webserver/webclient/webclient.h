@@ -50,7 +50,7 @@
 #include "webclient-strings.h"
 #include "uipopt.h"
 
-#define WEBCLIENT_CONF_MAX_URLLEN 512
+#define WEBCLIENT_CONF_MAX_URLLEN 256
 
 struct webclient_state {
   u8_t timer;

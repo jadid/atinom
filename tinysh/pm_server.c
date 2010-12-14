@@ -208,21 +208,17 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 	vTaskDelay(5);
 	FIO0SET = RXDE;
 
-	//printf("\r\njml balik: %d ", jum_balik);
 	cekcrc = usMBCRC16((unsigned char *) &buf_rx[8], jum_balik-2);
     lo = (unsigned char) ((cekcrc & 0xFF00) >> 8);
     hi = (unsigned char) (cekcrc & 0x00FF);
     
     //printf("isi crc hi: %02hX, lo: %02hX\r\n", hi, lo);
-    //*
     if (hi==buf_rx[jum_balik+6] && lo==buf_rx[jum_balik+7])
     	pm_sukses=1;
-    	//printf("______SAMA_______");
     else {
-    	//printf("______TIDAK_____SAMA_______\r\n");
     	pm_sukses=0;
     }
-    //*/
+
 	if (pmx[no].tipe==0 && pm_sukses)	{	// 710
 	#ifdef TIPE_PM710
 		portENTER_CRITICAL();
@@ -241,18 +237,6 @@ static void proses_pm (int no, int alamatPM, int urut_PM710)	{
 		printf("^^^^GAGAL sedot PM !!!!\r\n");
 	}
 	#endif
-	/*
-	// simpan data //
-	for (i=0; i<JML_SUMBER; i++) {
-		if (sumber[i].status == 1 && sumber[i].alamat > 0) {
-			//printf("masuk data SUMBER: %d\r\n",i+1);
-			memcpy( (char *) &data_f[i*PER_SUMBER], (char *) &asli_PM710[0], (PER_SUMBER*sizeof (float)) );
-			
-		}
-	}
-	//*/
-	
-
 }
 
 

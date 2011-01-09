@@ -7,11 +7,14 @@
 */
 
 
+#ifdef AMBIL_PM
+
+#ifndef __PM_SERVER__
+#define __PM_SERVER__
 
 #include <math.h>
 #include <float.h>
 
-#ifdef AMBIL_PM
 #define TUNGGU_PM_TX	100
 #define TUNGGU_PM_RX	200
 
@@ -400,5 +403,6 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk) {
 #endif
 //*/
 
+#endif
 
 #endif

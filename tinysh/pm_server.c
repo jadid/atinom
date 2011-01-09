@@ -360,7 +360,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 void init_task_pm(void)
 {
 	xTaskCreate( pm_task, ( signed portCHAR * ) "PM_S", (configMINIMAL_STACK_SIZE * 10), \
-		NULL, tskIDLE_PRIORITY - 10, &hdl_proses_pm );	
+		NULL, tskIDLE_PRIORITY + 1, &hdl_proses_pm );	
 }
 
  

@@ -101,6 +101,10 @@
 #include "smodem.c"
 #endif
 
+#ifdef PAKAI_SMS
+#include "../gsm/sms.c"
+#endif
+
 #ifdef PAKAI_CRON
 #include "cron.c"
 #endif
@@ -723,7 +727,6 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp_exe","proses gsm_ftp","[args]",
 
  
 
-
 extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
 {
@@ -834,6 +837,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_ftp_cmd);
 	tinysh_add_command(&hapus_filenya_cmd);
 #endif	
+
+#ifdef PAKAI_SMS
+	tinysh_add_command(&cek_pulsa_cmd);
+	tinysh_add_command(&kirim_sms_cmd);
+	tinysh_add_command(&hapus_sms_cmd);
+#endif 
 
 #ifdef PAKAI_CRON
 	tinysh_add_command(&set_cron_cmd);

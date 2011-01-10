@@ -84,6 +84,7 @@
 
 #define PAKAI_SERIAL_2
 #define PAKAI_GSM_FTP		2		// nyambung ke SERIAL 2
+#define PAKAI_SMS		2			// nyambung ke SERIAL 2
 //*/
 #define VERSI_KONFIG	2
 

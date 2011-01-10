@@ -842,6 +842,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_pulsa_cmd);
 	tinysh_add_command(&kirim_sms_cmd);
 	tinysh_add_command(&hapus_sms_cmd);
+	tinysh_add_command(&baca_sms_cmd);
 #endif 
 
 #ifdef PAKAI_CRON

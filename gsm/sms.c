@@ -25,6 +25,8 @@
 #define CTRL_Z	26	/* END of TEXT lihat ascii code http://en.wikipedia.org/wiki/ASCII */
 
 char str_sms[255];
+char pengirim[20];
+int konter_sms=30000;
 
 int cek_pulsa_exe();
 int kirim_sms_exe();
@@ -38,79 +40,130 @@ static tinysh_cmd_t baca_sms_cmd={ 0,"baca_sms","baca sms","[nomer]", baca_sms_e
 
 int kirim_sms_ascii(char * dest, char * isiSMS) {	
 	// set kirim sms modem ascii
-	sprintf(str_sms, "AT+CMGF=1\r\n");		printf("cmd: %s\t", str_sms);
+	char pesan[255];
+	
+	strcpy(pesan, isiSMS);
+	printf("Isi Pesan: %s\r\n", pesan);
+	sprintf(str_sms, "AT+CMGF=1\r\n");		printf("cmd: %s", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
 	strcpy(str_sms, "");
-	baca_serial(str_sms, 20, 5);
+	baca_serial(str_sms, 20, 100);
 	printf("isi: %s\r\n", str_sms);
 	if (strncmp(str_sms, "AT+CMGF", 7) == 0)	{
 		//strcpy(str_sms, "");
-		baca_serial(str_sms, 20, 5);
-		if (strncmp(str_sms, "OK", 2) != 0)	{
-			printf("GAGAL kirim modem ascii\r\n");
-			return -1;
-		}
+		baca_serial(str_sms, 20, 100);
 	}
-	else if (strncmp(str_sms, "OK", 2) != 0)	{
+	printf("isi2: %s\r\n", str_sms);
+	if (strncmp(str_sms, "OK", 2) != 0)	{
 		printf("GAGAL kirim modem ascii\r\n");
 		return -1;
 	}
 	vTaskDelay(10);
 	
 	// no tujuan SMS
-	sprintf(str_sms, "AT+CMGW=\"%s\"\r\n", dest);		printf("cmd: %s", str_sms);
+	if (dest[0]=='\"')	{
+		sprintf(str_sms, "AT+CMGW=%s\r\n", dest);		
+	} else {
+		sprintf(str_sms, "AT+CMGW=\"%s\"\r\n", dest);
+	}
+	printf("cmd: %s", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
 	strcpy(str_sms, "");
-	baca_serial(str_sms, 50, 20);
+	baca_serial(str_sms, 250, 100);
 	printf("respon: %s \r\n", str_sms);
 	
 	if (strncmp(str_sms, "AT+CMGW", 7) == 0)	{
-		strcpy(str_sms, "");
-		baca_serial(str_sms, 2, 20);
+		str_sms[0]='\0';
+		baca_serial(str_sms, 255, 100);
 		printf("isinya: %s\r\n", str_sms);
-		if (strncmp(str_sms, ">", 1) != 0)	{
-			printf("GAGAL text sms\r\n");
-			return -1;
-		}
 	}
-	else if (strncmp(str_sms, ">", 1) != 0)	{
+	if (strncmp(str_sms, ">", 1) != 0)	{
 		printf("GAGAL text sms\r\n");
 		return -1;
 	}
 	
 	// isi Pesan SMS
-	strcpy(str_sms, "");
-	sprintf(str_sms, "%s", isiSMS);		printf("isi SMS: %s\r\n", str_sms);
+	strcpy(str_sms, pesan);				printf("isi SMS: %s\r\n", str_sms);
+	//sprintf(str_sms, "%s", pesan);		printf("isi SMS: %s\r\n", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
 	
-	sprintf(str_sms, "%c", CTRL_Z);		printf("___kirim CTRL-Z___\r\n");
+	sprintf(str_sms, "%c", CTRL_Z);		//printf("___kirim CTRL-Z___\r\n");
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
-	strcpy(str_sms, "");
-	baca_serial(str_sms, 20, 50);
-	printf("%s ", str_sms);
 	
+	//strcpy(str_sms, "");
+	str_sms[0]='\0';
+	baca_serial(str_sms, 120, 100);
+	printf("isi: %s\r\n", str_sms);
+	
+	//strcpy(str_sms, "");
+	str_sms[0]='\0';
+	baca_serial(str_sms, 120, 100);
+	printf("respon: %s\r\n", str_sms);
+
 	if (strncmp(str_sms, "+CMGW", 5) != 0)	{
 		printf("GAGAL dapat antrian\r\n");
 		return -1;
 	}
-	vTaskDelay(10);
 	
-	// Kirimkan SMS !!!
-	int antri=8;
-	sprintf(str_sms, "AT+CMSS=%d\r\n", antri);		printf("cmd: %s\t", str_sms);
-	/*
-	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	vTaskDelay(10);
+	//return 0;
+	
+	int antri=0;
+	char *piM;
+  	
+  	piM=strstr(str_sms,":");
+  	if (piM!=NULL) {
+		antri = atoi(piM+1);
+		//printf("antri: %s: %d : %d\r\n", piM, atoi(piM+1), antri);
+	}
 	
 	strcpy(str_sms, "");
-	baca_serial(str_sms, 20, 50);
-	if (strncmp(str_sms, "OK", 2) == 0) {
-		printf("berhasil kirim sms !! \r\n"); 
-	} else {
-		if (strncmp(str_sms, "OK", 2) == 0) 
+	baca_serial(str_sms, 120, 50);
+	printf("CMGW OK?: %s\r\n", str_sms);
+
+	// Kirimkan SMS !!!
+	if (antri>0) {
+		sprintf(str_sms, "AT+CMSS=%d\r\n", antri);		printf("cmd: %s", str_sms);
+		serX_putstring(PAKAI_GSM_FTP, str_sms);
+		
+		strcpy(str_sms, "");
+		baca_serial(str_sms, 120, 20);
+		printf("1. isi: %s\r\n", str_sms);
+
+		
+		//if (strncmp(str_sms, "AT+CMSS", 7) == 0) {
+			strcpy(str_sms, "");
+			baca_serial(str_sms, 120, 20);
+			printf("1.hasil: %s\r\n", str_sms);
+		//}
+		
+		//if (strncmp(str_sms, "+CMSS", 5) == 0) {
+			strcpy(str_sms, "");
+			baca_serial(str_sms, 120, 20);
+			printf("2.hasil: %s\r\n", str_sms);
+		//}
+			strcpy(str_sms, "");
+			baca_serial(str_sms, 120, 20);
+			printf("3.hasil: %s\r\n", str_sms);
+			
+			strcpy(str_sms, "");
+			baca_serial(str_sms, 120, 20);
+			printf("4.hasil: %s\r\n", str_sms);
+			
+			strcpy(str_sms, "");
+			baca_serial(str_sms, 120, 20);
+			printf("5.hasil: %s\r\n", str_sms);
+		/*
+		if (strncmp(str_sms, "OK", 2) != 0) {
+			printf("GAGAL kirim sms !! \r\n"); 
+			return -1;
+		}
+		//*/
+		printf("siap hapus pesan!! \r\n");
+		hapus_sms(antri);
 	}
-	//*/
 	
-	//hapus sms(antri);
+	
 	
 	status_modem = 0;
 	return 1;
@@ -125,8 +178,10 @@ int kirim_sms_exe() {
 	}
 	status_modem=1;
 	
+	flush_serial_sms();
 	printf("kirim sms\r\n");
-	kirim_sms_ascii("02192254186", "testing modem lagi");
+	sprintf(str_sms,"test modem %d", konter_sms++);
+	kirim_sms_ascii("02192254186", str_sms);
 	status_modem=0;
 	
 	return 1;
@@ -155,7 +210,7 @@ int cari_pengirim(char *nomor, char *sms) {
 
 int baca_sms(int indexnya) {
 	char hasilx[128];
-	flash_serial_sms();
+	flush_serial_sms();
 	strcpy(str_sms, "");
 	vTaskDelay(5);
 	sprintf(hasilx, "AT+CMGR=%d\r\n", indexnya);		printf("cmd: %s", hasilx);	
@@ -172,6 +227,7 @@ int baca_sms(int indexnya) {
 		printf("RESPON: %s\r\n", hasilx);
 		cari_pengirim(hasilx, hasilx);
 		printf("Pengirim: %s\r\n", hasilx);
+		strcpy(pengirim, hasilx);
 		baca_serial(hasilx, 120, 50);
 	}
 	//strcpy(str_sms, "");
@@ -221,14 +277,14 @@ int baca_sms_exe(int argc, char **argv) {
 	if (strncmp(str_sms, "pulsa",5)==0) {
 		vTaskDelay(500);
 		cek_pulsa();
+		printf("SMS %s, %s\r\n", pengirim, str_sms);
 		vTaskDelay(500);
-		
+		kirim_sms_ascii(pengirim, str_sms);
 	}
-	//hapus_sms(no);
 	status_modem = 0;
 }
 
-void flash_serial_sms() {
+void flush_serial_sms() {
 	int i;
 	int loop;
 	
@@ -248,14 +304,21 @@ void flash_serial_sms() {
 }
 
 int hapus_sms(int no) {
-	sprintf(str_sms, "AT+CMGD=%d\r\n", no);	//printf("cmd: %s\r\n", str_sms);
+	strcpy(str_sms,"");
+	sprintf(str_sms, "AT+CMGD=%d\r\n", no);	printf("cmd: %s\r\n", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	
+	
+	baca_serial(str_sms, 20, 50);
+	printf("1.hasil: %s\r\n", str_sms);
 
-	baca_serial(str_sms, 20, 5);
+
 	if (strncmp(str_sms, "AT+CMGD", 7) == 0)	{
 		strcpy(str_sms, "");
-		baca_serial(str_sms, 20, 5);
+		baca_serial(str_sms, 20, 50);
+		printf("2.hasil: %s\r\n", str_sms);
 	}
+	
 	if (strncmp(str_sms, "OK", 2) == 0)	{
 		printf("SMS no %d dihapus\r\n", no);
 	} else {
@@ -316,10 +379,16 @@ int isiSMSnya(char *hasil, char *str) {
 	if (pch!=NULL)	{
   		awal = pch-str+1;
   	}
-  	
+  	/*
   	pstr=strstr(pch+1,"\"");
-	if (pstr!=NULL)	{
+	if (pch!=NULL)	{
+		
   		akhir = pstr-str+1;
+  	}
+  	//*/
+  	pstr=strstr(pch+1,"f");
+	if (pstr!=NULL)	{
+  		akhir = pstr-str+20;
   	}
   	strcpy(hasil, pch+1);
   	hasil[akhir-awal-1]='\0';
@@ -328,6 +397,7 @@ int isiSMSnya(char *hasil, char *str) {
 
 int cek_pulsa(void)	{	
 	//char hasil[128];
+	flush_serial_sms();
 	sprintf(str_sms, "AT+CUSD=1,%s\r\n", PULSA_SIMPATI);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
 	

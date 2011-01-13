@@ -51,7 +51,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	// set kirim sms modem ascii
 	char pesan[128];
 	
-	vTaskDelay(500);
+	vTaskDelay(100);
 	flush_modem();
 	strcpy(pesan, isiSMS);
 	//printf("Isi Pesan: %s\r\n", str_sms);
@@ -262,11 +262,6 @@ int baca_sms_semua() {
 		baca_serial(hasilx, 120, 50);
 		vTaskDelay(50);
 		printf("___isi: %s\r\n", hasilx);
-		
-		//if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0))
-		//	break;
-		//else;
-		//strcat(hasilb, hasilx);
 
 		if (fff==1) {
 			toLower(hasilb, hasilx);
@@ -285,7 +280,7 @@ int baca_sms_semua() {
 			yy = cari_index(hasilx);
 			cari_pengirim(sipPesan[jml], hasilx);
 			no_pesan[jml] = yy;
-			printf("CMGLnya: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", hasilx, yy, sipPesan[jml], no_pesan[jml], jml);
+			//printf("CMGLnya: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", hasilx, yy, sipPesan[jml], no_pesan[jml], jml);
 			
 			jml++;
 			fff=1;
@@ -386,14 +381,15 @@ int baca_sms_exe(int argc, char **argv) {
 	status_modem = 0;
 }
 
-void kirim_sisa_pulsa_exe() {
+void kirim_sisa_pulsa_exe(char * dest_sms, int mode_pulsa) {
 	if (status_modem==1)	{		// modem sibuk
 		printf("___modem sibuk___\r\n");
 		return 0;		
 	}
 
 	status_modem = 1;
-	kirim_sisa_pulsa("", 1);
+	printf("%s\r\n", __FUNCTION__);
+	kirim_sisa_pulsa(dest_sms, mode_pulsa);
 	status_modem = 0;
 }
 
@@ -406,11 +402,30 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 	if (mode_pulsa==1)
 		kirim_sms_ascii("02192254186", str_sms);
 	if (mode_pulsa==2) {
-		kirim_sms_ascii("081908870878", str_sms);
+		//printf("str_sms: %s\r\n", str_sms);
+		//kirim_sms_ascii("081908870878", str_sms);
+		kirim_sms_ascii("08170504365", str_sms);
 		vTaskDelay(100);
-		kirim_sms_ascii("08118888623", str_sms);
-		vTaskDelay(100);
+		//kirim_sms_ascii("08118888623", str_sms);
+		//vTaskDelay(100);
 		kirim_sms_ascii("02192254186", str_sms);
+	}
+	if (mode_pulsa==3) {
+		int duit=duit_pulsa(str_sms);
+		char dpls[120];
+		printf("masuk mode 3: duit: %d, str_sms: %s\r\n", duit, str_sms);
+		if (duit<10000)	{
+			strcpy(dpls, "Sisa pulsa: Rp.");
+			strcat(dpls, str_sms);
+			strcat(dpls, "Harap diisi yak!!");
+
+			//kirim_sms_ascii("081908870878", str_sms);
+			//kirim_sms_ascii("08170504365", dpls);
+			//vTaskDelay(100);
+			//kirim_sms_ascii("08118888623", str_sms);
+			//vTaskDelay(100);
+			kirim_sms_ascii("02192254186", dpls);
+		}
 	}
 	
 }
@@ -430,7 +445,7 @@ int sms_cron() {
 	//printf("BACA sms ke %d\r\n", no);
 	//*/
 	baca_sms_semua();
-	printf("jml: %d, %s\r\n", jml, __FUNCTION__);
+	//printf("jml: %d, %s\r\n", jml, __FUNCTION__);
 
 	if (jml>0) {
 		for(no=0; no<jml; no++) {
@@ -543,18 +558,24 @@ int cek_pulsa_exe()	{
 	return 1;
 }
 
-int fsm_cek_pulsa() {
-	if (status_modem==1)	{		// modem sibuk
-		printf("___modem sibuk___\r\n");
-		return 0;		
-	}
-	status_modem=1;
+int duit_pulsa(char * dpls) {
+	int a1=0, b2=strlen(dpls);
+	char * pd1, *pd2;
 	
-	cek_pulsa();
-	//kirim_hasil_pulsa();
+	pd1=strstr(dpls,".");
+	if (pd1!=NULL)	{
+  		a1 = pd1-dpls+1;
+  	}
+  	
+  	pd2=strstr(pd1+1,".");
+	if (pd2!=NULL)	{
+  		b2 = pd2-dpls+20;
+  	}
+  	strcpy(dpls, pd1+1);
+  	dpls[a1-b2-1]='\0';
+	//duit = atoi(dpls);
 	
-	status_modem=0;
-	return 1;
+	return atoi(dpls);
 }
 
 

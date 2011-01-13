@@ -345,13 +345,21 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 			gsm_ftp();
 			saat_gsm_aksi=0;
 		} 
+		vTaskDelay(50);
 		if (status_modem==0 && saat_sms_aksi==1) {		// cron bacasms
 			sms_cron();
 			saat_sms_aksi = 0;
 		}
-		
+		vTaskDelay(50);
 		if (status_modem==0 && saat_sms_aksi==2) {		// cron pulsa
+			printf("____kirim sisa pulsa___\r\n");
 			kirim_sisa_pulsa_exe("",2);		// 2: ke 3 orang (m'Ani)
+			saat_sms_aksi = 0;
+		}
+		vTaskDelay(50);
+		if (status_modem==0 && saat_sms_aksi==3) {		// Warning pulsa TIPIS
+			printf("____pulsa TIPIS___\r\n");
+			kirim_sisa_pulsa_exe("",3);		// 3: MINTA DIISI
 			saat_sms_aksi = 0;
 		}
 		vTaskDelay(50);

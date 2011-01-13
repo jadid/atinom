@@ -41,6 +41,7 @@
 
 #define BOARD_KOMON
 #define BOARD_KOMON_KONTER
+#define BOARD_KOMON_KONTER_3_1
 #define VERSI_KOMON		"1.50"
 //#define KONTER_MALINGPING	1
 

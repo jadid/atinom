@@ -125,7 +125,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
   	piM=strstr(str_sms,":");
   	if (piM!=NULL) {
 		antri = atoi(piM+1);
-		//printf("antri: %s: %d : %d\r\n", piM, atoi(piM+1), antri);
+		printf("antri: %s: %d : %d\r\n", piM, atoi(piM+1), antri);
 	}
 	
 	strcpy(str_sms, "");
@@ -139,13 +139,13 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 		
 		strcpy(str_sms, "");
 		baca_serial(str_sms, 120, 20);
-		//printf("1. isi: %s\r\n", str_sms);
+		printf("1. isi: %s\r\n", str_sms);
 
 		
 		//if (strncmp(str_sms, "AT+CMSS", 7) == 0) {
 			strcpy(str_sms, "");
 			baca_serial(str_sms, 120, 20);
-			//printf("1.hasil: %s\r\n", str_sms);
+			printf("1.hasil: %s\r\n", str_sms);
 		//}
 		
 		//if (strncmp(str_sms, "+CMSS", 5) == 0) {
@@ -160,7 +160,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 		
 			strcpy(str_sms, "");
 			baca_serial(str_sms, 120, 20);
-			//printf("4.hasil: %s\r\n", str_sms);
+			printf("4.hasil: %s\r\n", str_sms);
 			
 		/*
 		if (strncmp(str_sms, "OK", 2) != 0) {
@@ -169,7 +169,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 		}
 		//*/
 		//printf("siap hapus pesan!! \r\n");
-		hapus_sms(antri);
+		//hapus_sms(antri);
 	}
 	
 	status_modem = 0;
@@ -263,7 +263,24 @@ int baca_sms_semua() {
 		vTaskDelay(50);
 		printf("___isi: %s\r\n", hasilx);
 		
-		strcat(hasilb, hasilx);
+		//if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0))
+		//	break;
+		//else;
+		//strcat(hasilb, hasilx);
+
+		if (fff==1) {
+			toLower(hasilb, hasilx);
+			printf("hasilb : __%s__, jml: %d\r\n", hasilb, jml);
+			if (strncmp(hasilb, "pulsa", 5)==0)		sPesan[jml-1]='p';
+			else if (strncmp(hasilb, "monita", 6)==0)	sPesan[jml-1]='m';
+			else if (strncmp(hasilb, "info", 4)==0)		sPesan[jml-1]='i';
+			else sPesan[jml-1]='x';
+			printf("sPesan: %c, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
+			
+			strcpy(hasilb, "");
+			fff=0;
+		}
+
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
 			yy = cari_index(hasilx);
 			cari_pengirim(sipPesan[jml], hasilx);
@@ -272,34 +289,21 @@ int baca_sms_semua() {
 			
 			jml++;
 			fff=1;
+			strcpy(hasilx, "");
 		}
-		
-		if (fff==1) {
-			toLower(hasilb, hasilb);
-			if (strncmp(hasilb, "pulsa", 5)==0)		sPesan[jml-1]='p';
-			if (strncmp(hasilb, "monita", 6)==0)	sPesan[jml-1]='m';
-			if (strncmp(hasilb, "info", 4)==0)		sPesan[jml-1]='i';
-			printf("sPesan: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
-			
-			strcpy(hasilb, "");
-			fff=0;
-		}
-		
+
 		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0)) {
-			//printf("break\r\n");
 			break;
 		}
 	}
-	printf("jml: %d\r\n", jml);
+	//printf("jml: %d\r\n", jml);
 
-	//*
 	if (jml>0) {
 		for (yy=0; yy<jml; yy++) {
-			printf("index: %d\r\n", no_pesan[yy]);
-			//hapus_sms(no_pesan[yy]);
+			//printf("index: %d\r\n", no_pesan[yy]);
+			hapus_sms(no_pesan[yy]);
 		}
 	}
-	//*/
 }
 
 int baca_sms(int indexnya) {
@@ -430,9 +434,9 @@ int sms_cron() {
 
 	if (jml>0) {
 		for(no=0; no<jml; no++) {
-			printf("loop %d. sip: %s\r\n", no+1, sipPesan[no]);
+			printf("loop %d. sPesan: %c sip: %s\r\n", no+1, sPesan[no], sipPesan[no]);
 			// aksinya
-			/*
+			//*
 			if (sPesan[no]=='p') kirim_sisa_pulsa(sipPesan[no], 0);
 			if (sPesan[no]=='m') {		}
 			if (sPesan[no]=='i') {		}

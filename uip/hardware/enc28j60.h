@@ -61,7 +61,12 @@
 //#ifdef KOMON_KONTER
 #ifdef BOARD_KOMON_KONTER
 #define CS_ENC	BIT(18)
-#define INT_ENC	BIT(17)
+
+#ifdef BOARD_KOMON_KONTER_3_1
+	#define INT_ENC	BIT(13)
+#else
+	#define INT_ENC	BIT(17)
+#endif
 
 #define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
 #define ENC28J60_Deselect() FIO1SET = CS_ENC
@@ -72,8 +77,34 @@
 
 #define FIO_CEK_PAKET		FIO1PIN
 
-#define init_enc_port()		FIO1DIR = FIO1DIR & ~(INT_ENC); \
+#ifdef BOARD_KOMON_KONTER_3_1
+	#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
+								FIO1DIR = FIO1DIR | CS_ENC;
+#else
+	#define init_enc_port()		FIO1DIR = FIO1DIR & ~(INT_ENC); \
+								FIO1DIR = FIO1DIR | CS_ENC;
+#endif
+#endif
+
+#ifdef BOARD_KOMON_KONTER_3_1
+#define CS_ENC	BIT(18)
+//#define INT_ENC	BIT(17)
+#define INT_ENC	BIT(13)		// P213
+
+#define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
+#define ENC28J60_Deselect() FIO1SET = CS_ENC
+
+// seharusnya tidak ada pin reset (sudah disambung ke VCC)
+#define ENC28J60_Reset()    FIO1CLR = CS_ENC
+#define ENC28J60_Unreset()  FIO1SET = CS_ENC
+
+#define FIO_CEK_PAKET		FIO1PIN
+
+//#define init_enc_port()		FIO1DIR = FIO1DIR & ~(INT_ENC); \
+//							FIO1DIR = FIO1DIR | CS_ENC;
+#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
 							FIO1DIR = FIO1DIR | CS_ENC;
+
 #endif
 
 /* untuk komon 4-20 mA & RTD yang jadi satu */

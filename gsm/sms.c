@@ -21,12 +21,17 @@
 
 
 #define PULSA_SIMPATI "*888#"
-//#define nHURUF	30
+
 #define CTRL_Z	26	/* END of TEXT lihat ascii code http://en.wikipedia.org/wiki/ASCII */
 
 volatile char str_sms[128];
 char pengirim[20];
 int konter_sms=30000;
+
+#define nPESAN	10
+int no_pesan[nPESAN], jml=0;
+char sPesan[nPESAN];
+char sipPesan[nPESAN][20];
 
 int cek_pulsa_exe();
 int kirim_sms_exe();
@@ -194,8 +199,11 @@ int cari_pengirim(char *nomor, char *sms) {
 	int awals=0, akhirs=strlen(sms);
 	pchs=strstr(sms,",");
 	if (pchs!=NULL)	{
-  		//printf("hasil: %s, strlen:%d\r\n", pchs+1, strlen(sms));
-  		awals = pchs-sms+1;
+		pchs=strstr(pchs+1,",");
+		awals = pchs-sms+1;
+		if (pchs!=NULL)	{
+			awals = pchs-sms+1;
+		}
   	}
   	
   	pstrs=strstr(pchs+1,",");
@@ -213,9 +221,7 @@ int cari_pengirim(char *nomor, char *sms) {
 void toLower(char *hsl, char *sbesar) {
 	int n = strlen(sbesar);
 	int q;
-	
-	//if (n>nHURUF) n=nHURUF;
-	printf("n: %d\r\n", n);
+
 	for (q=0; q<n; q++)
 		hsl[q] = (sbesar[q]>='A' && sbesar[q]<='Z')?('a'+sbesar[q]-'A'):sbesar[q];
 	hsl[q]='\0';
@@ -240,25 +246,45 @@ int cari_index(char * spesan) {
 }
 
 int baca_sms_semua() {
-	char hasilx[150];
-	int no_pesan[50], jml=0, yy;
-
+	char hasilx[130];
+	char hasilb[130];
+	//int no_pesan[50], jml=0, yy;
+	int yy;
+	char fff=0;
+	
 	flush_modem();
 	vTaskDelay(100);
+	strcpy(hasilb, "");
 	sprintf(hasilx, "AT+CMGL=\"ALL\"\r\n");		//printf("cmd: %s", hasilx);	
 	serX_putstring(PAKAI_GSM_FTP, hasilx);
 
 	while (1) {
 		baca_serial(hasilx, 120, 50);
 		vTaskDelay(50);
-		//printf("___isi: %s\r\n", hasilx);
+		printf("___isi: %s\r\n", hasilx);
+		
+		strcat(hasilb, hasilx);
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
 			yy = cari_index(hasilx);
-			printf("CMGLnya: %s, index: %d \r\n", hasilx, yy);
+			cari_pengirim(sipPesan[jml], hasilx);
 			no_pesan[jml] = yy;
+			printf("CMGLnya: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", hasilx, yy, sipPesan[jml], no_pesan[jml], jml);
+			
 			jml++;
+			fff=1;
 		}
-
+		
+		if (fff==1) {
+			toLower(hasilb, hasilb);
+			if (strncmp(hasilb, "pulsa", 5)==0)		sPesan[jml-1]='p';
+			if (strncmp(hasilb, "monita", 6)==0)	sPesan[jml-1]='m';
+			if (strncmp(hasilb, "info", 4)==0)		sPesan[jml-1]='i';
+			printf("sPesan: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
+			
+			strcpy(hasilb, "");
+			fff=0;
+		}
+		
 		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0)) {
 			//printf("break\r\n");
 			break;
@@ -270,7 +296,7 @@ int baca_sms_semua() {
 	if (jml>0) {
 		for (yy=0; yy<jml; yy++) {
 			printf("index: %d\r\n", no_pesan[yy]);
-			hapus_sms(no_pesan[yy]);
+			//hapus_sms(no_pesan[yy]);
 		}
 	}
 	//*/
@@ -299,7 +325,7 @@ int baca_sms(int indexnya) {
 		baca_serial(hasilx, 120, 50);
 	}
 	//strcpy(str_sms, "");
-	printf("isi SMS: %s\r\n", hasilx);
+	//printf("isi SMS: %s\r\n", hasilx);
 	if (strncmp(hasilx, "OK", 2) == 0) {		// tidak ada SMS
 		return 0;
 	} else if (strncmp(hasilx, "ERROR", 5) == 0) {
@@ -363,18 +389,26 @@ void kirim_sisa_pulsa_exe() {
 	}
 
 	status_modem = 1;
-	kirim_sisa_pulsa();
+	kirim_sisa_pulsa("", 1);
 	status_modem = 0;
 }
 
-void kirim_sisa_pulsa() {
+void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 	cek_pulsa();
-	//vTaskDelay(100);
-	//kirim_sms_ascii("081908870878", str_sms);
 	vTaskDelay(100);
-	kirim_sms_ascii("02192254186", str_sms);
-	//vTaskDelay(100);
-	//kirim_sms_ascii("08118888623", str_sms);
+	
+	if (mode_pulsa==0)
+		kirim_sms_ascii(dest_sms, str_sms);
+	if (mode_pulsa==1)
+		kirim_sms_ascii("02192254186", str_sms);
+	if (mode_pulsa==2) {
+		//kirim_sms_ascii("081908870878", str_sms);
+		//vTaskDelay(100);
+		//kirim_sms_ascii("08118888623", str_sms);
+		//vTaskDelay(100);
+		kirim_sms_ascii("02192254186", str_sms);
+	}
+	
 }
 
 int sms_cron() {
@@ -391,9 +425,26 @@ int sms_cron() {
 	no = cek_nomer_valid(nourut, 1000);
 	//printf("BACA sms ke %d\r\n", no);
 	//*/
-	baca_sms(1);
-	toLower(str_sms, str_sms);
-	printf("strsms : %s\r\n", str_sms);
+	baca_sms_semua();
+	printf("jml: %d, %s\r\n", jml, __FUNCTION__);
+
+	if (jml>0) {
+		for(no=0; no<jml; no++) {
+			printf("loop %d. sip: %s\r\n", no+1, sipPesan[no]);
+			// aksinya
+			/*
+			if (sPesan[no]=='p') kirim_sisa_pulsa(sipPesan[no], 0);
+			if (sPesan[no]=='m') {		}
+			if (sPesan[no]=='i') {		}
+			
+			strcpy(sPesan[no],"");
+			//*/
+		}
+	}
+	jml=0;
+	//toLower(str_sms, str_sms);
+	//printf("strsms : %s\r\n", str_sms);
+	/*
 	if (strncmp(str_sms, "pulsa",5)==0) {
 		vTaskDelay(100);
 		kirim_sisa_pulsa();
@@ -401,6 +452,8 @@ int sms_cron() {
 		hapus_sms(1);
 	}
 	hapus_sms(1);
+	//*/
+	
 	status_modem = 0;
 }
 /*
@@ -579,7 +632,7 @@ int cek_pulsa(void)	{
 		//printf("PULSA: %s\r\n", str_sms);
 		isiSMSnya(strpls, strpls);
 		strcpy(str_sms, strpls);
-		printf("PULSA: %s\r\n", strpls);
+		printf("PULSA: %s\r\n", str_sms);
 		return 1;
 	}
 }

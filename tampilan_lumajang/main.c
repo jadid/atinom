@@ -351,7 +351,7 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 		}
 		
 		if (status_modem==0 && saat_sms_aksi==2) {		// cron pulsa
-			kirim_sisa_pulsa_exe();
+			kirim_sisa_pulsa_exe("",2);		// 2: ke 3 orang (m'Ani)
 			saat_sms_aksi = 0;
 		}
 		vTaskDelay(50);

@@ -138,7 +138,7 @@ extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
 #ifdef PAKAI_GSM_FTP
-	extern xTaskHandle *hdl_gsm;
+	extern xTaskHandle *hdl_modem;
 #endif
 //extern struct t_env env2;
 
@@ -344,8 +344,8 @@ void cek_stack(void)
 		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
 		
-	#ifdef PAKAI_GSM_FTP
-		printf(" GSM      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_gsm));
+	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
+		printf(" GSM      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
 	#endif
 }							 
 
@@ -843,6 +843,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&kirim_sms_cmd);
 	tinysh_add_command(&hapus_sms_cmd);
 	tinysh_add_command(&baca_sms_cmd);
+	tinysh_add_command(&baca_sms_semua_cmd);
 #endif 
 
 #ifdef PAKAI_CRON

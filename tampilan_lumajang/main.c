@@ -64,6 +64,10 @@
 	extern int saat_gsm_aksi;
 #endif
 
+#ifdef PAKAI_SMS
+	extern int saat_sms_aksi;
+#endif
+
 xSemaphoreHandle lcd_sem;
 xSemaphoreHandle mutex_lcd_sem;
 
@@ -81,8 +85,8 @@ xTaskHandle hdl_tampilan;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
-#ifdef PAKAI_GSM_FTP
-xTaskHandle hdl_gsm;
+#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
+	xTaskHandle hdl_modem;
 #endif 
 
 #ifdef PAKAI_SELENOID
@@ -196,8 +200,8 @@ int main( void )
 	//init_task_pm();			// 10, +1
 #endif
 
-#ifdef PAKAI_GSM_FTP 
-	init_task_gsm();
+#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
+	init_task_modem();
 #endif
 
 #ifdef PAKAI_SELENOID
@@ -324,23 +328,38 @@ void init_task_lcd(void)
 }
 
 
-static portTASK_FUNCTION(gsm_task, pvParameters )	{	
-	vTaskDelay(800);
+static portTASK_FUNCTION(modem_task, pvParameters )	{	
+	vTaskDelay(100);
 	printf("init GSM task\r\n");
 	vTaskDelay(2000);
-
+	vTaskDelay(2000);
+	vTaskDelay(2000);
+	vTaskDelay(2000);
+	vTaskDelay(2000);
+	vTaskDelay(2000);
+	flush_modem();
+	vTaskDelay(2000);
 	for (;;)	{
 		if (status_modem==0 && saat_gsm_aksi==1) {
-			vTaskDelay(50);
+			//vTaskDelay(50);
 			gsm_ftp();
 			saat_gsm_aksi=0;
+		} 
+		if (status_modem==0 && saat_sms_aksi==1) {		// cron bacasms
+			sms_cron();
+			saat_sms_aksi = 0;
+		}
+		
+		if (status_modem==0 && saat_sms_aksi==2) {		// cron pulsa
+			kirim_sisa_pulsa_exe();
+			saat_sms_aksi = 0;
 		}
 		vTaskDelay(50);
 	}
 }
 
-void init_task_gsm(void)
+void init_task_modem(void)
 {
-	xTaskCreate( gsm_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 10), \
-		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_gsm );	
+	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 10), \
+		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_modem );	
 }

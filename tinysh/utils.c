@@ -19,6 +19,25 @@ static int  passc;
 
 #define DIGANTI 5		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
 
+void flush_modem() {
+	int i;
+	int loop;
+	
+	for (i=0; i<100; i++)
+		#ifdef PAKAI_SERIAL_1
+			if (PAKAI_SMS==1)
+				ser1_getchar(1, &loop, 20 );
+		#endif
+		#ifdef PAKAI_SERIAL_2
+			if (PAKAI_SMS==2)
+				ser2_getchar(1, &loop, 20 );
+		#endif
+		#ifdef PAKAI_SERIAL_3
+			if (PAKAI_SMS==3)
+				ser3_getchar(1, &loop, 20 );
+		#endif
+}
+
 int proses_passwd(char *c)	{
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );
 		

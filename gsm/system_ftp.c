@@ -60,10 +60,11 @@ int gsm_ftp()	{
 		printf("Create FTP sesssion error !\r\n");
 		tutup_koneksi_ftp(fff);
 		return;
-	} else {
-		printf("Create FTP sesssion !\r\n");
 	}
-
+	
+	printf("Create FTP sesssion !\r\n");
+	
+	flush_modem();
 	cari_berkas("J-3", "kirim_ftp");
 	
 	//printf("path: %s\r\n", pathfile);	
@@ -322,6 +323,7 @@ int konek_ftp_awal() {
 			vTaskDelay(10);
 		}
 	}
+	flush_modem();
 	return flag;
 }
 

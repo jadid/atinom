@@ -692,8 +692,9 @@ int cari_files (char* pathxx, char *aksi) {
 			//*
 			#ifdef PAKAI_GSM_FTP
 				if (strncmp(aksi,"kirim_ftp", 9)==0) {
-					kirim_file_ke_ftp(bbbb, nama);
+					//kirim_file_ke_ftp(bbbb, nama);
 					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+					printf("kirim_ftpnya nama file: %s  %s\r\n", bbbb, nama);
 					//printf(ngomong);
 				} else if (strncmp(aksi,"hapus", 5)==0) {
 					i=dihapus(aaaa);
@@ -875,7 +876,7 @@ int cari_berkas(char *str_doku, char *aksi) {
   	for(i=atoi(str); i>0; i--) {
 		sprintf(waktu, "%c-%d", waktu[0],i);
 		cari_waktu(path_bk, waktu);
-		//printf("_______________path: %s\r\n",path_bk);
+		printf("_______________path: %s\r\n",path_bk);
 		cari_files(path_bk, aksinya);
 	}
 	

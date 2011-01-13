@@ -18,7 +18,7 @@ static char passin[16];
 static int  passc;
 
 #define DIGANTI 5		// jml kata2 yg harus direplace : \\r, \\n di fungsi ganti_kata
-
+/*
 void flush_modem() {
 	int i;
 	int loop;
@@ -37,7 +37,7 @@ void flush_modem() {
 				ser3_getchar(1, &loop, 20 );
 		#endif
 }
-
+//*/
 int proses_passwd(char *c)	{
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );
 		

@@ -46,6 +46,24 @@ static tinysh_cmd_t hapus_sms_cmd={ 0,"hapus_sms","hapus sms","[nomer] ", hapus_
 static tinysh_cmd_t baca_sms_cmd={ 0,"baca_sms","baca sms","[nomer]", baca_sms_exe, 0, 0, 0 };
 static tinysh_cmd_t baca_sms_semua_cmd={ 0,"baca_semua_sms","baca semua sms","[nomer]", baca_sms_semua, 0, 0, 0 };
 
+void flush_modem() {
+	int i;
+	int loop;
+	
+	for (i=0; i<100; i++)
+		#ifdef PAKAI_SERIAL_1
+			if (PAKAI_SMS==1)
+				ser1_getchar(1, &loop, 20 );
+		#endif
+		#ifdef PAKAI_SERIAL_2
+			if (PAKAI_SMS==2)
+				ser2_getchar(1, &loop, 20 );
+		#endif
+		#ifdef PAKAI_SERIAL_3
+			if (PAKAI_SMS==3)
+				ser3_getchar(1, &loop, 20 );
+		#endif
+}
 
 int kirim_sms_ascii(char * dest, char * isiSMS) {	
 	// set kirim sms modem ascii

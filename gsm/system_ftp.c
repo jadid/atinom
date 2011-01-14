@@ -59,12 +59,17 @@ int gsm_ftp()	{
 		printf("Koneksi GPRS gagal !!!\r\n");
 		printf("Create FTP sesssion error !\r\n");
 		tutup_koneksi_ftp(fff);
+		status_modem = 0;
 		return 0;
 	}
+	
 	
 	printf("Create FTP sesssion !\r\n");
 	
 	flush_modem();
+	status_modem = 0;
+	return -1;
+	
 	cari_berkas("J-3", "kirim_ftp");
 	
 	//status_modem = 0;
@@ -201,19 +206,23 @@ int konek_ftp_awal() {
 	#endif
 	
 	/* flush sekaligus cek jika masih +WIND */
+	/*
 	ulang:
 	//memset(str_ftp, 0, sizeof (str_ftp));
 	baca_serial(str_ftp, 100, 0);
 	if ( strncmp(str_ftp, "+WIND", 5) == 0) 	{
 		goto ulang;
 	}
-	
+	//*/
+	printf("___%s___\r\n", __FUNCTION__);
+	flush_modem();
 	//baca_serial(str_ftp, 100, 0);
 
+	vTaskDelay(100);
 	flag=10;
 	for (oz=0; oz<5; oz++) {
 		if (flag == 10) {
-			//printf("...........cek_awal()   %d, flag: %d\r\n", oz+1, flag);
+			printf("...........cek_awal()   %d, flag: %d\r\n", oz+1, flag);
 			if (cek_awal() == 0) {
 				flag = 1;
 				continue;
@@ -224,6 +233,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==10)	return flag;
 	
+	vTaskDelay(100);
 	flag=20;
 	for (oz=0; oz<10; oz++) {
 		if (flag == 20) {
@@ -237,6 +247,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==20)	return flag;
 	
+	vTaskDelay(100);
 	flag=30;
 	for (oz=0; oz<10; oz++) {
 		if (flag == 30) {
@@ -250,7 +261,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==30)	return flag;
 	
-	sleep(1);
+	vTaskDelay(1000);
 	flag=40;
 	for (oz=0; oz<10; oz++) {
 		if (flag == 40) {
@@ -264,6 +275,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==40)	return flag;
 
+	vTaskDelay(100);
 	flag=50;		// APN
 	for (oz=0; oz<10; oz++) {
 		if (flag == 50) {
@@ -277,6 +289,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==50)	return flag;
 	
+	vTaskDelay(100);
 	flag=50;		// USER
 	for (oz=0; oz<5; oz++) {
 		if (flag == 50) {
@@ -290,6 +303,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==50)	return flag;
 	
+	vTaskDelay(100);
 	flag=50;		// PASSWORD
 	for (oz=0; oz<5; oz++) {
 		if (flag == 50) {
@@ -303,6 +317,7 @@ int konek_ftp_awal() {
 	}
 	if (flag==50)	return flag;
 		
+	vTaskDelay(100);
 	flag=70;		// GPRS
 	for (oz=0; oz<20; oz++) {
 		if (flag == 70) {
@@ -316,11 +331,15 @@ int konek_ftp_awal() {
 	}
 	if (flag==70)	return flag;
 	
-	sleep(1);
+	//printf("sampe akhir gprs\r\n");
+	//status_modem=0;
+	//return 0;
+	
+	vTaskDelay(100);
 	flag=80;		// FTP
 	for (oz=0; oz<20; oz++) {
 		if (flag == 80) {
-			//printf("...........bikin sesi ftp()   %d\r\n", oz+1);
+			printf("...........bikin sesi ftp()   %d\r\n", oz+1);
 			if (create_ftp_sess() == 0) {
 				flag = 90;
 				printf("Create FTP session OK !\r\n");		// nyampe sini !!!
@@ -539,24 +558,44 @@ int set_wipcfg(void) {
 }
 
 int set_wipbr(void) {
-	sprintf(str_ftp, "AT+WIPBR=1,6\r\n");
-	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
-	serX_putstring(PAKAI_GSM_FTP, str_ftp);
-	baca_serial(str_ftp, 20, 5);
+	char cmd_ftp[100];
+	int rr = -1;
 	
-	if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
-		printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-		return -1;
+	flush_modem();
+	sprintf(cmd_ftp, "AT+WIPBR=1,6\r\n");
+	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
+	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
+	baca_serial(cmd_ftp, 80, 120);
+	
+	printf("cmd_ftp: %s\r\n", cmd_ftp);
+	if (strncmp(cmd_ftp, "AT+WIPBR", 8) == 0)	{
+		baca_serial(cmd_ftp, 80, 120);
+		printf("respon1 : %s\r\n", cmd_ftp);
+	}
+	
+	if (strncmp(cmd_ftp, "+CME", 4) == 0 || strncmp(cmd_ftp, "ERROR", 5) == 0)	{
+		printf(" %s(): ERR :%s\r\n", __FUNCTION__, cmd_ftp);
+		//return -1;
 	}	
 	
-	if (strncmp(str_ftp, "OK", 2) == 0)	{
+	if (strncmp(cmd_ftp, "OK", 2) == 0)	{
 		printf(" %s(): OK\r\n", __FUNCTION__);
-		return 0;
+		rr = 0;
 	}
 	else	{
 		printf(" %s(): ERR ??\r\n", __FUNCTION__);
-		return -1;
+		//return -1;
 	}
+	
+	if (rr==0) return 0;
+	
+	baca_serial(cmd_ftp, 80, 20);
+	printf("cmd_ftp: %s\r\n", cmd_ftp);
+	
+	baca_serial(cmd_ftp, 80, 20);
+	printf("cmd_ftp: %s\r\n", cmd_ftp);
+	
+	return rr;
 }
 
 //*
@@ -636,28 +675,45 @@ int set_wipbr_passwd(void) {
 }
 //*/
 int start_gprs(void) {
-
-	sprintf(str_ftp, "AT+WIPBR=4,6,0\r\n");
+	char cmd_ftp[100];
+	int rr=-1;
 	
-	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
-	serX_putstring(PAKAI_GSM_FTP, str_ftp);
+	vTaskDelay(100);
+	flush_modem();
+	sprintf(cmd_ftp, "AT+WIPBR=4,6,0\r\n");
+	
+	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	
 	/* timeout dibuat agak lama */
-	baca_serial(str_ftp, 20, 50);
+	baca_serial(cmd_ftp, 80, 50);
+	printf("cmd_ftp: %s\r\n", cmd_ftp);	
+	if (strncmp(cmd_ftp, "AT+WIPBR", 8) == 0)	{
+		baca_serial(cmd_ftp, 80, 50);
+		printf("cmd_ftp: %s\r\n", cmd_ftp);	
+	}
 	
 	if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
 		printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-		return -1;
+		//return -1;
 	}
 	
 	if (strncmp(str_ftp, "OK", 2) == 0)	{
 		printf(" %s(): OK\r\n", __FUNCTION__);
-		return 0;
+		//return 0;
+		rr=0;
 	}
 	else	{
 		printf(" %s(): ERR ??\r\n", __FUNCTION__);
-		return -1;
+		//return -1;
 	}
+	/*
+	baca_serial(cmd_ftp, 80, 50);
+	printf("cmd_ftp: %s\r\n", cmd_ftp);	
+	
+	baca_serial(cmd_ftp, 80, 50);
+	printf("cmd_ftp: %s\r\n", cmd_ftp);	
+	//*/
+	return rr;
 }
 
 int stop_gprs(void) {
@@ -701,48 +757,55 @@ int stop_gprs(void) {
 
 //*
 int create_ftp_sess(void) {
+	char cmd_ftp[200];
+	int rr = -1;
+	
 	struct t_gsm_ftp *p_dt;
 	p_dt = (char *) ALMT_GSM_FTP;
-
-	sprintf(str_ftp, "AT+WIPCREATE=4,1,\"%s\",%d,\"%s\", \"%s\"\r\n", p_dt->ftp_server, p_dt->ftp_port, \
+	
+	flush_modem();
+	sprintf(cmd_ftp, "AT+WIPCREATE=4,1,\"%s\",%d,\"%s\", \"%s\"\r\n", p_dt->ftp_server, p_dt->ftp_port, \
 		p_dt->ftp_user, p_dt->ftp_passwd);
-	//printf(str_ftp);
+	printf("%s\r\n", cmd_ftp);
+	
+	status_modem = 0;
+	return 0;
+	
 	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
-	serX_putstring(PAKAI_GSM_FTP, str_ftp);
+	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	
-	// timeout 10 menit jika koneksi buruk //
-	baca_serial(str_ftp, 20, 120);
+	status_modem = 0;
+	return 0;
 	
-	if (strncmp(str_ftp, "AT+", 3) == 0) {		// ambil lagi datanya
-		baca_serial(str_ftp, 20, 20);
-		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
-			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-			return -1;
-		}	
-		
-		if (strncmp(str_ftp, "OK", 2) == 0)	{
-			printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
-			return 0;
-		}
-		else	{
-			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
-			return -1;
-		}
-	} else {
-		if (strncmp(str_ftp, "+CME", 4) == 0 || strncmp(str_ftp, "ERROR", 5) == 0)	{
-			printf(" %s(): ERR :%s\r\n", __FUNCTION__, str_ftp);
-			return -1;
-		}	
-		
-		if (strncmp(str_ftp, "OK", 2) == 0)	{
-			printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
-			return 0;
-		}
-		else	{
-			printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, str_ftp);
-			return -1;
-		}
+	baca_serial(cmd_ftp, 120, 50);
+	printf("respon: %s\r\n", cmd_ftp);
+	
+	status_modem = 0;
+	return 0;
+	
+	if (strncmp(cmd_ftp, "AT+WIPCREATE", 12) == 0) {		// ambil lagi datanya
+		baca_serial(cmd_ftp, 120, 20);
+		printf("respon: %s\r\n", cmd_ftp);
 	}
+	
+	status_modem = 0;
+	return 0;
+	
+	if (strncmp(cmd_ftp, "+CME", 4) == 0 || strncmp(cmd_ftp, "ERROR", 5) == 0)	{
+		printf(" %s(): ERR :%s\r\n", __FUNCTION__, cmd_ftp);
+		//return -1;
+	}	
+		
+	if (strncmp(cmd_ftp, "OK", 2) == 0)	{
+		printf(" %s(): FTP SESSION OK\r\n", __FUNCTION__);
+		rr = 0;
+		//return 0;
+	}
+	else	{
+		printf(" %s(): ERR ?? : %s\r\n", __FUNCTION__, cmd_ftp);
+		//return -1;
+	}
+	return rr;
 }
 //*/
 int upload_file(char *nama_file) {
@@ -922,6 +985,8 @@ int close_ftp_sess(void) {
 }
 
 int stop_tcpip_stack(void) {
+	
+	flush_modem();
 	sprintf(str_ftp, "AT+WIPCFG=0\r\n");
 	//tulis_serial(str_ftp, strlen(str_ftp), 0);	
 	serX_putstring(PAKAI_GSM_FTP, str_ftp);

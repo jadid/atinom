@@ -183,12 +183,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		vTaskDelay(2000);
 		vTaskDelay(2000);
 	#endif
-	
+	printf("mau loop for\r\n");
 	for (;;)
 	{
 		vTaskDelay(1);
 		//portYIELD();
-		
+		#if 1
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
 			wclient++;
@@ -240,8 +240,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				jmlsumbernya++;
 				//printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
 				
-				// cek datanya PM ?? //
-				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1)	{	// PM710 || PM810
+				// cek datanya PM ?? // <--- ternyata gak cuma PM, modul lain juga bisa
+				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
 					jmlData=kirimModul(0, nos-1, noawal, il, dl);
 					if (jmlData==12) {
 						flag_nos=1;
@@ -318,6 +318,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())	{
+			printf("masuk cekpaket \r\n");
+			#if 1
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
 		         into the uip_buf. If it returns > 0, there is a packet in the
@@ -351,6 +353,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	     }
 
 		      }
+		      #endif
 		}
 		else		{
 		      /* The poll function returned 0, so no packet was
@@ -439,6 +442,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			#endif
 		#endif
 		//*/
+	#endif
 	}
 }
 

@@ -241,6 +241,8 @@ int main( void )	{
 	init_led_utama();
 	start_ether();
 	init_shell();
+	
+	
 	//init_task_adc();
 
 	vTaskStartScheduler();

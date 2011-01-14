@@ -183,7 +183,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		vTaskDelay(2000);
 		vTaskDelay(2000);
 	#endif
-	printf("mau loop for\r\n");
+	//printf("mau loop for\r\n");
 	for (;;)
 	{
 		vTaskDelay(1);
@@ -318,7 +318,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())	{
-			printf("masuk cekpaket \r\n");
+			//printf("masuk cekpaket \r\n");
 			#if 1
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet

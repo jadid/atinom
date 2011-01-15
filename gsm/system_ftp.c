@@ -17,7 +17,7 @@
 //#define modemBebas()	flush_modem(); \
 //						vTaskDelay(10);
 
-//#define DEBUG_FTP
+#define DEBUG_FTP
 
 unsigned int files=0;
 unsigned int file_sudah=0;
@@ -49,6 +49,8 @@ int gsm_ftp()	{
 	
 	koneksi_off(fff);
 	status_modem = 0;
+	printf(" File = %d, dikirim %d, sudah dikirim %d\r\n", files, file_sukses, file_sudah); 
+	printf("modem longgar, status modem: %d\r\n", status_modem);
 	return 1;
 }
 
@@ -80,7 +82,7 @@ int koneksi_on()	{
 	#endif
 	cek_awal();
 	
-	vTaskDelay(300);
+	vTaskDelay(100);
 	flag = 20;
 	#ifdef DEBUG_FTP
 	printf("________set_wipcfg_on________\r\n");
@@ -98,7 +100,7 @@ int koneksi_on()	{
 		flag = 1;
 	}
 	
-	vTaskDelay(100);
+	vTaskDelay(50);
 	flag = 40;
 	#ifdef DEBUG_FTP
 	printf("________set_wipbr_apn________\r\n");
@@ -107,7 +109,7 @@ int koneksi_on()	{
 		flag = 1;
 	}
 	
-	vTaskDelay(100);
+	vTaskDelay(50);
 	flag = 50;
 	#ifdef DEBUG_FTP
 	printf("________set_wipbr_user________\r\n");
@@ -116,7 +118,7 @@ int koneksi_on()	{
 		flag = 1;
 	}
 	
-	vTaskDelay(100);
+	vTaskDelay(50);
 	flag = 60;
 	#ifdef DEBUG_FTP
 	printf("________set_wipbr_password________\r\n");
@@ -140,7 +142,8 @@ int koneksi_on()	{
 			cek_awal();
 		}
 	}
-		
+	if (flag==70)	return flag;
+	
 	vTaskDelay(100);
 	flag = 80;
 	for (oz=0; oz<20; oz++) {
@@ -196,11 +199,12 @@ int koneksi_off(int fff) {
 }
 
 int cek_AT() {
-	char cmd_ftp[20];
+	char cmd_ftp[100];
+	int i;
 	
 	sprintf(cmd_ftp, "AT\r\n");
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
-	baca_serial(cmd_ftp, 10, 10);
+	baca_serial(cmd_ftp, 100, 10);
 	
 	#ifdef DEBUG_FTP
 	printf("respon: %s\r\n", cmd_ftp);
@@ -212,12 +216,26 @@ int cek_AT() {
 		#endif
 	}
 	
+	while(1) {
+		strcpy(cmd_ftp, "");
+		baca_serial(cmd_ftp, 100, 10);
+		if (strlen(cmd_ftp)>0 && strncmp(cmd_ftp,"OK", 2)==0)	{
+			#ifdef DEBUG_FTP
+			printf("%d. respon1: %s\r\n", i+1, cmd_ftp);
+			#endif
+			break;
+		}
+		i++;
+		if (i>10)	break;
+	}
+	/*
 	if (strncmp(cmd_ftp,"OK",2)==0) {
 		#ifdef DEBUG_FTP
 		printf("%s OK !!\r\n", __FUNCTION__);
 		#endif
 		return 0;
 	}
+	//*/
 }
 
 int cek_awal(void) {
@@ -781,7 +799,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	char namafile[32];
 	
 	int res, flag=1, oz=0, rspn=1;
-	unsigned int size;
+	unsigned long int size, i;
 	FIL fd2;
 	time_t timeval;
 	
@@ -813,21 +831,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		f_lseek( &fd2, 0);				// kembalikan pointer //
 
 		flag=55;
-		/*
-		for (oz=0; oz<20; oz++) {
-			if (flag == 55) {
-				#ifdef DEBUG_FTP
-				printf("________UPLOAD FILE________\r\n");
-				#endif
-				if (upload_file(nf)==0)	{
-					flag = 77;	
-					break;
-				}
-				vTaskDelay(10);
-				cek_awal();
-			}
-		}
-		//*/
+
 		oz=0;
 		while(1) {
 			rspn = upload_file(namafile);
@@ -842,62 +846,39 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 				break;
 			}
 			vTaskDelay(10);
-			cek_awal();
+			//cek_awal();
 			oz++;
-			if (oz>10)	break;
+			if (oz>20)	break;
 		}
-		
-		
-		/*
-		if (upload_file(nf)==0) {
-			flag = 77;
-		}
-		//*/
-		
+
 		if (flag==77)		{
-			#ifdef DEBUG_FTP
-			printf("Sudah konek !!!...........Kirim data !!!\r\n");
-			#endif
-			
 			size = sizeof (posisifile);
+			
+			#ifdef DEBUG_FTP
+			printf("Sudah konek !!!...........Kirim data size: %d, res: %d!!!\r\n", size, res);
+			#endif
+
 			for (;;)	{
 				f_read( &fd2, posisifile, size, &res);
 							
-				for (oz=0; oz<res; oz++)		{								
+				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
-					serX_putchar(PAKAI_GSM_FTP, &posisifile[oz], 1000);
+					serX_putchar(PAKAI_GSM_FTP, &posisifile[i], 500);
 				}	
 				
 				if ( res < size ) break; 
 			}
+			
 			// untuk mengakhiri data ftp //
-			/*
-			flag=0;
-			if (send_etx() == 0) {
-				flag = 1;
-			}
-			//*/
-			/*
-			for (oz=0; oz<50; oz++) {
-				if ( flag == 0) {
-					printf("...........send ETX   %d, flag: %d\r\n", oz+1, flag);
-					if (send_etx() == 0) {
-						flag = 1;
-						break;
-					}
-					vTaskDelay(50);
-				}
-			}
-			//*/
 			oz=0;
 			while(1) {
-				if (oz>10)	break;
+				if (oz>50)	break;
 				oz++;
 				if (send_etx() == 0)	{
 					break;
 				}
 				vTaskDelay(10);
-				cek_awal();
+				//cek_awal();
 			}
 			
 			
@@ -927,15 +908,24 @@ int send_etx(void) {
 	char cmd_ftp[50];
 	char ch = 0x03, *p;
 	p = &ch;
-	serX_putchar(PAKAI_GSM_FTP, p, 1000);
-		
-	baca_serial(cmd_ftp, 20, 100);
+	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
+	baca_serial(cmd_ftp, 20, 10);
+	
+	#ifdef DEBUG_FTP
+	printf("cmd_ftp: %s\r\n", cmd_ftp);
+	#endif
 	if (strncmp(cmd_ftp, "OK", 2) == 0) 	{
+		baca_serial(cmd_ftp, 20, 10);
+	
+		#ifdef DEBUG_FTP
+		printf("cmd_ftp: %s\r\n", cmd_ftp);
+		#endif
+	
 		printf(" %s(): OK\r\n", __FUNCTION__);
 		return 0;
 	} 	else	{
 		printf(cmd_ftp);
-		printf(" %s(): ERR ??\r\n", __FUNCTION__);
+		printf(" %s(): ERR ??, %s\r\n", __FUNCTION__);
 		return -1;
 	}
 }

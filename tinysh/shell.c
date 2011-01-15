@@ -137,6 +137,10 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
+#ifdef PAKAI_CRON
+	//extern xTaskHandle *hdl_cron;
+#endif
+
 #ifdef PAKAI_GSM_FTP
 	extern xTaskHandle *hdl_modem;
 #endif
@@ -336,7 +340,6 @@ void cek_stack(void)
 	
 	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
 	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
-	//printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
 	#endif
 	
 	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
@@ -346,6 +349,14 @@ void cek_stack(void)
 		
 	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
 		printf(" GSM      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
+	#endif
+	
+	#ifdef PAKAI_CRON
+		printf(" CRON     : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cron));
+	#endif
+	
+	#ifdef AMBIL_PM
+//		printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
 	#endif
 }							 
 
@@ -1127,6 +1138,6 @@ vTaskDelay(100);
 
 void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 16), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }
 

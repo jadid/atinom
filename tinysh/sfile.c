@@ -313,6 +313,31 @@ static int set_file_default(void)	{
 	vPortFree( p_gr );	
 }
 
+int hapus_file_terkirim(char * nf) {
+	char namafile[100];
+	int res;
+	FIL fd2;
+	
+	//strcpy(namafile, nf);
+	printf("namafile KUDU dihapus: %s", nf);
+	if (res = f_open(&fd2, namafile, FA_READ | FA_WRITE)) {
+		printf("\r\n%s(): Buka file error %d, file tak diHAPUS  !\r\n", __FUNCTION__, res);					
+		return 0;
+	}
+	printf(", SENDED ???\r\n");
+	f_lseek( &fd2, fd2.fsize - 6 );
+	f_read( &fd2, namafile, 6, &res);
+	if (strncmp( namafile, "SENDED", 6) != 0)  {
+		f_close(&fd2);
+		if(dihapus(namafile)==0) {
+			printf("%s BERHASIL dihapus\r\n", namafile);
+		} else {
+			printf("%s GAGAL dihapus\r\n", namafile);
+		}
+		vTaskDelay(10);		
+	}
+}
+
 //FRESULT scan_files (char* path)
 //static int hapus_direktori(int argc, char **argv) {
 int hapus_SENDED() {
@@ -427,10 +452,11 @@ int hapus_SENDED() {
 int dihapus(char *nama) {
 	FRESULT res;
 	int flag=10;
-	char namanya[64];
+	char namanya[255];
 	
-	sprintf(namanya, "%s", nama);
-	printf("________________NAMANYA : %s",namanya);
+	strcpy(namanya, nama);
+	printf("_______NAMANYA : %s",namanya);
+	return 0;
 	res = f_unlink(namanya);
 	if (res == FR_OK) {
 		printf("......dihapus\r\n");
@@ -647,7 +673,7 @@ int cari_files (char* pathxx, char *aksi) {
 	char *nama;
 	int i;
 	static char aaaa[64];
-	static char bbbb[128];
+	static char bbbb[255];
 	strcpy(aaaa, pathxx);
 	unsigned int jum_dirs=0;
 	//fileInfo.lfname = buf_lfn;
@@ -693,18 +719,15 @@ int cari_files (char* pathxx, char *aksi) {
 			#ifdef PAKAI_GSM_FTP
 				if (strncmp(aksi,"kirim_ftp", 9)==0) {
 					#ifdef DEBUG_FTP
-					printf("kirim_ftpnya nama file: %s  %s\r\n", bbbb, nama);
+					//printf("kirim_ftpnya nama file: %s  %s\r\n", bbbb, nama);
 					#endif
 					kirim_file_ke_ftp(bbbb, nama);
 					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
 					
 				} else if (strncmp(aksi,"hapus", 5)==0) {
-					i=dihapus(aaaa);
-					if (i==0) {
-						printf("%s dihapus\r\n", aaaa);
-					} else {
-						printf("%s GAGAL dihapus\r\n", aaaa);
-					}
+					//printf("hapuskan: %s\r\n", bbbb);
+					hapus_file_terkirim(bbbb);
+					vTaskDelay(2);
 				} else {
 					printf("path: %s, namafile: %s\r\n", bbbb, aaaa);
 				}

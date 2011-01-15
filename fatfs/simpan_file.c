@@ -85,7 +85,8 @@ int proses_simpan_file(void)	{
 					get_tm_time( &tw );
 					timeval = mktime( &tw );
 					
-					sprintf(path, "%04d%02d%02d_%02d%02d%02d ", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min, tw.tm_sec);
+					//sprintf(path, "%04d%02d%02d_%02d%02d%02d ", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min, tw.tm_sec);
+					sprintf(path, "%04d%02d%02d_%02d%02d%02d\t", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min, tw.tm_sec);
 					/* kasih tag waktu */
 					//sprintf(path, "%s", ctime(&timeval));
 					
@@ -104,7 +105,8 @@ int proses_simpan_file(void)	{
 						if ( jm != 0) {
 							//sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
 							
-							sprintf(path, "%.3f ", data_f[ jm - 1] );
+							//sprintf(path, "%.3f ", data_f[ jm - 1] );
+							sprintf(path, "%.3f\t", data_f[jm-1]);
 							
 							if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);

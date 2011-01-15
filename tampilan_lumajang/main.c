@@ -196,8 +196,12 @@ int main( void )
 	start_ether();
 	init_shell();			// 10, 0
 	init_task_tampilan();	// 10, -1
-#ifdef PAKAI_PM
-	//init_task_pm();			// 10, +1
+#if defined(PAKAI_PM) && defined(AMBIL_PM)
+	init_task_pm();			// 10, +1
+#endif
+
+#ifdef PAKAI_CRON
+	init_task_cron();
 #endif
 
 #if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
@@ -207,6 +211,8 @@ int main( void )
 #ifdef PAKAI_SELENOID
 	init_task_relay();
 #endif
+
+
 	vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle
@@ -294,7 +300,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 void init_led_utama(void)
 {	
 	/* tadinya stak = 5, prio - 1 */
-	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 4) , \
+	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 1) , \
 		NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_led );
 }
 
@@ -333,16 +339,12 @@ void init_task_lcd(void)
 
 
 static portTASK_FUNCTION(modem_task, pvParameters )	{	
-	vTaskDelay(100);
-	printf("init GSM task\r\n");
+	vTaskDelay(500);
+	printf("GSM Task : init\r\n");
 	vTaskDelay(2000);
 	vTaskDelay(2000);
-	vTaskDelay(2000);
-	vTaskDelay(2000);
-	vTaskDelay(2000);
-	vTaskDelay(2000);
-	flush_modem();
-	vTaskDelay(2000);
+	cek_AT();
+	
 	for (;;)	{
 		if (status_modem==0 && saat_gsm_aksi==1) {
 			gsm_ftp();

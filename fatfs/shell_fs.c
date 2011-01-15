@@ -4,7 +4,8 @@
 	
 	27 April 2009
 	
-	*/
+	*/	
+	
 #if PAKAI_BLACKFIN
 #include "../penting.h"
 #if (SIMULATOR == 0)	
@@ -19,6 +20,8 @@
 #include "diskio.h"   	/* Include file for user provided disk functions */
 #include "sysdefs.h"
 #include <string.h>
+
+#ifdef PAKAI_FILE_SIMPAN
 
 FATFS Fatfs;
 DIR dirs;
@@ -308,7 +311,7 @@ static int util_view (int argc, char **argv)
 		if (ln < ret) break; // sudah mencapai akhir file		
 	}
 	f_close( &fd );
-		
+	printf("\r\n");
 	return;
 }
 
@@ -358,4 +361,6 @@ static void util_mkdir(int argc, char **argv)
 static tinysh_cmd_t util_mkdir_cmd={0,"mkdir","buat direktory","[args]",
                               util_mkdir,0,0,0};
                               
+#endif
+
 #endif

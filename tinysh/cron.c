@@ -31,7 +31,12 @@
 #ifndef __CRON__
 #define __CRON__
 
+xTaskHandle hdl_cron;
+
 int status_modem;
+int job_cron;
+int status_cron;
+
 
 #ifdef PAKAI_GSM_FTP
 	int saat_gsm_aksi;
@@ -257,12 +262,16 @@ void baca_cron() {
 				
 				#ifdef PAKAI_FILE_SIMPAN
 				if (strcmp(p_dt[hitung].cmd,"hapus")==0) {
+					printf("Hapus file !!!\r\n");
+					job_cron = 1;
+					/*
 					if (status_modem==1)		// biar nggak konflik baca file
 						return;
 					printf("......HAPUS file J-12\r\n");			
 					//cari_berkas("J-12", "lihat");
 					cari_berkas("J-12","hapus");
 					vTaskDelay(100);
+					//*/
 				}
 				
 				if (strcmp(p_dt[hitung].cmd,"list")==0) {
@@ -566,6 +575,56 @@ static int simpan_cron( struct t_cron *pgr)
 	
 	printf(".. OK\r\n");
 	return 0;
+}
+
+
+portTASK_FUNCTION(cron_task, pvParameters)	{
+	int i=0, j=0;
+	vTaskDelay(500);
+	printf("Task Cron : init\r\n");
+	
+	for(i=0; i<15; i++)
+		vTaskDelay(1000);
+
+	for(;;) {
+		//*
+		#ifdef PAKAI_FILE_SIMPAN
+		if (status_cron==0 && job_cron==1) {
+			#if 0
+			#ifdef PAKAI_GSM_FTP
+				if (status_modem==1)	{	// biar nggak konflik baca file
+					printf("___modem sibuk -cron-___\r\n");
+				} else {
+					status_cron = 1;
+					printf("......HAPUS file J-12\r\n");			
+					//cari_berkas("J-12", "lihat");
+					cari_berkas("J-2","hapus");
+				}			
+			#else
+				status_cron = 1;
+				printf("......HAPUS file J-12\r\n");			
+				//cari_berkas("J-12", "lihat");
+				cari_berkas("J-12","hapus");
+			#endif	
+			#endif
+			job_cron = 0;		// reset kerjaan cron
+		}
+		#endif
+		//*/
+		i++;
+		//*
+		if (i>10)	{
+			printf("______task cron: %d\r\n", j++);
+			i=0;
+		}
+		//*/
+		vTaskDelay(100);
+	}
+}
+
+void init_task_cron(void)	{
+	xTaskCreate( cron_task, ( signed portCHAR * ) "CRON", (configMINIMAL_STACK_SIZE * 4), \
+		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_cron );	
 }
 
 #endif

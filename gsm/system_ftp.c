@@ -707,10 +707,10 @@ int upload_file(char *namafile) {
 	
 	while(1) {
 		strcpy(cmd_ftp, "");
-		baca_serial(cmd_ftp, 100, 1000);
+		baca_serial(cmd_ftp, 100, 500);
 		if (strlen(cmd_ftp)>0)	{
 			#ifdef DEBUG_FTP
-			printf("respon: %s\r\n", cmd_ftp);
+			printf("%d. respon1: %s\r\n", i+1, cmd_ftp);
 			#endif
 			break;
 		}
@@ -718,17 +718,19 @@ int upload_file(char *namafile) {
 		if (i>10)	break;
 	}
 	
-	/*
-	baca_serial(cmd_ftp, 100, 1000);
-	#ifdef DEBUG_FTP
-	printf("cmd: %s\r\n", cmd_ftp);
-	#endif
-	
-	baca_serial(cmd_ftp, 100, 1000);
-	#ifdef DEBUG_FTP
-	printf("respon: %s\r\n", cmd_ftp);
-	#endif
-	//*/
+	while(1) {
+		strcpy(cmd_ftp, "");
+		baca_serial(cmd_ftp, 100, 500);
+		if (strlen(cmd_ftp)>0)	{
+			#ifdef DEBUG_FTP
+			printf("%d.respon2: %s\r\n", i+1, cmd_ftp);
+			#endif
+			break;
+		}
+		i++;
+		if (i>10)	break;
+	}	
+
 	if (strncmp(cmd_ftp,"AT+WIPFILE",11)==0) {
 		/*
 		baca_serial(cmd_ftp, 100, 1000);
@@ -741,7 +743,7 @@ int upload_file(char *namafile) {
 			baca_serial(cmd_ftp, 100, 1000);
 			if (strlen(cmd_ftp)>0)	{
 				#ifdef DEBUG_FTP
-				printf("respon: %s\r\n", cmd_ftp);
+				printf("respon3: %s\r\n", cmd_ftp);
 				#endif
 				break;
 			}

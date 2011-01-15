@@ -229,9 +229,9 @@ void baca_cron() {
 				
 				#ifdef PAKAI_GSM_FTP
 				if (strcmp(p_dt[hitung].cmd,"ftp")==0) {
-					//saat_gsm_aksi=1;
+					saat_gsm_aksi=1;
 					printf("......KIRIM ftp\r\n");
-					gsm_ftp();
+					//gsm_ftp();
 				}
 				#endif
 				

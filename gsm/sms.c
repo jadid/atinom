@@ -50,18 +50,21 @@ void flush_modem() {
 	int i;
 	int loop;
 	
-	for (i=0; i<100; i++)
+	for (i=0; i<50; i++)
 		#ifdef PAKAI_SERIAL_1
-			if (PAKAI_SMS==1)
+			if (PAKAI_SMS==1) {
 				ser1_getchar(1, &loop, 20 );
+			}
 		#endif
 		#ifdef PAKAI_SERIAL_2
-			if (PAKAI_SMS==2)
+			if (PAKAI_SMS==2) {
 				ser2_getchar(1, &loop, 20 );
+			}
 		#endif
 		#ifdef PAKAI_SERIAL_3
-			if (PAKAI_SMS==3)
+			if (PAKAI_SMS==3)	{
 				ser3_getchar(1, &loop, 20 );
+			}
 		#endif
 }
 
@@ -73,17 +76,17 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	flush_modem();
 	strcpy(pesan, isiSMS);
 	//printf("Isi Pesan: %s\r\n", str_sms);
-	sprintf(str_sms, "AT+CMGF=1\r\n");		//printf("cmd: %s", str_sms);
+	sprintf((char *) str_sms, "AT+CMGF=1\r\n");		//printf("cmd: %s", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
-	strcpy(str_sms, "");
+	strcpy((char *) str_sms, "");
 	baca_serial(str_sms, 20, 100);
 	//printf("isi: %s\r\n", str_sms);
-	if (strncmp(str_sms, "AT+CMGF", 7) == 0)	{
+	if (strncmp((char *) str_sms, "AT+CMGF", 7) == 0)	{
 		//strcpy(str_sms, "");
 		baca_serial(str_sms, 20, 100);
 	}
 	//printf("isi2: %s\r\n", str_sms);
-	if (strncmp(str_sms, "OK", 2) != 0)	{
+	if (strncmp((char *) str_sms, "OK", 2) != 0)	{
 		printf("GAGAL kirim modem ascii\r\n");
 		return -1;
 	}
@@ -314,8 +317,9 @@ int baca_sms_semua() {
 	if (jml>0) {
 		for (yy=0; yy<jml; yy++) {
 			//printf("index: %d\r\n", no_pesan[yy]);
-			//hapus_sms(no_pesan[yy]);
+			hapus_sms(no_pesan[yy]);
 		}
+		jml=0;
 	}
 }
 

@@ -835,7 +835,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_modem_gsm_cmd);
 	tinysh_add_command(&gsm_ftp_cmd);
 	tinysh_add_command(&cek_ftp_cmd);
-	tinysh_add_command(&hapus_filenya_cmd);
+	
 #endif	
 
 #ifdef PAKAI_SMS
@@ -893,6 +893,7 @@ vTaskDelay(100);
 	tinysh_add_command(&set_file_cmd);
 	tinysh_add_command(&del_direktori_cmd);
 	tinysh_add_command(&cari_doku_cmd);
+	tinysh_add_command(&hapus_filenya_cmd);
 #endif
 
 

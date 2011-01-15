@@ -54,7 +54,9 @@
 
 #define PAKE_TELNETD
 #define PAKAI_WEBCLIENT
+
 #define SAMPURASUN_CLIENT
+#define SAMPURASUN_SERVER
 
 #define PROMPT 		"Konter@"
 #define NAMA_BOARD	"Babelan Komon Konter"

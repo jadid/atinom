@@ -471,7 +471,7 @@ void cetak_tulisan(char *isi) {
 
 void baca_hasil() {
 	char serGSM[24];
-	baca_serial(serGSM, 20, 5);
+	baca_serial(serGSM, 50, 5);
 	printf(" MODEM: %s\r\n",serGSM);
 	if (strncmp(serGSM,"AT",2)==0) {
 		baca_serial(serGSM, 20, 5);

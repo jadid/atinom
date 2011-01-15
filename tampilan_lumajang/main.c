@@ -276,7 +276,11 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	
 	vTaskDelay(500);
 	FIO1SET = BACKLIT;
+	
+	#ifdef PAKAI_SELENOID
 	set_selenoid(1);		// hidup relay 1
+	#endif
+	
 	for (;;)	{
 		togle_led_utama();
 		vTaskDelay(500);

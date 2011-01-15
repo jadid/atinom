@@ -692,10 +692,12 @@ int cari_files (char* pathxx, char *aksi) {
 			//*
 			#ifdef PAKAI_GSM_FTP
 				if (strncmp(aksi,"kirim_ftp", 9)==0) {
-					//kirim_file_ke_ftp(bbbb, nama);
-					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+					#ifdef DEBUG_FTP
 					printf("kirim_ftpnya nama file: %s  %s\r\n", bbbb, nama);
-					//printf(ngomong);
+					#endif
+					kirim_file_ke_ftp(bbbb, nama);
+					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
+					
 				} else if (strncmp(aksi,"hapus", 5)==0) {
 					i=dihapus(aaaa);
 					if (i==0) {
@@ -704,7 +706,7 @@ int cari_files (char* pathxx, char *aksi) {
 						printf("%s GAGAL dihapus\r\n", aaaa);
 					}
 				} else {
-					//printf("%s\\%s\r\n", pathxx, fnxx);
+					printf("path: %s, namafile: %s\r\n", bbbb, aaaa);
 				}
 			#endif
 			//*/
@@ -832,7 +834,8 @@ int cari_doku(int argc, char **argv) {
 	
 	if (strcmp(argv[2], "ftp") == 0) {
 		#ifdef PAKAI_GSM_FTP
-			gsm_ftp();
+			//gsm_ftp();
+			saat_gsm_aksi = 1;
 		/*
 			if (konek_ftp_awal()==0) 	{
 				printf("Koneksi GPRS gagal !!!\r\n");

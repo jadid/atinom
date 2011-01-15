@@ -425,17 +425,18 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 		kirim_sms_ascii("02192254186", str_sms);
 	if (mode_pulsa==2) {
 		//printf("str_sms: %s\r\n", str_sms);
-		//kirim_sms_ascii("081908870878", str_sms);
-		kirim_sms_ascii("08170504365", str_sms);
 		vTaskDelay(100);
-		//kirim_sms_ascii("08118888623", str_sms);
-		//vTaskDelay(100);
+		kirim_sms_ascii("081908870878", str_sms);
+		//kirim_sms_ascii("08170504365", str_sms);
+		vTaskDelay(100);
+		kirim_sms_ascii("08118888623", str_sms);
+		vTaskDelay(100);
 		kirim_sms_ascii("02192254186", str_sms);
 	}
 	if (mode_pulsa==3) {
 		int duit=duit_pulsa(str_sms);
 		char dpls[120];
-		printf("masuk mode 3: duit: %d, str_sms: %s\r\n", duit, str_sms);
+		//printf("masuk mode 3: duit: %d, str_sms: %s\r\n", duit, str_sms);
 		if (duit<10000)	{
 			strcpy(dpls, "Sisa pulsa: Rp.");
 			strcat(dpls, str_sms);

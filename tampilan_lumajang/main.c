@@ -345,10 +345,9 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 	vTaskDelay(2000);
 	for (;;)	{
 		if (status_modem==0 && saat_gsm_aksi==1) {
-			//vTaskDelay(50);
 			gsm_ftp();
 			saat_gsm_aksi=0;
-		} 
+		}
 		vTaskDelay(50);
 		
 		if (status_modem==0 && saat_sms_aksi==1) {		// cron bacasms

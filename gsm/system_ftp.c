@@ -17,7 +17,7 @@
 //#define modemBebas()	flush_modem(); \
 //						vTaskDelay(10);
 
-//#define DEBUG_FTP
+#define DEBUG_FTP
 
 unsigned int files=0;
 unsigned int file_sudah=0;
@@ -33,7 +33,7 @@ int gsm_ftp()	{
 	
 	status_modem = 1;
 	fff = koneksi_on();
-
+	printf("flag FTP: %d\r\n", fff);
 	//fff=90;
 	if (fff!=90) {
 		printf("Koneksi GPRS gagal !!!\r\n");
@@ -90,6 +90,7 @@ int koneksi_on()	{
 	if (set_wipcfg_on()==0)	{
 		flag = 1;
 	}
+	if (flag==20)	return flag;
 	
 	vTaskDelay(1000);
 	flag = 30;
@@ -99,6 +100,7 @@ int koneksi_on()	{
 	if (set_wipbr()==0)	{
 		flag = 1;
 	}
+	if (flag==30)	return flag;
 	
 	vTaskDelay(50);
 	flag = 40;
@@ -108,6 +110,7 @@ int koneksi_on()	{
 	if (set_wipbr_apn()==0)	{
 		flag = 1;
 	}
+	if (flag==50)	return flag;
 	
 	vTaskDelay(50);
 	flag = 50;
@@ -117,6 +120,7 @@ int koneksi_on()	{
 	if (set_wipbr_user()==0)	{
 		flag = 1;
 	}
+	if (flag==50)	return flag;
 	
 	vTaskDelay(50);
 	flag = 60;
@@ -126,10 +130,11 @@ int koneksi_on()	{
 	if (set_wipbr_passwd()==0) {
 		flag = 1;	
 	}
+	if (flag==60)	return flag;
 	
 	vTaskDelay(100);
 	flag = 70;
-	for (oz=0; oz<20; oz++) {
+	for (oz=0; oz<10; oz++) {
 		if (flag == 70) {
 			#ifdef DEBUG_FTP
 			printf("________KONEK GPRS________\r\n");
@@ -146,7 +151,7 @@ int koneksi_on()	{
 	
 	vTaskDelay(100);
 	flag = 80;
-	for (oz=0; oz<20; oz++) {
+	for (oz=0; oz<10; oz++) {
 		if (flag == 80) {
 			#ifdef DEBUG_FTP
 			printf("________KONEK FTP________\r\n");
@@ -250,7 +255,7 @@ int cek_awal(void) {
 		baca_serial(cmd_ftp, 10, 20);
 		
 		#ifdef DEBUG_FTP
-		printf("respon%d: %s : %d %s\r\n", i+1, cmd_ftp, strlen(cmd_ftp), __FUNCTION__);
+		//printf("respon%d: %s : %d %s\r\n", i+1, cmd_ftp, strlen(cmd_ftp), __FUNCTION__);
 		#endif
 
 		if ((strncmp(cmd_ftp,"+WIND",5)!=0) && (strlen(cmd_ftp)==0))	{	// sudah tidak +WIND
@@ -258,6 +263,11 @@ int cek_awal(void) {
 			if (flag==0)		break;
 		}
 	}
+	/*
+	sprintf(cmd_ftp, "ATE0\r\n");
+	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
+	baca_serial(cmd_ftp, 10, 20);
+	//*/
 	return 10;
 }
 
@@ -343,6 +353,7 @@ int set_wipcfg_on(void) {
 		}
 	} else {
 		printf("%s UNKNWON : %s\r\n", __FUNCTION__, cmd_ftp);
+		return -1;
 	}
 }
 
@@ -415,7 +426,7 @@ int set_wipbr(void) {
 	
 	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
 		printf("%s : AT+WIPBR=1,6 GAGAL\r\n", __FUNCTION__);
-		
+		return -1;
 	} else {
 		printf("%s : AT+WIPBR=1,6 UNKNOWN %s\r\n", __FUNCTION__, cmd_ftp);
 		
@@ -424,6 +435,7 @@ int set_wipbr(void) {
 		#ifdef DEBUG_FTP
 		printf("respon1: %s\r\n", cmd_ftp);
 		#endif
+		return -1;
 	}
 	return -1;
 }
@@ -459,7 +471,7 @@ int set_wipbr_apn(void) {		// AT+WIPBR=2,6,11,"internet"
 	
 	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
 		printf("%s : AT+WIPBR=2,6,11,\"apn\" GAGAL\r\n", __FUNCTION__);
-		
+		return -1;
 	} else {
 		printf("%s : AT+WIPBR=2,6,11,\"apn\" UNKNOWN %s\r\n", __FUNCTION__, cmd_ftp);
 		
@@ -468,6 +480,7 @@ int set_wipbr_apn(void) {		// AT+WIPBR=2,6,11,"internet"
 		#ifdef DEBUG_FTP
 		printf("respon1: %s\r\n", cmd_ftp);
 		#endif
+		return -1;
 	}
 }
 
@@ -502,7 +515,7 @@ int set_wipbr_user(void) {
 	
 	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
 		printf("%s : AT+WIPBR=2,6,0,\"user\" GAGAL\r\n", __FUNCTION__);
-		
+		return -1;
 	} else {
 		printf("%s : AT+WIPBR=2,6,0,\"user\" UNKNOWN %s\r\n", __FUNCTION__, cmd_ftp);
 		
@@ -511,6 +524,7 @@ int set_wipbr_user(void) {
 		#ifdef DEBUG_FTP
 		printf("respon1: %s\r\n", cmd_ftp);
 		#endif
+		return -1;
 	}
 }
 
@@ -542,6 +556,20 @@ int set_wipbr_passwd(void) {			// AT+WIPBR=2,6,1,"password"
 		#endif
 
 		return 0;
+	}
+	
+	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
+		printf("%s : AT+WIPBR=2,6,1,\"user\" GAGAL\r\n", __FUNCTION__);
+		return -1;
+	} else {
+		printf("%s : AT+WIPBR=2,6,1,\"user\" UNKNOWN %s\r\n", __FUNCTION__, cmd_ftp);
+		
+		strcpy(cmd_ftp, "");
+		baca_serial(cmd_ftp, 20, 10);
+		#ifdef DEBUG_FTP
+		printf("respon1: %s\r\n", cmd_ftp);
+		#endif
+		return -1;
 	}
 }
 
@@ -663,6 +691,7 @@ int set_ftp_on(void) {
 	}
 	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
 		printf("%s : AT+WIPCREATE=4,1,\"ftp\",\"port\",\"user\",\"pwd\" GAGAL\r\n", __FUNCTION__);
+		return -1;
 	} else {
 		printf("%s : AT+WIPCREATE=4,1,\"ftp\",\"port\",\"user\",\"pwd\" UNKNOWN %s\r\n", __FUNCTION__, cmd_ftp);
 		
@@ -671,6 +700,7 @@ int set_ftp_on(void) {
 		#ifdef DEBUG_FTP
 		printf("respon1: %s\r\n", cmd_ftp);
 		#endif
+		return -1;
 	}
 	return -1;
 }
@@ -873,20 +903,31 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			// untuk mengakhiri data ftp //
 			oz=0;
 			while(1) {
-				if (oz>10)	break;
+				if (oz>20)	break;
 				oz++;
 				if (send_etx() == 0)	{
 					flag = 88;
 					break;
 				}
 				vTaskDelay(10);
-				cek_awal();
+				//cek_awal();
 			}
 			
 			
 			if (flag==77) {
 				f_close( &fd2 );
 				printf("Upload GAGAL parsial !!! tanpa ETX\r\n");
+				oz=0;
+				while(1) {
+					if (oz>10)	break;
+					oz++;
+					if (send_etx() == 0)	{
+						flag = 88;
+						break;
+					}
+					vTaskDelay(10);
+					//cek_awal();
+				}
 				return 90;
 			}		
 			// tulis SENDED pada akhir file //
@@ -918,7 +959,7 @@ int send_etx(void) {
 	printf("cmd_ftp: %s\r\n", cmd_ftp);
 	#endif
 	if (strncmp(cmd_ftp, "OK", 2) == 0) 	{
-		baca_serial(cmd_ftp, 20, 50);
+		baca_serial(cmd_ftp, 20, 100);
 	
 		#ifdef DEBUG_FTP
 		printf("cmd_ftp: %s\r\n", cmd_ftp);

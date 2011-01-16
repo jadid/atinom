@@ -358,7 +358,7 @@ int baca_sms_semua() {
 		vTaskDelay(50);
 		
 		#ifdef DEBUG_SMS
-		printf("___isi: %s\r\n", hasilx);
+		//printf("___isi: %s\r\n", hasilx);
 		#endif
 		
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
@@ -549,7 +549,7 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 			//vTaskDelay(100);
 			//kirim_sms_ascii("08118888623", str_sms);
 			//vTaskDelay(100);
-			kirim_sms_ascii("02192254186", dpls);
+			kirim_sms_ascii("02192254186", sisapulsa);
 		}
 	}
 	
@@ -574,7 +574,9 @@ int sms_cron() {
 
 	if (jmlSMS>0) {
 		for(no=0; no<jmlSMS; no++) {
+			#ifdef DEBUG_SMS
 			printf("loop %d. sPesan: %c sip: %s, no_pesan: %d\r\n", no+1, sPesan[no], sipPesan[no], no_pesan[no]);
+			#endif
 			// aksinya
 			//*
 			if (sPesan[no]=='p') kirim_sisa_pulsa(sipPesan[no], 0);

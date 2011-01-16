@@ -525,6 +525,15 @@ int set_cron(int argc, char **argv)
 		} else if ( (strcmp(argv[2], "unset") == 0) || (strcmp(argv[2], "mati") == 0) ) {	// 3
 			p_gr[sumb-1].set = 0;
 			printf(" Sistem cron tidak diaktifkan !\r\n");
+		} else if ( (strncmp(argv[2], "default",7) == 0)) {	// 3
+			sprintf(p_gr[sumb-1].mnt, "-");
+			sprintf(p_gr[sumb-1].jam, "-");
+			sprintf(p_gr[sumb-1].tgl, "-");
+			sprintf(p_gr[sumb-1].bln, "-");
+			sprintf(p_gr[sumb-1].cmd, "-");
+			p_gr[sumb-1].alamat = 0;
+			p_gr[sumb-1].status = 0;
+			p_gr[sumb-1].set = 0;
 		} else {
 			printf(" ERR: perintah tidak benar / argumen kurang !\r\n");
 			printf(" coba set_cron help \r\n");

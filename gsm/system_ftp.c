@@ -873,9 +873,10 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			// untuk mengakhiri data ftp //
 			oz=0;
 			while(1) {
-				if (oz>50)	break;
+				if (oz>10)	break;
 				oz++;
 				if (send_etx() == 0)	{
+					flag = 88;
 					break;
 				}
 				vTaskDelay(10);
@@ -883,7 +884,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			}
 			
 			
-			if (flag==0) {
+			if (flag==77) {
 				f_close( &fd2 );
 				printf("Upload GAGAL parsial !!! tanpa ETX\r\n");
 				return 90;
@@ -896,8 +897,9 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			#endif						
 			f_write( &fd2, abs_path, strlen(abs_path), &res);
 			file_sukses++;
+			printf("FILE %s terkirim ke FTP\r\n", posisifile);
 		} else	{
-			printf("Upload %s file ERROR !\r\n", nf);
+			printf("Upload %s file ERROR !\r\n", namafile);
 			//break;
 		}
 	}
@@ -910,13 +912,13 @@ int send_etx(void) {
 	char ch = 0x03, *p;
 	p = &ch;
 	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
-	baca_serial(cmd_ftp, 20, 10);
+	baca_serial(cmd_ftp, 20, 50);
 	
 	#ifdef DEBUG_FTP
 	printf("cmd_ftp: %s\r\n", cmd_ftp);
 	#endif
 	if (strncmp(cmd_ftp, "OK", 2) == 0) 	{
-		baca_serial(cmd_ftp, 20, 10);
+		baca_serial(cmd_ftp, 20, 50);
 	
 		#ifdef DEBUG_FTP
 		printf("cmd_ftp: %s\r\n", cmd_ftp);

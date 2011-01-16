@@ -581,7 +581,7 @@ static int simpan_cron( struct t_cron *pgr)
 portTASK_FUNCTION(cron_task, pvParameters)	{
 	int i=0, j=0;
 	vTaskDelay(500);
-	printf("Task Cron : init\r\n");
+	printf("Cron : init\r\n");
 	
 	for(i=0; i<10; i++)
 		vTaskDelay(1000);
@@ -590,22 +590,25 @@ portTASK_FUNCTION(cron_task, pvParameters)	{
 		//*
 		#if 1
 		#ifdef PAKAI_FILE_SIMPAN
-		if (status_cron==0 && job_cron==1) {
+		if (job_cron==1) {
+			
 			#if 1
 			#ifdef PAKAI_GSM_FTP
-				if (status_modem==1)	{	// biar nggak konflik baca file
+				if (status_cron=0 && status_modem==1)	{	// biar nggak konflik baca file
 					printf("___modem sibuk -cron-___\r\n");
 				} else {
 					status_cron = 1;
-					printf("......HAPUS file J-12\r\n");			
-					//cari_berkas("J-12", "lihat");
-					//cari_berkas("J-2","hapus");
+					printf("......HAPUS file J-3\r\n");			
+					//cari_berkas("J-2", "lihat");
+					cari_berkas("J-3","hapus");
+					status_cron = 0;
 				}			
 			#else
 				status_cron = 1;
-				printf("......HAPUS file J-12\r\n");			
+				printf("......HAPUS file J-3\r\n");			
 				//cari_berkas("J-12", "lihat");
-				cari_berkas("J-12","hapus");
+				cari_berkas("J-3","hapus");
+				status_cron = 0;
 			#endif	
 			#endif
 			job_cron = 0;		// reset kerjaan cron
@@ -625,7 +628,7 @@ portTASK_FUNCTION(cron_task, pvParameters)	{
 }
 
 void init_task_cron(void)	{
-	xTaskCreate( cron_task, ( signed portCHAR * ) "CRON", (configMINIMAL_STACK_SIZE * 3), \
+	xTaskCreate( cron_task, ( signed portCHAR * ) "CRON", (configMINIMAL_STACK_SIZE * 4), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_cron );	
 }
 

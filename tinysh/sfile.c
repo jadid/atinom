@@ -313,28 +313,34 @@ static int set_file_default(void)	{
 	vPortFree( p_gr );	
 }
 
-int hapus_file_terkirim(char * nf) {
-	char namafile[100];
+int hapus_file_terkirim(char * nf, char * nama) {
+	char namafile[80];
 	int res;
 	FIL fd2;
 	
-	//strcpy(namafile, nf);
-	printf("namafile KUDU dihapus: %s", nf);
+	strcpy(namafile, nf);
 	if (res = f_open(&fd2, namafile, FA_READ | FA_WRITE)) {
 		printf("\r\n%s(): Buka file error %d, file tak diHAPUS  !\r\n", __FUNCTION__, res);					
 		return 0;
 	}
-	printf(", SENDED ???\r\n");
+
 	f_lseek( &fd2, fd2.fsize - 6 );
-	f_read( &fd2, namafile, 6, &res);
-	if (strncmp( namafile, "SENDED", 6) != 0)  {
+	f_read( &fd2, nf, 6, &res);
+
+	if (strncmp( nf, "SENDED", 6) != 0)  {
 		f_close(&fd2);
+		//printf("file %s SENDED\r\n", namafile);
+		//return 0;
+		//*
 		if(dihapus(namafile)==0) {
-			printf("%s BERHASIL dihapus\r\n", namafile);
+			printf("%s BERHASIL dihapus\r\n", nama);
 		} else {
-			printf("%s GAGAL dihapus\r\n", namafile);
+			printf("%s GAGAL dihapus\r\n", nama);
 		}
-		vTaskDelay(10);		
+		vTaskDelay(2);		
+		//*/
+	} else {
+		printf("%s TIDAK SENDED\r\n", nama);
 	}
 }
 
@@ -449,14 +455,14 @@ int hapus_SENDED() {
 	vTaskDelay(500);
 }
 
-int dihapus(char *nama) {
+int dihapus(char * nama) {
 	FRESULT res;
 	int flag=10;
 	char namanya[255];
 	
 	strcpy(namanya, nama);
-	printf("_______NAMANYA : %s",namanya);
-	return 0;
+	//printf("_______NAMANYA : %s",nama);
+	//return 0;
 	res = f_unlink(namanya);
 	if (res == FR_OK) {
 		printf("......dihapus\r\n");
@@ -726,8 +732,9 @@ int cari_files (char* pathxx, char *aksi) {
 					
 				} else if (strncmp(aksi,"hapus", 5)==0) {
 					//printf("hapuskan: %s\r\n", bbbb);
-					hapus_file_terkirim(bbbb);
-					vTaskDelay(2);
+					//printf("path: %s\r\n", bbbb);
+					hapus_file_terkirim(bbbb, nama);
+					//vTaskDelay(2);
 				} else {
 					printf("path: %s, namafile: %s\r\n", bbbb, aaaa);
 				}
@@ -902,7 +909,7 @@ int cari_berkas(char *str_doku, char *aksi) {
   	for(i=atoi(str); i>0; i--) {
 		sprintf(waktu, "%c-%d", waktu[0],i);
 		cari_waktu(path_bk, waktu);
-		printf("_______________path: %s\r\n",path_bk);
+		//printf("_______________path: %s\r\n",path_bk);
 		cari_files(path_bk, aksinya);
 	}
 	

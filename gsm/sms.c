@@ -519,7 +519,7 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 		printf("str_sms: %s\r\n", sisapulsa);
 		#endif
 		vTaskDelay(100);
-		#if 0
+		#if 1
 		kirim_sms_ascii("081908870878", sisapulsa);
 		//kirim_sms_ascii("08170504365", str_sms);
 		vTaskDelay(100);
@@ -528,7 +528,7 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 		kirim_sms_ascii("02192254186", sisapulsa);
 		#endif
 		
-		#if 1
+		#if 0
 		vTaskDelay(100);
 		kirim_sms_ascii("082114722515", sisapulsa);
 		vTaskDelay(100);
@@ -543,12 +543,13 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 			strcpy(sisapulsa, "Sisa pulsa: Rp.");
 			strcat(sisapulsa, str_sms);
 			strcat(sisapulsa, "Harap diisi yak!!");
-
-			//kirim_sms_ascii("081908870878", str_sms);
+			
+			vTaskDelay(100);
+			kirim_sms_ascii("081908870878", str_sms);
 			//kirim_sms_ascii("08170504365", dpls);
-			//vTaskDelay(100);
-			//kirim_sms_ascii("08118888623", str_sms);
-			//vTaskDelay(100);
+			vTaskDelay(100);
+			kirim_sms_ascii("08118888623", str_sms);
+			vTaskDelay(100);
 			kirim_sms_ascii("02192254186", sisapulsa);
 		}
 	}

@@ -35,6 +35,7 @@ char sipPesan[nPESAN][20];
 
 int cek_pulsa_exe();
 int kirim_sms_exe();
+int kirim_data_monita_exe();
 
 int baca_sms_semua();
 int hapus_sms_exe(int argc, char **argv);
@@ -44,7 +45,9 @@ static tinysh_cmd_t cek_pulsa_cmd={ 0,"cek_pulsa","cek pulsa","", cek_pulsa_exe,
 static tinysh_cmd_t kirim_sms_cmd={ 0,"kirim_sms","kirim sms","[nomer] [pesan]", kirim_sms_exe, 0, 0, 0 };
 static tinysh_cmd_t hapus_sms_cmd={ 0,"hapus_sms","hapus sms","[nomer] ", hapus_sms_exe, 0, 0, 0 };
 static tinysh_cmd_t baca_sms_cmd={ 0,"baca_sms","baca sms","[nomer]", baca_sms_exe, 0, 0, 0 };
-static tinysh_cmd_t baca_sms_semua_cmd={ 0,"baca_semua_sms","baca semua sms","[nomer]", baca_sms_semua, 0, 0, 0 };
+static tinysh_cmd_t baca_sms_semua_cmd={ 0,"baca_semua_sms","","[nomer]", baca_sms_semua, 0, 0, 0 };
+static tinysh_cmd_t sms_monita_cmd={ 0,"monita","info data","[info|data|satuan]", kirim_data_monita_exe, 0, 0, 0 };
+
 
 void flush_modem() {
 	int i;
@@ -124,15 +127,22 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	
 	sprintf(str_sms, "%c", CTRL_Z);		//printf("___kirim CTRL-Z___\r\n");
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
-	
+	int qq=0;
+	while(1) {
+		strcpy(str_sms, "");
+		baca_serial(str_sms, 120, 100);
+		printf("isi: %s\r\n", str_sms);
+		vTaskDelay(5);
+
+		if (strncmp(str_sms,"+CMGW", 5)==0) {
+			break;
+		}
+		qq++;
+		if (qq>20)	break;
+	}
 	//strcpy(str_sms, "");
-	str_sms[0]='\0';
-	baca_serial(str_sms, 120, 100);
-	//printf("isi: %s\r\n", str_sms);
-	
-	//strcpy(str_sms, "");
-	str_sms[0]='\0';
-	baca_serial(str_sms, 120, 100);
+	//str_sms[0]='\0';
+	//baca_serial(str_sms, 120, 100);
 	//printf("respon: %s\r\n", str_sms);
 
 	if (strncmp(str_sms, "+CMGW", 5) != 0)	{
@@ -210,7 +220,55 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	return 1;
 }
 
+int kirim_data_monita_exe(int argc, char **argv) {
+	if (argc<2  || argc>2) {
+		printf(" Format salah !!\r\n");
+		printf(" Perintah: monita [info|data]\r\n");
+		return 0;
+	}
+	
+	char cmd_monita[130];
+	toLower(cmd_monita, argv[1]);
+	if (strncmp(cmd_monita,"info", 4)==0) {
+		data_titik_ukur(cmd_monita, 1);
+		printf("%s", cmd_monita);
+		return 1;
+	} else if ((strncmp(cmd_monita,"monita", 6)==0) || (strncmp(cmd_monita,"data", 4)==0) ) {
+		data_titik_ukur(cmd_monita, 2);
+		printf("%s", cmd_monita);
+		return 1;
+	} else if (strncmp(cmd_monita,"satuan", 6)==0) {
+		data_titik_ukur(cmd_monita, 3);
+		printf("%s", cmd_monita);
+		return 1;
+	} else {
+		printf(" Perintah salah !!\r\n");
+		printf(" Perintah: monita [info|data]\r\n");
+		return 0;
+	}
+}
 
+int kirim_data_monita(char *no_tuj, int pilih) {
+	char cmd_monita[200];
+	status_modem = 1;
+	printf("Kirim SMS ");
+	if (pilih==1) {
+		printf("info");
+		data_titik_ukur(cmd_monita, 1);
+	} else if (pilih==2) {
+		printf("data");
+		data_titik_ukur(cmd_monita, 2);
+	} else if (pilih==3) {
+		printf("satuan");
+		data_titik_ukur(cmd_monita, 3);
+	}
+	
+	printf("\r\n--------------------------\r\n");
+	#ifdef DEBUG_SMS
+	printf("%s", cmd_monita);
+	#endif
+	kirim_sms_ascii(no_tuj, cmd_monita);
+}
 
 int kirim_sms_exe() {
 	if (status_modem==1)	{		// modem sibuk
@@ -285,7 +343,7 @@ int baca_sms_semua() {
 	char hasilx[255];
 	char hasilb[255];
 	//int no_pesan[50], jml=0, yy;
-	int yy,zz;
+	int yy,zz=0;
 	char fff=0;
 	
 	//flush_modem();
@@ -307,7 +365,7 @@ int baca_sms_semua() {
 			fff = 0;	
 		}
 		
-		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "ok", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0)) {
+		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "ok", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0) ) {
 			break;
 		} 
 		
@@ -336,7 +394,9 @@ int baca_sms_semua() {
 			jml++;
 			fff=1;
 			strcpy(hasilx, "");
-		} 
+		}
+		zz++;
+		if (zz>50)	break;
 	}
 	//printf("jml: %d\r\n", jml);
 
@@ -447,29 +507,42 @@ void kirim_sisa_pulsa_exe(char * dest_sms, int mode_pulsa) {
 void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 	cek_pulsa();
 	vTaskDelay(100);
+	char sisapulsa[200];
+	strcpy(sisapulsa, str_sms);
 	
 	if (mode_pulsa==0)
-		kirim_sms_ascii(dest_sms, str_sms);
+		kirim_sms_ascii(dest_sms, sisapulsa);
 	if (mode_pulsa==1)
-		kirim_sms_ascii("02192254186", str_sms);
+		kirim_sms_ascii("02192254186", sisapulsa);
 	if (mode_pulsa==2) {
-		//printf("str_sms: %s\r\n", str_sms);
+		#ifdef DEBUG_SMS
+		printf("str_sms: %s\r\n", sisapulsa);
+		#endif
 		vTaskDelay(100);
-		kirim_sms_ascii("081908870878", str_sms);
+		#if 0
+		kirim_sms_ascii("081908870878", sisapulsa);
 		//kirim_sms_ascii("08170504365", str_sms);
 		vTaskDelay(100);
-		kirim_sms_ascii("08118888623", str_sms);
+		kirim_sms_ascii("08118888623", sisapulsa);
 		vTaskDelay(100);
-		kirim_sms_ascii("02192254186", str_sms);
+		kirim_sms_ascii("02192254186", sisapulsa);
+		#endif
+		
+		#if 1
+		vTaskDelay(100);
+		kirim_sms_ascii("082114722515", sisapulsa);
+		vTaskDelay(100);
+		kirim_sms_ascii("02192254186", sisapulsa);
+		#endif
 	}
 	if (mode_pulsa==3) {
 		int duit=duit_pulsa(str_sms);
-		char dpls[120];
+		//char dpls[120];
 		//printf("masuk mode 3: duit: %d, str_sms: %s\r\n", duit, str_sms);
 		if (duit<10000)	{
-			strcpy(dpls, "Sisa pulsa: Rp.");
-			strcat(dpls, str_sms);
-			strcat(dpls, "Harap diisi yak!!");
+			strcpy(sisapulsa, "Sisa pulsa: Rp.");
+			strcat(sisapulsa, str_sms);
+			strcat(sisapulsa, "Harap diisi yak!!");
 
 			//kirim_sms_ascii("081908870878", str_sms);
 			//kirim_sms_ascii("08170504365", dpls);
@@ -505,9 +578,9 @@ int sms_cron() {
 			// aksinya
 			//*
 			if (sPesan[no]=='p') kirim_sisa_pulsa(sipPesan[no], 0);
-			if (sPesan[no]=='m') {		}
-			if (sPesan[no]=='i') {		}
-			
+			if (sPesan[no]=='m') kirim_data_monita(sipPesan[no], 2);
+			if (sPesan[no]=='i') kirim_data_monita(sipPesan[no], 1);
+			if (sPesan[no]=='s') kirim_data_monita(sipPesan[no], 3);
 			sPesan[no]='x';
 			hapus_sms(no_pesan[no]);
 			//*/
@@ -639,13 +712,13 @@ int isiSMSnya(char *hasil, char *str) {
 }
 
 int cek_pulsa(void)	{	
-	char strpls[128];
+	char strpls[255];
 	flush_modem();
 
 	sprintf(strpls, "AT+CUSD=1,%s\r\n", PULSA_SIMPATI);
 	//serX_putstring(PAKAI_SMS, "AT+CUSD=1,*888#\r\n");
 	serX_putstring(PAKAI_SMS, strpls);
-	baca_serial(strpls, 20, 5);
+	baca_serial(strpls, 200, 5);
 	
 	//printf("isi: %s\r\n", str_sms);
 	if (strncmp(strpls, "+CUSD: 4", 8) == 0)	{
@@ -654,11 +727,11 @@ int cek_pulsa(void)	{
 		serX_putstring(PAKAI_SMS, strpls);
 		
 		strcpy(strpls, "");
-		baca_serial(strpls, 20, 5);
+		baca_serial(strpls, 200, 5);
 		
 		if (strncmp(strpls, "AT+CUSD", 7) == 0)	{
 			strcpy(strpls, "");
-			baca_serial(strpls, 20, 5);
+			baca_serial(strpls, 200, 5);
 		}
 		
 		if (strncmp(strpls, "OK", 2) == 0)	{

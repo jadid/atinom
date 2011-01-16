@@ -50,7 +50,24 @@ return timeinfo.tm_hour;
 //*/
 
 int handle_tulis_file(int errornya) {
+	time_t timeval;
+	struct tm tw;
+	int ret;
+	char path[64];
 	
+	get_tm_time( &tw );
+	timeval = mktime( &tw );
+	//*
+	sprintf(path, "%04d%02d%02d_%02d%02d%02d\t", tw.tm_year+1900, tw.tm_mon+1, tw.tm_mday, tw.tm_hour, tw.tm_min, tw.tm_sec);
+	buat_direktori("data", timeval, 0);
+	if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))		{
+		printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);				
+		reset_cpu();		// 
+		return;
+	}
+	f_sync( &fd );
+	jum_detik = 0;
+	//*/
 }
 
 int proses_simpan_file(void)	{
@@ -99,7 +116,7 @@ int proses_simpan_file(void)	{
 					
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-						handle_tulis_file(res);
+						handle_tulis_file(ret);
 						return ;
 					}
 					
@@ -115,7 +132,7 @@ int proses_simpan_file(void)	{
 							
 							if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-								handle_tulis_file(res);
+								handle_tulis_file(ret);
 								return ;
 							}							
 						}
@@ -125,7 +142,7 @@ int proses_simpan_file(void)	{
 					sprintf(path, "\r\n");
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-						handle_tulis_file(res);
+						handle_tulis_file(ret);
 						return ;
 					}
 					
@@ -192,7 +209,7 @@ int proses_simpan_file(void)	{
 							sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
 							if (ret = f_write( &fd, path, strlen(path), &jm))		{
 								//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-								handle_tulis_file(res);
+								handle_tulis_file(ret);
 								return ;
 							}							
 						}
@@ -201,7 +218,7 @@ int proses_simpan_file(void)	{
 					sprintf(path, "\r\n");
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
-						handle_tulis_file(res);
+						handle_tulis_file(ret);
 						return ;
 					}
 					/* di sync dulu */

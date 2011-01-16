@@ -38,6 +38,43 @@ void flush_modem() {
 		#endif
 }
 //*/
+#define JML_STR_SMS	12
+
+int data_titik_ukur(char * nilai, int pilih) {
+	int i, jml=0, jm;
+	char strSMS[128];
+	char nilaif[20];
+	
+	struct t_simpan_file *ts;
+	struct t_dt_set *dt;
+	ts = (char *) ALMT_SFILE;
+	dt = (char *) ALMT_DT_SET;
+	
+	strcpy(strSMS,"");
+	for(i=0; i<(JML_SUMBER*PER_SUMBER); i++)	{
+		jm = ts->no_data[i];
+		if (jm != 0) {
+			jml++;
+			printf("%2d. %-15s : %10.2f : %s\r\n",jml, dt[jm-1].nama, data_f[jm-1], dt[jm-1].satuan);
+			if (pilih == 1) {					// info
+				if (jml<JML_STR_SMS)	strcat(strSMS, dt[jm-1].nama);
+			} else if (pilih == 2) {			// data
+				if (jml<JML_STR_SMS)	{				
+					sprintf(nilaif, "%.2f", data_f[jm-1]);
+					strcat(strSMS, nilaif);
+				}
+			} else if (pilih == 3) {			// satuan
+				if (jml<JML_STR_SMS)	strcat(strSMS, dt[jm-1].satuan);
+			}
+			if (pilih>=1 && pilih<=3)
+				strcat(strSMS, "\n");
+		}
+	}
+	strcpy(nilai, strSMS);
+	//printf("%s\r\n", strSMS);
+	return jml;
+}
+
 int proses_passwd(char *c)	{
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );
 		

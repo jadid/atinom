@@ -17,7 +17,7 @@
 //#define modemBebas()	flush_modem(); \
 //						vTaskDelay(10);
 
-#define DEBUG_FTP
+//#define DEBUG_FTP
 
 unsigned int files=0;
 unsigned int file_sudah=0;

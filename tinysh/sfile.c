@@ -327,7 +327,7 @@ int hapus_file_terkirim(char * nf, char * nama) {
 	f_lseek( &fd2, fd2.fsize - 6 );
 	f_read( &fd2, nf, 6, &res);
 
-	if (strncmp( nf, "SENDED", 6) != 0)  {
+	if (strncmp( nf, "SENDED", 6) == 0)  {
 		f_close(&fd2);
 		//printf("file %s SENDED\r\n", namafile);
 		//return 0;

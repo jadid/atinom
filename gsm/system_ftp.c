@@ -810,20 +810,20 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	#ifdef DEBUG_FTP
 	printf("___path: %s, nama: %s\r\n", posisifile, namafile);
 	#endif
-	if (res = f_open(&fd2, posisifile, FA_READ | FA_WRITE)) {
+	if (res = f_open(&fd2, abs_path, FA_READ | FA_WRITE)) {
 		printf("%s(): Buka file error %d !\r\n", __FUNCTION__, res);					
 		return 0;
 	}
 	
 	f_lseek( &fd2, fd2.fsize - 6 );
-	f_read( &fd2, posisifile, 6, &res);
+	f_read( &fd2, abs_path, 6, &res);
 	
 	#ifdef DEBUG_FTP
 	printf("___mo dikirim, CEK %s @@@, nf: %s\r\n", posisifile, namafile);
 	#endif
 	
 	files++;
-	if (strncmp( posisifile, "SENDED", 6) == 0)  {
+	if (strncmp( abs_path, "SENDED", 6) == 0)  {
 		#ifdef DEBUG_FTP
 		printf("file %s sudah dikirim !\r\n", posisifile);
 		#endif
@@ -853,18 +853,18 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		}
 
 		if (flag==77)		{
-			size = sizeof (posisifile);
+			size = sizeof (abs_path);
 			
 			#ifdef DEBUG_FTP
 			printf("Sudah konek !!!...........Kirim data size: %d, res: %d!!!\r\n", size, res);
 			#endif
 
 			for (;;)	{
-				f_read( &fd2, posisifile, size, &res);
+				f_read( &fd2, abs_path, size, &res);
 							
 				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
-					serX_putchar(PAKAI_GSM_FTP, &posisifile[i], 500);
+					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 500);
 				}	
 				
 				if ( res < size ) break; 

@@ -733,7 +733,7 @@ int cari_files (char* pathxx, char *aksi) {
 				} else if (strncmp(aksi,"hapus", 5)==0) {
 					//printf("hapuskan: %s\r\n", bbbb);
 					//printf("path: %s\r\n", bbbb);
-					hapus_file_terkirim(bbbb, nama);
+					i=hapus_file_terkirim(bbbb, nama);
 					//vTaskDelay(2);
 				} else {
 					printf("path: %s, namafile: %s\r\n", bbbb, aaaa);
@@ -742,6 +742,7 @@ int cari_files (char* pathxx, char *aksi) {
 			//*/
 		}
 	}
+	return i;
 }
 
 /*
@@ -898,7 +899,7 @@ int cari_berkas(char *str_doku, char *aksi) {
 	
 	char path_bk[127];
 	char *pch, str[10], waktu[10], aksinya[20];
-	int i=0;
+	int i=0,j;
 	strcpy(waktu,str_doku);
 	strcpy(aksinya, aksi);
 	
@@ -906,13 +907,15 @@ int cari_berkas(char *str_doku, char *aksi) {
   	if (pch!=NULL)
   		strcpy(str, pch+1);
 
+	printf("str %s: %d\r\n", __FUNCTION__, atoi(str));
   	for(i=atoi(str); i>0; i--) {
 		sprintf(waktu, "%c-%d", waktu[0],i);
 		cari_waktu(path_bk, waktu);
 		//printf("_______________path: %s\r\n",path_bk);
-		cari_files(path_bk, aksinya);
+		j=cari_files(path_bk, aksinya);
+		if (j==90)	break;
 	}
-	
+	return j;
 	//*/
 }
 

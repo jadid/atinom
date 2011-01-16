@@ -215,7 +215,7 @@ int cek_AT() {
 		printf("respon1: %s\r\n", cmd_ftp);
 		#endif
 	}
-	
+	/*
 	while(1) {
 		strcpy(cmd_ftp, "");
 		baca_serial(cmd_ftp, 100, 10);
@@ -228,7 +228,8 @@ int cek_AT() {
 		i++;
 		if (i>10)	break;
 	}
-	/*
+	//*/
+	//*
 	if (strncmp(cmd_ftp,"OK",2)==0) {
 		#ifdef DEBUG_FTP
 		printf("%s OK !!\r\n", __FUNCTION__);
@@ -878,7 +879,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 					break;
 				}
 				vTaskDelay(10);
-				//cek_awal();
+				cek_awal();
 			}
 			
 			
@@ -926,7 +927,11 @@ int send_etx(void) {
 	} 	else	{
 		printf(cmd_ftp);
 		printf(" %s(): ERR ??, %s\r\n", __FUNCTION__);
-		return -1;
+		baca_serial(cmd_ftp, 20, 10);
+		if (strncmp(cmd_ftp, "OK", 2) == 0)
+			return 0;
+		else
+			return -1;
 	}
 }
 

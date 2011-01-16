@@ -343,7 +343,7 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 	printf("GSM Task : init\r\n");
 	vTaskDelay(2000);
 	vTaskDelay(2000);
-	cek_AT();
+	//cek_AT();
 	
 	for (;;)	{
 		if (status_modem==0 && saat_gsm_aksi==1) {
@@ -376,6 +376,6 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 
 void init_task_modem(void)
 {
-	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 10), \
+	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 8), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_modem );	
 }

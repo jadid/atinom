@@ -245,7 +245,7 @@ void toLower(char *hsl, char *sbesar) {
 
 	for (q=0; q<n; q++)
 		hsl[q] = (sbesar[q]>='A' && sbesar[q]<='Z')?('a'+sbesar[q]-'A'):sbesar[q];
-	hsl[q]='\0';
+	hsl[n]='\0';
 }
 
 int cari_index(char * spesan) {
@@ -267,34 +267,42 @@ int cari_index(char * spesan) {
 }
 
 int baca_sms_semua() {
-	char hasilx[130];
-	char hasilb[130];
+	char hasilx[255];
+	char hasilb[255];
 	//int no_pesan[50], jml=0, yy;
-	int yy;
+	int yy,zz;
 	char fff=0;
 	
-	flush_modem();
-	vTaskDelay(100);
-	strcpy(hasilb, "");
+	//flush_modem();
+	cek_awal();
+	vTaskDelay(50);
+
 	sprintf(hasilx, "AT+CMGL=\"ALL\"\r\n");		//printf("cmd: %s", hasilx);	
 	serX_putstring(PAKAI_GSM_FTP, hasilx);
 
 	while (1) {
-		baca_serial(hasilx, 120, 50);
+		baca_serial(hasilx, 250, 10);
 		vTaskDelay(50);
 		printf("___isi: %s\r\n", hasilx);
-
+		if (strncmp(hasilx, "+CMGL", 5) == 0) {
+			fff = 0;	
+		}
+		
+		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "ok", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0)) {
+			break;
+		} 
+		
 		if (fff==1) {
 			toLower(hasilb, hasilx);
 			printf("hasilb : __%s__, jml: %d\r\n", hasilb, jml);
+			//sPesan[jml-1]='x';
 			if (strncmp(hasilb, "pulsa", 5)==0)		sPesan[jml-1]='p';
 			else if (strncmp(hasilb, "monita", 6)==0)	sPesan[jml-1]='m';
 			else if (strncmp(hasilb, "info", 4)==0)		sPesan[jml-1]='i';
-			else sPesan[jml-1]='x';
 			printf("sPesan: %c, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
 			
-			strcpy(hasilb, "");
-			fff=0;
+			strcpy(hasilb, "");		//strcpy(hasilx, "");
+			//fff=0;
 		}
 
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
@@ -306,11 +314,7 @@ int baca_sms_semua() {
 			jml++;
 			fff=1;
 			strcpy(hasilx, "");
-		}
-
-		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0)) {
-			break;
-		}
+		} 
 	}
 	//printf("jml: %d\r\n", jml);
 
@@ -319,8 +323,9 @@ int baca_sms_semua() {
 			//printf("index: %d\r\n", no_pesan[yy]);
 			hapus_sms(no_pesan[yy]);
 		}
-		jml=0;
+		//jml=0;
 	}
+	return jml;
 }
 
 int baca_sms(int indexnya) {
@@ -331,7 +336,7 @@ int baca_sms(int indexnya) {
 	sprintf(hasilx, "AT+CMGR=%d\r\n", indexnya);		//printf("cmd: %s", hasilx);	
 	serX_putstring(PAKAI_GSM_FTP, hasilx);
 	
-	baca_serial(hasilx, 120, 5);
+	baca_serial(hasilx, 128, 5);
 	//printf("isi: %s\r\n", hasilx);
 	if (strncmp(hasilx, "AT+CMGR", 7) == 0)	{
 		strcpy(hasilx, "");
@@ -343,7 +348,7 @@ int baca_sms(int indexnya) {
 		cari_pengirim(hasilx, hasilx);
 		//printf("Pengirim: %s\r\n", hasilx);
 		strcpy(pengirim, hasilx);
-		baca_serial(hasilx, 120, 50);
+		baca_serial(hasilx, 128, 50);
 	}
 	//strcpy(str_sms, "");
 	//printf("isi SMS: %s\r\n", hasilx);
@@ -454,7 +459,7 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 }
 
 int sms_cron() {
-	int no;
+	int no, jmlSMS;
 	char nourut[10];
 	if (status_modem==1)	{		// modem sibuk
 		printf("___modem sibuk___\r\n");
@@ -467,11 +472,11 @@ int sms_cron() {
 	no = cek_nomer_valid(nourut, 1000);
 	//printf("BACA sms ke %d\r\n", no);
 	//*/
-	baca_sms_semua();
+	jmlSMS = baca_sms_semua();
 	//printf("jml: %d, %s\r\n", jml, __FUNCTION__);
 
-	if (jml>0) {
-		for(no=0; no<jml; no++) {
+	if (jmlSMS>0) {
+		for(no=0; no<jmlSMS; no++) {
 			printf("loop %d. sPesan: %c sip: %s, no_pesan: %d\r\n", no+1, sPesan[no], sipPesan[no], no_pesan[no]);
 			// aksinya
 			//*

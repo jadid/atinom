@@ -19,7 +19,7 @@
 
 #include "../monita/monita_uip.h" 
 
-
+#define DEBUG_SMS
 #define PULSA_SIMPATI "*888#"
 
 #define CTRL_Z	26	/* END of TEXT lihat ascii code http://en.wikipedia.org/wiki/ASCII */
@@ -102,7 +102,10 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
 	strcpy(str_sms, "");
 	baca_serial(str_sms, 128, 100);
+	
+	#ifdef DEBUG_SMS
 	printf("respon: %s \r\n", str_sms);
+	#endif
 	
 	if (strncmp(str_sms, "AT+CMGW", 7) == 0)	{
 		str_sms[0]='\0';
@@ -146,7 +149,9 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
   	piM=strstr(str_sms,":");
   	if (piM!=NULL) {
 		antri = atoi(piM+1);
+		#ifdef DEBUG_SMS
 		printf("antri: %s: %d : %d\r\n", piM, atoi(piM+1), antri);
+		#endif
 	}
 	
 	strcpy(str_sms, "");
@@ -160,29 +165,37 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 		
 		strcpy(str_sms, "");
 		baca_serial(str_sms, 120, 20);
+		#ifdef DEBUG_SMS
 		printf("1. isi: %s\r\n", str_sms);
-
+		#endif
 		
 		//if (strncmp(str_sms, "AT+CMSS", 7) == 0) {
 			strcpy(str_sms, "");
 			baca_serial(str_sms, 120, 20);
+			#ifdef DEBUG_SMS
 			printf("1.hasil: %s\r\n", str_sms);
+			#endif
 		//}
 		
 		//if (strncmp(str_sms, "+CMSS", 5) == 0) {
 			strcpy(str_sms, "");
 			baca_serial(str_sms, 120, 20);
+			#ifdef DEBUG_SMS
 			printf("2.hasil: %s\r\n", str_sms);
+			#endif
 		//}
 			strcpy(str_sms, "");
 			baca_serial(str_sms, 120, 20);
-			printf("3.hasil: %s\r\n", str_sms);
 			
+			#ifdef DEBUG_SMS
+			printf("3.hasil: %s\r\n", str_sms);
+			#endif
 		
 			strcpy(str_sms, "");
 			baca_serial(str_sms, 120, 20);
+			#ifdef DEBUG_SMS
 			printf("4.hasil: %s\r\n", str_sms);
-			
+			#endif
 		/*
 		if (strncmp(str_sms, "OK", 2) != 0) {
 			printf("GAGAL kirim sms !! \r\n"); 
@@ -207,7 +220,9 @@ int kirim_sms_exe() {
 	status_modem=1;
 	
 	flush_modem();
+	#ifdef DEBUG_SMS
 	printf("kirim sms\r\n");
+	#endif
 	sprintf(str_sms,"test modem %d", konter_sms++);
 	kirim_sms_ascii("02192254186", str_sms);
 	status_modem=0;
@@ -283,7 +298,11 @@ int baca_sms_semua() {
 	while (1) {
 		baca_serial(hasilx, 250, 10);
 		vTaskDelay(50);
+		
+		#ifdef DEBUG_SMS
 		printf("___isi: %s\r\n", hasilx);
+		#endif
+		
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
 			fff = 0;	
 		}
@@ -294,13 +313,16 @@ int baca_sms_semua() {
 		
 		if (fff==1) {
 			toLower(hasilb, hasilx);
+			#ifdef DEBUG_SMS
 			printf("hasilb : __%s__, jml: %d\r\n", hasilb, jml);
+			#endif
 			//sPesan[jml-1]='x';
 			if (strncmp(hasilb, "pulsa", 5)==0)		sPesan[jml-1]='p';
 			else if (strncmp(hasilb, "monita", 6)==0)	sPesan[jml-1]='m';
 			else if (strncmp(hasilb, "info", 4)==0)		sPesan[jml-1]='i';
+			#ifdef DEBUG_SMS
 			printf("sPesan: %c, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
-			
+			#endif
 			strcpy(hasilb, "");		//strcpy(hasilx, "");
 			//fff=0;
 		}
@@ -371,7 +393,9 @@ int baca_sms(int indexnya) {
 		return 0;
 	}
 	baca_serial(hasilx, 120, 50);
+	#ifdef DEBUG_SMS
 	printf("akhir: %s\r\n", hasilx);
+	#endif
 }
 
 int baca_sms_exe(int argc, char **argv) {
@@ -559,8 +583,9 @@ int cek_pulsa_exe()	{
 		return 0;		
 	}
 	status_modem=1;
-	
+	#ifdef DEBUG_SMS
 	printf("Cek Pulsa\r\n");
+	#endif
 	cek_pulsa();
 
 	status_modem=0;

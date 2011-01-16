@@ -639,14 +639,14 @@ int set_ftp_on(void) {
 	//printf("cmd: %s", cmd_ftp);
 	
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
-	baca_serial(cmd_ftp, 100, 200);
+	baca_serial(cmd_ftp, 100, 1000);
 	
 	#ifdef DEBUG_FTP
 	printf("cmd: %s\r\n", cmd_ftp);
 	#endif
 	
 	if (strncmp(cmd_ftp,"AT+WIPCREATE",12)==0) {
-		baca_serial(cmd_ftp, 100, 200);
+		baca_serial(cmd_ftp, 100, 1000);
 		#ifdef DEBUG_FTP
 		printf("respon1: %s\r\n", cmd_ftp);
 		#endif
@@ -654,7 +654,7 @@ int set_ftp_on(void) {
 	
 	if (strncmp(cmd_ftp,"OK",2)==0) {
 		strcpy(cmd_ftp,"");
-		baca_serial(cmd_ftp, 100, 100);
+		baca_serial(cmd_ftp, 100, 1000);
 		#ifdef DEBUG_FTP
 		printf("%s OK !! %s\r\n", __FUNCTION__, cmd_ftp);
 		#endif

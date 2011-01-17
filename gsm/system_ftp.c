@@ -33,7 +33,7 @@ int gsm_ftp()	{
 	
 	status_modem = 1;
 	
-	tanpa_cmd_balik();
+	//tanpa_cmd_balik();
 	fff = koneksi_on();
 	printf("flag FTP: %d\r\n", fff);
 	//fff=90;
@@ -64,7 +64,7 @@ void cek_ftp() {
 	}
 	
 	status_modem = 1;
-	tanpa_cmd_balik();
+	//tanpa_cmd_balik();
 	fff=koneksi_on();
 	
 	if (fff==90) {
@@ -258,7 +258,7 @@ int cek_awal(void) {
 		baca_serial(cmd_ftp, 10, 20);
 		
 		#ifdef DEBUG_FTP
-		//printf("respon%d: %s : %d %s\r\n", i+1, cmd_ftp, strlen(cmd_ftp), __FUNCTION__);
+		printf("respon%d: %s : %d %s\r\n", i+1, cmd_ftp, strlen(cmd_ftp), __FUNCTION__);
 		#endif
 
 		if ((strncmp(cmd_ftp,"+WIND",5)!=0) && (strlen(cmd_ftp)==0))	{	// sudah tidak +WIND
@@ -285,6 +285,20 @@ int tanpa_cmd_balik() {
 	#endif
 	if (strncmp(cmd_ftp,"OK",2)==0)	{
 		printf("CMD tanpa balik!!\r\n");
+	}
+}
+
+int tanpa_wind() {
+	char cmd_ftp[20];
+
+	sprintf(cmd_ftp, "AT+WIND=0\r\n");
+	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
+	baca_serial(cmd_ftp, 20, 10);
+	#ifdef DEBUG_FTP
+	printf("cmd: %s\r\n", cmd_ftp);
+	#endif
+	if (strncmp(cmd_ftp,"OK",2)==0)	{
+		printf("CMD TANPA WIND!!\r\n");
 	}
 }
 
@@ -766,10 +780,15 @@ int upload_file(char *namafile) {
 	char rspn_ftp[100];
 	int i=0;
 	
-	sprintf(cmd_ftp, "AT+WIPFILE=4,1,2,\"%s\"\r\n", namafile);		printf("cmd: %s", cmd_ftp);
+	sprintf(cmd_ftp, "AT+WIPFILE=4,1,2,\"%s\"\r\n", namafile);		//printf("cmd: %s", cmd_ftp);
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	
+	baca_serial(cmd_ftp, 100, 500);
 	//*
+	if (strncmp(cmd_ftp,"AT+WIPFILE",10)==0) {
+		baca_serial(cmd_ftp, 100, 500);
+	}
+	
 	while(strncmp(cmd_ftp,"CONNECT",7)!=0) {
 		strcpy(cmd_ftp, "");
 		baca_serial(cmd_ftp, 100, 500);
@@ -861,7 +880,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	f_read( &fd2, abs_path, 6, &res);
 	
 	#ifdef DEBUG_FTP
-	printf("___mo dikirim, CEK %s @@@, nf: %s\r\n", posisifile, namafile);
+	//printf("___mo dikirim, CEK %s @@@, nf: %s\r\n", posisifile, namafile);
 	#endif
 	
 	files++;
@@ -895,14 +914,14 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		}
 
 		if (flag==77)		{
-			size = sizeof (abs_path);
+			size = sizeof (posisifile);
 			
 			#ifdef DEBUG_FTP
 			printf("Sudah konek !!!...........Kirim data size: %d, res: %d!!!\r\n", size, res);
 			#endif
 
 			for (;;)	{
-				f_read( &fd2, abs_path, size, &res);
+				f_read( &fd2, posisifile, size, &res);
 							
 				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
@@ -911,8 +930,9 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 				
 				if ( res < size ) break; 
 			}
-			
+			printf("kirim data: %d byte\r\n", i);
 			// untuk mengakhiri data ftp //
+			vTaskDelay(100);
 			oz=0;
 			while(1) {
 				if (oz>50)	break;
@@ -922,7 +942,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 					break;
 				}
 				vTaskDelay(500);
-				//cek_awal();
+				cek_awal();
 			}
 			
 			
@@ -968,6 +988,7 @@ int send_etx(void) {
 	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
 	baca_serial(cmd_ftp, 20, 500);
 	
+	printf("cmd: %s\r\n", cmd_ftp);
 	while(strncmp(cmd_ftp,"OK",2)!=0) {
 		strcpy(cmd_ftp, "");
 		baca_serial(cmd_ftp, 20, 500);

@@ -342,9 +342,11 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 	vTaskDelay(500);
 	printf("GSM Task : init\r\n");
 	vTaskDelay(2000);
-	vTaskDelay(2000);
+	vTaskDelay(1000);
 	//cek_AT();
-	
+	tanpa_wind();
+	cek_awal();
+	vTaskDelay(1000);
 	for (;;)	{
 		if (status_modem==0 && saat_gsm_aksi==1) {
 			gsm_ftp();

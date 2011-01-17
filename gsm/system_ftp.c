@@ -966,7 +966,7 @@ int send_etx(void) {
 	char ch = 0x03, *p;
 	p = &ch;
 	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
-	//baca_serial(cmd_ftp, 20, 50);
+	baca_serial(cmd_ftp, 20, 500);
 	
 	while(strncmp(cmd_ftp,"OK",2)!=0) {
 		strcpy(cmd_ftp, "");

@@ -32,6 +32,8 @@ int gsm_ftp()	{
 	}
 	
 	status_modem = 1;
+	
+	tanpa_cmd_balik();
 	fff = koneksi_on();
 	printf("flag FTP: %d\r\n", fff);
 	//fff=90;
@@ -62,8 +64,9 @@ void cek_ftp() {
 	}
 	
 	status_modem = 1;
+	tanpa_cmd_balik();
 	fff=koneksi_on();
-
+	
 	if (fff==90) {
 		printf("_________Konek ftp_________ %d\r\n", fff);
 	} else {
@@ -269,6 +272,20 @@ int cek_awal(void) {
 	baca_serial(cmd_ftp, 10, 20);
 	//*/
 	return 10;
+}
+
+int tanpa_cmd_balik() {
+	char cmd_ftp[20];
+
+	sprintf(cmd_ftp, "ATE0\r\n");
+	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
+	baca_serial(cmd_ftp, 20, 10);
+	#ifdef DEBUG_FTP
+	printf("cmd: %s\r\n", cmd_ftp);
+	#endif
+	if (strncmp(cmd_ftp,"OK",2)==0)	{
+		printf("CMD tanpa balik!!\r\n");
+	}
 }
 
 int set_wipcfg_on(void) {	

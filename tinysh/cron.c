@@ -201,7 +201,7 @@ void baca_cron() {
 		if (cekCron(p_dt[hitung])==1) {	
 			
 			if (p_dt[hitung].set) {
-				printf("sekarang:  %d:%d %d-%d\r\n",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
+				printf(" %d:%d %d-%d ",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
 				/*
 				//printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
 				//		p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 

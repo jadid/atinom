@@ -924,7 +924,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 					flag = 88;
 					break;
 				}
-				vTaskDelay(10);
+				vTaskDelay(500);
 				//cek_awal();
 			}
 			

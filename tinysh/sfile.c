@@ -727,13 +727,13 @@ int cari_files (char* pathxx, char *aksi) {
 					#ifdef DEBUG_FTP
 					//printf("kirim_ftpnya nama file: %s  %s\r\n", bbbb, nama);
 					#endif
-					kirim_file_ke_ftp(bbbb, nama);
+					i=kirim_file_ke_ftp(bbbb, nama);
 					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
 					
 				} else if (strncmp(aksi,"hapus", 5)==0) {
 					//printf("hapuskan: %s\r\n", bbbb);
 					//printf("path: %s\r\n", bbbb);
-					i=hapus_file_terkirim(bbbb, nama);
+					hapus_file_terkirim(bbbb, nama);
 					//vTaskDelay(2);
 				} else {
 					printf("path: %s, namafile: %s\r\n", bbbb, aaaa);

@@ -915,7 +915,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			// untuk mengakhiri data ftp //
 			oz=0;
 			while(1) {
-				if (oz>20)	break;
+				if (oz>50)	break;
 				oz++;
 				if (send_etx() == 0)	{
 					flag = 88;

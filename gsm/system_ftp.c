@@ -891,7 +891,6 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		file_sudah++;
 	} else	{
 		f_lseek( &fd2, 0);				// kembalikan pointer //
-
 		flag=55;
 
 		oz=0;
@@ -914,18 +913,18 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		}
 
 		if (flag==77)		{
-			size = sizeof (posisifile);
+			size = sizeof (abs_path);
 			
 			#ifdef DEBUG_FTP
 			printf("Sudah konek !!!...........Kirim data size: %d, res: %d!!!\r\n", size, res);
 			#endif
 
 			for (;;)	{
-				f_read( &fd2, posisifile, size, &res);
-							
+				f_read( &fd2, abs_path, size, &res);
+				printf("res: %d\r\n");
 				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
-					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 500);
+					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 1000);
 				}	
 				
 				if ( res < size ) break; 

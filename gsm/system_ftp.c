@@ -769,7 +769,8 @@ int upload_file(char *namafile) {
 	sprintf(cmd_ftp, "AT+WIPFILE=4,1,2,\"%s\"\r\n", namafile);		printf("cmd: %s", cmd_ftp);
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	
-	while(1) {
+	//*
+	while(strncmp(cmd_ftp,"CONNECT",7)!=0) {
 		strcpy(cmd_ftp, "");
 		baca_serial(cmd_ftp, 100, 500);
 		if (strlen(cmd_ftp)>0)	{
@@ -781,8 +782,9 @@ int upload_file(char *namafile) {
 		i++;
 		if (i>10)	break;
 	}
-	
-	while(1) {
+	//*/
+	/*
+	while(strncmp(cmd_ftp,"CONNECT",7)!=0) {
 		strcpy(cmd_ftp, "");
 		baca_serial(cmd_ftp, 100, 500);
 		if (strlen(cmd_ftp)>0)	{
@@ -796,12 +798,6 @@ int upload_file(char *namafile) {
 	}	
 
 	if (strncmp(cmd_ftp,"AT+WIPFILE",11)==0) {
-		/*
-		baca_serial(cmd_ftp, 100, 1000);
-		#ifdef DEBUG_FTP
-		printf("respon1: %s\r\n", cmd_ftp);
-		#endif
-		//*/
 		while(1) {
 			strcpy(cmd_ftp, "");
 			baca_serial(cmd_ftp, 100, 1000);
@@ -815,7 +811,7 @@ int upload_file(char *namafile) {
 			if (i>10)	break;
 		}
 	}
-	
+	//*/
 	if (strncmp(cmd_ftp,"CONNECT",7)==0) {
 		strcpy(cmd_ftp,"");
 		baca_serial(cmd_ftp, 100, 100);
@@ -824,6 +820,7 @@ int upload_file(char *namafile) {
 		#endif
 		return 0;
 	}
+	
 	
 	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
 		printf("%s : AT+WIPFILE=4,1,2,\"namafile\" GAGAL\r\n", __FUNCTION__);

@@ -603,7 +603,7 @@ portTASK_FUNCTION(cron_task, pvParameters)	{
 			
 			#if 1
 			#ifdef PAKAI_GSM_FTP
-				if (status_cron=0 && status_modem==1)	{	// biar nggak konflik baca file
+				if (status_cron=0 && status_modem==0)	{	// biar nggak konflik baca file
 					printf("___modem sibuk -cron-___\r\n");
 				} else {
 					status_cron = 1;

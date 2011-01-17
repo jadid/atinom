@@ -961,18 +961,31 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 }
 
 int send_etx(void) {
+	int i=0;
 	char cmd_ftp[50];
 	char ch = 0x03, *p;
 	p = &ch;
 	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
-	baca_serial(cmd_ftp, 20, 50);
+	//baca_serial(cmd_ftp, 20, 50);
+	
+	while(strncmp(cmd_ftp,"OK",2)!=0) {
+		strcpy(cmd_ftp, "");
+		baca_serial(cmd_ftp, 20, 500);
+		if (strlen(cmd_ftp)>0)	{
+			//#ifdef DEBUG_FTP
+			printf("%d. respon: %s\r\n", i+1, cmd_ftp);
+			//#endif
+			break;
+		}
+		i++;
+		if (i>10)	break;
+	}
+	
 	
 	#ifdef DEBUG_FTP
 	printf("cmd_ftp: %s\r\n", cmd_ftp);
 	#endif
 	if (strncmp(cmd_ftp, "OK", 2) == 0) 	{
-		baca_serial(cmd_ftp, 20, 100);
-	
 		#ifdef DEBUG_FTP
 		printf("cmd_ftp: %s\r\n", cmd_ftp);
 		#endif

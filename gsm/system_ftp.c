@@ -921,7 +921,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 
 			for (;;)	{
 				f_read( &fd2, abs_path, size, &res);
-				printf("res: %d\r\n");
+				//printf("res: %d\r\n");
 				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
 					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 1000);
@@ -985,12 +985,12 @@ int send_etx(void) {
 	char ch = 0x03, *p;
 	p = &ch;
 	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
-	baca_serial(cmd_ftp, 20, 500);
+	baca_serial(cmd_ftp, 20, 10);
 	
 	printf("cmd: %s\r\n", cmd_ftp);
 	while(strncmp(cmd_ftp,"OK",2)!=0) {
 		strcpy(cmd_ftp, "");
-		baca_serial(cmd_ftp, 20, 500);
+		baca_serial(cmd_ftp, 20, 10);
 		if (strlen(cmd_ftp)>0)	{
 			//#ifdef DEBUG_FTP
 			printf("%d. respon: %s\r\n", i+1, cmd_ftp);

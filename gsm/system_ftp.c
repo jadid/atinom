@@ -1006,10 +1006,6 @@ int send_etx(void) {
 	printf("cmd_ftp: %s\r\n", cmd_ftp);
 	#endif
 	if (strncmp(cmd_ftp, "OK", 2) == 0) 	{
-		#ifdef DEBUG_FTP
-		printf("cmd_ftp: %s\r\n", cmd_ftp);
-		#endif
-	
 		printf(" %s(): OK\r\n", __FUNCTION__);
 		return 0;
 	} 	else	{

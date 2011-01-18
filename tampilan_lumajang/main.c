@@ -344,7 +344,7 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 	vTaskDelay(2000);
 	vTaskDelay(1000);
 	//cek_AT();
-	tanpa_wind();
+	//tanpa_wind();
 	cek_awal();
 	vTaskDelay(1000);
 	for (;;)	{

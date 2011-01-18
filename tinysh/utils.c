@@ -38,7 +38,7 @@ void flush_modem() {
 		#endif
 }
 //*/
-#define JML_STR_SMS	19
+#define JML_STR_SMS	20
 
 int data_titik_ukur(char * nilai, int pilih) {
 	int i, jml=0, jm;
@@ -57,9 +57,9 @@ int data_titik_ukur(char * nilai, int pilih) {
 			jml++;
 			printf("%2d. %-15s : %10.2f : %s\r\n",jml, dt[jm-1].nama, data_f[jm-1], dt[jm-1].satuan);
 			if (pilih == 1) {					// info
-				if (jml<JML_STR_SMS)	strcat(strSMS, dt[jm-1].nama);
+				if (jml<=JML_STR_SMS)	strcat(strSMS, dt[jm-1].nama);
 			} else if (pilih == 2) {			// data
-				if (jml<JML_STR_SMS)	{				
+				if (jml<=JML_STR_SMS)	{				
 					sprintf(nilaif, "%.2f", data_f[jm-1]);
 					strcat(strSMS, nilaif);
 				}

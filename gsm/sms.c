@@ -391,6 +391,7 @@ int baca_sms_semua() {
 			if (strncmp(hasilb, "pulsa", 5)==0)		sPesan[jml-1]='p';
 			else if (strncmp(hasilb, "monita", 6)==0)	sPesan[jml-1]='m';
 			else if (strncmp(hasilb, "info", 4)==0)		sPesan[jml-1]='i';
+			else if (strncmp(hasilb, "satuan", 6)==0)		sPesan[jml-1]='s';
 			#ifdef DEBUG_SMS
 			printf("sPesan: %c, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
 			#endif
@@ -524,12 +525,13 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 		#endif
 		vTaskDelay(100);
 		#if 1
+		/*
 		kirim_sms_ascii("081908870878", sisapulsa);
-		//kirim_sms_ascii("08170504365", str_sms);
 		vTaskDelay(100);
 		kirim_sms_ascii("08118888623", sisapulsa);
 		vTaskDelay(100);
-		kirim_sms_ascii("082114722505", sisapulsa);
+		//*/
+		kirim_sms_ascii("02192254186", sisapulsa);
 		#endif
 		
 		#if 0
@@ -550,11 +552,12 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 			
 			vTaskDelay(100);
 			#if 1
+			/*
 			kirim_sms_ascii("081908870878", sisapulsa);
-			//kirim_sms_ascii("08170504365", dpls);
 			vTaskDelay(100);
 			kirim_sms_ascii("08118888623", sisapulsa);
 			vTaskDelay(100);
+			//*/
 			#endif
 			kirim_sms_ascii("02192254186", sisapulsa);
 		}

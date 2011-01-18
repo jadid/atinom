@@ -58,13 +58,16 @@ int data_titik_ukur(char * nilai, int pilih) {
 			printf("%2d. %-15s : %10.2f : %s\r\n",jml, dt[jm-1].nama, data_f[jm-1], dt[jm-1].satuan);
 			if (pilih == 1) {					// info
 				if (jml<=JML_STR_SMS)	strcat(strSMS, dt[jm-1].nama);
+				//else return jml;
 			} else if (pilih == 2) {			// data
 				if (jml<=JML_STR_SMS)	{				
 					sprintf(nilaif, "%.2f", data_f[jm-1]);
 					strcat(strSMS, nilaif);
-				}
+				} 
+				//else return jml;
 			} else if (pilih == 3) {			// satuan
 				if (jml<JML_STR_SMS)	strcat(strSMS, dt[jm-1].satuan);
+				//else return jml;
 			}
 			if (pilih>=1 && pilih<=3)
 				strcat(strSMS, "\n");

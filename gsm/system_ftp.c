@@ -843,7 +843,7 @@ int upload_file(char *namafile) {
 	
 	if ( (strncmp((char *) cmd_ftp,"ERROR",5)==0) || (strncmp((char *) cmd_ftp,"+CME", 4)==0) ) {
 		printf("%s : AT+WIPFILE=4,1,2,\"namafile\" GAGAL\r\n", __FUNCTION__);
-		return -1;
+		return 11;
 	} else {
 		printf("%s : AT+WIPFILE=4,1,2,\"namafile\" UNKNOWN %s\r\n", __FUNCTION__, cmd_ftp);
 		strcpy(cmd_ftp, "");
@@ -861,7 +861,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	char namafile[32];
 	
 	int res, flag=1, oz=0, rspn=1;
-	unsigned long int size, i;
+	unsigned long int size, i,uf;
 	FIL fd2;
 	time_t timeval;
 	
@@ -929,17 +929,24 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 				
 				if ( res < size ) break; 
 			}
-			printf("kirim data: %d byte\r\n", i);
+			//printf("kirim data: %d byte\r\n", i);
 			// untuk mengakhiri data ftp //
 			vTaskDelay(100);
 			oz=0;
 			while(1) {
 				if (oz>50)	break;
 				oz++;
-				if (send_etx() == 0)	{
+				uf = send_etx();
+				if (uf == 0)	{
 					flag = 88;
 					break;
 				}
+				/*
+				if (uf==11) {
+					flag = 77;
+					break;
+				}
+				//*/
 				vTaskDelay(500);
 				cek_awal();
 			}
@@ -949,16 +956,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 				f_close( &fd2 );
 				printf("Upload GAGAL parsial !!! tanpa ETX\r\n");
 				oz=0;
-				while(1) {
-					if (oz>10)	break;
-					oz++;
-					if (send_etx() == 0)	{
-						flag = 88;
-						break;
-					}
-					vTaskDelay(10);
-					//cek_awal();
-				}
+				
 				return 90;
 			}		
 			// tulis SENDED pada akhir file //
@@ -1010,12 +1008,12 @@ int send_etx(void) {
 		return 0;
 	} 	else	{
 		printf(cmd_ftp);
-		printf(" %s(): ERR ??, %s\r\n", __FUNCTION__);
 		baca_serial(cmd_ftp, 20, 10);
+		printf(" %s(): ERR ??, %s\r\n", __FUNCTION__, cmd_ftp);
 		if (strncmp(cmd_ftp, "OK", 2) == 0)
 			return 0;
 		else
-			return -1;
+			return 11;
 	}
 }
 

@@ -358,7 +358,7 @@ int baca_sms_semua() {
 		vTaskDelay(50);
 		
 		#ifdef DEBUG_SMS
-		//printf("___isi: %s\r\n", hasilx);
+		printf("___isi: %s\r\n", hasilx);
 		#endif
 		
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
@@ -368,6 +368,19 @@ int baca_sms_semua() {
 		if ((strncmp(hasilx, "OK", 2)==0) || (strncmp(hasilx, "ok", 2)==0) || (strncmp(hasilx, "+WIND", 5)==0) || (strncmp(hasilx, "ERR", 3)==0) ) {
 			break;
 		} 
+		
+		
+
+		if (strncmp(hasilx, "+CMGL", 5) == 0) {
+			yy = cari_index(hasilx);
+			cari_pengirim(sipPesan[jml], hasilx);
+			no_pesan[jml] = yy;
+			//printf("CMGLnya: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", hasilx, yy, sipPesan[jml], no_pesan[jml], jml);
+			
+			jml++;
+			fff=1;
+			strcpy(hasilx, "");
+		}
 		
 		if (fff==1) {
 			toLower(hasilb, hasilx);
@@ -381,20 +394,11 @@ int baca_sms_semua() {
 			#ifdef DEBUG_SMS
 			printf("sPesan: %c, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", sPesan[jml-1], yy, sipPesan[jml-1], no_pesan[jml-1], jml-1);
 			#endif
-			strcpy(hasilb, "");		//strcpy(hasilx, "");
+			//strcpy(hasilb, "");		
+			strcpy(hasilx, "");
 			//fff=0;
 		}
-
-		if (strncmp(hasilx, "+CMGL", 5) == 0) {
-			yy = cari_index(hasilx);
-			cari_pengirim(sipPesan[jml], hasilx);
-			no_pesan[jml] = yy;
-			//printf("CMGLnya: %s, index: %d, pengirim: %s, noP: %d, jml: %d\r\n", hasilx, yy, sipPesan[jml], no_pesan[jml], jml);
-			
-			jml++;
-			fff=1;
-			strcpy(hasilx, "");
-		}
+		
 		zz++;
 		if (zz>50)	break;
 	}

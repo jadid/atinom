@@ -100,7 +100,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	vTaskDelay(10);
 	
 	// no tujuan SMS
-	if (dest[0]=='\"')	{
+	if (tuj[0]=='\"')	{
 		sprintf(str_sms, "AT+CMGW=%s\r\n", tuj);		
 	} else {
 		sprintf(str_sms, "AT+CMGW=\"%s\"\r\n", tuj);

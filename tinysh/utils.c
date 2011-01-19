@@ -40,6 +40,7 @@ void flush_modem() {
 //*/
 #define JML_STR_SMS	19
 
+#ifdef PAKAI_FILE_SIMPAN
 int data_titik_ukur(char * nilai, int pilih) {
 	int i, jml=0, jm;
 	char strSMS[128];
@@ -77,6 +78,7 @@ int data_titik_ukur(char * nilai, int pilih) {
 	//printf("%s\r\n", strSMS);
 	return jml;
 }
+#endif
 
 int proses_passwd(char *c)	{
 	//printf("%s(): c=%c\r\n", __FUNCTION__, (unsigned char) *c );

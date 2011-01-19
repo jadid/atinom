@@ -284,10 +284,13 @@ int kirim_sms_exe(int argc, char **argv) {
 	#endif
 	
 	//sprintf(str_sms,"test modem %d", konter_sms++);
-	if (argc!=2)	return 0;
-	kirim_sms_ascii(argv[1], argv[2]);
-	status_modem=0;
 	
+	if (argc!=3)	return 0;
+	printf("tuj   : %s\r\n", argv[1]);
+	printf("pesan : %s\r\n", argv[2]);
+	kirim_sms_ascii(argv[1], argv[2]);
+	
+	status_modem=0;
 	return 1;
 }
 
@@ -343,11 +346,10 @@ int cari_index(char * spesan) {
 }
 
 #ifdef PAKAI_AXIS
-int internet
 
 
 
-#end
+#endif
 
 int baca_sms_semua() {
 	char hasilx[255];

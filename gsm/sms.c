@@ -74,10 +74,14 @@ void flush_modem() {
 int kirim_sms_ascii(char * dest, char * isiSMS) {	
 	// set kirim sms modem ascii
 	char pesan[128];
-	
+	char tuj[25];
 	vTaskDelay(100);
-	flush_modem();
+	//flush_modem();
+	
+	cek_awal();
+	strcpy(str_sms, "");
 	strcpy(pesan, isiSMS);
+	strcpy(tuj, dest);
 	//printf("Isi Pesan: %s\r\n", str_sms);
 	sprintf((char *) str_sms, "AT+CMGF=1\r\n");		//printf("cmd: %s", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
@@ -97,11 +101,11 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	
 	// no tujuan SMS
 	if (dest[0]=='\"')	{
-		sprintf(str_sms, "AT+CMGW=%s\r\n", dest);		
+		sprintf(str_sms, "AT+CMGW=%s\r\n", tuj);		
 	} else {
-		sprintf(str_sms, "AT+CMGW=\"%s\"\r\n", dest);
+		sprintf(str_sms, "AT+CMGW=\"%s\"\r\n", tuj);
 	}
-	//printf("cmd: %s", str_sms);
+	printf("cmd: %s", str_sms);
 	serX_putstring(PAKAI_GSM_FTP, str_sms);
 	strcpy(str_sms, "");
 	baca_serial(str_sms, 128, 100);

@@ -38,7 +38,7 @@ void flush_modem() {
 		#endif
 }
 //*/
-#define JML_STR_SMS	20
+#define JML_STR_SMS	19
 
 int data_titik_ukur(char * nilai, int pilih) {
 	int i, jml=0, jm;

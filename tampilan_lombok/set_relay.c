@@ -63,9 +63,7 @@ void init_task_relay(void) {
 
 void cek_alarm_relay(no_sumber) {
 	int i=0, j=0, index=0;
-	int jam = jam_sekarang();
-	
-	
+
 	struct t_dt_set *p_dt;
 	p_dt = (char *) ALMT_DT_SET;
 
@@ -115,24 +113,19 @@ void cek_alarm_relay(no_sumber) {
 					vTaskDelay(1000);
 				}
 			}
-			
+
 			if (index==41) {	// Listrik Turbin
-				if (jam>6 && jam<18) {
-					//printf("Listrik turbin  cabut !!\r\n");
+				if (fAlarm[p_dt[index].relay] != 1 && data_f[index]<p_dt[index].alarm_H) {		// Listrik ngedrop
+					printf("Listrik ngedrop %f, lepas !!, batas %f\r\n", data_f[index], p_dt[index].alarm_H);
+					set_selenoid(p_dt[index].relay);
 					fAlarm[p_dt[index].relay] = 1;
 					vTaskDelay(1000);
-				} else {
-					if (fAlarm[p_dt[index].relay] != 1 && data_f[index]<p_dt[index].alarm_H) {		// Listrik ngedrop
-						printf("Listrik ngedrop %f, lepas !!, batas %f\r\n", data_f[index], p_dt[index].alarm_H);
-						set_selenoid(p_dt[index].relay);
-						fAlarm[p_dt[index].relay] = 1;
-					}
-					
-					if (fAlarm[p_dt[index].relay] != 0 && data_f[index]>p_dt[index].alarm_HH) {		// Listrik Mantap
-						printf("Listrik baik, pakai saja !! Listrik %f, batas %f\r\n", data_f[index], p_dt[index].alarm_H);
-						unset_selenoid(p_dt[index].relay);
-						fAlarm[p_dt[index].relay] = 0;
-					}
+				}
+				
+				if (fAlarm[p_dt[index].relay] != 0 && data_f[index]>p_dt[index].alarm_HH) {		// Listrik Mantap
+					printf("Listrik baik, pakai saja !! Listrik %f, batas %f\r\n", data_f[index], p_dt[index].alarm_H);
+					unset_selenoid(p_dt[index].relay);
+					fAlarm[p_dt[index].relay] = 0;
 					vTaskDelay(1000);
 				}
 			}

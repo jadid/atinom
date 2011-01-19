@@ -229,6 +229,30 @@ int set_modem_ftp(int argc, char **argv)	{
 				vPortFree( p_dt );
 				return;
 			}
+		}		//sprintf(p_gr->gprs_apn1,	"internet");
+		else if (strncmp(argv[1], "apn1", 4) == 0)	{			// 3
+			if (strlen(argv[2]) > 20) {
+				printf(" ERR: nama server terlalu panjang (Maks 40 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_apn1, argv[2]);	
+		}
+		else if (strncmp(argv[1], "gprsuser", 8) == 0)	{			// 3
+			if (strlen(argv[2]) > 20) {
+				printf(" ERR: nama server terlalu panjang (Maks 40 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_user, argv[2]);	
+		}
+		else if (strncmp(argv[1], "gprsapssword", 12) == 0)	{			// 3
+			if (strlen(argv[2]) > 20) {
+				printf(" ERR: nama server terlalu panjang (Maks 40 karakter)!\r\n");
+				vPortFree( p_dt );
+				return;
+			}
+			sprintf(p_dt->gprs_passwd, argv[2]);	
 		}
 		else if (strcmp(argv[1], "periode") == 0)  {		// 3
 			sprintf(serGSM, "%s", argv[2]);	

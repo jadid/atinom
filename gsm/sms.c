@@ -270,19 +270,22 @@ int kirim_data_monita(char *no_tuj, int pilih) {
 	kirim_sms_ascii(no_tuj, cmd_monita);
 }
 
-int kirim_sms_exe() {
+int kirim_sms_exe(int argc, char **argv) {
 	if (status_modem==1)	{		// modem sibuk
 		printf("___modem sibuk___\r\n");
 		return 0;		
 	}
 	status_modem=1;
 	
-	flush_modem();
+	//flush_modem();
+	cek_awal();
 	#ifdef DEBUG_SMS
 	printf("kirim sms\r\n");
 	#endif
-	sprintf(str_sms,"test modem %d", konter_sms++);
-	kirim_sms_ascii("02192254186", str_sms);
+	
+	//sprintf(str_sms,"test modem %d", konter_sms++);
+	if (argc!=2)	return 0;
+	kirim_sms_ascii(argv[1], argv[2]);
 	status_modem=0;
 	
 	return 1;
@@ -338,6 +341,13 @@ int cari_index(char * spesan) {
   	//printf("nilai: %d\r\n", atoi(sangka));
   	return (atoi(sangka));
 }
+
+#ifdef PAKAI_AXIS
+int internet
+
+
+
+#end
 
 int baca_sms_semua() {
 	char hasilx[255];

@@ -117,7 +117,7 @@ void cek_alarm_relay(no_sumber) {
 			}
 			
 			if (index==41) {	// Listrik Turbin
-				if (jam>6 || jam<18) {
+				if (jam>6 && jam<18) {
 					printf("Listrik turbin  cabut !!\r\n");
 					fAlarm[p_dt[index].relay] = 1;
 					vTaskDelay(1000);

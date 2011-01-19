@@ -541,7 +541,7 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 		#endif
 		vTaskDelay(100);
 		#if 1
-		/*
+		//*
 		kirim_sms_ascii("081908870878", sisapulsa);
 		vTaskDelay(100);
 		kirim_sms_ascii("08118888623", sisapulsa);
@@ -568,7 +568,7 @@ void kirim_sisa_pulsa(char * dest_sms, int mode_pulsa) {
 			
 			vTaskDelay(100);
 			#if 1
-			/*
+			//*
 			kirim_sms_ascii("081908870878", sisapulsa);
 			vTaskDelay(100);
 			kirim_sms_ascii("08118888623", sisapulsa);

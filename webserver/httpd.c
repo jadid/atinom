@@ -144,7 +144,7 @@ PT_THREAD(send_file(struct httpd_state *s))
 	#ifdef PAKAI_FILE_SIMPAN
 	if ( s->file.flag == 27 )
 	{
-		printf(" Close file\r\n");
+		//printf(" Close file\r\n");
 		
 		f_close( s->file.fd );
 		

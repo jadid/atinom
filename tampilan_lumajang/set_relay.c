@@ -138,6 +138,7 @@ void cek_alarm_relay(no_sumber) {
 			}
 						
 		}
+		vTaskDelay(100);
 	}
 	//*/
 }

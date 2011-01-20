@@ -53,6 +53,7 @@
 #define printf	printf2
 
 #define PAKE_TELNETD
+#define PAKAI_HTTP
 #define PAKAI_WEBCLIENT
 
 #define SAMPURASUN_CLIENT

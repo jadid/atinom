@@ -719,6 +719,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 					no = i;
 				} else if (pertamax==0 && flag==0) {
 					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
+					no = i;
 				} else {
 					sprintf(head_buf, "[<a href=\"index.html?sbr=1&d=%d\">%d</a>] ", i+1, i+1);
 				}
@@ -740,9 +741,10 @@ void buat_file_index(unsigned int flag, char *kata) {
 			}
 			//*/
 		}
+		if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 	#endif
 
-	strcat(tot_buf, "<table border=1>\n");
+	strcat(tot_buf, "<table border>\n");
 	//strcat(tot_buf, "<col width = \"70px\" />\n");
 	//strcat(tot_buf, "<col width = \"90px\" />\n");
 #ifdef BOARD_KOMON_420_SAJA	
@@ -750,7 +752,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 	//strcat(tot_buf, "<col width = \"100px\" />\n");
 	//strcat(tot_buf, "<col width = \"200px\" />\n");
-	strcat(tot_buf, "<tr>\n<th width=\"100px\">Kanal</th>\n");
+	//strcat(tot_buf, "<tr>\n<th width=\"100px\">Kanal</th>\n");
 #endif
 
 #ifdef BOARD_KOMON_A_RTD	
@@ -767,6 +769,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 
 #ifdef BOARD_KOMON_420_SABANG			// buat PM meter
+	strcat(tot_buf, "<tr>\n<th width=\"100px\">Kanal</th>\n");
 	strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
 	strcat(tot_buf, "<th width=\"100px\">Satuan</th>\n");
 	strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n</tr>\n");
@@ -779,37 +782,41 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 
 #ifdef BOARD_KOMON_KONTER
-	//printf("pertama akses no: %d, ip3: %d, sumber: %d\r\n", no, env2->IP3, pmx[no].IP3);
-
-	if (env2->IP3 == pmx[no].IP3) {
-		strcat(tot_buf, "<th width=\"100px\">Puls (Count)</th>\n");
+	//if (pertamax>0) {
+	strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
+	if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
 		strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
-			
-	} else {
+		strcat(tot_buf, "<th width=\"100px\">Pulsa</th>\n");	
+	} 
+	else if (pmx[no].status==1) {
+		strcat(tot_buf, "<th width=\"100px\">Kanal</th>\n");
 		strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
 		strcat(tot_buf, "<th width=\"100px\">Satuan</th>\n");
-	{
+	}
 	strcat(tot_buf, "<th width=\"240px\">Keterangan</th>\n</tr>\n");
 	
-	//struct t_dt_set *p_dt;
-	//p_dt = (char *) ALMT_DT_SET;
-	/*
-	if (env2->IP3 == pmx[no].IP3) {
-		for (i=8; i<10; i++)	{
-			sprintf(head_buf, "<tr>\n<td>Kanal %d</td><td align=\"right\">%.0f</td>\n<td align=\"right\">%.2f</td>", \
-				(no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i], data_f[no*PER_SUMBER+i+1]);
+	struct t_dt_set *p_dt;
+	p_dt = (char *) ALMT_DT_SET;
+	
+	//*
+	if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
+		for (i=7; i<10; i++)	{
+			sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"right\">%.2f</td>\n<td align=\"right\">%.0f</td>", \
+				(i-6), data_f[no*PER_SUMBER+(i*2)], data_f[no*PER_SUMBER+(i*2)+1]);
 			strcat(tot_buf, head_buf);
-			sprintf(head_buf, "<td>%s</td>\n</tr>\n", strlen(ket)>0?ket:"-");	
+			
+			sprintf(head_buf, "<td>Konter Kanal %d</td>\n</tr>\n", i+1);	
+			strcat(tot_buf, head_buf);
 		}
 	} 
-	/*
-	else {
+	//*
+	else if (pmx[no].status==1) {
 		if (pmx[no].alamat==0) {			// Modul Monita
 			for (i=0; i<PER_SUMBER; i++)	{
 				ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-				sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
+				sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"center\">%d</td>\n<td align=\"right\">%.2f</td>\n", i+1, (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
 				strcat(tot_buf, head_buf);
-				sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", p_dt[no*PER_SUMBER+i].satuan, strlen(ket)>0?ket:"-");		
+				sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", strlen(p_dt[no*PER_SUMBER+i].satuan)?p_dt[no*PER_SUMBER+i].satuan:"-", strlen(ket)>0?ket:"-");		
 				strcat(tot_buf, head_buf);
 			}
 		}
@@ -938,6 +945,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 
 #ifdef BOARD_KOMON_KONTER	
+/*
 	extern unsigned int data_putaran[];
 	extern unsigned int data_hit[];
 	
@@ -952,7 +960,6 @@ void buat_file_index(unsigned int flag, char *kata) {
 			strcat(tot_buf, head_buf);	
 		}
 		#if (KONTER_MALINGPING == 1)
-		/* data kanal 1 adalah adc1 (adc0 internal) */
 		if (i== 0)
 		{
 			extern float volt_supply;				
@@ -965,6 +972,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		//strcat(tot_buf, head_buf);
 				
 	}
+//*/
 #endif
 	
 	strcat(tot_buf, "</table>\n");
@@ -1390,7 +1398,7 @@ void buat_file_setting(unsigned int flag, char *kata)
 			#endif
 			strcat(tot_buf, "<th width=\"50px\">Kanal</th>\n");
 			strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
-			strcat(tot_buf, "<th width=\"150px\">Keterangan</th>\n");
+			strcat(tot_buf, "<th width=\"300px\">Keterangan</th>\n");
 			#ifdef BOARD_KOMON_KONTER
 			strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
 			#endif

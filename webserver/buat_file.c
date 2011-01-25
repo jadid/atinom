@@ -876,8 +876,9 @@ void buat_file_index(unsigned int flag, char *kata) {
 			sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", p_dt[no*PER_SUMBER+i].satuan, ket);		
 			strcat(tot_buf, head_buf);
 		}
+		//strcat(tot_buf, "</table>\n");
 	}
-	strcat(tot_buf, "</table>\n");
+	
 #ifdef PAKAI_PM
 	else if (pmx[no].tipe==0 || pmx[no].tipe==1) {		// Power Meter
 		for (i=0; i< PER_SUMBER; i++)	{
@@ -886,6 +887,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 			sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", judulnya_pm[i], satuannya_pm[i]);		
 			strcat(tot_buf, head_buf);
 		}
+		//strcat(tot_buf, "</table>\n");
 	}
 #endif
 

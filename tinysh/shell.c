@@ -570,6 +570,12 @@ void data_frek_rpm() {
 			}
 			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
 			data_f[i*2] = (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
+			
+			if (data_f[(i*2)+1]>10000000) {		// reset setelah 10juta, 7 digit
+			//if (data_f[(i*2)+1]>1000) {		// tes saja, reset setelah 10juta, 7 digit
+				data_f[(i*2)+1] = 0;
+				konter.t_konter[i].hit = 0;
+			}
 		}
 	}	
 }

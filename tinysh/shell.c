@@ -82,6 +82,8 @@
 #ifdef BOARD_KOMON_KONTER
 #include "utils.c"
 #include "set_kanal.c"
+
+//int rtcRate[KANALNYA] 	__attribute__ ((section (".rtcram_rate")));
 #endif
 
 #ifdef PAKAI_PM
@@ -547,6 +549,15 @@ unsigned int is_angka(float a)	{
 	return (a == a);
 }
 
+void baca_rtc_mem() {
+	/*
+	int i;
+	for (i=0; i<KANALNYA; i++) {
+		konter.t_konter[i].hit = rtcRate[i];
+	}
+	//*/
+}
+
 void data_frek_rpm() {
 	unsigned int i;
 	float temp_f;
@@ -576,6 +587,7 @@ void data_frek_rpm() {
 				data_f[(i*2)+1] = 0;
 				konter.t_konter[i].hit = 0;
 			}
+			//rtcRate[i] = (int) konter.t_konter[i].hit;
 		}
 	}	
 }
@@ -602,7 +614,8 @@ void cek_rpm()	{
 				temp_rpm = 0;
 			}	
 	
-			printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\n", (i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
+			printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
+				(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
 		}
 	}
 	
@@ -999,7 +1012,10 @@ vTaskDelay(100);
 	start_adc_1();
 	#endif
 	
-	//printf("sampe sini !!!\r\n");
+	#ifdef BOARD_KOMON_KONTER
+	//baca_rtc_mem();
+	#endif
+	
 	#ifdef PAKAI_MMC
 	tinysh_add_command(&util_ls_cmd);
 	tinysh_add_command(&util_mkdir_cmd);
@@ -1031,6 +1047,12 @@ vTaskDelay(100);
 	tinysh_char_in('\r');
 	int perdetiknya=0;
 
+	/*
+	printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d\r\n", \
+		sizeof(char), sizeof(int), sizeof(long int), sizeof(float), sizeof(double));
+	printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d\r\n", \
+		255, 20000000, 20000000, 20000000, 20000000);
+	//*/
 	/*
 	 * main loop shell
   	 */

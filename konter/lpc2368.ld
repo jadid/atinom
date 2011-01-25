@@ -7,6 +7,7 @@ MEMORY
 	usbram   : ORIGIN = 0x7FD00000, LENGTH = 8K
 	ethram_0 : ORIGIN = 0x7FE00000, LENGTH = 2K
 	ethram   : ORIGIN = 0x7FE00000, LENGTH = 16K
+	rtcram	 : ORIGIN = 0xE0084000, LENGTH = 2K
 }
 
 __stack_end__ = 0x40000000 + 32K - 4;
@@ -78,6 +79,12 @@ SECTIONS
 		__ethram_end__ = .;
 	} >ethram
 
+	.rtcram (NOLOAD):
+	{
+		__rtcram_beg__ = .;
+		*(.rtcram_rate)
+		__rtcram_end__ = .;
+	} >rtcram
 
 }
 	. = ALIGN(32 / 8);

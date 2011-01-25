@@ -1334,14 +1334,11 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 		} else {
 			strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
+			int pertamax=0, nk=0, no=0;
 
-			#ifdef BANYAK_SUMBER
-				
-				int pertamax=0, nk=0, no=0;
-				
-				struct t_sumber *pmx;
-				pmx = (char *) ALMT_SUMBER;
-				
+			struct t_sumber *pmx;
+			pmx = (char *) ALMT_SUMBER;
+			#ifdef BANYAK_SUMBER	
 				if(flag==2) {
 					pch=strchr(kata,'&');
 					pch=strchr(pch,'=');
@@ -1398,36 +1395,34 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				strcat(tot_buf, "<th width=\"50px\">Kanal</th>\n");
 				strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
 				strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n");
-				#ifdef BOARD_KOMON_KONTER
+				#ifdef BOARD_KOMON_KONTERx
 				strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
 				#endif
 				strcat(tot_buf, "<th width=\"130px\">Status Kirim</th>\n");
-				strcat(tot_buf, "<th width=\"50x\">Ganti</th></tr>\n");
+				strcat(tot_buf, "<th width=\"50px\">Ganti</th></tr>\n");
 			}
 			struct t_setting *konfig;
 			konfig = (char *) ALMT_KONFIG;
 		
 			// buahaya disini !!!! //
 			#ifdef BOARD_KOMON_420_SAJA
-			for (i=0; i<PER_SUMBER; i++)		{
-			//*
-				// Kanal, id & Keterangan
-				ganti_karakter(ket, konfig[i].ket);
-				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
-								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"30\"/></td>\n" \
-								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
-								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-					i+1, i+1, konfig[i].id, \
-					i+1, ket, \
-					i+1, (konfig[i].status?"checked":""), \
-					i+1, (konfig[i].status?"":"checked"));
-				strcat(tot_buf, head_buf);
-			//*/
-			}
-			strcat(tot_buf, "</tbody>\n</table>\n");
-			//}
+				for (i=0; i<PER_SUMBER; i++)		{
+					// Kanal, id & Keterangan
+					ganti_karakter(ket, konfig[i].ket);
+					sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+									"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+									"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"30\"/></td>\n" \
+									"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+									"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+									"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+						i+1, i+1, konfig[i].id, \
+						i+1, ket, \
+						i+1, (konfig[i].status?"checked":""), \
+						i+1, (konfig[i].status?"":"checked"));
+					strcat(tot_buf, head_buf);
+				//*/
+				}
+				strcat(tot_buf, "</tbody>\n</table>\n");
 			#endif
 		
 			#ifdef BOARD_KOMON_420_SABANG
@@ -1481,8 +1476,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				}
 				strcat(tot_buf, "</tbody>\n</table>\n");
 			#endif
-			
-		
+
 			#ifdef BOARD_KOMON_KONTER
 			struct t_dt_set *p_dt;
 			p_dt = (char *) ALMT_DT_SET;
@@ -1494,27 +1488,27 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						if (i>6) {
 							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-											"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n<td align=\"right\">%.3f</td>" \
-											"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+											"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n" \
+											"<td align=\"left\"><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+											"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
 											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 								no+1, z+1, i+1, i*2+1, konfig[i*2].id, \
 								i+1, \
-								data_f[i*2],
-								i+1, (konfig[i*2].status?"checked":""), \
-								i+1, (konfig[i*2].status?"":"checked"));
+								//data_f[i*2],
+								(konfig[i*2].status?"checked":""), \
+								(konfig[i*2].status?"":"checked"));
 							strcat(tot_buf, head_buf);
 							z++;
 							
 							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-											"<td align=\"left\">Pulsa konter kanal %d</td>\n<td align=\"right\">%.0f</td>" \
+											"<td align=\"left\">Pulsa konter kanal %d</td>\n" \
 											"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 								no+1, z+1, i+1, i*2+2, konfig[i*2+1].id, \
 								i+1, \
-								data_f[i*2+1],
+								//data_f[i*2+1],
 								i+1, (konfig[i*2+1].status?"checked":""), \
 								i+1, (konfig[i*2+1].status?"":"checked"));
 							strcat(tot_buf, head_buf);
@@ -1525,6 +1519,22 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				} else {
 					for (i=0; i<PER_SUMBER; i++)		{
 						ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+						//printf("ket: %.2f\r\n", data_f[PER_SUMBER*no+i]);
+						
+						sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=8/></td>\n" \
+								"<td align=\"left\"><input type=\"text\" name=\"k\" value=\"%s\" size=15/></td>\n" \
+								"<td><input type=\"radio\" name=\"s\" value=1 %s/>Aktif" \
+								"<input type=\"radio\" name=\"s\" value=0 %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+								"</form>\n</tr>", \
+								no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+								strlen(ket)>0?ket:"-", \
+								(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+								(konfig[PER_SUMBER*no+i].status?" ":"checked") \
+								);
+						/*
 						sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
 											"<td align=\"left\"><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"/></td>\n<td align=\"right\">%.2f</td>" \
@@ -1532,9 +1542,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 							no+1, i+1, PER_SUMBER*no+i+1, PER_SUMBER*no+i+1, konfig[PER_SUMBER*no+i].id, \
-							strlen(ket)>0?ket:"-", data_f[PER_SUMBER*no+i],
+							strlen(ket)>0?ket:"-", data_f[PER_SUMBER*no+i],	\
 							i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
 							i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
+						//*/
 						strcat(tot_buf, head_buf);
 					}
 				}

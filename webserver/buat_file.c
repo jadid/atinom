@@ -782,46 +782,47 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 
 #ifdef BOARD_KOMON_KONTER
-	//if (pertamax>0) {
-	strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
-	if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
-		strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
-		strcat(tot_buf, "<th width=\"100px\">Pulsa</th>\n");	
-	} 
-	else if (pmx[no].status==1) {
-		strcat(tot_buf, "<th width=\"100px\">Kanal</th>\n");
-		strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
-		strcat(tot_buf, "<th width=\"100px\">Satuan</th>\n");
-	}
-	strcat(tot_buf, "<th width=\"240px\">Keterangan</th>\n</tr>\n");
-	
-	struct t_dt_set *p_dt;
-	p_dt = (char *) ALMT_DT_SET;
-	
-	//*
-	if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
-		for (i=7; i<10; i++)	{
-			sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"right\">%.2f</td>\n<td align=\"right\">%.0f</td>", \
-				(i-6), data_f[no*PER_SUMBER+(i*2)], data_f[no*PER_SUMBER+(i*2)+1]);
-			strcat(tot_buf, head_buf);
-			
-			sprintf(head_buf, "<td>Konter Kanal %d</td>\n</tr>\n", i+1);	
-			strcat(tot_buf, head_buf);
+	if (pertamax>0) {
+		strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
+		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
+			strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
+			strcat(tot_buf, "<th width=\"100px\">Pulsa</th>\n");	
+		} 
+		else if (pmx[no].status==1) {
+			strcat(tot_buf, "<th width=\"100px\">Kanal</th>\n");
+			strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
+			strcat(tot_buf, "<th width=\"100px\">Satuan</th>\n");
 		}
-	} 
-	//*
-	else if (pmx[no].status==1) {
-		if (pmx[no].alamat==0) {			// Modul Monita
-			for (i=0; i<PER_SUMBER; i++)	{
-				ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-				sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"center\">%d</td>\n<td align=\"right\">%.2f</td>\n", i+1, (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
+		strcat(tot_buf, "<th width=\"240px\">Keterangan</th>\n</tr>\n");
+		
+		struct t_dt_set *p_dt;
+		p_dt = (char *) ALMT_DT_SET;
+		
+		//*
+		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
+			for (i=7; i<10; i++)	{
+				sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"right\">%.2f</td>\n<td align=\"right\">%.0f</td>", \
+					(i-6), data_f[no*PER_SUMBER+(i*2)], data_f[no*PER_SUMBER+(i*2)+1]);
 				strcat(tot_buf, head_buf);
-				sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", strlen(p_dt[no*PER_SUMBER+i].satuan)?p_dt[no*PER_SUMBER+i].satuan:"-", strlen(ket)>0?ket:"-");		
+				
+				sprintf(head_buf, "<td>Konter Kanal %d</td>\n</tr>\n", i+1);	
 				strcat(tot_buf, head_buf);
 			}
+		} 
+		//*
+		else if (pmx[no].status==1) {
+			if (pmx[no].alamat==0) {			// Modul Monita
+				for (i=0; i<PER_SUMBER; i++)	{
+					ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+					sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"center\">%d</td>\n<td align=\"right\">%.2f</td>\n", i+1, (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
+					strcat(tot_buf, head_buf);
+					sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", strlen(p_dt[no*PER_SUMBER+i].satuan)?p_dt[no*PER_SUMBER+i].satuan:"-", strlen(ket)>0?ket:"-");		
+					strcat(tot_buf, head_buf);
+				}
+			}
 		}
+		//*/
 	}
-	//*/
 	strcat(tot_buf, "</table>\n");
 
 
@@ -890,10 +891,6 @@ void buat_file_index(unsigned int flag, char *kata) {
 		//strcat(tot_buf, "</table>\n");
 	}
 #endif
-
-	
-//*/
-
 
 #ifdef BOARD_KOMON_420_SAJA
 #ifdef PAKAI_ADC
@@ -980,8 +977,6 @@ void buat_file_index(unsigned int flag, char *kata) {
 	strcat(tot_buf, "</table>\n");
 #endif
 	buat_bottom();
-
-	//printf("pjg index = %d\r\n", strlen(tot_buf));
 	return;
 }
 
@@ -998,8 +993,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 
 
 #if 1
-void buat_file_setting(unsigned int flag, char *kata)
-{
+void buat_file_setting(unsigned int flag, char *kata)	{
 	int i=0;
 	unsigned int cek_mesin;
 	unsigned int mulai = 0;
@@ -1024,14 +1018,14 @@ void buat_file_setting(unsigned int flag, char *kata)
 	sprintf(head_buf, "<br>Mesin %d : %s </h4>\n", (nomer_mesin + 1), mesin[nomer_mesin].nama);
 	strcat(tot_buf, head_buf);
 	
-	strcat(tot_buf, "<table border=0 bgcolor=""lightGray"">\n");
+	strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
 	
-	strcat(tot_buf, "<col width = ""100px"">\n");		// titik
-	strcat(tot_buf, "<col width = ""120px"">\n");		// sumber
-	strcat(tot_buf, "<col width = ""200px"">\n");		// IP sumber
-	strcat(tot_buf, "<col width = ""120px"">\n");		// Kanal
-	strcat(tot_buf, "<col width = ""120px"">\n");		// Modul / board
-	strcat(tot_buf, "<col width = ""120px"">\n");		// status
+	strcat(tot_buf, "<col width = \"100px"">\n");		// titik
+	strcat(tot_buf, "<col width = \"120px"">\n");		// sumber
+	strcat(tot_buf, "<col width = \"200px"">\n");		// IP sumber
+	strcat(tot_buf, "<col width = \"120px"">\n");		// Kanal
+	strcat(tot_buf, "<col width = \"120px"">\n");		// Modul / board
+	strcat(tot_buf, "<col width = \"120px"">\n");		// status
 	
 	strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
 	strcat(tot_buf, "<tr>\n<th>Titik</th>\n");
@@ -1339,133 +1333,117 @@ void buat_file_setting(unsigned int flag, char *kata)
 			#endif
 			
 		} else {
-		strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
+			strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
 
-		#ifdef BANYAK_SUMBER
-			
-			int pertamax=0, nk=0, no=0;
-			
-			struct t_sumber *pmx;
-			pmx = (char *) ALMT_SUMBER;
-			
-			if(flag==2) {
-				pch=strchr(kata,'&');
-				pch=strchr(pch,'=');
-				pch2=strchr(pch+1, '\0');
-				nk=pch2-pch-1;
-							
-				strncpy(tmp, pch+1, nk);
-				tmp[nk]='\0';
-				nk = atoi(tmp);
-			}
-			
-			if (flag==1) {
-				pch=strchr(kata,'&');
-				pch=strchr(pch,'=');
-				pch2=strchr(pch+1, '&');
-				nk=pch2-pch-1;
-							
-				strncpy(tmp, pch+1, nk);
-				tmp[nk]='\0';
-				nk = atoi(tmp);
-			}
-			
-			strcat(tot_buf, "<b>Alamat Modul : </b>");
-			for (i=0; i<JML_SUMBER; i++)	{
-				if (pmx[i].status == 1) {
-					if (flag && (i+1)==nk) {
-						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
-						no = i;
-					} else if (pertamax==0 && flag==0) {
-						sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
-						no = i;
-					} else {
-						sprintf(head_buf, "[<a href=\"setting.html?smb=1&d=%d\">%d</a>] ", i+1, i+1);
-					}
-					
-					strcat(tot_buf, head_buf);
-					pertamax++;
+			#ifdef BANYAK_SUMBER
+				
+				int pertamax=0, nk=0, no=0;
+				
+				struct t_sumber *pmx;
+				pmx = (char *) ALMT_SUMBER;
+				
+				if(flag==2) {
+					pch=strchr(kata,'&');
+					pch=strchr(pch,'=');
+					pch2=strchr(pch+1, '\0');
+					nk=pch2-pch-1;
+								
+					strncpy(tmp, pch+1, nk);
+					tmp[nk]='\0';
+					nk = atoi(tmp);
 				}
-			}
-			if (pertamax==0)
-				strcat(tot_buf, "<b>Tidak ada modul yang aktif</b><br/>");
-			
-		#endif
-		
-		if (pertamax>0) {
-			strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
-			strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
-			#ifdef BOARD_KOMON_420_SABANG
-				strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
-			#endif
-			strcat(tot_buf, "<th width=\"50px\">Kanal</th>\n");
-			strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
-			strcat(tot_buf, "<th width=\"300px\">Keterangan</th>\n");
-			#ifdef BOARD_KOMON_KONTER
-			strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
-			#endif
-			strcat(tot_buf, "<th width=\"130px\">Status Kirim</th>\n");
-			strcat(tot_buf, "<th width=\"50x\">Ganti</th></tr>\n");
-		}
-		struct t_setting *konfig;
-		konfig = (char *) ALMT_KONFIG;
-		
-		// buahaya disini !!!! //
-		#ifdef BOARD_KOMON_420_SAJA
-		for (i=0; i<PER_SUMBER; i++)		{
-		//*
-			// Kanal, id & Keterangan
-			ganti_karakter(ket, konfig[i].ket);
-			sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
-							"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-							"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"30\"/></td>\n" \
-							"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-							"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
-							"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-				i+1, i+1, konfig[i].id, \
-				i+1, ket, \
-				i+1, (konfig[i].status?"checked":""), \
-				i+1, (konfig[i].status?"":"checked"));
-			strcat(tot_buf, head_buf);
-		//*/
-		}
-		strcat(tot_buf, "</tbody>\n</table>\n");
-		#endif
-		
-		#ifdef BOARD_KOMON_420_SABANG
-			struct t_dt_set *p_dt;
-			p_dt = (char *) ALMT_DT_SET;
-			
-			//printf("no: %d, pmx[no].alamat: %d\r\n", no, pmx[no].alamat);
-			if (pertamax>0) {
-				for (i=0; i<PER_SUMBER; i++)	{	
-					if (pmx[no].alamat==0) { 		// Modul Monita
-						ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-						//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
-						sprintf(head_buf, "<tr><form action=\"setting.html\">" \
-							"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
-							"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-							"<td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"/></td>\n" \
-							"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
-							"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
-							"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
-							"</form>\n</tr>", \
-							no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
-							ket, \
-							(konfig[PER_SUMBER*no+i].status?"checked":" "), \
-							(konfig[PER_SUMBER*no+i].status?" ":"checked") \
-							);
+				
+				if (flag==1) {
+					pch=strchr(kata,'&');
+					pch=strchr(pch,'=');
+					pch2=strchr(pch+1, '&');
+					nk=pch2-pch-1;
+								
+					strncpy(tmp, pch+1, nk);
+					tmp[nk]='\0';
+					nk = atoi(tmp);
+				}
+				
+				strcat(tot_buf, "<b>Alamat Modul : </b>");
+				for (i=0; i<JML_SUMBER; i++)	{
+					if (pmx[i].status == 1) {
+						if (flag && (i+1)==nk) {
+							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
+							no = i;
+						} else if (pertamax==0 && flag==0) {
+							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
+							no = i;
+						} else {
+							sprintf(head_buf, "[<a href=\"setting.html?smb=1&d=%d\">%d</a>] ", i+1, i+1);
+						}
+						
 						strcat(tot_buf, head_buf);
+						pertamax++;
 					}
-					else {
-						#ifdef PAKAI_PM
-						if (pmx[no].alamat>0 && (pmx[no].tipe==0 || pmx[no].tipe==1)) {
-							ganti_karakter(ket, judulnya_pm[i]);
+				}
+				if (pertamax==0)
+					strcat(tot_buf, "<b>Tidak ada modul yang aktif</b><br/>");
+				
+			#endif
+		
+			if (pertamax>0) {
+				strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
+				strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+				#ifdef BOARD_KOMON_420_SABANG
+					strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
+				#endif
+				#ifdef BOARD_KOMON_KONTER
+				strcat(tot_buf, "<th width=\"50px\">No</th>\n");
+				#endif
+				strcat(tot_buf, "<th width=\"50px\">Kanal</th>\n");
+				strcat(tot_buf, "<th width=\"40px\">ID Titik</th>\n");
+				strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n");
+				#ifdef BOARD_KOMON_KONTER
+				strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
+				#endif
+				strcat(tot_buf, "<th width=\"130px\">Status Kirim</th>\n");
+				strcat(tot_buf, "<th width=\"50x\">Ganti</th></tr>\n");
+			}
+			struct t_setting *konfig;
+			konfig = (char *) ALMT_KONFIG;
+		
+			// buahaya disini !!!! //
+			#ifdef BOARD_KOMON_420_SAJA
+			for (i=0; i<PER_SUMBER; i++)		{
+			//*
+				// Kanal, id & Keterangan
+				ganti_karakter(ket, konfig[i].ket);
+				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
+								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+								"<td align=\"left\"><input type=\"text\" name=\"k%d\" value=\"%s\" size=\"30\"/></td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+					i+1, i+1, konfig[i].id, \
+					i+1, ket, \
+					i+1, (konfig[i].status?"checked":""), \
+					i+1, (konfig[i].status?"":"checked"));
+				strcat(tot_buf, head_buf);
+			//*/
+			}
+			strcat(tot_buf, "</tbody>\n</table>\n");
+			//}
+			#endif
+		
+			#ifdef BOARD_KOMON_420_SABANG
+				struct t_dt_set *p_dt;
+				p_dt = (char *) ALMT_DT_SET;
+				
+				//printf("no: %d, pmx[no].alamat: %d\r\n", no, pmx[no].alamat);
+				if (pertamax>0) {
+					for (i=0; i<PER_SUMBER; i++)	{	
+						if (pmx[no].alamat==0) { 		// Modul Monita
+							ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
 							//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
 							sprintf(head_buf, "<tr><form action=\"setting.html\">" \
 								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\">%s</td>\n" \
+								"<td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"/></td>\n" \
 								"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
 								"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
@@ -1477,52 +1455,93 @@ void buat_file_setting(unsigned int flag, char *kata)
 								);
 							strcat(tot_buf, head_buf);
 						}
-						#endif
+						else {
+							#ifdef PAKAI_PM
+							if (pmx[no].alamat>0 && (pmx[no].tipe==0 || pmx[no].tipe==1)) {
+								ganti_karakter(ket, judulnya_pm[i]);
+								//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
+								sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+									"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+									"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+									"<td align=\"left\">%s</td>\n" \
+									"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+									"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
+									"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+									"</form>\n</tr>", \
+									no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+									ket, \
+									(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+									(konfig[PER_SUMBER*no+i].status?" ":"checked") \
+									);
+								strcat(tot_buf, head_buf);
+							}
+							#endif
+						}
 					}
 				}
+				strcat(tot_buf, "</tbody>\n</table>\n");
+			#endif
+			
+		
+			#ifdef BOARD_KOMON_KONTER
+			struct t_dt_set *p_dt;
+			p_dt = (char *) ALMT_DT_SET;
+			
+			int z=0;
+			if (pertamax>0)	{
+				if (env2->IP3 == pmx[no].IP3)	{
+					for (i=0; i<KANALNYA; i++)		{
+						if (i>6) {
+							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+											"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n<td align=\"right\">%.3f</td>" \
+											"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+								no+1, z+1, i+1, i*2+1, konfig[i*2].id, \
+								i+1, \
+								data_f[i*2],
+								i+1, (konfig[i*2].status?"checked":""), \
+								i+1, (konfig[i*2].status?"":"checked"));
+							strcat(tot_buf, head_buf);
+							z++;
+							
+							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+											"<td align=\"left\">Pulsa konter kanal %d</td>\n<td align=\"right\">%.0f</td>" \
+											"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+								no+1, z+1, i+1, i*2+2, konfig[i*2+1].id, \
+								i+1, \
+								data_f[i*2+1],
+								i+1, (konfig[i*2+1].status?"checked":""), \
+								i+1, (konfig[i*2+1].status?"":"checked"));
+							strcat(tot_buf, head_buf);
+							z++;
+						}
+					}
+				//*/
+				} else {
+					for (i=0; i<PER_SUMBER; i++)		{
+						ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+						sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+											"<td align=\"left\"><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"/></td>\n<td align=\"right\">%.2f</td>" \
+											"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
+											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
+											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
+							no+1, i+1, PER_SUMBER*no+i+1, PER_SUMBER*no+i+1, konfig[PER_SUMBER*no+i].id, \
+							strlen(ket)>0?ket:"-", data_f[PER_SUMBER*no+i],
+							i+1, (konfig[PER_SUMBER*no+i].status?"checked":""), \
+							i+1, (konfig[PER_SUMBER*no+i].status?"":"checked"));
+						strcat(tot_buf, head_buf);
+					}
+				}
+				strcat(tot_buf, "</tbody>\n</table>\n");
 			}
-			strcat(tot_buf, "</tbody>\n</table>\n");
-		#endif
-		
-		
-		#ifdef BOARD_KOMON_KONTER
-		int z=0;
-		for (i=0; i<KANALNYA; i++)		{
-
-			if (i>6) {
-				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
-								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n<td align=\"right\">%.3f</td>" \
-								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
-								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-					z+1, i*2+1, konfig[i*2].id, \
-					i+1, \
-					data_f[i*2],
-					i+1, (konfig[i*2].status?"checked":""), \
-					i+1, (konfig[i*2].status?"":"checked"));
-				strcat(tot_buf, head_buf);
-				z++;
-				
-				sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />" \ 
-								"<th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-								"<td align=\"left\">Pulsa konter kanal %d</td>\n<td align=\"right\">%.0f</td>" \
-								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
-								"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
-								"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
-					z+1, i*2+2, konfig[i*2+1].id, \
-					i+1, \
-					data_f[i*2+1],
-					i+1, (konfig[i*2+1].status?"checked":""), \
-					i+1, (konfig[i*2+1].status?"":"checked"));
-				strcat(tot_buf, head_buf);
-				z++;
-			}
-		//*/
-		}
-		strcat(tot_buf, "</tbody>\n</table>\n");
-		#endif
-		
+			#endif
+			
 		}
 		//strcat(tot_buf, "</tbody>\n</table>\n");
 

@@ -57,6 +57,7 @@
 #define PAKAI_WEBCLIENT
 
 #define PAKAI_PM
+#define PAKAI_RTC
 
 #define SAMPURASUN_CLIENT
 #define SAMPURASUN_SERVER

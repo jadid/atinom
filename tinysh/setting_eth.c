@@ -89,31 +89,53 @@ void cek_konfig(int argc, char **argv)	{
 	printf("\r\n");
 	
 	#ifdef BOARD_KOMON_KONTER
-	for (i=0; i<KANALNYA; i++)	{
-		//if (i>6) 
-		{
-			z++;
-			printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2].id, "Frek/RPM kanal", i+1);
-			if (konfig[i*2].status == 0)
-				printf("%-16s","Tidak Aktif");
-			else if (konfig[i*2].status == 1)
-				printf("%-16s","Aktif / Normal");
-			else if (konfig[i*2].status == 2)
-				printf("%-16s","TimeOut");
-			else
-				printf("%-16s"," ");
-			printf("\r\n");
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+	
+	if (env2->IP3 == p_sbr[j-1].IP3) {
+		printf("Modul Konter !!\r\n");
+		for (i=0; i<KANALNYA; i++)	{
+			if (i>6) 
+			{
+				z++;
+				printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2].id, "Frek/RPM kanal", i+1);
+				if (konfig[i*2].status == 0)
+					printf("%-16s","Tidak Aktif");
+				else if (konfig[i*2].status == 1)
+					printf("%-16s","Aktif / Normal");
+				else if (konfig[i*2].status == 2)
+					printf("%-16s","TimeOut");
+				else
+					printf("%-16s"," ");
+				printf("\r\n");
+				
+				z++;
+				printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2+1].id, "Pulsa konter kanal", i+1);
+				if (konfig[i*2+1].status == 0)
+					printf("%-16s","Tidak Aktif");
+				else if (konfig[i*2+1].status == 1)
+					printf("%-16s","Aktif / Normal");
+				else if (konfig[i*2+1].status == 2)
+					printf("%-16s","TimeOut");
+				else
+					printf("%-16s"," ");
+				printf("\r\n");
+			}
+		}
+	} else {
+		j--;
+		for (i=0; i<PER_SUMBER; i++)	{
+			//ganti_karakter(ket, konfig[i].ket);
+			if (p_sbr[j].tipe==100) 							// modul monita
+				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, konfig[j*PER_SUMBER+i].ket);
+			else if (p_sbr[j].tipe==0 || p_sbr[j].tipe==1)		// modbus
+				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
 			
-			z++;
-			printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2+1].id, "Pulsa konter kanal", i+1);
-			if (konfig[i*2+1].status == 0)
-				printf("%-16s","Tidak Aktif");
-			else if (konfig[i*2+1].status == 1)
-				printf("%-16s","Aktif / Normal");
-			else if (konfig[i*2+1].status == 2)
-				printf("%-16s","TimeOut");
-			else
-				printf("%-16s"," ");
+			// status //
+			if (konfig[j*PER_SUMBER+i].status == 0)				printf("%-16s","Tidak Aktif");
+			else if (konfig[j*PER_SUMBER+i].status == 1)		printf("%-16s","Aktif / Normal");
+			else if (konfig[j*PER_SUMBER+i].status == 2)		printf("%-16s","TimeOut");
+			else												printf("%-16s"," ");
 			printf("\r\n");
 		}
 	}
@@ -122,7 +144,7 @@ void cek_konfig(int argc, char **argv)	{
 	#ifdef BOARD_KOMON_420_SABANG
 	if (t>0) {
 		#ifdef PAKAI_PM
-			if (p_sbr[j-1].tipe==0 || p_sbr[j-1].tipe==1) {	// Power Meter 0:PM710, 1:PM810
+			if (p_sbr[j-1].tipe==0 || p_sbr[j-1].tipe==1 || || p_sbr[j-1].tipe==100) {	// Power Meter 0:PM710, 1:PM810
 				for (i=0; i<PER_SUMBER; i++)	{
 					printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
 					// status //

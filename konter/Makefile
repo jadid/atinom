@@ -103,7 +103,7 @@ THUMB_SOURCE= \
 		../webserver/httpd-cgi.c \
 		../system/idle_hook.c \
 		../uip/apps/telnetd/telnetd.c	\
-
+		../system/rtc.c			\
 #		LCD/lcd_320.c \
 #		tampilan.c \
 #		LCD/menu_monita.c \

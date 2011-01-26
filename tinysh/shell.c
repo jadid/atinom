@@ -83,7 +83,7 @@
 #include "utils.c"
 #include "set_kanal.c"
 
-//int rtcRate[KANALNYA] 	__attribute__ ((section (".rtcram_rate")));
+int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 #endif
 
 #ifdef PAKAI_PM
@@ -275,7 +275,7 @@ void set_date(int argc, char **argv)
 		return;
 	}
 	
-	printf("dapat free %X\r\n", str_rtc);	
+	//printf("dapat free %X\r\n", str_rtc);	
 	memset(str_rtc, 0, 512);	
 	
 	printf(" set_date tahun bulan tanggal jam menit\r\n");
@@ -550,12 +550,10 @@ unsigned int is_angka(float a)	{
 }
 
 void baca_rtc_mem() {
-	/*
 	int i;
 	for (i=0; i<KANALNYA; i++) {
 		konter.t_konter[i].hit = rtcRate[i];
 	}
-	//*/
 }
 
 void data_frek_rpm() {
@@ -587,7 +585,7 @@ void data_frek_rpm() {
 				data_f[(i*2)+1] = 0;
 				konter.t_konter[i].hit = 0;
 			}
-			//rtcRate[i] = (int) konter.t_konter[i].hit;
+			rtcRate[i] = (int) konter.t_konter[i].hit;
 		}
 	}	
 }
@@ -1013,7 +1011,11 @@ vTaskDelay(100);
 	#endif
 	
 	#ifdef BOARD_KOMON_KONTER
-	//baca_rtc_mem();
+		#ifdef PAKAI_RTC
+		rtc_init();
+		vTaskDelay(100);
+		//baca_rtc_mem();
+		#endif
 	#endif
 	
 	#ifdef PAKAI_MMC

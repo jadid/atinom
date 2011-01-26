@@ -800,13 +800,18 @@ void buat_file_index(unsigned int flag, char *kata) {
 		
 		//*
 		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
-			for (i=7; i<10; i++)	{
-				sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"right\">%.2f</td>\n<td align=\"right\">%.0f</td>", \
-					(i-6), data_f[no*PER_SUMBER+(i*2)], data_f[no*PER_SUMBER+(i*2)+1]);
-				strcat(tot_buf, head_buf);
-				
-				sprintf(head_buf, "<td>Konter Kanal %d</td>\n</tr>\n", i+1);	
-				strcat(tot_buf, head_buf);
+			for (i=0; i<10; i++)	{
+				#ifndef BOARD_KOMON_KONTER_3_1
+				if (i>6) 
+				#endif
+				{
+					sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"right\">%.2f</td>\n<td align=\"right\">%.0f</td>", \
+						(i+1), data_f[no*PER_SUMBER+(i*2)], data_f[no*PER_SUMBER+(i*2)+1]);
+					strcat(tot_buf, head_buf);
+					
+					sprintf(head_buf, "<td>Konter Kanal %d</td>\n</tr>\n", i+1);	
+					strcat(tot_buf, head_buf);
+				}
 			}
 		} 
 		//*
@@ -1485,7 +1490,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			if (pertamax>0)	{
 				if (env2->IP3 == pmx[no].IP3)	{
 					for (i=0; i<KANALNYA; i++)		{
-						if (i>6) {
+						#ifndef BOARD_KOMON_KONTER_3_1 
+						if (i>6)
+						#endif 
+						{
 							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
 											"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n" \

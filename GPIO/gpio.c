@@ -110,8 +110,16 @@ void init_gpio(void)
 	// setup GPIO direction & interrupt
 	FIO2DIR = FIO2DIR & ~(kont_10 | kont_9 | kont_8 | kont_7 | kont_6);
 	
+	#ifdef BOARD_KOMON_KONTER_3_1
+	FIO2DIR = FIO2DIR & ~(kont_1 | kont_2 | kont_3 | kont_4 | kont_5);
+	#endif
+	
 	// enable falling edge interrupt
 	IO2_INT_EN_F = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
+	
+	#ifdef BOARD_KOMON_KONTER_3_1
+	IO2_INT_EN_F = kont_1 | kont_2 | kont_3 | kont_4 | kont_5;
+	#endif
 	
 	#if (PAKAI_KONTROL == 1)
 	/* untuk kontrol pintu, ketika ditutup / rising edge lagi 

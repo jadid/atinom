@@ -95,7 +95,9 @@ void cek_konfig(int argc, char **argv)	{
 	if (env2->IP3 == p_sbr[j-1].IP3) {
 		printf("Modul Konter !!\r\n");
 		for (i=0; i<KANALNYA; i++)	{
-			if (i>6) 
+			#ifndef BOARD_KOMON_KONTER_3_1 
+			if (i>6)
+			#endif 
 			{
 				z++;
 				printf(" (%2d): %4d : %-18s %2d : ", z, konfig[i*2].id, "Frek/RPM kanal", i+1);

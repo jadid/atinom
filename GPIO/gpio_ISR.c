@@ -133,6 +133,38 @@ void gpio_ISR_Handler( void )
 		set_konter(t, new_period);
 		IO2_INT_CLR = kont_6;
 	}
+	
+	#ifdef BOARD_KOMON_KONTER_3_1
+		if (IO2_INT_STAT_F & kont_5)	{
+			t = 4;
+			set_konter(t, new_period);
+			IO2_INT_CLR = kont_5;
+		}
+		
+		if (IO2_INT_STAT_F & kont_4)	{
+			t = 3;
+			set_konter(t, new_period);
+			IO2_INT_CLR = kont_4;
+		}
+		
+		if (IO2_INT_STAT_F & kont_3)	{
+			t = 2;
+			set_konter(t, new_period);
+			IO2_INT_CLR = kont_3;
+		}
+		
+		if (IO2_INT_STAT_F & kont_2)	{
+			t = 1;
+			set_konter(t, new_period);
+			IO2_INT_CLR = kont_2;
+		}
+		
+		if (IO2_INT_STAT_F & kont_1)	{
+			t = 0;
+			set_konter(t, new_period);
+			IO2_INT_CLR = kont_1;
+		}
+	#endif
 
 	/*
 	new_period = T1TC;

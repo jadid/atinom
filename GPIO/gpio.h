@@ -14,6 +14,14 @@
 #define kont_7		0x02	// P21
 #define kont_6		0x01	// P20
 
+#ifdef BOARD_KOMON_KONTER_3_1
+#define kont_1		BIT(5) 	// 0x20	// P25, konter_5
+#define kont_2		BIT(6)	// 0x40	// P26
+#define kont_3		BIT(7)	// 0x80	// P27
+#define kont_4		BIT(8)	// 0x00	// P28
+#define kont_5		BIT(9)	// 0x00	// P29
+#endif
+
 #define JUM_GPIO	10
 
 typedef struct {

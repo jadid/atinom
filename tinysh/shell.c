@@ -600,7 +600,10 @@ void cek_rpm()	{
 	printf("Ov flow = %d\n", konter.ovflow);
 
 	for (i=0; i<10; i++)	{
-		if (i>6) {
+		#ifndef BOARD_KOMON_KONTER_3_1
+		if (i>6) 
+		#endif
+		{
 			if (data_putaran[i])	{
 				// cari frekuensi
 				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS

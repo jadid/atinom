@@ -144,7 +144,7 @@ void cek_konfig(int argc, char **argv)	{
 	#ifdef BOARD_KOMON_420_SABANG
 	if (t>0) {
 		#ifdef PAKAI_PM
-			if (p_sbr[j-1].tipe==0 || p_sbr[j-1].tipe==1 || || p_sbr[j-1].tipe==100) {	// Power Meter 0:PM710, 1:PM810
+			if (p_sbr[j-1].tipe==0 || p_sbr[j-1].tipe==1 || p_sbr[j-1].tipe==100) {	// Power Meter 0:PM710, 1:PM810
 				for (i=0; i<PER_SUMBER; i++)	{
 					printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
 					// status //

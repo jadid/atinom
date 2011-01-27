@@ -784,6 +784,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 #ifdef BOARD_KOMON_KONTER
 	if (pertamax>0) {
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
+		//printf("env2->IP3: %d, pmx[no].IP3: %d", env2->IP3, pmx[no].IP3);
 		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
 			strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
 			strcat(tot_buf, "<th width=\"100px\">Pulsa</th>\n");	
@@ -802,7 +803,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
 			for (i=0; i<10; i++)	{
 				#ifndef BOARD_KOMON_KONTER_3_1
-				//if (i>6) 
+				if (i>6) 
 				#endif
 				{
 					sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"right\">%.2f</td>\n<td align=\"right\">%.0f</td>", \

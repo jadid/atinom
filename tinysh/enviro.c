@@ -13,12 +13,17 @@
 #include "task.h"
 
 #include "enviro.h"
+
+#include "../monita/monita_uip.h"
 // kalau ditaruh di ethram, nulisnya jadi error
 //struct t_env env2;
 
 //unsigned int command[5]; 	// For Command Table
 //unsigned int result[2]; 	// For Result Table
 //IAP iap_entry;
+
+#define MAGIC_1	0x10
+#define MAGIC_2	0xEF
 
 void tulis_env_flash(struct t_env *ev);
 int tulis_env(void);
@@ -138,10 +143,10 @@ int baca_env(char tampil)
 		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
-	if (ev->magic1 == 0xAA)
-	{
-		if (ev->magic2 == 0x77)
-		{			
+	printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
+	
+	if (ev->magic1 == MAGIC_1)	{
+		if (ev->magic2 == MAGIC_2)		{			
 			struct t_env *env2;
 			env2 = (char *) ALMT_ENV;
 	
@@ -179,7 +184,10 @@ int baca_env(char tampil)
 			if (tampil == 1)	{
 				printf("   No       Faktor kalibrasi     Keterangan kanal\r\n");
 				for (i=0; i<KANALNYA; i++)	{
-					if (i>6) {
+					#ifndef BOARD_KOMON_KONTER_3_1
+					if (i>6) 
+					#endif
+					{
 						z++;
 						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\r\n", \ 
 							z, env2->kalib[i].m, env2->kalib[i].C, i+1);
@@ -216,11 +224,30 @@ int baca_env(char tampil)
 			return -1;
 		}
 	}
-	else
-	{
+	else	{
 		printf(" Magic number1 salah !\r\n");		
 		//set_default_ip();
 		set_env_default();
+		
+		#ifdef BANYAK_SUMBER
+			#ifndef BOARD_TAMPILAN 
+				printf("set konfig menjadi default\r\n");
+				set_awal_konfig();
+			#endif
+			
+			struct t_setting *konfig;
+			konfig = (char *) ALMT_KONFIG;
+			
+			for(i=0; i<5; i++) {
+				printf("%3d. id: %d, status: %d, ket: %s\r\n", i+1, konfig[i].id, (int) konfig[i].status, konfig[i].ket);
+			}
+			
+			printf("set sumber menjadi default\r\n");
+			set_awal_sumber();
+			set_data_default();
+			//set_magic_no();
+		#endif
+		
 		return -1;
 	}
 }
@@ -271,6 +298,20 @@ void set_dafault_env_lain(void) {
 }
 //*/
 
+void set_magic_no() {
+	struct t_env *env2;
+	env2 = pvPortMalloc( sizeof (struct t_env) );
+	
+	portENTER_CRITICAL();
+	memcpy((char *) env2, (char *) ALMT_ENV, (sizeof (struct t_env)));
+	portEXIT_CRITICAL();
+	
+	env2->magic1 = MAGIC_1;
+	env2->magic2 = MAGIC_2;
+	
+	vPortFree( env2 );
+}
+
 
 void set_env_default() {
 	int i;
@@ -287,8 +328,8 @@ void set_env_default() {
 		return -1;
 	}
 
-	env2->magic1 = 0xAA;
-	env2->magic2 = 0x77;
+	env2->magic1 = MAGIC_1;
+	env2->magic2 = MAGIC_2;
 	sprintf(env2->SN, "-");
 	sprintf(env2->berkas, "/");
 	printf("KANALNYA enviro.c : %d\r\n", KANALNYA);

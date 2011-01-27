@@ -82,7 +82,7 @@ void cek_konfig(int argc, char **argv)	{
 	//garis_bawah2();
 
 	//#endif
-	printf("  No.    ID      Nama             status\r\n");
+	printf("  No.    ID      Nama             Status\r\n");
 	int w=1,z=0;
 	for (i=0; i<45; i++)
 		printf("-");
@@ -343,7 +343,7 @@ void set_konfig(int argc, char **argv)		{
 	}
 	
 	// SEMUA TRUE dan sampai disini
-	if (simpan_konfig( p_sbr ) < 0)		{
+	if (simpan_konfignya( p_sbr ) < 0)		{
 		vPortFree( p_sbr );
 		return;
 	}
@@ -353,42 +353,56 @@ void set_konfig(int argc, char **argv)		{
 //*
 tinysh_cmd_t set_konfig_cmd={0,"set_konfig","set konfig untuk beberapa hal","help id ket status",
                               set_konfig,0,0,0};
-
+/*
 void read_konfig(void)	{
 	struct t_setting *setting;
 	
 	setting = (char *) ALMT_KONFIG;
 	printf("%s(): OK\r\n", __FUNCTION__);		
 }
-
+//*/
 void set_awal_konfig(void)	{
 	int i;	
-	struct t_setting *p_sbr;
+	struct t_setting *p_stg;
 	int jmlData = (sizeof(data_f)/sizeof(float));
 	//judul(" Set Sumber ke Default\r\n");
-	printf("Jml data: %d\r\n", jmlData);
-	p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
-	if (p_sbr == NULL)	{
+	printf("%s(), Jml data: %d\r\n", __FUNCTION__, jmlData);
+	p_stg = pvPortMalloc( jmlData * sizeof (struct t_setting) );
+	
+	if (p_stg == NULL)	{
 		printf("%s(): Err allok memory gagal !\r\n");
 		return;
 	}
 	
 	for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)	{
-		sprintf(p_sbr[i].ket, "-");
-		p_sbr[i].id = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
-		p_sbr[i].status = 0;	
-
-	}	
+		sprintf(p_stg[i].ket, "-");
+		p_stg[i].id = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
+		p_stg[i].status = 0;
+	}
 	
-	if (simpan_konfig( p_sbr ) < 0)		{
-		vPortFree( p_sbr );
+	/*
+	for(i=0; i<3; i++) {
+		printf("id: %d, status: %d, ket: %s\r\n", p_stg[i].id, (int) p_stg[i].status, p_stg[i].ket);
+	}
+	//*/
+	
+	if (simpan_konfignya( p_stg ) < 0)		{
+		vPortFree( p_stg );
 		return;
 	}
-	vPortFree( p_sbr );
+	vPortFree( p_stg );
 	
+	/*
+	struct t_setting *konfig;
+	konfig = (char *) ALMT_KONFIG;
+	
+	for(i=0; i<3; i++) {
+		printf("id: %d, status: %d, ket: %s\r\n", konfig[i].id, (int) konfig[i].status, konfig[i].ket);
+	}
+	//*/
 }
 
- int simpan_konfig( struct t_setting *pgr)	{
+ int simpan_konfignya( struct t_setting *p_stg)	{
 	printf(" Save struct KONFIG ke flash ..");
 	if(prepare_flash(SEKTOR_KONFIG, SEKTOR_KONFIG)) return -1;
 	printf("..");
@@ -399,7 +413,7 @@ void set_awal_konfig(void)	{
 	if(prepare_flash(SEKTOR_KONFIG, SEKTOR_KONFIG)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_KONFIG, (unsigned short *) pgr, (sizeof (struct t_setting) * (sizeof(data_f)/sizeof(float))))) return -1;
+	if(tulis_flash(ALMT_KONFIG, (unsigned short *) p_stg, (sizeof (struct t_setting) * (sizeof(data_f)/sizeof(float))))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

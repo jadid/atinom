@@ -579,7 +579,7 @@ int ganti_setting(char *str) {
 			//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
 			
 			#ifndef BOARD_TAMPILAN
-			if (simpan_konfig( p_sbr ) < 0)	{
+			if (simpan_konfignya( p_sbr ) < 0)	{
 				vPortFree( p_sbr );
 				return;
 			}

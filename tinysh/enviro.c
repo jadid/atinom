@@ -15,6 +15,11 @@
 #include "enviro.h"
 
 #include "../monita/monita_uip.h"
+
+#ifdef BOARD_TAMPILAN
+	//#include "group.c"
+#endif
+
 // kalau ditaruh di ethram, nulisnya jadi error
 //struct t_env env2;
 
@@ -210,12 +215,16 @@ int baca_env(char tampil)
 			#endif
 			//#endif 
 			
+			#ifdef BOARD_TAMPILAN
+			//	set_group_default();
+			#endif
+			
 			#ifdef BANYAK_SUMBER
 				#ifndef BOARD_TAMPILAN 
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
 				#endif
-				
+
 				printf("set sumber menjadi default\r\n");
 				set_awal_sumber();
 				set_data_default();
@@ -228,12 +237,18 @@ int baca_env(char tampil)
 		printf(" Magic number1 salah !\r\n");		
 		//set_default_ip();
 		set_env_default();
+
+		#ifdef BOARD_TAMPILAN 
+		//	set_group_default();
+		#endif
 		
 		#ifdef BANYAK_SUMBER
 			#ifndef BOARD_TAMPILAN 
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
 			#endif
+			
+
 			
 			struct t_setting *konfig;
 			konfig = (char *) ALMT_KONFIG;

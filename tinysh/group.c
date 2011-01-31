@@ -300,7 +300,7 @@ int set_group(int argc, char **argv)
 
 }
 
-static tinysh_cmd_t set_group_cmd={0,"set_group","menampilkan konfigurasi mesin","help default nama ket",
+static tinysh_cmd_t set_group_cmd={0,"set_group","menampilkan konfigurasi mesin","help default nama ket", \
                               set_group,0,0,0};
 
 

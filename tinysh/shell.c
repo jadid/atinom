@@ -35,7 +35,7 @@
 //*/
 
 #ifdef BOARD_TAMPILAN
-
+	//#include "group.c"
 #endif
 
 #ifdef BANYAK_SUMBER

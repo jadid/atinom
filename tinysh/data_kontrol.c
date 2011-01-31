@@ -134,7 +134,7 @@ int cek_data(int argc, char **argv)
 				struct t_dt_set *p_dt;
 				p_dt = (char *) ALMT_DT_SET;
 				
-				judul(" Data Setting\r\n");
+				//judul(" Data Setting\r\n");
 				printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
 				garis_bawah();
 

@@ -46,6 +46,8 @@
 
 #if defined(PAKAI_PM)
 	#define PER_SUMBER	33
+#elif defined(LIHAT_PM)
+	#define PER_SUMBER 33
 #elif defined(BOARD_KOMON_420_SAJA)
 	#define PER_SUMBER 10
 #else

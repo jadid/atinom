@@ -43,7 +43,7 @@
 #define printf	printf2
 
 #define PAKE_TELNETD
-//#define PAKE_HTTP
+#define PAKE_HTTP
 //#define PAKAI_CRON
 
 

@@ -43,8 +43,13 @@ struct httpd_state {
   struct psock sin, sout;
   struct pt outputpt, scriptpt;
 #ifndef BOARD_TAMPILAN
-  char inputbuf[256];	/* 50 */
-  char filename[256];	/* 20 */
+	#ifdef LPC2368
+  		char inputbuf[64];	/* 50 */
+		char filename[64];	/* 20 */
+	#else
+		char inputbuf[256];	/* 50 */
+		char filename[256];	/* 20 */
+	#endif
 #else
   char inputbuf[128];	/* 50 */
   char filename[128];	/* 20 */

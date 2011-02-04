@@ -77,7 +77,7 @@
 
 //#define TES_GET_WEB
 
-#define PROMPT 		"Sabang@"
+#define PROMPT 		"PowerMeter@"
 #define NAMA_BOARD	"Babelan Komon-420"
 
 /*-----------------------------------------------------------

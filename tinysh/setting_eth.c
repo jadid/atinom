@@ -366,7 +366,7 @@ void set_awal_konfig(void)	{
 	struct t_setting *p_stg;
 	int jmlData = (sizeof(data_f)/sizeof(float));
 	//judul(" Set Sumber ke Default\r\n");
-	printf("%s(), Jml data: %d\r\n", __FUNCTION__, jmlData);
+	//printf("%s(), Jml data: %d\r\n", __FUNCTION__, jmlData);
 	p_stg = pvPortMalloc( jmlData * sizeof (struct t_setting) );
 	
 	if (p_stg == NULL)	{

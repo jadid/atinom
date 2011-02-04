@@ -252,11 +252,11 @@ int baca_env(char tampil)
 			
 			struct t_setting *konfig;
 			konfig = (char *) ALMT_KONFIG;
-			
+			/*
 			for(i=0; i<5; i++) {
 				printf("%3d. id: %d, status: %d, ket: %s\r\n", i+1, konfig[i].id, (int) konfig[i].status, konfig[i].ket);
 			}
-			
+			//*/
 			printf("set sumber menjadi default\r\n");
 			set_awal_sumber();
 			set_data_default();

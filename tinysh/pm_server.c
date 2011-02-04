@@ -284,11 +284,11 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	#endif
 	int muternya=0;
 	
-	vTaskDelay(1000);
+	vTaskDelay(400);
 	
-	#ifdef LIAT
+	//#ifdef LIAT
 	printf("Ambil data Power Meter init !\r\n");
-	#endif
+	//#endif
 	
 	// flush RX
 	for (i=0; i<100; i++)

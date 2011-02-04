@@ -143,9 +143,9 @@ int main( void )
 	init_led_utama();
 	start_ether();
 
-#if (defined(PAKAI_PM) && defined(AMBIL_PM))
+//#if defined(PAKAI_PM) && defined(AMBIL_PM)
 	init_task_pm();
-#endif
+//#endif
 	init_shell();
 	vTaskStartScheduler();
 

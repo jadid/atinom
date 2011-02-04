@@ -305,7 +305,7 @@ portTASK_FUNCTION( pm_task, pvParameters )	{
 	for(i=0; i<(sizeof(data_f)/sizeof(float)); i++) {
 		data_f[i] = 0.00;
 	}
-	serX_putstring(3, "Testing dari serial 3 ...Testing dari serial 3 ...2x...");	
+	//serX_putstring(3, "Testing dari serial 3 ...Testing dari serial 3 ...2x...");	
 	struct t_sumber *pmx;
 	pmx = (char *) ALMT_SUMBER;
 	

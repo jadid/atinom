@@ -780,7 +780,7 @@ int upload_file(char *namafile) {
 	char rspn_ftp[100];
 	int i=0;
 	
-	sprintf(cmd_ftp, "AT+WIPFILE=4,1,2,\"%s\"\r\n", namafile);		//printf("cmd: %s", cmd_ftp);
+	sprintf(cmd_ftp, "AT+WIPFILE=4,1,2,\"%s\"\r\n", namafile);		printf("cmd: %s", cmd_ftp);
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	
 	baca_serial(cmd_ftp, 100, 500);
@@ -897,7 +897,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 		while(1) {
 			rspn = upload_file(namafile);
 			#ifdef DEBUG_FTP
-			printf("respon upload : %d, oz: %d, flag: %d\r\n", rspn, oz, flag);
+			//printf("respon upload : %d, oz: %d, flag: %d\r\n", rspn, oz, flag);
 			#endif
 			if (rspn==0)	{
 				flag = 77;	
@@ -916,7 +916,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			size = sizeof (abs_path);
 			
 			#ifdef DEBUG_FTP
-			printf("Sudah konek !!!...........Kirim data size: %d, res: %d!!!\r\n", size, res);
+			//printf("Sudah konek !!!...........Kirim data size: %d, res: %d!!!\r\n", size, res);
 			#endif
 
 			for (;;)	{
@@ -936,7 +936,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			while(1) {
 				if (oz>50)	break;
 				oz++;
-				uf = send_etx();
+				uf = send_etx(oz);
 				if (uf == 0)	{
 					flag = 88;
 					break;
@@ -948,7 +948,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 				}
 				//*/
 				vTaskDelay(500);
-				cek_awal();
+				//cek_awal();
 			}
 			
 			
@@ -977,7 +977,7 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 	vTaskDelay(100);		// kasih waktu buat proses yg lain.	
 }
 
-int send_etx(void) {
+int send_etx(int a) {
 	int i=0;
 	char cmd_ftp[50];
 	char ch = 0x03, *p;
@@ -985,7 +985,7 @@ int send_etx(void) {
 	serX_putchar(PAKAI_GSM_FTP, p, 1000);	
 	baca_serial(cmd_ftp, 20, 10);
 	
-	printf("cmd: %s\r\n", cmd_ftp);
+	printf("cmd: %s, %s %d\r\n", cmd_ftp, __FUNCTION__, a);
 	while(strncmp(cmd_ftp,"OK",2)!=0) {
 		strcpy(cmd_ftp, "");
 		baca_serial(cmd_ftp, 20, 10);

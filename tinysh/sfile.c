@@ -728,6 +728,9 @@ int cari_files (char* pathxx, char *aksi) {
 					//printf("kirim_ftpnya nama file: %s  %s\r\n", bbbb, nama);
 					#endif
 					i=kirim_file_ke_ftp(bbbb, nama);
+					if (i==90) {
+						break;
+					}
 					//printf("kirim_ftpnya nama file: %s  %s\r\n", abs_pathxx, fnxx);
 					
 				} else if (strncmp(aksi,"hapus", 5)==0) {

@@ -784,6 +784,7 @@ int upload_file(char *namafile) {
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	
 	baca_serial(cmd_ftp, 100, 500);
+	vTaskDelay(100);
 	//*
 	if (strncmp(cmd_ftp,"AT+WIPFILE",10)==0) {
 		baca_serial(cmd_ftp, 100, 500);
@@ -798,6 +799,7 @@ int upload_file(char *namafile) {
 			#endif
 			break;
 		}
+		vTaskDelay(50);
 		i++;
 		if (i>10)	break;
 	}

@@ -49,6 +49,12 @@ get_tm_time( &timeinfo );
 return timeinfo.tm_hour;	
 //*/
 
+
+int simpan_error_terus() {
+	
+}
+int error_simpan=0;
+
 int handle_tulis_file(int errornya) {
 	time_t timeval;
 	struct tm tw;
@@ -62,7 +68,12 @@ int handle_tulis_file(int errornya) {
 	buat_direktori("data", timeval, 0);
 	if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))		{
 		printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);				
-		reset_cpu();		// 
+		error_simpan++;
+		if (error_simpan>10) {
+			reset_cpu();
+			error_simpan=0;
+		}
+		//reset_cpu();		// 
 		return;
 	}
 	f_sync( &fd );

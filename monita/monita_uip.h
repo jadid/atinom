@@ -63,8 +63,10 @@
 //#define ALMT_ENV	0x7A000
 
 #ifdef PAKAI_FILE_SIMPAN
-	#define SEKTOR_SFILE	16
-	#define ALMT_SFILE		0x48000		//0x7A000
+	//#define SEKTOR_SFILE	16
+	//#define ALMT_SFILE		0x48000		//0x7A000
+	#define SEKTOR_SFILE	18
+	#define ALMT_SFILE		0x58000		//0x7A000
 #endif
 
 

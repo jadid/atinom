@@ -72,7 +72,7 @@ static int cek_file(int argc, char **argv)	{
 		garis_bawah();
 		sumb= 0;
 		printf(" No  : No_Data : Nama             : Satuan \r\n");
-		
+		//*
 		for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 			y = psfile->no_data[i];
 			
@@ -81,6 +81,7 @@ static int cek_file(int argc, char **argv)	{
 				printf(" %2d  : %7d : %-16s : %-8s\r\n", sumb, y, dt[y-1].nama, dt[y-1].satuan );
 			}
 		}
+		//*/
 		
 	}
 	else if (argc > 1)	{
@@ -97,7 +98,7 @@ static int cek_file(int argc, char **argv)	{
 static tinysh_cmd_t cek_file_cmd={0,"cek_file","menampilkan konfigurasi file simpan","[] nomer",
                               cek_file,0,0,0};
 
-int set_file(int argc, char **argv)	{
+	int set_file(int argc, char **argv)	{
 	unsigned char string_file[24];
 	int sumb=0;
 	int ndata=0;
@@ -237,6 +238,7 @@ int set_file(int argc, char **argv)	{
 								if ( p_gr->no_data[i] == 0 )
 								{
 									p_gr->no_data[i] = sumb;
+									printf("index file: %d, data: %d\r\n", i, p_gr->no_data[i]);
 									break;
 								}
 							}

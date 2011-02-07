@@ -16,11 +16,23 @@ void cek_alarm_relay(no_sumber);
 #define nALARM 8
 char fAlarm[nALARM];
 
+int jam_sekarang() {
+	int jam;
+	time_t timeval;
+	struct tm timeinfo;
+	get_tm_time( &timeinfo );
+	return timeinfo.tm_hour;
+	//printf("skrg: %d\r\n", jam);
+	//return jam;
+}
+
 portTASK_FUNCTION( relay_task, pvParameters ) {
 	int no_nya=0;
 	char *p, c;
 	int loopnya=0;
 
+	int jam;
+	
 	init_selenoid();
 	vTaskDelay(400);
 	printf("Relay init !!\r\n");
@@ -31,19 +43,27 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	reset_flag_alarm();
 	for (;;)
 	{
-		vTaskDelay(200);
-		//reset_flag_alarm();
-		cek_alarm_relay(no_nya);
-		no_nya++;
-		if (no_nya>JML_SUMBER) no_nya=0;
 		
-		//*
+		
+		vTaskDelay(50);
+		
+		/*
 		if(loopnya>50) {
-			//printf("jam sekarang: %d", jam_sekarang());
+			jam = jam_sekarang();
+			//vTaskDelay(200);
+			printf("jam sekarang: %d, Volt: %.2f\r\n", jam, data_f[42-1]);
+			//jam_sekarang();
 			//cek_penduduk();
 			//printf("Solar volt: %f, Solar cur: %f, relay1: %f\r\n", data_f[26-1], data_f[28-1], data_f[PER_SUMBER*JML_SUMBER]);
 			loopnya=0;
 		}
+		//*/
+		//reset_flag_alarm();
+		cek_alarm_relay(no_nya);
+		no_nya++;
+		if (no_nya>JML_SUMBER) no_nya=0;
+		//printf("loop: %d\r\n", loopnya);
+		
 		//*/
 		//cek_penduduk();
 		
@@ -59,7 +79,7 @@ void reset_flag_alarm() {
 }
 
 void init_task_relay(void) {
-	xTaskCreate( relay_task, ( signed portCHAR * ) "Relay", (configMINIMAL_STACK_SIZE * 2), \
+	xTaskCreate( relay_task, ( signed portCHAR * ) "Relay", (configMINIMAL_STACK_SIZE * 8), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_relay );	
 }
 
@@ -73,7 +93,7 @@ void cek_alarm_relay(no_sumber) {
 
 	for (j=0; j<PER_SUMBER; j++) {
 		index = JML_SUMBER*no_sumber+j;
-		if (p_dt[index].aktif == 1) {
+		if (p_dt[index].aktif == 1) {		// Teg AKI, relay 2
 			
 			//printf("%d. %s data: %.2f, alarmH: %.2f, alarmHH: %.2f, falarm: %d\r\n", \ 
 			//	 index, p_dt[index].nama, data_f[index], p_dt[index].alarm_H, p_dt[index].alarm_HH, p_dt[index].relay);
@@ -102,55 +122,51 @@ void cek_alarm_relay(no_sumber) {
 				fAlarm[p_dt[index].relay] = 0;
 			}
 			//*/
-			if (index==1) {		// Sensor Aki
+			//*
+			if (index==1) {		// Sensor Teg Aki, relay 2 
 				if (fAlarm[p_dt[index].relay] != 1 && data_f[index]<p_dt[index].alarm_H) {		// charger Aki nyala
 					printf("Aki dicharge, nyambung !! Aki: %f, batas: %f\r\n", data_f[index], p_dt[index].alarm_H);
 					set_selenoid(p_dt[index].relay);
 					fAlarm[p_dt[index].relay] = 1;
-					vTaskDelay(1000);
 				}
 
 				if (fAlarm[p_dt[index].relay] != 0 && data_f[index]>p_dt[index].alarm_HH) {		// charger Aki mati
 					printf("Aki penuh .......lepaskan Aki: %f, batas: %f\r\n", data_f[index], p_dt[index].alarm_H);
 					unset_selenoid(p_dt[index].relay);
 					fAlarm[p_dt[index].relay] = 0;
-					vTaskDelay(1000);
 				}
 			}
-			
-			if (index==41) {	// Listrik Turbin
-				if (jam>6 && jam<18) {
+			//*/
+			if (index==41) {	// Listrik Turbin, data ke 42 index ke 41, relay ke 
+				if (jam>6 && jam<18) {		// cabut !!
+					if (fAlarm[p_dt[index].relay] != 1) {
+						printf("Listrik  %f, lepas\r\n", data_f[index]);
+						set_selenoid(p_dt[index].relay);
+						fAlarm[p_dt[index].relay] = 1;
+					}
 					//printf("Listrik turbin  cabut !!\r\n");
-					fAlarm[p_dt[index].relay] = 1;
-					vTaskDelay(1000);
 				} else {
 					if (fAlarm[p_dt[index].relay] != 1 && data_f[index]<p_dt[index].alarm_H) {		// Listrik ngedrop
-						printf("Listrik ngedrop %f, lepas !!, batas %f\r\n", data_f[index], p_dt[index].alarm_H);
+						printf("Listrik drop %.1f, lepas !!, batas %.0f\r\n", data_f[index], p_dt[index].alarm_H);
 						set_selenoid(p_dt[index].relay);
 						fAlarm[p_dt[index].relay] = 1;
 					}
 					
 					if (fAlarm[p_dt[index].relay] != 0 && data_f[index]>p_dt[index].alarm_HH) {		// Listrik Mantap
-						printf("Listrik baik, pakai saja !! Listrik %f, batas %f\r\n", data_f[index], p_dt[index].alarm_H);
+						printf("Listrik baik, pakai !! %f, batas %.0f\r\n", data_f[index], p_dt[index].alarm_HH);
 						unset_selenoid(p_dt[index].relay);
 						fAlarm[p_dt[index].relay] = 0;
 					}
-					vTaskDelay(1000);
 				}
+				//vTaskDelay(500);
 			}
 						
 		}
-		vTaskDelay(100);
 	}
 	//*/
 }
 
-int jam_sekarang() {
-	time_t timeval;
-	struct tm timeinfo;
-	get_tm_time( &timeinfo );
-	return timeinfo.tm_hour;	
-}
+
 
 
 // fuel cell jalan ketika malam, mem-back-up batere cadangan

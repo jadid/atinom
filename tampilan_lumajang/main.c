@@ -284,7 +284,9 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	FIO1SET = BACKLIT;
 	
 	#ifdef PAKAI_SELENOID
-	set_selenoid(1);		// hidup relay 1
+	set_selenoid(6);		// modem gsm
+	//set_selenoid(1);		// Teg 220V
+	//set_selenoid(2); 		// charger AKI
 	#endif
 	
 	for (;;)	{
@@ -342,10 +344,10 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 	vTaskDelay(500);
 	printf("GSM Task : init\r\n");
 	vTaskDelay(2000);
-	vTaskDelay(1000);
+	vTaskDelay(2000);
 	//cek_AT();
 	//tanpa_wind();
-	cek_awal();
+	//cek_awal();
 	vTaskDelay(1000);
 	for (;;)	{
 		if (status_modem==0 && saat_gsm_aksi==1) {
@@ -378,6 +380,6 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 
 void init_task_modem(void)
 {
-	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 20), \
+	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 16), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_modem );	
 }

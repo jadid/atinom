@@ -225,10 +225,10 @@ void baca_cron() {
 						#endif
 					}
 				} else if (strcmp(p_dt[hitung].cmd,"reset")==0) {
-					printf("reset relay 1\r\n");
-					unset_selenoid(1);
+					printf("reset relay 6, modem\r\n");
+					unset_selenoid(6);
 					vTaskDelay(1000);
-					set_selenoid(1);
+					set_selenoid(6);
 				}
 				#endif
 				

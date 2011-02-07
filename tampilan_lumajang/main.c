@@ -378,6 +378,6 @@ static portTASK_FUNCTION(modem_task, pvParameters )	{
 
 void init_task_modem(void)
 {
-	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 16), \
+	xTaskCreate( modem_task, ( signed portCHAR * ) "GSM", (configMINIMAL_STACK_SIZE * 20), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_modem );	
 }

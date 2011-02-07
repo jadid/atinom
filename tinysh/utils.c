@@ -42,7 +42,7 @@ void flush_modem() {
 
 #ifdef PAKAI_FILE_SIMPAN
 int data_titik_ukur(char * nilai, int pilih) {
-	int i, jml=0, jm;
+	int i, jml=0, jm,ww=0;
 	char strSMS[128];
 	char nilaif[20];
 	
@@ -57,6 +57,7 @@ int data_titik_ukur(char * nilai, int pilih) {
 		if (jm != 0) {
 			jml++;
 			printf("%2d. %-15s : %10.2f : %s\r\n",jml, dt[jm-1].nama, data_f[jm-1], dt[jm-1].satuan);
+			
 			if (pilih == 1) {					// info
 				if (jml<=JML_STR_SMS)	strcat(strSMS, dt[jm-1].nama);
 				//else return jml;
@@ -74,7 +75,11 @@ int data_titik_ukur(char * nilai, int pilih) {
 				strcat(strSMS, "\n");
 		}
 	}
-	strcpy(nilai, strSMS);
+	
+	ww = strlen(strSMS);
+	if (ww<120)		strncpy(nilai, strSMS, 140);
+	else strcpy(nilai, strSMS);
+	
 	//printf("%s\r\n", strSMS);
 	return jml;
 }

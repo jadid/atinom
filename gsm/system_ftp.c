@@ -154,7 +154,7 @@ int koneksi_on()	{
 	
 	vTaskDelay(100);
 	flag = 80;
-	for (oz=0; oz<10; oz++) {
+	for (oz=0; oz<3; oz++) {
 		if (flag == 80) {
 			#ifdef DEBUG_FTP
 			printf("________KONEK FTP________\r\n");
@@ -924,10 +924,12 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			for (;;)	{
 				f_read( &fd2, abs_path, size, &res);
 				//printf("res: %d\r\n");
+				portENTER_CRITICAL();
 				for (i=0; i<res; i++)		{								
 					//tulis_char( abs_path[i] );
 					serX_putchar(PAKAI_GSM_FTP, &abs_path[i], 1000);
 				}	
+				portEXIT_CRITICAL();
 				
 				if ( res < size ) break; 
 			}
@@ -936,7 +938,17 @@ int kirim_file_ke_ftp(char *abs_path, char *nf) {
 			vTaskDelay(100);
 			oz=0;
 			while(1) {
-				if (oz>50)	break;
+				if (oz>50)	{
+					status_modem = 0;
+					#ifdef PAKAI_SELENOID
+					printf("__RESTART MODEM__");
+					unset_selenoid(1);		// mati relay 1
+					vTaskDelay(500);
+					set_selenoid(1);		// hidup relay 1
+					#endif
+					break;
+				}
+				
 				oz++;
 				uf = send_etx(oz);
 				if (uf == 0)	{

@@ -234,7 +234,7 @@ int kirim_data_monita_exe(int argc, char **argv) {
 	char cmd_monita[130];
 	toLower(cmd_monita, argv[1]);
 	if (strncmp(cmd_monita,"info", 4)==0) {
-		data_titik_ukur(cmd_monita, 1);
+		data_titik_ukur(cmd_monita, 1);			// di file utils.c
 		printf("%s", cmd_monita);
 		return 1;
 	} else if ((strncmp(cmd_monita,"monita", 6)==0) || (strncmp(cmd_monita,"data", 4)==0) ) {
@@ -258,7 +258,7 @@ int kirim_data_monita(char *no_tuj, int pilih) {
 	printf("Kirim SMS ");
 	if (pilih==1) {
 		printf("info");
-		data_titik_ukur(cmd_monita, 1);
+		data_titik_ukur(cmd_monita, 1);		// di file utils.c
 	} else if (pilih==2) {
 		printf("data");
 		data_titik_ukur(cmd_monita, 2);
@@ -385,7 +385,9 @@ int baca_sms_semua() {
 			break;
 		} 
 		
-		
+		//if (strncmp(hasilx, "AT+CMGL", 7)==0) {
+		//	break;
+		//}
 
 		if (strncmp(hasilx, "+CMGL", 5) == 0) {
 			yy = cari_index(hasilx);
@@ -741,8 +743,9 @@ int isiSMSnya(char *hasil, char *str) {
 
 int cek_pulsa(void)	{	
 	char strpls[255];
-	flush_modem();
-
+	//flush_modem();
+	cek_awal();
+	
 	sprintf(strpls, "AT+CUSD=1,%s\r\n", PULSA_SIMPATI);
 	//serX_putstring(PAKAI_SMS, "AT+CUSD=1,*888#\r\n");
 	serX_putstring(PAKAI_SMS, strpls);

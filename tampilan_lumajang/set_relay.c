@@ -22,6 +22,8 @@ portTASK_FUNCTION( relay_task, pvParameters ) {
 	int loopnya=0;
 
 	init_selenoid();
+	vTaskDelay(400);
+	printf("Relay init !!\r\n");
 	vTaskDelay(1000);
 	vTaskDelay(1000);
 

@@ -285,7 +285,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	
 	#ifdef PAKAI_SELENOID
 	set_selenoid(6);		// modem gsm
-	//set_selenoid(1);		// Teg 220V
+	set_selenoid(1);		// Teg 220V
 	//set_selenoid(2); 		// charger AKI
 	#endif
 	

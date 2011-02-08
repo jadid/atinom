@@ -124,6 +124,7 @@ void cek_alarm_relay(no_sumber) {
 			//*/
 			//*
 			if (index==1) {		// Sensor Teg Aki, relay 2 
+				/*
 				if (fAlarm[p_dt[index].relay] != 1 && data_f[index]<p_dt[index].alarm_H) {		// charger Aki nyala
 					printf("Aki dicharge, nyambung !! Aki: %f, batas: %f\r\n", data_f[index], p_dt[index].alarm_H);
 					set_selenoid(p_dt[index].relay);
@@ -135,27 +136,41 @@ void cek_alarm_relay(no_sumber) {
 					unset_selenoid(p_dt[index].relay);
 					fAlarm[p_dt[index].relay] = 0;
 				}
-			}
-			//*/
-			if (index==41) {	// Listrik Turbin, data ke 42 index ke 41, relay ke 
-				if (jam>6 && jam<18) {		// cabut !!
-					if (fAlarm[p_dt[index].relay] != 1) {
-						printf("Listrik  %f, lepas\r\n", data_f[index]);
+				//*/
+				
+				// jika tidak perlu sensor batere dan Set Teg output adaptor 12V 
+				if (jam>6 && jam<18) {		// lepas !!
+					if (fAlarm[p_dt[index].relay] != 0) {
+						unset_selenoid(p_dt[index].relay);
+						fAlarm[p_dt[index].relay] = 0;
+					}
+				} else {		// bukan jam kerja
+					if (fAlarm[p_dt[index].relay] != 1) {		// CHARGE !!
 						set_selenoid(p_dt[index].relay);
 						fAlarm[p_dt[index].relay] = 1;
+					}
+				}
+			}
+			//*/
+			if (index==41) {	// Listrik Turbin, data ke 42 index ke 41, relay ke 1
+				if (jam>6 && jam<18) {		// lepas !!
+					if (fAlarm[p_dt[index].relay] != 0) {
+						printf("Listrik  %f, lepas\r\n", data_f[index]);
+						unset_selenoid(p_dt[index].relay);
+						fAlarm[p_dt[index].relay] = 0;
 					}
 					//printf("Listrik turbin  cabut !!\r\n");
 				} else {
-					if (fAlarm[p_dt[index].relay] != 1 && data_f[index]<p_dt[index].alarm_H) {		// Listrik ngedrop
+					if (fAlarm[p_dt[index].relay] != 0 && data_f[index]<p_dt[index].alarm_H) {		// Listrik ngedrop
 						printf("Listrik drop %.1f, lepas !!, batas %.0f\r\n", data_f[index], p_dt[index].alarm_H);
-						set_selenoid(p_dt[index].relay);
-						fAlarm[p_dt[index].relay] = 1;
-					}
-					
-					if (fAlarm[p_dt[index].relay] != 0 && data_f[index]>p_dt[index].alarm_HH) {		// Listrik Mantap
-						printf("Listrik baik, pakai !! %f, batas %.0f\r\n", data_f[index], p_dt[index].alarm_HH);
 						unset_selenoid(p_dt[index].relay);
 						fAlarm[p_dt[index].relay] = 0;
+					}
+					
+					if (fAlarm[p_dt[index].relay] != 1 && data_f[index]>p_dt[index].alarm_HH) {		// Listrik Mantap
+						printf("Listrik baik, pakai !! %f, batas %.0f\r\n", data_f[index], p_dt[index].alarm_HH);
+						set_selenoid(p_dt[index].relay);
+						fAlarm[p_dt[index].relay] = 1;
 					}
 				}
 				//vTaskDelay(500);

@@ -131,12 +131,13 @@ int proses_simpan_file(void)	{
 					/* buang new linenya */
 					//path[24] = ' ';
 					
+					/*
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 						handle_tulis_file(ret);
 						return ;
 					}
-					
+					//*/
 					/* tulis data */
 					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 						jm = ts->no_data[i];
@@ -146,26 +147,30 @@ int proses_simpan_file(void)	{
 							
 							//sprintf(path, "%.3f ", data_f[ jm - 1] );
 							sprintf(path, "%.3f\t", data_f[jm-1]);
-							
+							printf("%.2f ", data_f[jm-1]);
+							/*
 							if (ret = f_write( &fd, path, strlen(path), &jm))	{
 								//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								handle_tulis_file(ret);
 								return ;
-							}							
+							}
+							//*/							
 						}
 					}
 					
 					/* kasih new line */
 					sprintf(path, "\r\n");
+					printf("\r\n");
+					/*
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 						handle_tulis_file(ret);
 						return ;
 					}
 					
-					/* di sync dulu */
+					// di sync dulu //
 					f_sync( &fd );
-					
+					//*/
 					jum_detik = 0;
 				}
 			}			
@@ -199,24 +204,28 @@ int proses_simpan_file(void)	{
 				/* buat direktori */
 				sprintf(path, "%s\\%s", buat_direktori("data", timeval, 0), temp);
 				//printf("OK SAAT FILE %s\r\n", path);
+				/*
 				if (ret = f_open( &fd, path, FA_CREATE_ALWAYS | FA_WRITE ))		{
 					printf("%s(): Buat file %s error %d !\r\n", __FUNCTION__, path, ret);				
 					reset_cpu();		// 
 					return;
 				}
-				else	{
+				else	
+				//*/
+				{
 					sudah_buka = 1;
 					jum_detik = 0;
 					
 					/* kasih tag waktu */
 					//sprintf(path, "Hari Bln Tgl Jam Tahun ");
 					sprintf(path, "Waktu ");
+					/*
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 						reset_cpu();
 						return;
 					}
-					
+					//*/
 					/* print out nama dan satuan dan nomer data dulu */
 					for (i=0; i< (JML_SUMBER * PER_SUMBER); i++)	{
 						jm = ts->no_data[i];
@@ -224,22 +233,28 @@ int proses_simpan_file(void)	{
 						if ( jm != 0) 	{
 							/* nomer, nama, satuan, spasi ! */
 							sprintf(path, "(%d)%s(%s) ", jm, dt[jm - 1].nama, dt[jm - 1].satuan);
+							printf("%s", path);
+							/*
 							if (ret = f_write( &fd, path, strlen(path), &jm))		{
 								//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 								handle_tulis_file(ret);
 								return ;
-							}							
+							}
+							//*/							
 						}
 					}
 					/* kasih new line */
 					sprintf(path, "\r\n");
+					printf("\r\n");
+					/*
 					if (ret = f_write( &fd, path, strlen(path), &jm))	{
 						//printf("%s(): Tulis error %d !\r\n", __FUNCTION__, ret);
 						handle_tulis_file(ret);
 						return ;
 					}
-					/* di sync dulu */
+					// di sync dulu //
 					f_sync( &fd );
+					//*/
 				}
 			}
 		}

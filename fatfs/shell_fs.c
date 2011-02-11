@@ -97,7 +97,7 @@ int cek_fs_free(void)
 	{ 
 		//f_printerror (res); 
 		printf("get free error = %d!\r\n", res);
-		return 0;
+		return res;
 	}
 
 	printf ("FAT type = %u\r\nBytes/Cluster = %u\r\nNumber of FATs = %u\r\n"
@@ -115,7 +115,7 @@ int cek_fs_free(void)
 	#if 1
 	if ((res = scan_files (buffer, &acc_size, &acc_files, &acc_dirs)))
 	{  
-		return 0;
+		return res;
 	}
 
 	printf ("\r\n%u files, %u bytes.\r\n%u folders.\r\n"

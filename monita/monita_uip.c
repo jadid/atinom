@@ -59,6 +59,9 @@ extern struct t_adc st_adc;
 //extern struct t_env env2;
 #endif
 
+#ifdef PAKAI_MMC
+	//int status_MMC=0;
+#endif
 
 #ifdef BOARD_KOMON
 

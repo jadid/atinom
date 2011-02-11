@@ -216,7 +216,9 @@ int baca_env(char tampil)
 			//#endif 
 			
 			#ifdef BOARD_TAMPILAN
-			//	set_group_default();
+				#if (VERSI_KONFIG == 2)
+					//set_group_default();
+				#endif
 			#endif
 			
 			#ifdef BANYAK_SUMBER

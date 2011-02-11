@@ -92,6 +92,7 @@ int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 #endif
 
 #ifdef PAKAI_MMC
+int status_MMC=0;
 #include "../fatfs/shell_fs.c"
 #endif
 
@@ -1030,9 +1031,44 @@ vTaskDelay(100);
 	
 	init_gpio_mmc();
 	uncs_mmc();
-	
+	vTaskDelay(5);
 	set_fs_mount();
-	cek_fs_free();
+	vTaskDelay(5);
+	status_MMC = cek_fs_free();
+	
+	struct t_simpan_file *ts;
+	ts = (char *) ALMT_SFILE;
+	vTaskDelay(5);
+	
+	if (status_MMC) {
+		printf("_____MMC ERROR !!!!_____ %d\r\n", status_MMC);
+		if (status_MMC==13) 
+			printf("_____MMC FR_NO_FILESYSTEM, kudu diformat FAT32 !!!\r\n");
+		
+		if (ts->set==1) {
+			set_file_mati();
+			printf("simpan data ke file dimatikan !!\r\n");
+		}
+	} else {
+		status_MMC = 1;
+		printf("MMC aktif. Siap simpan data: %d\r\n", status_MMC);
+	}
+	/*
+	FR_NOT_READY,		3 
+	FR_NO_FILE,			4 
+	FR_NO_PATH,			5 
+	FR_INVALID_NAME,	6 
+	FR_DENIED,			7 
+	FR_EXIST,			8 
+	FR_INVALID_OBJECT,	9 
+	FR_WRITE_PROTECTED,	10
+	FR_INVALID_DRIVE,	11
+	FR_NOT_ENABLED,		12
+	FR_NO_FILESYSTEM,	13
+	FR_MKFS_ABORTED,	14
+	FR_TIMEOUT			15
+	//*/
+	
 	
 	sprintf(abs_path, "%s", "");
 	#endif
@@ -1085,7 +1121,7 @@ vTaskDelay(100);
 				#ifdef PAKAI_MMC
 					#ifdef PAKAI_FILE_SIMPAN
 						perdetiknya++;
-						if (perdetiknya==10) {
+						if (perdetiknya==10 && status_MMC==1) {
 							proses_simpan_file();
 							perdetiknya=0;
 						}
@@ -1148,7 +1184,7 @@ vTaskDelay(100);
 		#ifdef PAKAI_MMC
 			#ifdef PAKAI_FILE_SIMPAN
 				perdetiknya++;
-				if (perdetiknya==10) {
+				if (perdetiknya==10 && status_MMC==1) {
 					proses_simpan_file();
 					perdetiknya=0;
 				}

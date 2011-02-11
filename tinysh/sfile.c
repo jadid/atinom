@@ -315,6 +315,29 @@ static int set_file_default(void)	{
 	vPortFree( p_gr );	
 }
 
+static int set_file_mati(void)	{
+	int i;
+	int y;
+	struct t_simpan_file *p_gr;
+	
+	judul(" Set SIMPAN_FILE mati\r\n");
+	
+	p_gr = pvPortMalloc( sizeof (struct t_simpan_file) );
+	if (p_gr == NULL)	{
+		printf("%s(): Err allok memory gagal !\r\n");
+		vPortFree( p_gr );	
+		return -1;
+	}
+	
+	p_gr->set = 0;
+	
+	if (simpan_sfile( p_gr ) < 0)	{
+		vPortFree( p_gr );
+		return -1;
+	}
+	vPortFree( p_gr );	
+}
+
 int hapus_file_terkirim(char * nf, char * nama) {
 	char namafile[80];
 	int res;

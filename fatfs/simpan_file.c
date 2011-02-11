@@ -27,6 +27,10 @@
 #include "../monita/monita_uip.h"
 #ifdef PAKAI_FILE_SIMPAN
 
+#ifdef PAKAI_MMC
+//extern int status_MMC;
+#endif
+
 #include "ff.h"
 
 //#define debug_printf		printf
@@ -99,7 +103,9 @@ int proses_simpan_file(void)	{
 	
 	//printf("\tts->set: %d, sudah_buka: %d, jml_dipanggil: %d\r\n", ts->set, sudah_buka);
 	
-	if (ts->set == 1)		{
+	if (ts->set==1)		
+	{
+		
 		/* jika sepuluh menit lewat */
 		if (jum_dipanggil > (ts->periode * 60))	{						
 			if (sudah_buka == 1)		{		

@@ -17,11 +17,48 @@
 #include "task.h"
 #include "semphr.h"
 #include "gpio.h"
+
+#ifdef PAKAI_TAMPILAN
 #include "../tampilan/tampilan.h"
+#endif
+
 
 #ifdef TAMPILAN_LPC_4
 extern xSemaphoreHandle keypad_sem;
 #endif
+
+#ifdef BOARD_CNC
+int itungT2=0;
+
+void timer2_ISR_Wrapper( void )
+{
+	portSAVE_CONTEXT();
+
+	#if ( DEBUG_KONTER == 1) 
+	togle_led_konter();
+	#endif
+	
+	timer2_ISR_Handler();
+
+	portRESTORE_CONTEXT();
+}
+
+void timer2_ISR_Handler( void )
+{
+	itungT2++;
+	T2IR	= TxIR_MR0_Interrupt;   		// clear interrupt by writing an IR-bit
+	T2TC	= 0;
+	//T2MCR 	= TxMCR_MR0I;
+	//T2TCR	= TxTCR_Counter_Reset | TxTCR_Counter_Enable;
+	T2TCR	= TxTCR_Counter_Enable;         // enable timer 2
+	
+	//printf("x.%d-%d", T2TC, itungT2);
+	FIO0PIN ^= BIT(27);
+	/* Clear the ISR in the VIC. */
+	VICVectAddr = 0;
+}
+#endif
+
 
 #ifdef BOARD_KOMON_KONTER
 struct t2_konter konter;

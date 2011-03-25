@@ -27,6 +27,8 @@
 #include "queue.h"
 #include "semphr.h"
 
+#include "math.h"
+
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
 #ifdef BOARD_KOMON
@@ -143,7 +145,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 		
 		muter++;		
 		if (muter > 5)		{
-			//FIO0PIN ^= LED_UTAMA;
+			FIO0PIN ^= LED_UTAMA;
 			togle_led_utama();
 			muter = 0;
 		}	
@@ -157,28 +159,90 @@ void init_led_utama(void)	{
 		tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
 }
 
+
+
 static portTASK_FUNCTION(task_cnc, pvParameters )	{
-	unsigned int muter=0;
+	unsigned int muter=0, menit=0;
 
 	vTaskDelay(400);
-	printf("Init CNC ... \r\n");
+	
+	int sudut=6;
+	
+	printf("Init CNC ...\r\n");
 	
 	PCONP |= BIT(22);						// Timer 2 aktif
 	PCLKSEL1 &= ~(BIT(12) | BIT(13));		// PCLK = CCLK
 	PCLKSEL1 |= BIT(12);
-	//init_timer2();
+	init_timer2();
 	
+	FIO1DIR = BIT(31);
+	FIO1CLR = BIT(31);
 	
-	
+	FIO1DIR |= BIT(19);
+	FIO1CLR |= BIT(19);	
 	
 	vTaskDelay(1000);
+	tabelSin();
+	FIO1SET = BIT(31);
+	vTaskDelay(1000);
 	for (;;)	{
-		//FIO0PIN ^= LED_UTAMA;
-		vTaskDelay(500);
+		//
+		
+		muter++;
+		if (muter>60) {
+			printf("menit: %d\r\n", menit);
+			muter=0;
+			menit++;
+		}
+		vTaskDelay(1000);
 	}
 }
 
 void init_cnc(void)	{
-	xTaskCreate(task_cnc, ( signed portCHAR * ) "cnc",  (configMINIMAL_STACK_SIZE * 5) , NULL, \
+	xTaskCreate(task_cnc, ( signed portCHAR * ) "cnc",  (configMINIMAL_STACK_SIZE * 20) , NULL, \
 		tskIDLE_PRIORITY + 3, ( xTaskHandle * ) &hdl_cnc );
+}
+
+#define PI 			3.14159265
+#define xPWM		256
+#define maxKonter	0xFFFF
+
+unsigned int nPWM[xPWM] = {};
+
+void tabelSin() {
+
+	int i,j=0;
+	float rad, tmp;
+	//float sudut;
+	
+	//printf("\r\n");
+	for (i=0; i<xPWM; i++) {
+		//sudut = (i*360.00)/xPWM;
+		rad	  = ((i+0.75*xPWM)*PI*2.00)/xPWM;
+		
+		tmp = (sin(rad)/2.00)+0.5;
+		nPWM[i] = (int) (maxKonter*tmp);
+
+		//printf("%.0f____%d\t", tmp*maxKonter, nPWM[i]);
+		j++;
+		if (j>7)	{
+			j=0;
+			//printf("\r\n");
+		}
+	}
+	//printf("\r\n");
+
+
+/*
+	j=0;
+	for (i=0; i<xPWM; i++) {
+		printf("%.2f\t", nilai[i]);
+		j++;
+		if (j>15)	{
+			j=0;
+			printf("\r\n");
+		}
+	}
+	printf("\r\n");
+//*/
 }

@@ -47,7 +47,7 @@ void init_timer2() {
 	// Periode Timer 2 adalah 50 ns
 	// akan overflow setiap 3.57 menit, interrupt dan
 	// lakukan sesuatu pada variabel2.
-	T2PR = 60 - 1;               	// set the prescale divider (60 / 60, 1 Mhz (1 us))
+	T2PR = 15 - 1;               	// set the prescale divider (60 / 60, 1 Mhz (1 us))
 	T2CCR = 0;                      // disable dulu compare registers
 	T2EMR = 0;                      // disable external match register
 	T2TCR = TxTCR_Counter_Enable;
@@ -58,9 +58,14 @@ void init_timer2() {
 	VICVectAddr26 = ( portLONG )timer2_ISR_Wrapper;
 	VICVectPriority26 = 0x01;
 	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer2);
-	T2MR0 = 0xF4240;		// maksimum
-	T2MCR = TxMCR_MR0I;     // interrupt on cmp-match0
+	
+	T2MR0 =  500000;		// maksimum
+	T2MR1 = 0xFFFF;		// maksimum
+	
+	T2MCR = TxMCR_MR0I;     // interrupt on cmp-match0		// untuk 
+	T2MCR |= TxMCR_MR1I;     // interrupt on cmp-match0
 	T2IR  = TxIR_MR0_Interrupt; // clear match0 interrupt
+	T2IR  = TxIR_MR1_Interrupt; // clear match0 interrupt
 
 	T2TCR = TxTCR_Counter_Enable;         // enable timer 2
 	

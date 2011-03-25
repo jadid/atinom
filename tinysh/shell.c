@@ -140,6 +140,11 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
+
+#ifdef BOARD_CNC 
+	extern xTaskHandle *hdl_cnc;
+#endif
+
 #ifdef PAKAI_CRON
 	//extern xTaskHandle *hdl_cron;
 #endif
@@ -361,6 +366,11 @@ void cek_stack(void)
 	#ifdef AMBIL_PM
 //		printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
 	#endif
+	
+	#ifdef BOARD_CNC
+		printf(" CNC      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
+	#endif
+	
 }							 
 
 //static 

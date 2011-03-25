@@ -29,6 +29,10 @@ extern xSemaphoreHandle keypad_sem;
 
 #ifdef BOARD_CNC
 int itungT2=0;
+int iSin=0;
+
+#define xPWM		256
+extern unsigned int nPWM[xPWM];
 
 void timer2_ISR_Wrapper( void )
 {
@@ -43,19 +47,59 @@ void timer2_ISR_Wrapper( void )
 	portRESTORE_CONTEXT();
 }
 
-void timer2_ISR_Handler( void )
-{
-	itungT2++;
+void timer2_ISR_Handler( void )	{
+	if (T2IR & TxIR_MR1_Interrupt) {
+		T2IR	= TxIR_MR1_Interrupt;
+		T2TC	= 0;
+		T2MR0	= nPWM[iSin];
+		FIO1SET = BIT(31);
+	}
+	
+	if (T2IR & TxIR_MR0_Interrupt) {
+		T2IR	= TxIR_MR0_Interrupt;
+		FIO1CLR = BIT(31);
+	}
+	
+	
+/*	
+	if (T2IR & TxIR_MR0_Interrupt) {		//
+		T2IR	= TxIR_MR0_Interrupt;
+		FIO1CLR = BIT(31);
+	}
+	
+	if (T2IR & TxIR_MR1_Interrupt) {
+		T2IR	= TxIR_MR1_Interrupt;
+		T2TC	= 0;						// reset counter
+		FIO1SET = BIT(31);
+		//T2MR0	= nPWM[iSin];
+		//T2MR0	= 500000;
+	}
+//*/	
+	if (iSin>255)	iSin = 0;
+	iSin++;
+	//FIO1PIN ^= BIT(31);
+
+/*	
 	T2IR	= TxIR_MR0_Interrupt;   		// clear interrupt by writing an IR-bit
 	T2TC	= 0;
+	//pgm_read_byte(&sinewave[i]);
 	//T2MCR 	= TxMCR_MR0I;
 	//T2TCR	= TxTCR_Counter_Reset | TxTCR_Counter_Enable;
+	if (itungT2==0)			T2MR0 = 1000000;		// maksimum
+	else if (itungT2==1)	T2MR0 = 500000;		// maksimum
+	else if (itungT2==2)	T2MR0 = 250000;		// maksimum
+	else if (itungT2==3)	T2MR0 = 500000;		// maksimum
+	else if (itungT2==4)	T2MR0 = 1000000;		// maksimum
+	else  {
+		itungT2= -1;
+		T2MR0 = 2000000;		// maksimum
+	}
+//*/	
 	T2TCR	= TxTCR_Counter_Enable;         // enable timer 2
 	
-	//printf("x.%d-%d", T2TC, itungT2);
-	FIO0PIN ^= BIT(27);
 	/* Clear the ISR in the VIC. */
 	VICVectAddr = 0;
+	//itungT2++;
 }
 #endif
 

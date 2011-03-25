@@ -78,7 +78,7 @@ static volatile USHORT usSndBufferCount;
 
 static volatile USHORT usRcvBufferPos;
 
-extern int berhitung_serial3;
+//extern int berhitung_serial3;
 
 /* ----------------------- Start implementation -----------------------------*/
 eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity ) {
@@ -142,7 +142,7 @@ void eMBRTUStart( void ) {
 
     //EXIT_CRITICAL_SECTION(  );
     portEXIT_CRITICAL();
-    berhitung_serial3+=3;
+//    berhitung_serial3+=3;
 }
 
 void eMBRTUStop( void ) {
@@ -153,7 +153,7 @@ void eMBRTUStop( void ) {
     portEXIT_CRITICAL();
     //EXIT_CRITICAL_SECTION(  );
     
-    berhitung_serial3+=4;
+//    berhitung_serial3+=4;
 }
 
 eMBErrorCode eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength ) {
@@ -223,7 +223,7 @@ eMBErrorCode eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT us
     //EXIT_CRITICAL_SECTION(  );
     portEXIT_CRITICAL();
     
-    berhitung_serial3+=5;
+//    berhitung_serial3+=5;
     return eStatus;
 }
 

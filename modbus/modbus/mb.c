@@ -346,7 +346,7 @@ eMBErrorCode eMBPoll( void ) {
                 /* Check if the frame is for us. If not ignore the frame. */
                 if( ( ucRcvAddress == ucMBAddress ) || ( ucRcvAddress == MB_ADDRESS_BROADCAST ) )
                 {
-					printf("UNTUK DIRIKU...\R\N");
+					printf("UNTUK DIRIKU...\r\n");
                     //( void )xMBPortEventPost( EV_EXECUTE );
                 }
             }

@@ -183,6 +183,7 @@ static portTASK_FUNCTION(task_cnc, pvParameters )	{
 	
 	vTaskDelay(1000);
 	tabelSin();
+	initPWM();
 	FIO1SET = BIT(31);
 	vTaskDelay(1000);
 	for (;;)	{
@@ -203,9 +204,21 @@ void init_cnc(void)	{
 		tskIDLE_PRIORITY + 3, ( xTaskHandle * ) &hdl_cnc );
 }
 
-#define PI 			3.14159265
-#define xPWM		256
-#define maxKonter	0xFFFF
+void initPWM() {
+	PCONP |= BIT(6);
+	PINSEL3 &= ~(BIT(5) | BIT(4));
+	PINSEL3 |= BIT(5);
+	
+	PWM1TCR = PWMxTCR_Counter_Reset;		// reset dulu
+	PWM1PR	= 60 - 1;						// set the prescale divider (60 / 60, 1 Mhz (1 us))
+	
+	PWM_MR0  = (configCPU_CLOCK_HZ / pwmPulseWidth);
+  PWM_MCR |= PWM_MCR_MR0R;
+  PWM_PCR |= PWM_PCR_ENA5;
+  PWM_TCR  = (PWM_TCR_CE | PWM_TCR_PWME);
+	
+	PWM1MR0	=
+}
 
 unsigned int nPWM[xPWM] = {};
 

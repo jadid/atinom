@@ -63,6 +63,7 @@ CFLAGS= $(DEBUG) \
 		-I ../modbus/modbus/ascii/ \
 		-I ../modbus/modbus/include/ \
 		-I ../modbus/modbus/rtu/ \
+		-I ../modbus/modbus/tcp/ \
 		-I ../modbus/port/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
@@ -124,8 +125,9 @@ MODBUS_SOURCE = \
         ../modbus/port/portserial.c \
 		../modbus/port/porttimer.c \
 		../modbus/modbus/mb.c \
-		../modbus/modbus/rtu/mbrtu.c \
-		../modbus/modbus/rtu/mbcrc.c \
+#		../modbus/modbus/rtu/mbrtu.c \
+#		../modbus/modbus/rtu/mbcrc.c \
+		../modbus/modbus/tcp/mbtcp.c \
 #		../modbus/modbus/ascii/mbascii.c \
         ../modbus/modbus/functions/mbfunccoils.c \
         ../modbus/modbus/functions/mbfuncdiag.c \

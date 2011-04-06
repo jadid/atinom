@@ -48,18 +48,22 @@ void timer2_ISR_Wrapper( void )
 }
 
 void timer2_ISR_Handler( void )	{
+	if (T2IR & TxIR_MR0_Interrupt) {
+		if (nPWM[iSin] != maxKonter)
+			FIO1CLR = BIT(31);
+		T2IR	= TxIR_MR0_Interrupt;
+	}
+	
 	if (T2IR & TxIR_MR1_Interrupt) {
 		T2IR	= TxIR_MR1_Interrupt;
 		T2TC	= 0;
 		T2MR0	= nPWM[iSin];
-		FIO1SET = BIT(31);
+		//if (nPWM[iSin] != 0)
+		if (iSin>0 && iSin<255)
+			FIO1SET = BIT(31);
+		
 	}
-	
-	if (T2IR & TxIR_MR0_Interrupt) {
-		T2IR	= TxIR_MR0_Interrupt;
-		FIO1CLR = BIT(31);
-	}
-	
+
 	
 /*	
 	if (T2IR & TxIR_MR0_Interrupt) {		//
@@ -75,8 +79,12 @@ void timer2_ISR_Handler( void )	{
 		//T2MR0	= 500000;
 	}
 //*/	
-	if (iSin>255)	iSin = 0;
-	iSin++;
+	if (iSin>255)	{
+		iSin = 0;
+		//T2TCR &= ~TxTCR_Counter_Enable;
+	}
+	else
+		iSin++;
 	//FIO1PIN ^= BIT(31);
 
 /*	

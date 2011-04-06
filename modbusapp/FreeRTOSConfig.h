@@ -53,11 +53,13 @@
 	#define BAUD_MODBUS			19200
 #endif
 
+#define MB_TCP_ENABLED                          (  1 )
+
 //#define PAKAI_SERIAL_2				// mendefinisikan aktif serial 1
 //#define PAKAI_PM			2		// nyambung ke SERIAL 3
-#define PAKAI_MAX485		1
-#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 3
-#define TXDE	BIT(24)
+//#define PAKAI_MAX485		1
+//#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 3
+//#define TXDE	BIT(24)
 //#define PAKAI_PM			3		// nyambung ke SERIAL 3
 
 

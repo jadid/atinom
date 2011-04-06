@@ -1245,5 +1245,40 @@ Reset, and Code Security/Debugging */
 #define TxIR_CR2_Interrupt (1UL<<6)
 #define TxIR_CR3_Interrupt (1UL<<7)
 
+
+#define PWMxTCR_Counter_Enable (1UL<<0)	
+#define PWMxTCR_Counter_Reset  (1UL<<1)
+#define PWMxTCR_PWM_Enable 	  (1UL<<3)	
+
+#define PWMxMCR_MR0I  (1UL<<0)
+#define PWMxMCR_MR0R  (1UL<<1)
+#define PWMxMCR_MR0S  (1UL<<2)
+#define PWMxMCR_MR1I  (1UL<<3)
+#define PWMxMCR_MR1R  (1UL<<4)
+#define PWMxMCR_MR1S  (1UL<<5)
+#define PWMxMCR_MR2I  (1UL<<6)
+#define PWMxMCR_MR2R  (1UL<<7)
+#define PWMxMCR_MR2S  (1UL<<8)
+#define PWMxMCR_MR3I  (1UL<<9)
+#define PWMxMCR_MR3R  (1UL<<10)
+#define PWMxMCR_MR3S  (1UL<<11)
+#define PWMxMCR_MR4I  (1UL<<12)
+#define PWMxMCR_MR4R  (1UL<<13)
+#define PWMxMCR_MR4S  (1UL<<14)
+#define PWMxMCR_MR5I  (1UL<<15)
+#define PWMxMCR_MR5R  (1UL<<16)
+#define PWMxMCR_MR5S  (1UL<<17)
+#define PWMxMCR_MR6I  (1UL<<18)
+#define PWMxMCR_MR6R  (1UL<<19)
+#define PWMxMCR_MR6S  (1UL<<20)
+
+#define PWMxENA1		 (1UL<<9)
+#define PWMxENA2		 (1UL<<10)
+#define PWMxENA3		 (1UL<<11)
+#define PWMxENA4		 (1UL<<12)
+#define PWMxENA5		 (1UL<<13)
+#define PWMxENA6		 (1UL<<14)
+
+
 #endif  /* __LPC23xx_H */
 

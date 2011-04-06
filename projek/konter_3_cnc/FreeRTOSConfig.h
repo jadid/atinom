@@ -53,6 +53,10 @@
 #define _printf	printf2
 #define printf	printf2
 
+#define PI 			3.14159265
+#define xPWM		256
+#define maxKonter	0xFFFF
+
 //#define PAKE_TELNETD
 //#define PAKAI_HTTP
 //#define PAKAI_WEBCLIENT

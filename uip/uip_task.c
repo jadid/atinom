@@ -138,6 +138,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
     monita_init();
 #endif
 
+#ifdef PAKAI_MODBUSTCP
+	printf("Monita : modbus TCP init !\r\n");
+	modbustcp_init();
+#endif
+
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
 		webclient_init();
@@ -465,6 +470,11 @@ void dispatch_tcp_appcall (void)
 #ifdef PAKE_TELNETD
   	if (uip_conn->lport == HTONS (23))
     	telnetd_appcall ();
+#endif
+
+#ifdef PAKAI_MODBUSTCP
+  	if (uip_conn->lport == HTONS (PORT_MODBUSTCP))
+		modbustcp_appcall();
 #endif
 
 #ifdef BOARD_KOMON

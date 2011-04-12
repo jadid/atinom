@@ -27,6 +27,10 @@
 struct t_xdata 			xdata  		;/*__attribute__ ((section (".eth_test")));*/
 struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/
 
+#ifdef PAKAI_MODBUSTCP
+	
+#endif
+
 //extern struct t_data_float s_data[JML_SUMBER];
 
 unsigned int loop_kirim;
@@ -61,6 +65,93 @@ extern struct t_adc st_adc;
 
 #ifdef PAKAI_MMC
 	//int status_MMC=0;
+#endif
+
+#ifdef PAKAI_MODBUSTCP
+	void modbustcp_init() {
+		uip_listen(HTONS(PORT_MODBUSTCP));
+	}
+	
+	void modbustcp_appcall() {
+		int len;
+		unsigned char str_monita[32];
+		int i;
+		unsigned char ipne[32];		
+		struct t_reg_modbus regmod;
+		
+		if (uip_newdata())	{
+			len = uip_datalen();
+			sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+			printf("newdata modbus = %d %s\n", len, ipne);
+			portENTER_CRITICAL();
+			memcpy(str_monita, (char *) uip_appdata, len);
+			portEXIT_CRITICAL();
+			
+			if (len >= 10)		{
+				for (i=0; i<len; i++) {
+					printf("%d ", str_monita[i]);
+					if (i>=0 && i<5) {
+						regmod.ref[i] = (unsigned char) str_monita[i];
+					}
+					if (i==6)
+						regmod.ui = (unsigned char) str_monita[i];
+					if (i==7)	
+						regmod.func = (unsigned char) str_monita[i];
+					if (i==8) {
+						regmod.reg = (unsigned int) (str_monita[i]<<8) + (unsigned int) str_monita[i+1] + 1;
+						i++;
+					}
+					if (i==10) {
+						regmod.nReg = (unsigned int) (str_monita[i]<<8) + (unsigned int) str_monita[i+1];
+						i++;
+					}
+				}	
+				printf("\r\n");
+
+				printf ("idCoil: %d, Reg: %d, nData: %d\r\n", regmod.func, regmod.reg, regmod.nReg);
+				
+				aksiModbus(regmod);
+			}
+			else 	{
+				uip_close();	
+			}	
+		}
+	
+		if (uip_poll())	{
+			uip_close();	
+		}
+	}
+	
+	void aksiModbus(struct t_reg_modbus regmod) {
+		//struct t_reg_modbus_respon modrespon;
+		int tt=0, www;
+		
+		for(tt=0; tt<regmod.nReg; tt++) {
+			www = (rand()%1000+5);
+			regmod.data[tt*2] = (www>>8);
+			regmod.data[tt*2+1] = www;
+			printf("www: %d : %d %d\r\n", www, regmod.data[tt], regmod.data[tt+1]);
+		}
+		printf("\r\n");
+		regmod.nReg *= 2;
+		regmod.len = 3 + regmod.nReg;
+		
+		for(tt=0; tt<(9+regmod.nReg); tt++) {
+			printf("%hX ", * ((char *) &regmod+tt));
+		}
+		printf("\r\n");
+		
+		/*
+		portENTER_CRITICAL();
+		memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
+		portEXIT_CRITICAL();
+		//*/	
+		//send data ke network
+		uip_send((char *) &regmod, 9+regmod.nReg);
+	}
 #endif
 
 #ifdef BOARD_KOMON

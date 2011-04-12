@@ -183,7 +183,7 @@ static portTASK_FUNCTION(task_cnc, pvParameters )	{
 	
 	vTaskDelay(1000);
 	tabelSin();
-	initPWM();
+	//initPWM();
 	FIO1SET = BIT(31);
 	vTaskDelay(1000);
 	for (;;)	{
@@ -205,6 +205,7 @@ void init_cnc(void)	{
 }
 
 void initPWM() {
+/*
 	PCONP |= BIT(6);
 	PINSEL3 &= ~(BIT(5) | BIT(4));
 	PINSEL3 |= BIT(5);
@@ -217,7 +218,8 @@ void initPWM() {
   PWM_PCR |= PWM_PCR_ENA5;
   PWM_TCR  = (PWM_TCR_CE | PWM_TCR_PWME);
 	
-	PWM1MR0	=
+//	PWM1MR0	=
+//*/
 }
 
 unsigned int nPWM[xPWM] = {};

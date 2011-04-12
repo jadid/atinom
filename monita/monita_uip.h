@@ -116,12 +116,18 @@
 	#define JML_RELAY 8
 #endif
 
+#ifdef PAKAI_MODBUSTCP
+
+#endif
+
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
 #define 	ISO_nl 			0x0a
 #define		PORT_KONTROL	7235
 #define		PORT_KIRIM_BALIK	6543
 #define		PORT_HTTP	80
+
+#define		PORT_MODBUSTCP	502
 
 /* offset masing2 data pada array */
 #if 0
@@ -197,7 +203,17 @@ struct t_data_float {
 	float data[PER_SUMBER];
 };
 
-
+#ifdef PAKAI_MODBUSTCP
+struct t_reg_modbus {
+	unsigned char ref[5];
+	unsigned char len;
+	unsigned char ui;
+	unsigned char func;
+	unsigned char nReg;
+	unsigned char data[PER_SUMBER*2];
+	unsigned int  reg;
+};
+#endif
 
 struct t_xdata {
 	char mon[8];             // id bahwa data monita

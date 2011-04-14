@@ -243,6 +243,9 @@ int enc28j60Init (void)
   //  ENC28J60 is present.
   //
   xTicks = xTaskGetTickCount ();
+  
+  
+  
 
   while (((encReadEthReg (ESTAT) & (ESTAT_UNIMP | ESTAT_CLKRDY)) != ESTAT_CLKRDY))
     if ((xTaskGetTickCount () - xTicks) > (1000 / portTICK_RATE_MS))

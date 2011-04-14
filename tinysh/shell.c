@@ -64,6 +64,11 @@
 #include "utils.c"
 #endif
 
+#ifdef  BOARD_KOMON_420_SABANG_2_3
+	#include "utils.c"
+	#define TXDE	BIT(24)
+#endif 
+
 #ifdef  BOARD_KOMON_420_SABANG
 	#include "utils.c"
 	#define TXDE	BIT(24)
@@ -507,7 +512,7 @@ static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
 
 #endif
 
-#if defined(BOARD_KOMON_420_SABANG)
+#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 void hitung_datanya() {
 	#ifdef PAKAI_ADC
 	struct t_env *env2;
@@ -847,7 +852,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 
-#ifdef BOARD_KOMON_420_SABANG
+#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 #ifdef PAKAI_ADC
 	tinysh_add_command(&cek_adc_cmd);
 	//tinysh_add_command(&lihat_data_cmd);
@@ -1003,7 +1008,7 @@ vTaskDelay(100);
 	start_adc_1();
 	#endif
 	
-	#ifdef BOARD_KOMON_420_SABANG
+	#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 		#ifdef PAKAI_ADC
 			kalibrasi_adc1();
 			vTaskDelay(100);
@@ -1147,8 +1152,8 @@ vTaskDelay(100);
 					proses_data_adc();
 					#endif
 					
-					#ifdef BOARD_KOMON_420_SABANG
-					proses_data_adc();
+					#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
+						proses_data_adc();
 					#endif
 					
 					#ifdef BOARD_KOMON_420_SAJA
@@ -1180,7 +1185,7 @@ vTaskDelay(100);
 				hitung_datanya();
 			#endif
 			
-			#ifdef BOARD_KOMON_420_SABANG
+			#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 				proses_data_adc();
 			#endif
 			

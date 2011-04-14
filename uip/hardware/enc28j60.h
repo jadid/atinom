@@ -15,6 +15,23 @@
 #include "FreeRTOS.h"
 #include "../uip/uipopt.h"
 
+#ifdef BOARD_KOMON_420_SABANG_2_3
+#define CS_ENC	BIT(16)	/* P0 */
+#define INT_ENC	BIT(13) /* P2 */
+
+#define ENC28J60_Select()   FIO0CLR = CS_ENC  // P0.16		// ENC28J60_Select()
+#define ENC28J60_Deselect() FIO0SET = CS_ENC				// ENC28J60_Deselect()
+
+// seharusnya tidak ada pin reset (sudah disambung ke VCC)
+#define ENC28J60_Reset()    FIO0CLR = CS_ENC
+#define ENC28J60_Unreset()  FIO0SET = CS_ENC
+
+#define FIO_CEK_PAKET		FIO2PIN
+
+#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
+							FIO0DIR = FIO0DIR | CS_ENC;
+
+#endif
 
 #ifdef BOARD_KOMON_420_SABANG
 #define CS_ENC	BIT(18)	/* P1 */

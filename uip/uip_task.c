@@ -16,6 +16,11 @@
 #include "uip.h"
 #include "uip_arp.h"
 
+#ifdef PAKAI_WEBCLIENT
+#include "../webserver/webclient/webclient.c"
+#endif
+
+
 #include "../monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
@@ -97,12 +102,17 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("ARP : arp_init\r\n");
 	uip_arp_init ();
 	
-	printf("Init ENC28J .. ");
+	#ifdef BOARD_KOMON_420_SABANG_2_3
+		printf("Init ENC624J600 .. ");
+	//#else
+		printf("Init ENC28J .. ");
+			
+		if (enc28j60Init() == 1)	{
+			 printf(" .. ENC OK\r\n");
+		}	else
+			printf("ENC tidak respons !\r\n");
+	#endif
 
-	if (enc28j60Init() == 1)	{
-		 printf(" .. ENC OK\r\n");
-	}	else
-		printf("ENC tidak respons !\r\n");
 
 	#ifdef PAKE_HTTP
 	printf("SIMPLE HTTP : init\r\n");

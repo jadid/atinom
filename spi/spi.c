@@ -74,7 +74,7 @@ void spiInit (void)
   //
   //  SCK0 = (PCLK = (CCLK/APB)) / 8 will be 6Mhz (putt putt putt...)
   //
-  SPI_SPCCR = 8;
+  SPI_SPCCR = 8;		// 60/
 }
 
 //

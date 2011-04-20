@@ -16,6 +16,8 @@
 #include "uip.h"
 #include "uip_arp.h"
 
+#include "./hardware/enc28j60.h"
+
 #ifdef PAKAI_WEBCLIENT
 #include "../webserver/webclient/webclient.c"
 #endif
@@ -69,13 +71,16 @@ extern struct t_adc st_adc;
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
 	
-
+unsigned char status_eth = 0;
 			
 extern xTaskHandle hdl_ether;
 
 
 static portTASK_FUNCTION( tunggu, pvParameters )
 {
+	unsigned char spi1, spi2;
+	int r=0, g;
+	
 	struct t_env *envx;
 	envx = (char *) ALMT_ENV;
 	
@@ -104,16 +109,57 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	
 	#ifdef BOARD_KOMON_420_SABANG_2_3
 		printf("Init ENC624J600 .. ");
-	//#else
-		printf("Init ENC28J .. ");
+		initENC624();
+		/*
+		init_enc_port();
+		spiInit ();
+		ENC28J60_Deselect ();
+		ENC28J60_Reset ();
+		vTaskDelay (100 / portTICK_RATE_MS);
+		ENC28J60_Unreset ();
+		vTaskDelay (100 / portTICK_RATE_MS);
+
+		do {
+				ENC28J60_Select();
+				spiPut(0x40 | 0x16);
+				spiPut(0x12);
+				ENC28J60_Deselect();
+				vTaskDelay(1);		
+				ENC28J60_Select();
+				spiPut(0x40 | 0x17);
+				spiPut(0x34);	
+				ENC28J60_Deselect();			
+				vTaskDelay(1);
+				
+				ENC28J60_Select();
+				spiPut(0x00 | 0x16);
+				spi1 = spiPut(0x00 | 0x17);
+				spi2 = spiPut(0x00);
+				ENC28J60_Deselect();		
+				vTaskDelay(1);
+				r++;
+				printf("Nilai spi %d: %02hX %02hX \r\n", r, spi1, spi2);
+			}	while (r<10);
 			
-		if (enc28j60Init() == 1)	{
+		//*/
+	#else
+		printf("Init ENC28J .. ");
+		if ( (status_eth=enc28j60Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
 		}	else
 			printf("ENC tidak respons !\r\n");
+		//*/
 	#endif
 
-
+	if (status_eth==0)	{
+		printf("Ethernet ERROR !!!\r\n");
+		printf("Komunikasi dan Perintah via Ethernet tidak bisa dilakukan !!!\r\n");
+		vTaskDelay(1000);
+		for (;;)	{
+			vTaskDelay(1000);
+		}
+	}
+	
 	#ifdef PAKE_HTTP
 	printf("SIMPLE HTTP : init\r\n");
 	httpd_init ();
@@ -339,7 +385,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 			  /* Let the network device driver read an entire IP packet
 		         into the uip_buf. If it returns > 0, there is a packet in the
 		         uip_buf buffer. */
+		      #if defined(PAKAI_ENC28J60)
 		      if ((uip_len = enc28j60Receive ()) > 0)
+		      #elif defined(PAKAI_ENCX24J600)
+		      if ((uip_len = 1) > 0)
+		      #endif
+		      
 		      {				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {

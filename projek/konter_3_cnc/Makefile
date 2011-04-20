@@ -118,7 +118,7 @@ WEBCLIENT_SOURCE = \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../serial/serialISR.c \
-		../../GPIO/gpio_ISR.c 
+		../../GPIO/gpio_ISR.c \
 		
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 

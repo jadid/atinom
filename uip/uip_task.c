@@ -399,23 +399,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		      #endif
 		      
 		      {				  
-				  printf("uiplen: %d\r\n", uip_len);
-				  /*
-				  for (gg=0; gg<uip_len; gg++) {
-					printf("%02X  ", uip_buf[gg]);
-					}
-					printf("\r\n");
-				  //*/
+				  //printf("uiplen: %d\r\n", uip_len);
+				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
 					  
 						uip_arp_ipin ();
 		    	        uip_input ();		// uip.h #define  uip_process(UIP_DATA) << ada data masuk
-		    	        //sprintf(ipne, " :%d.%d.%d.%d", \
-						//	htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
-						//	htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
-		    	        printf("UIP_ETHTYPE_IP: %d masuk, ipne: %s\r\n", UIP_ETHTYPE_IP, ipne);
-
+		    	       
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
@@ -425,16 +416,28 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              
+		    	              //printf("______kirim balek UIP !!!___\r\n");
+		    	              ech624Kirim();
 		    	              #endif
 							  paket_kita++;
 		    	            }
 		    	     }
 		    	     else if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_ARP))
 		    	     {
-							printf("UIP_ETHTYPE_ARP: %d masuk\r\n", UIP_ETHTYPE_ARP);
+							//printf("UIP_ETHTYPE_ARP: %d masuk.\r\n", UIP_ETHTYPE_ARP);
+		    	            /*
+		    	            for (gg=0; gg<uip_len; gg++) {
+								if (gg%16==0) { 
+									printf("\r\n");
+								} else if (gg%8==0) {
+									printf("  "); 
+								}
+								printf("%02x ", uip_buf[gg]);
+							}
+							printf("\r\n\r\n");
+		    	            //*/
 		    	            uip_arp_arpin ();
-
+							
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
@@ -442,7 +445,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              {};
+		    	              //printf("______kirim balek ARP !!!___\r\n");
+		    	              ech624Kirim();
 		    	              #endif
 		    	     }
 
@@ -480,7 +484,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 						#if defined(PAKAI_ENC28J60)
 		    	        enc28j60Send ();
 		    	        #elif defined(PAKAI_ENCX24J600)
-		    	        {};
+		    	        ech624Kirim();
 		    	        #endif
 		          }
 		        }
@@ -496,7 +500,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		          if (uip_len > 0)
 		          {
 		            uip_arp_out ();
-		            enc28j60Send ();
+		            //enc28j60Send ();
+		            #if defined(PAKAI_ENC28J60)
+		    	        enc28j60Send ();
+		    	    #elif defined(PAKAI_ENCX24J600)
+		    	        ech624Kirim();
+		    	    #endif
 		          }
 		        }
 		#endif /* UIP_UDP */

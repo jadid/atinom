@@ -176,6 +176,12 @@ typedef struct  __attribute__((aligned(2), packed))
 
 APP_CONFIG AppConfig;
 
+BYTE awalkahRx=0;
+WORD nextPaketRx;
+BYTE awalkahTx=0;
+WORD nextPaketTx;
+
+
 // Internal MAC level variables and flags.
 static BYTE vCurrentBank;
 static WORD wCurrentPacketPointer;
@@ -228,7 +234,7 @@ static void WriteMemoryWindow(BYTE vWindow, BYTE *vData, WORD wLength);
  *
  * Note:            None
  *****************************************************************************/
-char led=0;
+//char led=0;
 unsigned int cek_paket(void)
 {
 	#if 1
@@ -268,27 +274,19 @@ int enc624Init() {
 	
 }
 
-long jmlTuris=0;
-BYTE awalkah=0;
-WORD nextPaket;
-int masuk10=0;
-
 int ech624Terima(void) {
-
+	/*
 	BYTE a[32];
 	int i,j,k,l;
-	//int n,m;
 	WORD w;
+	//*/
+	
 	int nPaket=0, lenPaket=0;
 	WORD almtSkrg=0;
-	
-	
-	//printf("%s()\r\n", __FUNCTION__);
-	
 	BYTE aP[8];
-	BYTE versi;
 	
-	if (MACIsLinked()) {
+	if (!MACIsLinked()) {
+		return 0;
 		//printf("nyambung %d..", jmlTuris++);
 	}
 
@@ -296,69 +294,37 @@ int ech624Terima(void) {
 		return 0;
 	
 	nPaket = (BYTE) ReadReg(ESTAT);
-	printf("\r\njml paket: %d, flag: %d\r\n", nPaket, (ReadReg(EIR) & EIR_PKTIF));
-	
-	/*
-	if (nPaket == 0xFF) {
-		// reset COUNTER
-		BFCReg(ECON1, 0xFF);		// CNT = 0;
-		return 0;
-	} 
-	//*/
+	//nPaket = ReadReg(ESTAT) 0x00FF;
+	//printf("\r\njml paket: %d, flag: %d\r\n", nPaket, (ReadReg(EIR) & EIR_PKTIF));
+
 	if (!nPaket)	{
 	    return 0;
 	}
-
-	//*/
-	//*
-	//printf("\r\n  Current Packet Address = 0x%04hX", wCurrentPacketPointer);
-	//printf("\r\n  EIR     = 0x%04hX", ReadReg(EIR));
-
-	/*
-	printf("\r\n  ERXST   = 0x%04hX", ReadReg(ERXST));
-	printf("\r\n  ERXRDPT = 0x%04hX", ReadReg(ERXRDPT));
-	printf("\r\n  EUDAST  = 0x%04hX", ReadReg(EUDAST));		printf("\t\t  EUDAND  = 0x%04hX", ReadReg(EUDAND));
-	printf("\r\n  ERXTAIL = 0x%04hX", ReadReg(ERXTAIL));	printf("\t\t  ERXHEAD = 0x%04hX", ReadReg(ERXHEAD));
-	w = ReadReg(ESTAT);
-	printf("\r\n  ESTAT   = 0x%04hX (Packet Count = %hhu)", w, (BYTE)w);
-	printf("\r\n  ERXFCON = 0x%04hX", ReadReg(ERXFCON));
-	printf("\r\n  MACON1  = 0x%04hX", ReadReg(MACON1));		printf("\t\t  MACON2  = 0x%04hX", ReadReg(MACON2));
-	printf("\r\n  ECON1   = 0x%04hX", ReadReg(ECON1));		printf("\t\t  ECON2   = 0x%04hX", ReadReg(ECON2));
-	//*/
 	
-	//printf("\r\n  ETXST   = 0x%04hX", ReadReg(ETXST));
-	//printf("\r\n  ETXLEN  = 0x%04hX", ReadReg(ETXLEN));
-	//printf("\r\n  EDMAST  = 0x%04hX", ReadReg(EDMAST));
-	//printf("\r\n  EDMALEN = 0x%04hX", ReadReg(EDMALEN));
-	//printf("\r\n  EDMADST = 0x%04hX", ReadReg(EDMADST));
-	//printf("\r\n  EDMACS  = 0x%04hX", ReadReg(EDMACS));
-	//*/
-	
-	if (awalkah==0) {
+	if (awalkahRx==0) {
 		//almtSkrg = ReadReg(ERXST);
-		almtSkrg = RXSTART;
-		//printf("\r\n  ERXST   = 0x%04hX", almtSkrg);
+		almtSkrg = RXSTART;			//printf("\r\n  ERXST   = 0x%04hX", almtSkrg);
 	} else {
-		almtSkrg	= nextPaket;
+		almtSkrg = nextPaketRx;
 	}
 	
 	ReadMemory(almtSkrg, aP, 8);
-	nextPaket	= (aP[1]<<8)+aP[0];
+	nextPaketRx	= (aP[1]<<8)+aP[0];
 	lenPaket  	= (aP[3]<<8)+aP[2];
 	
-	//printf("\r\nbaca: 0x%04Xh, Next: 0x%04Xh, nPaket: 0x%04Xh = %d\r\n", almtSkrg, nextPaket, nPaket, nPaket);
+	//printf("\r\nbaca: 0x%04Xh, Next: 0x%04Xh, lenPaket: 0x%04Xh = %d\r\n", almtSkrg, nextPaketRx, lenPaket, lenPaket);
 	//printf("Isi 8: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx \r\n", \ 
 	//	aP[0], aP[1], aP[2], aP[3], aP[4], aP[5], aP[6], aP[7]);
 	
-	if (nextPaket > ENC100_RAM_SIZE)	{
+	if (nextPaketRx > ENC100_RAM_SIZE)	{
     	//nextPaket = RXSTART;
-    	awalkah = 0;
+    	awalkahRx = 0;
     	printf("alamat overload !!! Buang paket\r\n");
 
 		//return 0;
 	}
 	
-	printf("___paket_______\r\n");
+	//printf("___paket_______%d\r\n", lenPaket);
 	ReadMemory(almtSkrg+8, &uip_buf[0], lenPaket);
 	//ReadN(RBMRX, &uip_buf[0], lenPaket);
 	
@@ -388,25 +354,42 @@ int ech624Terima(void) {
 	//		a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
 	//printf("\r\n\r\n");
 
-	WriteReg(ERXTAIL, nextPaket-2);	
+	WriteReg(ERXTAIL, nextPaketRx-2);	
 	BFSReg(ECON1, ECON1_PKTDEC);
-	awalkah=1;
+	awalkahRx=1;
 	
 	return (lenPaket-4);
 }
 
 void ech624Kirim() {
-	WORD len = uip_len;
+	WORD lenPaket = uip_len;
+	WORD almtSkrg=0;
+	int header = 54;
 	int i=0;
+	/*
+	printf("____KIRIM____ h:%d, len: %d !!\r\n", header, lenPaket);
+	for (i=0; i<header; i++) {
+		if (i%16==0) { 
+			printf("\r\n");
+		} else if (i%8==0) {
+			printf("  "); 
+		}
+		printf("%02x ", uip_buf[i]);
+	}
+	printf("\r\n");
+	//*/
 	
-	printf("____KIRIM____ !!\r\n");
-	for (i=0; i<len; i++) {
-		printf("%02Xh");
+	while (!MACIsTxReady());
+	
+	//printf("__MACIsTxReady__\r\n");
+	MACPutArray(&uip_buf [0], 54);
+	
+	if (uip_len > 54)	{
+		uip_len -= 54;
+		MACPutArray(uip_appdata, uip_len);
 	}
 	
-	MACSetWritePtr(TXSTART);
-	
-	MACPutArray(&uip_buf [0], len);
+	WriteReg(ETXLEN, TXSTART+lenPaket+1);
 	MACFlush();
 }
 
@@ -592,8 +575,8 @@ int MACInit(void)
 	WriteReg(EUDAST, ENC100_RAM_SIZE);
 	WriteReg(EUDAND, ENC100_RAM_SIZE+1);
 	
-	printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
-	printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
+	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
+	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
 
 	// Use ENCx24J600 preprogrammed MAC address, if AppConfig is not already set
 	// mati dulu saja
@@ -602,17 +585,19 @@ int MACInit(void)
 		((AppConfig.MyMACAddr.v[0] | AppConfig.MyMACAddr.v[1] | AppConfig.MyMACAddr.v[2] | AppConfig.MyMACAddr.v[3] | AppConfig.MyMACAddr.v[4] | AppConfig.MyMACAddr.v[5]) == 0x00u))
 	{
 		w = ReadReg(MAADR1);
-		AppConfig.MyMACAddr.v[0] = ((BYTE*)&w)[0];
-		AppConfig.MyMACAddr.v[1] = ((BYTE*)&w)[1];
+		uip_ethaddr.addr [0] = AppConfig.MyMACAddr.v[0] = ((BYTE*)&w)[0];
+		uip_ethaddr.addr [1] = AppConfig.MyMACAddr.v[1] = ((BYTE*)&w)[1];
 		w = ReadReg(MAADR2);
-		AppConfig.MyMACAddr.v[2] = ((BYTE*)&w)[0];
-		AppConfig.MyMACAddr.v[3] = ((BYTE*)&w)[1];
+		uip_ethaddr.addr [2] = AppConfig.MyMACAddr.v[2] = ((BYTE*)&w)[0];
+		uip_ethaddr.addr [3] = AppConfig.MyMACAddr.v[3] = ((BYTE*)&w)[1];
 		w = ReadReg(MAADR3);
-		AppConfig.MyMACAddr.v[4] = ((BYTE*)&w)[0];
-		AppConfig.MyMACAddr.v[5] = ((BYTE*)&w)[1];
-		printf("baca integrated MAC: %02hX:%02hX:%02hX:%02hX:%02hX:%02hX\r\n", \
+		uip_ethaddr.addr [4] = AppConfig.MyMACAddr.v[4] = ((BYTE*)&w)[0];
+		uip_ethaddr.addr [5] = AppConfig.MyMACAddr.v[5] = ((BYTE*)&w)[1];
+		printf("Embd MAC: %02hX:%02hX:%02hX:%02hX:%02hX:%02hX", \
 			AppConfig.MyMACAddr.v[0], AppConfig.MyMACAddr.v[1], AppConfig.MyMACAddr.v[2], \
 			AppConfig.MyMACAddr.v[3], AppConfig.MyMACAddr.v[4], AppConfig.MyMACAddr.v[5]);
+			
+		
 	}
 	else
 	{	
@@ -659,7 +644,7 @@ int MACInit(void)
 		//WriteReg(EIE, EIE_INTIE | EIE_LINKIE);		
 	#endif
 	
-	awalkah=0;
+	awalkahRx=0;
 	
 	return 1;
 }//end MACInit
@@ -1036,8 +1021,10 @@ void MACFlush(void)
 	// ultimately stall the Microchip TCP/IP stack since there is blocking code 
 	// elsewhere in other files that expect the TX engine to always self-free 
 	// itself very quickly.
-	if(ReadReg(ESTAT) & ESTAT_PHYLNK)
+	if(ReadReg(ESTAT) & ESTAT_PHYLNK) {
 		BFSReg(ECON1, ECON1_TXRTS);
+		printf("________________________harus__dikirim____________________ !!!\r\n");
+	}
 }
 
 
@@ -1883,7 +1870,8 @@ int SendSystemReset(void)
 }//end SendSystemReset
 
 
-#if ENC100_INTERFACE_MODE	// WriteMemory() is not currently needed in SPI mode
+//#if ENC100_INTERFACE_MODE	// WriteMemory() is not currently needed in SPI mode
+#if 1
 /******************************************************************************
  * Function:        void WriteMemory(WORD wAddress, BYTE *vData, WORD wLength)
  *
@@ -3233,13 +3221,14 @@ static void ReadN(BYTE vOpcode, BYTE* vData, WORD wDataLen)
 		}
 		printf("%02x ", *vData++);
 		dd++;
+		printf("\r\n");
 		//*vData = spiPut(0x00);
 		//vData++;
 		#else
 			*vData++ = spiPut(0x00);
 		#endif
 	}
-	printf("\r\n");
+	
 	DeassertChipSelect();
 
 	

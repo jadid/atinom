@@ -81,9 +81,9 @@
 #define RXSIZE        (RXSTOP - RXSTART + 1)
 */
 #define TX_BUFFER_SIZE  2040 //4096
-#define TXSTART			(RAMSIZE - (TX_BUFFER_SIZE + 8ul))
+#define TXSTART			(RAMSIZE - (TX_BUFFER_SIZE + 8ul))		// 0x2000 - (2040+8) = 8192-2048=6144
 #define RXSTART			0x0000ul
-#define	RXEND			((TXSTART -2ul) | 0x0001ul)
+#define	RXEND			((TXSTART -2ul) | 0x0001ul)		// 6144-2 = 
 //#define RXSIZE			(RXSTOP-(RXSTART+1ul))
 
 //
@@ -465,6 +465,7 @@ u16_t enc28j60Receive (void)
   encBankSelect (BANK0);
   encWriteReg16 (ERDPTL, ethRxPointer);
 
+	// alamat paket berikutnya
   ethRxPointer = encMACread ();
   ethRxPointer += encMACread () << 8;
 
@@ -540,7 +541,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 
 #ifdef USE_INTERRUPTS
   encBFCReg (EIR, EIR_PKTIF);
-  encWriteReg (EIE, EIE_INTIE | EIE_PKTIE);
+  encWriteReg(EIE, EIE_INTIE | EIE_PKTIE);
 #endif
 
 #ifdef GUNA_SEMA

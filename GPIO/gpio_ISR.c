@@ -123,6 +123,9 @@ void timer1_ISR_Wrapper( void ) __attribute__ ((naked));
 void timer1_ISR_Handler( void );
 void timer1_ISR_KONTROL( void );
 
+void timer2_ISR_Wrapper( void ) __attribute__ ((naked));
+void timer2_ISR_Handler( void );
+
 void gpio_ISR_Wrapper_keypad( void ) __attribute__ ((naked));
 void gpio_ISR_keypad_Handler( void );
 

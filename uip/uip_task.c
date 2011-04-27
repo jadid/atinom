@@ -107,9 +107,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("ARP : arp_init\r\n");
 	uip_arp_init ();
 	
-	#ifdef BOARD_KOMON_420_SABANG_2_3
+	#if defined(BOARD_KOMON_420_SABANG_2_3) | defined(PAKAI_ENCX24J600) 
 		printf("Init ENC624J600 .. ");
-		initENC624();
+		
+		if ( (status_eth=enc624Init())== 1)	{
+			 printf(" .. ENC OK\r\n");
+		}	else
+			printf("ENC tidak respons !\r\n");
 		/*
 		init_enc_port();
 		spiInit ();
@@ -244,6 +248,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		vTaskDelay(2000);
 		vTaskDelay(2000);
 	#endif
+	
+	int gg;
+	unsigned char ipne[32];	
 	//printf("mau loop for\r\n");
 	for (;;)
 	{
@@ -379,7 +386,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		if (cek_paket())	{
-			//printf("masuk cekpaket \r\n");
+			//printf("masuk cek paket !!!\r\n");
 			#if 1
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
@@ -388,14 +395,26 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		      #if defined(PAKAI_ENC28J60)
 		      if ((uip_len = enc28j60Receive ()) > 0)
 		      #elif defined(PAKAI_ENCX24J600)
-		      if ((uip_len = 1) > 0)
+		      if ((uip_len = ech624Terima()) > 0)
 		      #endif
 		      
 		      {				  
+				  printf("uiplen: %d\r\n", uip_len);
+				  /*
+				  for (gg=0; gg<uip_len; gg++) {
+					printf("%02X  ", uip_buf[gg]);
+					}
+					printf("\r\n");
+				  //*/
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
-		    	            uip_arp_ipin ();
-		    	            uip_input ();
+					  
+						uip_arp_ipin ();
+		    	        uip_input ();		// uip.h #define  uip_process(UIP_DATA) << ada data masuk
+		    	        //sprintf(ipne, " :%d.%d.%d.%d", \
+						//	htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+						//	htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+		    	        printf("UIP_ETHTYPE_IP: %d masuk, ipne: %s\r\n", UIP_ETHTYPE_IP, ipne);
 
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
@@ -403,32 +422,41 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	            if (uip_len > 0)
 		    	            {
 		    	              uip_arp_out ();
+		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
+		    	              #elif defined(PAKAI_ENCX24J600)
+		    	              
+		    	              #endif
 							  paket_kita++;
 		    	            }
 		    	     }
 		    	     else if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_ARP))
 		    	     {
+							printf("UIP_ETHTYPE_ARP: %d masuk\r\n", UIP_ETHTYPE_ARP);
 		    	            uip_arp_arpin ();
 
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
 		    	            if (uip_len > 0)
+		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
+		    	              #elif defined(PAKAI_ENCX24J600)
+		    	              {};
+		    	              #endif
 		    	     }
 
 		      }
 		      #endif
 		}
 		else		{
+			//printf("tidak cek paket  !!!\r\n");
 		      /* The poll function returned 0, so no packet was
 		         received. Instead we check if it is time that we do the
 		         periodic processing. */
 		      xCurrentTime = xTaskGetTickCount ();
 
-		      if ((xCurrentTime - xStartTime) >= RT_CLOCK_SECOND)
-		      {
+		      if ((xCurrentTime - xStartTime) >= RT_CLOCK_SECOND)      {
 		        portBASE_TYPE i;
 
 		        /* Reset the timer. */
@@ -444,9 +472,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		             uip_len is set to a value > 0. */
 		          if (uip_len > 0)
 		          {
-		            //printf("S:%d", i);
+		            printf("S:%d", i);
 					uip_arp_out ();
-		            enc28j60Send ();
+		            //enc28j60Send ();
+		            
+		            if (uip_len > 0)
+						#if defined(PAKAI_ENC28J60)
+		    	        enc28j60Send ();
+		    	        #elif defined(PAKAI_ENCX24J600)
+		    	        {};
+		    	        #endif
 		          }
 		        }
 

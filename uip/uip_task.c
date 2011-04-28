@@ -487,7 +487,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		             uip_len is set to a value > 0. */
 		          if (uip_len > 0)
 		          {
-		            printf("S:%d", i);
+		            //printf("S:%d", i);
 					uip_arp_out ();
 		            //enc28j60Send ();
 		            

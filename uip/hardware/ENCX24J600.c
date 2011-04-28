@@ -286,6 +286,7 @@ int ech624Terima(void) {
 	int nPaket=0, lenPaket=0;
 	WORD almtSkrg=0;
 	BYTE aP[8];
+	int fff;
 	
 	if (!MACIsLinked()) {
 		return 0;
@@ -306,7 +307,7 @@ int ech624Terima(void) {
 	} else {
 		wCurrentPacketPointer = almtSkrg = nextPaketRx;
 	}
-	//WriteReg(ERXRDPT, wCurrentPacketPointer);
+	WriteReg(ERXRDPT, wCurrentPacketPointer);
 	
 	ReadMemory(almtSkrg, aP, 8);
 	wNextPacketPointer = nextPaketRx = (aP[1]<<8)+aP[0];
@@ -316,22 +317,22 @@ int ech624Terima(void) {
 	printf("\r\nbaca: 0x%04Xh, Next: 0x%04Xh, lenPaket: 0x%04Xh = %d\r\n", almtSkrg, nextPaketRx, lenPaket, lenPaket);
 	printf("Isi 8: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx \r\n", \ 
 		aP[0], aP[1], aP[2], aP[3], aP[4], aP[5], aP[6], aP[7]);
+	printf("___paket_______%d\r\n", lenPaket);
 	#endif
 	
 	if (nextPaketRx > ENC100_RAM_SIZE)	{
-    	//nextPaket = RXSTART;
     	awalkahRx = 0;
-    	printf("alamat overload !!! Buang paket\r\n");
-
-		//return 0;
+    	printf("jml paket overload .... !!!\r\n");
 	}
 	
-	#ifdef DEBUG_ETHRX
-	printf("___paket_______%d\r\n", lenPaket);
-	#endif
 	// perbaiki read memory ketika sampe 0x5FFFh
-	ReadMemory(almtSkrg+8, &uip_buf[0], lenPaket);
-	//ReadN(RBMRX, &uip_buf[0], lenPaket);
+	if (nextPaketRx < almtSkrg) {
+		fff = 0x5fff - almtSkrg - 8;
+		ReadMemory(almtSkrg+8, &uip_buf[0], fff);
+		ReadMemory(RXSTART, &uip_buf[fff], nextPaketRx);
+	} else {
+		ReadMemory(almtSkrg+8, &uip_buf[0], lenPaket);
+	}
 	
 	#ifdef DEBUG_ETHRX
 		k = (0xFFF0 & almtSkrg);		// 0x066E, 0x0660 nP: 
@@ -360,7 +361,7 @@ int ech624Terima(void) {
 	//printf("\r\n\r\n");
 	#endif
 
-	//MACDiscardRx();
+	//MACDiscardRx();		// malah error pake ini
 
 	WriteReg(ERXTAIL, nextPaketRx-2);	
 	BFSReg(ECON1, ECON1_PKTDEC);
@@ -373,7 +374,6 @@ int ech624Terima(void) {
 
 void ech624Kirim() {
 	WORD lenPaket = uip_len;
-	//WORD almtSkrg=0;
 	int header = 54;
 
 	#ifdef DEBUG_ETHTX
@@ -392,10 +392,11 @@ void ech624Kirim() {
 	printf("\r\n");
 	#endif
 	
+	if (!MACIsLinked())		return 0;
+	
 	while (!MACIsTxReady());
 	
 	//printf("__MACIsTxReady__\r\n");
-	//MACPutArray(&uip_buf [0], 54);
 	WriteMemory(TXSTART, &uip_buf [0], 54);
 	
 	if (uip_len > 54)	{

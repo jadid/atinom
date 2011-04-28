@@ -403,7 +403,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
-					  
+					#ifdef DEBUG_UIP_TASK
+					  printf("UIP_ETHTYPE_IP: %d masuk.\r\n", UIP_ETHTYPE_IP);
+						for (gg=0; gg<uip_len; gg++) {
+							if (gg%16==0) { 
+								printf("\r\n");
+							} else if (gg%8==0) {
+								printf("  "); 
+							}
+							printf("%02x ", uip_buf[gg]);
+						}
+						printf("\r\n\r\n");
+					#endif
 						uip_arp_ipin ();
 		    	        uip_input ();		// uip.h #define  uip_process(UIP_DATA) << ada data masuk
 		    	       

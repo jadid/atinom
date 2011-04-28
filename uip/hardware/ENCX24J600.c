@@ -274,12 +274,14 @@ int enc624Init() {
 	
 }
 
+//#define DEBUG_ETHRX
+
 int ech624Terima(void) {
-	/*
+	#ifdef DEBUG_ETHRX
 	BYTE a[32];
 	int i,j,k,l;
 	WORD w;
-	//*/
+	#endif
 	
 	int nPaket=0, lenPaket=0;
 	WORD almtSkrg=0;
@@ -293,28 +295,28 @@ int ech624Terima(void) {
 	if(!(ReadReg(EIR) & EIR_PKTIF))
 		return 0;
 	
-	nPaket = (BYTE) ReadReg(ESTAT);
-	//nPaket = ReadReg(ESTAT) 0x00FF;
-	//printf("\r\njml paket: %d, flag: %d\r\n", nPaket, (ReadReg(EIR) & EIR_PKTIF));
+	nPaket = (BYTE) ReadReg(ESTAT);		//printf("\r\njml paket: %d, flag: %d\r\n", nPaket, (ReadReg(EIR) & EIR_PKTIF));
 
 	if (!nPaket)	{
 	    return 0;
 	}
-	
+
 	if (awalkahRx==0) {
-		//almtSkrg = ReadReg(ERXST);
-		almtSkrg = RXSTART;			//printf("\r\n  ERXST   = 0x%04hX", almtSkrg);
+		wCurrentPacketPointer = almtSkrg = RXSTART;		//almtSkrg = ReadReg(ERXST);	printf("\r\n  ERXST   = 0x%04hX", almtSkrg);
 	} else {
-		almtSkrg = nextPaketRx;
+		wCurrentPacketPointer = almtSkrg = nextPaketRx;
 	}
+	//WriteReg(ERXRDPT, wCurrentPacketPointer);
 	
 	ReadMemory(almtSkrg, aP, 8);
-	nextPaketRx	= (aP[1]<<8)+aP[0];
+	wNextPacketPointer = nextPaketRx = (aP[1]<<8)+aP[0];
 	lenPaket  	= (aP[3]<<8)+aP[2];
 	
-	//printf("\r\nbaca: 0x%04Xh, Next: 0x%04Xh, lenPaket: 0x%04Xh = %d\r\n", almtSkrg, nextPaketRx, lenPaket, lenPaket);
-	//printf("Isi 8: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx \r\n", \ 
-	//	aP[0], aP[1], aP[2], aP[3], aP[4], aP[5], aP[6], aP[7]);
+	#ifdef DEBUG_ETHRX
+	printf("\r\nbaca: 0x%04Xh, Next: 0x%04Xh, lenPaket: 0x%04Xh = %d\r\n", almtSkrg, nextPaketRx, lenPaket, lenPaket);
+	printf("Isi 8: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx \r\n", \ 
+		aP[0], aP[1], aP[2], aP[3], aP[4], aP[5], aP[6], aP[7]);
+	#endif
 	
 	if (nextPaketRx > ENC100_RAM_SIZE)	{
     	//nextPaket = RXSTART;
@@ -324,35 +326,41 @@ int ech624Terima(void) {
 		//return 0;
 	}
 	
-	//printf("___paket_______%d\r\n", lenPaket);
+	#ifdef DEBUG_ETHRX
+	printf("___paket_______%d\r\n", lenPaket);
+	#endif
+	// perbaiki read memory ketika sampe 0x5FFFh
 	ReadMemory(almtSkrg+8, &uip_buf[0], lenPaket);
 	//ReadN(RBMRX, &uip_buf[0], lenPaket);
 	
-	/*
-	k = (0xFFF0 & almtSkrg);		// 0x066E, 0x0660 nP: 
-	l = almtSkrg-k;
-	
-	for(j = k; j <= ((nextPaket<=0x5FFF)?nextPaket:RXSTART); j += 16)	{
+	#ifdef DEBUG_ETHRX
+		k = (0xFFF0 & almtSkrg);		// 0x066E, 0x0660 nP: 
+		l = almtSkrg-k;
 		
-		ReadMemory(j, a, 16);
-		
-		for(i = 0; i < 16; i++)	{
-			if((a[i] >= 0x20) && (a[i] <= 0x7E))
-				a[i+16] = a[i];
-			else
-				a[i+16] = '.';
+		for(j = k; j <= ((nextPaketRx<=0x5FFF)?nextPaketRx:RXSTART); j += 16)	{
+			
+			ReadMemory(j, a, 16);
+			
+			for(i = 0; i < 16; i++)	{
+				if((a[i] >= 0x20) && (a[i] <= 0x7E))
+					a[i+16] = a[i];
+				else
+					a[i+16] = '.';
+			}
+			
+			printf("\r\n%04hx  %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx  %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx   %hhc%hhc%hhc%hhc%hhc%hhc%hhc%hhc %hhc%hhc%hhc%hhc%hhc%hhc%hhc%hhc", \
+				j, a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], \
+				a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30], a[31]);
 		}
-		
-		printf("\r\n%04hx  %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx  %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx   %hhc%hhc%hhc%hhc%hhc%hhc%hhc%hhc %hhc%hhc%hhc%hhc%hhc%hhc%hhc%hhc", \
-			j, a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], \
-			a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30], a[31]);
-	}
-	printf("\r\n");
-	//*/
+		printf("\r\n");
+	
 	//ReadMemory(nextPaket-8, a, 8);
 	//printf("Akhir: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx", \
 	//		a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
 	//printf("\r\n\r\n");
+	#endif
+
+	//MACDiscardRx();
 
 	WriteReg(ERXTAIL, nextPaketRx-2);	
 	BFSReg(ECON1, ECON1_PKTDEC);
@@ -361,12 +369,17 @@ int ech624Terima(void) {
 	return (lenPaket-4);
 }
 
+//#define DEBUG_ETHTX
+
 void ech624Kirim() {
 	WORD lenPaket = uip_len;
-	WORD almtSkrg=0;
+	//WORD almtSkrg=0;
 	int header = 54;
-	int i=0;
-	/*
+
+	#ifdef DEBUG_ETHTX
+	BYTE a[32];
+	int i,j,k,l;
+	
 	printf("____KIRIM____ h:%d, len: %d !!\r\n", header, lenPaket);
 	for (i=0; i<header; i++) {
 		if (i%16==0) { 
@@ -377,19 +390,39 @@ void ech624Kirim() {
 		printf("%02x ", uip_buf[i]);
 	}
 	printf("\r\n");
-	//*/
+	#endif
 	
 	while (!MACIsTxReady());
 	
 	//printf("__MACIsTxReady__\r\n");
-	MACPutArray(&uip_buf [0], 54);
+	//MACPutArray(&uip_buf [0], 54);
+	WriteMemory(TXSTART, &uip_buf [0], 54);
 	
 	if (uip_len > 54)	{
 		uip_len -= 54;
-		MACPutArray(uip_appdata, uip_len);
+		//MACPutArray(uip_appdata, uip_len);
+		WriteMemory(TXSTART+54, uip_appdata, uip_len);
 	}
 	
 	WriteReg(ETXLEN, TXSTART+lenPaket+1);
+	
+	#ifdef DEBUG_ETHTX
+		for(j = TXSTART; j <=lenPaket; j += 16)	{
+			ReadMemory(j, a, 16);
+			for(i=0; i<16; i++)	{
+				if((a[i] >= 0x20) && (a[i] <= 0x7E))
+					a[i+16] = a[i];
+				else
+					a[i+16] = '.';
+			}
+			
+			printf("\r\n%04hx  %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx  %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx   %hhc%hhc%hhc%hhc%hhc%hhc%hhc%hhc %hhc%hhc%hhc%hhc%hhc%hhc%hhc%hhc", \
+				j, a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15], \
+				a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30], a[31]);
+		}
+		printf("\r\n");
+	#endif
+	
 	MACFlush();
 }
 
@@ -1023,7 +1056,9 @@ void MACFlush(void)
 	// itself very quickly.
 	if(ReadReg(ESTAT) & ESTAT_PHYLNK) {
 		BFSReg(ECON1, ECON1_TXRTS);
+		#ifdef DEBUG_ETHTX
 		printf("________________________harus__dikirim____________________ !!!\r\n");
+		#endif
 	}
 }
 

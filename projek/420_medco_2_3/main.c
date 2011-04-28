@@ -182,8 +182,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )
 	loop_idle = 0;
 	idle_lama = 0;
 	
-	for (;;)
-	{
+	for (;;)	{
 		togle_led_utama();
 		vTaskDelay(500);
 	}

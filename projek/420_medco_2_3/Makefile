@@ -45,7 +45,6 @@ UKURAN=$(PAT)arm-elf-size
 PENULIS= ../../modul/Penulis/./lpc_dbe
 
 NAMA_FILE=420_medco
-#NAMA_FILE=komon_420_indosat
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=$(NAMA_FILE).map 
@@ -60,7 +59,9 @@ CFLAGS= $(DEBUG) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
-		-I ../../uip/uip \
+		-I ../../hardware/ \
+		-I ../../modul/ \
+		-I ../../uip/uip/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -72,20 +73,29 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
+		../../hardware/hardware.c \
 		../../system/setup_cpu.c \
 		../../system/syscall.c \
 		../../system/reset_cpu.c \
-		../../serial/serial.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
+		../../modul/spi/spi.c \
+		../../modul/serial/serial.c \
+		../../modul/spi/low_ss1.c	\
 		../../tinysh/tinysh.c \
 		../../tinysh/shell.c \
 		../../tinysh/enviro.c \
 		../../GPIO/gpio.c \
-		../../spi/spi.c \
+		../../monita/monita_uip.c \
+		../../system/idle_hook.c \
+		../../adc/ad7708.c	\
+
+
+
+UIP_SOURCE = \
 		../../uip/clock.c \
 		../../uip/lib/memb.c \
 		../../uip/uip/uip.c \
@@ -96,17 +106,11 @@ THUMB_SOURCE= \
 		../../uip/uip/psock.c \
 		../../uip/uip/uiplib.c \
 		../../uip/uip_task.c \
-		../../monita/monita_uip.c \
+		../../uip/apps/telnetd/telnetd.c	\
 		../../webserver/httpd.c \
 		../../webserver/httpd-fs.c \
 		../../webserver/http-strings.c \
 		../../webserver/httpd-cgi.c \
-		../../system/idle_hook.c \
-		../../uip/apps/telnetd/telnetd.c	\
-		../../spi/low_ss1.c	\
-		../../adc/ad7708.c	\
-
-
 		
 ETH_SOURCE = \
 		../../uip/hardware/ENCX24J600.c	\
@@ -116,11 +120,18 @@ WEBCLIENT_SOURCE = \
 		../../webserver/webclient/webclient.c			\
 		../../webserver/webclient/webclient-strings.c	\
 
+GPS_SOURCE = \
+		../../app/gps/gps.c		\
+		
+
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
-		../../serial/serialISR.c \
+		../../modul/serial/serialISR.c \
 		../../GPIO/gpio_ISR.c 
-		
+
+
+THUMB_SOURCE += $(GPS_SOURCE)
+THUMB_SOURCE += $(UIP_SOURCE)
 #THUMB_SOURCE += $(PM_SOURCE)
 #THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 THUMB_SOURCE += $(ETH_SOURCE)

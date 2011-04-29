@@ -69,19 +69,19 @@
 #include "MAC.h"
 
 
-#define CS_ENC	BIT(16)	/* P0 */
-#define INT_ENC	BIT(13) /* P2 */
+//#define CS_ENC	BIT(16)	/* P0 */
+//#define INT_ENC	BIT(13) /* P2 */
 
-#define AssertChipSelect()   FIO0CLR = CS_ENC  // P0.16		// ENC28J60_Select()
-#define DeassertChipSelect() FIO0SET = CS_ENC				// ENC28J60_Deselect()
+//#define AssertChipSelect()   FIO0CLR = CS_ENC  // P0.16		// ENC28J60_Select()
+//#define DeassertChipSelect() FIO0SET = CS_ENC				// ENC28J60_Deselect()
 
 // seharusnya tidak ada pin reset (sudah disambung ke VCC)
-#define ENCX24J600_Reset()    FIO0CLR = CS_ENC
-#define ENCX24J600_Unreset()  FIO0SET = CS_ENC
+//#define ENCX24J600_Reset()    FIO0CLR = CS_ENC
+//#define ENCX24J600_Unreset()  FIO0SET = CS_ENC
 
-#define FIO_CEK_PAKET		FIO2PIN
+//#define FIO_CEK_PAKET		FIO2PIN
 
-#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
+//#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
 							FIO0DIR = FIO0DIR | CS_ENC;
 
 #define BOARD_KOMON

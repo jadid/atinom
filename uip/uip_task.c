@@ -112,47 +112,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		
 		if ( (status_eth=enc624Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
-		}	else
+		}	else	{
 			printf("ENC tidak respons !\r\n");
-		/*
-		init_enc_port();
-		spiInit ();
-		ENC28J60_Deselect ();
-		ENC28J60_Reset ();
-		vTaskDelay (100 / portTICK_RATE_MS);
-		ENC28J60_Unreset ();
-		vTaskDelay (100 / portTICK_RATE_MS);
-
-		do {
-				ENC28J60_Select();
-				spiPut(0x40 | 0x16);
-				spiPut(0x12);
-				ENC28J60_Deselect();
-				vTaskDelay(1);		
-				ENC28J60_Select();
-				spiPut(0x40 | 0x17);
-				spiPut(0x34);	
-				ENC28J60_Deselect();			
-				vTaskDelay(1);
-				
-				ENC28J60_Select();
-				spiPut(0x00 | 0x16);
-				spi1 = spiPut(0x00 | 0x17);
-				spi2 = spiPut(0x00);
-				ENC28J60_Deselect();		
-				vTaskDelay(1);
-				r++;
-				printf("Nilai spi %d: %02hX %02hX \r\n", r, spi1, spi2);
-			}	while (r<10);
-			
-		//*/
+		}
 	#else
 		printf("Init ENC28J .. ");
 		if ( (status_eth=enc28j60Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
-		}	else
+		}	else	{
 			printf("ENC tidak respons !\r\n");
-		//*/
+		}
 	#endif
 
 	if (status_eth==0)	{
@@ -252,8 +221,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	int gg;
 	unsigned char ipne[32];	
 	//printf("mau loop for\r\n");
-	for (;;)
-	{
+	for (;;)	{
 		vTaskDelay(1);
 		//portYIELD();
 		#if 1
@@ -397,8 +365,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		      #elif defined(PAKAI_ENCX24J600)
 		      if ((uip_len = ech624Terima()) > 0)
 		      #endif
-		      
-		      {				  
+		      {		  
 				  //printf("uiplen: %d\r\n", uip_len);
 				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
@@ -435,18 +402,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	     }
 		    	     else if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_ARP))
 		    	     {
-							//printf("UIP_ETHTYPE_ARP: %d masuk.\r\n", UIP_ETHTYPE_ARP);
-		    	            /*
-		    	            for (gg=0; gg<uip_len; gg++) {
-								if (gg%16==0) { 
-									printf("\r\n");
-								} else if (gg%8==0) {
-									printf("  "); 
-								}
-								printf("%02x ", uip_buf[gg]);
-							}
-							printf("\r\n\r\n");
-		    	            //*/
 		    	            uip_arp_arpin ();
 							
 		    	            /* If the above function invocation resulted in data that
@@ -466,75 +421,69 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		}
 		else		{
 			//printf("tidak cek paket  !!!\r\n");
-		      /* The poll function returned 0, so no packet was
+		    /* The poll function returned 0, so no packet was
 		         received. Instead we check if it is time that we do the
 		         periodic processing. */
-		      xCurrentTime = xTaskGetTickCount ();
+			xCurrentTime = xTaskGetTickCount ();
 
-		      if ((xCurrentTime - xStartTime) >= RT_CLOCK_SECOND)      {
-		        portBASE_TYPE i;
+			if ((xCurrentTime - xStartTime) >= RT_CLOCK_SECOND)      {
+				portBASE_TYPE i;
 
 		        /* Reset the timer. */
 		        xStartTime = xCurrentTime;
 
 		        /* Periodic check of all connections. */
-		        for (i = 0; i < UIP_CONNS; i++)
-		        {
+		        for (i = 0; i < UIP_CONNS; i++)		{
 		          uip_periodic (i);
 
 		          /* If the above function invocation resulted in data that
 		             should be sent out on the network, the global variable
 		             uip_len is set to a value > 0. */
-		          if (uip_len > 0)
-		          {
-		            //printf("S:%d", i);
-					uip_arp_out ();
-		            //enc28j60Send ();
+					if (uip_len > 0)	{
+						//printf("S:%d", i);
+						uip_arp_out ();
+						//enc28j60Send ();
 		            
-		            if (uip_len > 0)
-						#if defined(PAKAI_ENC28J60)
-		    	        enc28j60Send ();
-		    	        #elif defined(PAKAI_ENCX24J600)
-		    	        ech624Kirim();
-		    	        #endif
-		          }
-		        }
+						if (uip_len > 0)
+							#if defined(PAKAI_ENC28J60)
+							enc28j60Send ();
+							#elif defined(PAKAI_ENCX24J600)
+							ech624Kirim();
+							#endif
+					}
+				}
 
 		#if UIP_UDP_KU
-		        for (i = 0; i < UIP_UDP_CONNS; i++)
-		        {
-		          uip_udp_periodic (i);
+		        for (i = 0; i < UIP_UDP_CONNS; i++)		{
+					uip_udp_periodic (i);
 
 		          /* If the above function invocation resulted in data that
 		             should be sent out on the network, the global variable
 		             uip_len is set to a value > 0. */
-		          if (uip_len > 0)
-		          {
-		            uip_arp_out ();
-		            //enc28j60Send ();
-		            #if defined(PAKAI_ENC28J60)
-		    	        enc28j60Send ();
-		    	    #elif defined(PAKAI_ENCX24J600)
-		    	        ech624Kirim();
-		    	    #endif
-		          }
-		        }
+		            if (uip_len > 0)	{
+						uip_arp_out ();
+						//enc28j60Send ();
+						#if defined(PAKAI_ENC28J60)
+							enc28j60Send ();
+						#elif defined(PAKAI_ENCX24J600)
+							enc624Kirim();
+						#endif
+					}
+				}
 		#endif /* UIP_UDP */
 
 		        /* Periodically call the ARP timer function. */
-		        if (++xARPTimer == uipARP_FREQUENCY)
-		        {
-		          uip_arp_timer ();
-		          xARPTimer = 0;
-		        }
-		      }
+		        if (++xARPTimer == uipARP_FREQUENCY)	{
+					uip_arp_timer ();
+					xARPTimer = 0;
+				}
+			}
 			  
-			  	if ((xCurrentTime - timer_menit) >= RT_MENIT)
-			  	{
-				  	extern unsigned int error_ENC;
+			if ((xCurrentTime - timer_menit) >= RT_MENIT)	{
+				extern unsigned int error_ENC;
 					
-					timer_menit = xCurrentTime;
-					loop_menit++;				
+				timer_menit = xCurrentTime;
+				loop_menit++;				
 					/*
 					printf("%d menit, paket = %d, kita=%d, idle=%d\n", loop_menit, paket_per_menit, paket_kita, loop_idle);
 					if (error_ENC != 0)
@@ -542,10 +491,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 						printf("ERR ENC = %X\n", error_ENC);	
 					}*/
 					
-					paket_per_menit = 0;
-					paket_kita = 0;
-				}
-		 }	// tanpa paket
+				paket_per_menit = 0;
+				paket_kita = 0;
+			}
+		}	// tanpa paket
 		
 		/*
 		// proses ADC dipindah ke shell 1 Okt 2010// 

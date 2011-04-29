@@ -166,8 +166,7 @@ extern void vSerialISRCreateQueues(	unsigned portBASE_TYPE uxQueueLength, xQueue
 
 /*-----------------------------------------------------------*/
 
-xComPortHandle xSerialPortInitMinimal( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength )
-{
+xComPortHandle xSerialPortInitMinimal( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength )	{
 unsigned portLONG ulDivisor, ulWantedClock;
 xComPortHandle xReturn = serHANDLE;
 extern void ( vUART_ISR_Wrapper )( void );
@@ -318,8 +317,7 @@ void vSerialClose( xComPortHandle xPort )
 /*-----------------------------------------------------------*/
 
 
-void uart0GetRxQueue (xQueueHandle *qh)
-{
+void uart0GetRxQueue (xQueueHandle *qh)	{
   	*qh = xRxedChars;
 }
 
@@ -390,7 +388,6 @@ void serX_getchar(int no, signed portCHAR *pcRxedChar, portTickType xBlockTime )
 	#endif
 }
 
-//*/
 
 #ifdef PAKAI_SERIAL_3
 /* UART 3 */
@@ -559,8 +556,7 @@ static volatile portLONG *plTHREEmpty2;
 #define serUART2_VIC_ENABLE				( ( unsigned portLONG ) 0x0020 )
 //#define serCLEAR_VIC_INTERRUPT			( ( unsigned portLONG ) 0 )
 
-xComPortHandle serial2_init( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength )
-{
+xComPortHandle serial2_init( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength )	{
 	unsigned portLONG ulDivisor, ulWantedClock;
 	xComPortHandle xReturn = serHANDLE;
 	extern void ( vUART2_ISR_Wrapper )( void );

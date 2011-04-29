@@ -109,6 +109,8 @@ typedef enum
 } eBaud;
 
 xComPortHandle xSerialPortInitMinimal( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength );
+xComPortHandle serial2_init( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength );
+xComPortHandle serial3_init( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength );
 xComPortHandle xSerialPortInit( eCOMPort ePort, eBaud eWantedBaud, eParity eWantedParity, eDataBits eWantedDataBits, eStopBits eWantedStopBits, unsigned portBASE_TYPE uxBufferLength );
 void vSerialPutString( xComPortHandle pxPort, const signed portCHAR * const pcString );
 signed portBASE_TYPE xSerialGetChar( xComPortHandle pxPort, signed portCHAR *pcRxedChar, portTickType xBlockTime );

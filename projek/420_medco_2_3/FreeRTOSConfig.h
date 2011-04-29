@@ -36,28 +36,19 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-//#define PAKE_TELNETD
-//#define PAKAI_HTTP
+
 
 #define PAKAI_ID
 #define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
 					// cendol memungkinkan client mengakses file php di server untuk menyimpan datanya
-
-//#define PAKAI_ENC28J60
-#define PAKAI_ENCX24J600
 
 #define BOARD_KOMON
 //#define BOARD_KOMON_420_SABANG
 #define BOARD_KOMON_420_SABANG_2_3
 #define VERSI_KOMON		"1.70"
 
-//#define PAKAI_WEBCLIENT
+
 #define BANYAK_SUMBER
-
-//#define SAMPURASUN_CLIENT
-//#define SAMPURASUN_SERVER
-
-#define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
 #define _printf	printf2
 #define printf	printf2
@@ -79,11 +70,35 @@
 	#define TIPE_PM710
 #endif
 
-#define PAKAI_MODBUSTCP
+
 //#define TES_GET_WEB
 
 #define PROMPT 		"BAS@"
 #define NAMA_BOARD	"Babelan Komon-420"
+
+#define PAKAI_LED_UTAMA
+
+#define PAKAI_SERIAL_2
+#define PAKAI_GPS				2
+#ifdef PAKAI_SERIAL_2
+	#define PAKAI_SERIAL_2_P0		19200
+	
+#endif
+
+#define PAKAI_SHELL
+
+#define PAKAI_ETH
+#ifdef PAKAI_ETH
+	//#define PAKAI_ENC28J60
+	#define PAKAI_ENCX24J600
+
+	#define PAKAI_MODBUSTCP
+	//#define SAMPURASUN_CLIENT
+	//#define SAMPURASUN_SERVER
+	//#define PAKAI_WEBCLIENT
+	//#define PAKE_TELNETD
+	//#define PAKAI_HTTP
+#endif
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -101,6 +116,9 @@
 //#define configPINSEL2_VALUE	0x50151105
 
 /* Value to use on rev 'A' and newer devices. */
+
+#define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 #define configPINSEL2_VALUE 	0x50150105
 
 #ifndef configPINSEL2_VALUE

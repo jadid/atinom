@@ -71,6 +71,7 @@
 #include "../../tinysh/enviro.h"
 
 //#include "TCPIP.h"
+#include "../../hardware/hardware.h"
 #include "ENCX24J600.h"
 #include "StackTsk.h"
 

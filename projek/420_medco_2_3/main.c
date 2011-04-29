@@ -77,7 +77,7 @@ void togle_led_utama(void)	{
 	}	else	{
 		FIO0CLR = LED_UTAMA;
 		tog = 1;
-		ser2_putstring("masuk ...\r\n");	
+		//ser2_putstring("masuk ...\r\n");	
 	}
 }
 

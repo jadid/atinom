@@ -145,6 +145,9 @@ extern xTaskHandle *hdl_led;
 extern xTaskHandle *hdl_tampilan;
 extern xTaskHandle *hdl_ether;
 
+#ifdef PAKAI_GPS
+	extern xTaskHandle *hdl_gps;
+#endif
 
 #ifdef BOARD_CNC 
 	extern xTaskHandle *hdl_cnc;
@@ -376,6 +379,9 @@ void cek_stack(void)
 		printf(" CNC      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
 	#endif
 	
+	#ifdef PAKAI_GPS
+		printf(" GPS      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_gps));
+	#endif
 }							 
 
 //static 

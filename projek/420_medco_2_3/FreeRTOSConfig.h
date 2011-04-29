@@ -79,10 +79,10 @@
 #define PAKAI_LED_UTAMA
 
 #define PAKAI_SERIAL_2
-#define PAKAI_GPS				2
+
 #ifdef PAKAI_SERIAL_2
-	#define PAKAI_SERIAL_2_P0		19200
-	
+	#define PAKAI_SERIAL_2_P0		4800
+	#define PAKAI_GPS				2
 #endif
 
 #define PAKAI_SHELL

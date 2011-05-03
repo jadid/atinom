@@ -61,6 +61,7 @@ CFLAGS= $(DEBUG) \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
 		-I ../../hardware/ \
 		-I ../../modul/ \
+		-I ../../modul/nmealib/include/ \
 		-I ../../uip/uip/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
@@ -120,10 +121,17 @@ WEBCLIENT_SOURCE = \
 		../../webserver/webclient/webclient.c			\
 		../../webserver/webclient/webclient-strings.c	\
 
+#MODULES_GPS = parse parser tok context time info gmath  
 GPS_SOURCE = \
 		../../app/gps/gps.c		\
+		../../modul/nmealib/src/parse.c \
+		../../modul/nmealib/src/parser.c \
+		../../modul/nmealib/src/context.c \
+		../../modul/nmealib/src/info.c \
+		../../modul/nmealib/src/gmath.c \
+		../../modul/nmealib/src/timegps.c \
+		../../modul/nmealib/src/tok.c \
 		
-
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../modul/serial/serialISR.c \

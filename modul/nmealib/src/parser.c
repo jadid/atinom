@@ -11,14 +11,15 @@
 /**
  * \file parser.h
  */
+#include <string.h>
+#include <stdlib.h>
 
 #include "nmea/tok.h"
 #include "nmea/parse.h"
 #include "nmea/parser.h"
 #include "nmea/context.h"
 
-#include <string.h>
-#include <stdlib.h>
+
 
 typedef struct _nmeaParserNODE
 {
@@ -84,8 +85,9 @@ int nmea_parse(
     void *pack = 0;
 	int hasil=0;
 	
+	printf("%s: %s\r\n", __FUNCTION__, buff);
     NMEA_ASSERT(parser && parser->buffer);
-
+	
     nmea_parser_push(parser, buff, buff_sz);
 
     while(GPNON != (ptype = nmea_parser_pop(parser, &pack)))

@@ -76,8 +76,7 @@ unsigned char status_eth = 0;
 extern xTaskHandle hdl_ether;
 
 
-static portTASK_FUNCTION( tunggu, pvParameters )
-{
+static portTASK_FUNCTION( tunggu, pvParameters )	{
 	unsigned char spi1, spi2;
 	int r=0, g;
 	
@@ -107,7 +106,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("ARP : arp_init\r\n");
 	uip_arp_init ();
 	
-	#if defined(BOARD_KOMON_420_SABANG_2_3) | defined(PAKAI_ENCX24J600) 
+	#if defined(BOARD_KOMON_420_SABANG_2_3) || defined(PAKAI_ENCX24J600) 
 		printf("Init ENC624J600 .. ");
 		
 		if ( (status_eth=enc624Init())== 1)	{
@@ -202,11 +201,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	printf("Kirim Balik inited, Target data: sumber %d, target kirim: %d !\r\n", sumber_datanya+1, target_kirim+1);
 #endif
 
-	/*  Initialise the local timers */
+	//  Initialise the local timers //
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
 	
-	/* supaya cukup waktu buat siap2 */
+	// supaya cukup waktu buat siap2 //
 	loop = -1000;
 	
 	#ifdef BOARD_KOMON_420_SABANG
@@ -224,7 +223,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 	for (;;)	{
 		vTaskDelay(1);
 		//portYIELD();
-		#if 1
+	#ifdef PAKAI_ETH
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
 			wclient++;
@@ -353,7 +352,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		#endif
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
-		if (cek_paket())	{
+		if (cek_paket())	
+		{
 			//printf("masuk cek paket !!!\r\n");
 			#if 1
 			  paket_per_menit++;
@@ -365,7 +365,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		      #elif defined(PAKAI_ENCX24J600)
 		      if ((uip_len = ech624Terima()) > 0)
 		      #endif
-		      {		  
+		      {  
 				  //printf("uiplen: %d\r\n", uip_len);
 				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
@@ -388,8 +388,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
-		    	            if (uip_len > 0)
-		    	            {
+		    	            if (uip_len > 0)    {
 		    	              uip_arp_out ();
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
@@ -407,13 +406,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
-		    	            if (uip_len > 0)
+		    	            if (uip_len > 0)	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
 		    	              //printf("______kirim balek ARP !!!___\r\n");
 		    	              ech624Kirim();
 		    	              #endif
+						  }
 		    	     }
 
 		      }
@@ -444,12 +444,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 						uip_arp_out ();
 						//enc28j60Send ();
 		            
-						if (uip_len > 0)
+						if (uip_len > 0) {
 							#if defined(PAKAI_ENC28J60)
 							enc28j60Send ();
 							#elif defined(PAKAI_ENCX24J600)
 							ech624Kirim();
 							#endif
+						}
 					}
 				}
 
@@ -495,7 +496,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 				paket_kita = 0;
 			}
 		}	// tanpa paket
-		
 		/*
 		// proses ADC dipindah ke shell 1 Okt 2010// 
 		#ifdef PAKAI_ADC
@@ -517,18 +517,16 @@ static portTASK_FUNCTION( tunggu, pvParameters )
 }
 
 
-void start_ether(void)
-{	//8
+void start_ether(void)	{	//8
 	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 12), \
 		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
 }
 
-void dispatch_tcp_appcall (void)
-{
+void dispatch_tcp_appcall (void)	{
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 	
 #ifdef PAKE_HTTP
-	if (uip_conn->lport == HTONS (80)) 
+	if (uip_conn->lport == HTONS (80))
 		httpd_appcall ();
 #endif
 
@@ -569,7 +567,7 @@ void dispatch_tcp_appcall (void)
 	/* webclient */
 	if (uip_conn->rport == HTONS(80))	{
 		webclient_appcall();
-	}	  
+	}
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -584,8 +582,7 @@ void dispatch_tcp_appcall (void)
 
 
 
-void dispatch_udp_appcall (void)
-{
+void dispatch_udp_appcall (void)	{
 #ifdef CFG_SNTP
   if (uip_udp_conn->rport == HTONS (123))
     sntp_appcall ();

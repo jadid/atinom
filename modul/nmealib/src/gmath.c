@@ -363,6 +363,7 @@ int nmea_move_horz_ellipsoid(
  */
 void nmea_info2pos(const nmeaINFO *info, nmeaPOS *pos)
 {
+	//printf("%s(): %s\r\n", __FUNCTION__, );
     pos->lat = nmea_ndeg2radian(info->lat);
     pos->lon = nmea_ndeg2radian(info->lon);
 }

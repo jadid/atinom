@@ -74,7 +74,7 @@ THUMB_SOURCE= \
 		../../system/setup_cpu.c \
 		../../system/syscall.c \
 		../../system/reset_cpu.c \
-		../../serial/serial.c \
+		../../modul/serial/serial.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
@@ -84,7 +84,7 @@ THUMB_SOURCE= \
 		../../tinysh/shell.c \
 		../../tinysh/enviro.c \
 		../../GPIO/gpio.c \
-		../../spi/spi.c \
+		../../modul/spi/spi.c \
 		../../uip/hardware/enc28j60.c	\
 		../../uip/clock.c \
 		../../uip/lib/memb.c \
@@ -103,7 +103,7 @@ THUMB_SOURCE= \
 		../../webserver/httpd-cgi.c \
 		../../system/idle_hook.c \
 		../../uip/apps/telnetd/telnetd.c	\
-		../../spi/low_ss1.c	\
+		../../modul/spi/low_ss1.c	\
 		../../adc/ad7708.c	\
 #		LCD/lcd_320.c \
 #		tampilan.c \
@@ -119,7 +119,7 @@ WEBCLIENT_SOURCE = \
 
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
-		../../serial/serialISR.c \
+		../../modul/serial/serialISR.c \
 		../../GPIO/gpio_ISR.c 
 		
 #THUMB_SOURCE += $(PM_SOURCE)

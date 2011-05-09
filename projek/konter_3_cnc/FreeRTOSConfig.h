@@ -57,6 +57,9 @@
 #define xPWM		256
 #define maxKonter	0xFFFF
 
+
+#define PAKAI_ETH
+#define PAKAI_ENC28J60
 //#define PAKE_TELNETD
 //#define PAKAI_HTTP
 //#define PAKAI_WEBCLIENT

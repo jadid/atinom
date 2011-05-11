@@ -60,7 +60,7 @@
  * forwarding over multiple network interfaces with uIP.
  *
  */
-
+#ifdef PAKAI_ETH
 #include "uip.h"
 #include "uip_arch.h"
 #include "uip-fw.h"
@@ -538,3 +538,4 @@ uip_fw_periodic(void)
   }
 }
 /*------------------------------------------------------------------------------*/
+#endif

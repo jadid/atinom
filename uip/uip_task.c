@@ -13,8 +13,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifdef PAKAI_ETH
+
 #include "uip.h"
 #include "uip_arp.h"
+
+
 
 #include "./hardware/enc28j60.h"
 
@@ -594,5 +598,5 @@ void dispatch_udp_appcall (void)	{
 #endif
 }
 
-
+#endif
 

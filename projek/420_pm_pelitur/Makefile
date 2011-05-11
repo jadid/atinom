@@ -57,6 +57,7 @@ CFLAGS= $(DEBUG) \
 		-I../../TOOLCHAIN/arm-elf/include/ \
 		-T$(LDSCRIPT) \
 		-I . \
+		-I ../../hardware/ \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
 		-I ../../uip/uip \
@@ -71,9 +72,11 @@ CFLAGS= $(DEBUG) \
 								
 THUMB_SOURCE= \
 		main.c \
-		../../system/setup_cpu.c \
-		../../system/syscall.c \
-		../../system/reset_cpu.c \
+		../../hardware/hardware.c \
+		../../hardware/system/setup_cpu.c \
+		../../hardware/system/syscall.c \
+		../../hardware/system/reset_cpu.c \
+		../../hardware/system/idle_hook.c \
 		../../modul/serial/serial.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
@@ -101,7 +104,6 @@ THUMB_SOURCE= \
 		../../webserver/httpd-fs.c \
 		../../webserver/http-strings.c \
 		../../webserver/httpd-cgi.c \
-		../../system/idle_hook.c \
 		../../uip/apps/telnetd/telnetd.c	\
 		../../modul/spi/low_ss1.c	\
 		../../modul/adc/ad7708.c	\
@@ -141,11 +143,11 @@ RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
 	$(DISAMB) $(NAMA_FILE).elf -d > $(NAMA_FILE).S
 
-RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../system/boot.s Makefile 
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../system/boot.s $(LINKER_FLAGS) 
+RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../hardware/system/boot.s Makefile 
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../hardware/system/boot.s $(LINKER_FLAGS) 
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
-	$(CC) -c $(CFLAGS) -mthumb $< -o build/$@
+	$(CC) -c $(CFLAGS) -mthumb $< -o $@
 	
 $(ARM_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) $< -o $@

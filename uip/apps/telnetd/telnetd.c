@@ -39,7 +39,7 @@
  * $Id: telnetd.c 267 2008-10-31 03:29:52Z jcw $
  *
  */
-
+#ifdef PAKAI_ETH
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -568,3 +568,4 @@ void telnetd_appcall (void)
     	telnetdSendData ();
   	}
 }
+#endif

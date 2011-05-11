@@ -4,8 +4,6 @@
 
 #include "FreeRTOS.h"
 #include "hardware.h"
-//#include "serial/serial.h"
-
 
 void setup_hardware() {
 	sysInit();

@@ -21,7 +21,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-
+#include "hardware.h"
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )	// 19200
 
@@ -66,7 +66,8 @@ void dele(int dd)
 
 int main( void )
 {
-	sysInit();
+	setup_hardware();				// @"../../hardware/hardware.h"
+	//sysInit();
 
 	/* USB Power dinyalakan supaya memory USB bisa dipakai */
 	PCONP |= 0x80000000; 

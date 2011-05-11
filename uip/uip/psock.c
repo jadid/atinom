@@ -40,7 +40,7 @@
  *
  * $Id: psock.c 192 2008-10-19 14:39:27Z jcw $
  */
-
+#ifdef PAKAI_ETH
 #include <stdlib.h>
 #include <stdio.h> 
 #include <string.h>
@@ -352,3 +352,4 @@ psock_init(register struct psock *psock, char *buffer, unsigned int buffersize)
   PT_INIT(&psock->psockpt);
 }
 /*---------------------------------------------------------------------------*/
+#endif

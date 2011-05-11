@@ -6,6 +6,8 @@
 //  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/uip/uip/uip.c $
 //
 
+#ifdef PAKAI_ETH
+
 #define DEBUG_PRINTF(...) /*printf(__VA_ARGS__)*/
 
 /**
@@ -2030,3 +2032,5 @@ void uip_send (const void *data, int len)
       memcpy (uip_sappdata, (data), uip_slen);
 }
 /** @} */
+
+#endif

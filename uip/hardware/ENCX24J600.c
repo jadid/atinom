@@ -70,6 +70,8 @@
 
 #include "../../tinysh/enviro.h"
 
+#ifdef PAKAI_ETH
+
 //#include "TCPIP.h"
 #include "../../hardware/hardware.h"
 #include "ENCX24J600.h"
@@ -4058,3 +4060,5 @@ void ENC100DumpState(void)
 //*/
 
 #endif //#if defined(ENC100_INTERFACE_MODE)
+
+#endif

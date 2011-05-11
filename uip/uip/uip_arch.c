@@ -39,7 +39,7 @@
  * $Id: uip_arch.c 241 2008-10-29 10:59:45Z jcw $
  *
  */
-
+#ifdef PAKAI_ETH
 
 #include "uip.h"
 #include "uip_arch.h"
@@ -199,3 +199,4 @@ u16_t uip_udpchksum(void)
 
   return (sum == 0) ? 0xffff : htons(sum);
 }
+#endif

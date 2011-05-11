@@ -17,7 +17,7 @@
  * diberikan paksa close jika data diterima kurang dari jumlah seharusnya
  * 
  */
-
+#ifdef PAKAI_ETH
 
 #include "monita_uip.h"
 #include "uip.h"
@@ -1184,3 +1184,4 @@ void terima_balik_appcall(void)
 }	
 #endif
 
+#endif

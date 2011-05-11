@@ -65,7 +65,7 @@
  * $Id: uip_arp.c 319 2008-11-08 05:04:56Z jcw $
  *
  */
-
+#ifdef PAKAI_ETH
 #include <string.h>
 
 #include "uip_arp.h"
@@ -427,3 +427,4 @@ uip_arp_out(void)
 
 /** @} */
 /** @} */
+#endif

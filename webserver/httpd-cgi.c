@@ -44,7 +44,7 @@
  * $Id: httpd-cgi.c,v 1.2 2006/06/11 21:46:37 adam Exp $
  *
  */
-
+#ifdef PAKAI_ETH
 #include "uip.h"
 #include "psock.h"
 #include "httpd.h"
@@ -201,3 +201,4 @@ PT_THREAD(net_stats(struct httpd_state *s, char *ptr))
 }
 /*---------------------------------------------------------------------------*/
 /** @} */
+#endif

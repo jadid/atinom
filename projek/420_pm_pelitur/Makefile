@@ -104,7 +104,7 @@ THUMB_SOURCE= \
 		../../system/idle_hook.c \
 		../../uip/apps/telnetd/telnetd.c	\
 		../../modul/spi/low_ss1.c	\
-		../../adc/ad7708.c	\
+		../../modul/adc/ad7708.c	\
 #		LCD/lcd_320.c \
 #		tampilan.c \
 #		LCD/menu_monita.c \
@@ -145,7 +145,7 @@ RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../system/boot.s Makefile
 	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../system/boot.s $(LINKER_FLAGS) 
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
-	$(CC) -c $(CFLAGS) -mthumb $< -o $@
+	$(CC) -c $(CFLAGS) -mthumb $< -o build/$@
 	
 $(ARM_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) $< -o $@

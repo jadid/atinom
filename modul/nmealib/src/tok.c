@@ -9,7 +9,7 @@
  */
 
 /*! \file tok.h */
-
+#include "FreeRTOS.h"
 #include "nmea/tok.h"
 
 #include <stdarg.h>

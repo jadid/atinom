@@ -100,7 +100,7 @@ THUMB_SOURCE= \
 		../../GPIO/gpio.c \
 		../../monita/monita_uip.c \
 		../../system/idle_hook.c \
-		../../adc/ad7708.c	\
+		../../modul/adc/ad7708.c	\
 
 
 
@@ -146,7 +146,7 @@ ARM_SOURCE= \
 		../../GPIO/gpio_ISR.c 
 
 
-THUMB_SOURCE += $(GPS_SOURCE)
+#THUMB_SOURCE += $(GPS_SOURCE)
 THUMB_SOURCE += $(UIP_SOURCE)
 #THUMB_SOURCE += $(PM_SOURCE)
 #THUMB_SOURCE += $(WEBCLIENT_SOURCE)
@@ -171,7 +171,7 @@ RTOSDemo.hex : RTOSDemo.elf
 	$(DISAMB) $(NAMA_FILE).elf -d > $(NAMA_FILE).S
 
 RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../system/boot.s Makefile 
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../system/boot.s $(LINKER_FLAGS) $(LIBGPSI)
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../system/boot.s $(LINKER_FLAGS)
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) -mthumb $< -o $@

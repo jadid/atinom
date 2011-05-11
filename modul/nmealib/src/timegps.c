@@ -9,7 +9,7 @@
  */
 
 /*! \file time.h */
-
+#include "FreeRTOS.h"
 #include "nmea/timegps.h"
 
 #ifdef NMEA_WIN

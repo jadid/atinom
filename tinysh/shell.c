@@ -54,7 +54,7 @@
 #endif
 
 #ifdef PAKAI_ADC
-	#include "../adc/command_adc.c"
+	#include "../modul/adc/command_adc.c"
 	#include "set_kanal.c"
 #endif
 

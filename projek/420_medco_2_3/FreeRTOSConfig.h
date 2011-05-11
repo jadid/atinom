@@ -82,7 +82,7 @@
 
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		4800
-	#define PAKAI_GPS				2
+//	#define PAKAI_GPS				2
 #endif
 
 #define PAKAI_SHELL

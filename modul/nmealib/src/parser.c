@@ -11,6 +11,8 @@
 /**
  * \file parser.h
  */
+
+#include "FreeRTOS.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -39,6 +41,10 @@ typedef struct _nmeaParserNODE
  */
 int nmea_parser_init(nmeaPARSER *parser)
 {
+	#ifdef DEBUG_GPS
+	printf("masuk %s()\r\n", __FUNCTION__);
+	#endif
+	
     int resv = 0;
     int buff_size = nmea_property()->parse_buff_size;
 
@@ -81,12 +87,15 @@ int nmea_parse(
     nmeaINFO *info
     )
 {
+	#ifdef DEBUG_GPS
+	printf("masuk %s(), %s\r\n", __FUNCTION__, buff);
+	#endif
+	
     int ptype, nread = 0;
     void *pack = 0;
 	int hasil=0;
 	
-	printf("%s: %s\r\n", __FUNCTION__, buff);
-    NMEA_ASSERT(parser && parser->buffer);
+	NMEA_ASSERT(parser && parser->buffer);
 	
     nmea_parser_push(parser, buff, buff_sz);
 
@@ -116,11 +125,18 @@ int nmea_parse(
             nmea_GPVTG2info((nmeaGPVTG *)pack, info);
             hasil = 5;
             break;
+        default:
+			hasil = 9;
+            break;
         };
 
         free(pack);
     }
-
+    
+    #ifdef DEBUG_GPS
+	printf("GPNON: %d, ptype: %d\r\n", GPNON, ptype);
+    #endif
+    
     //return nread;
     return hasil;
 }
@@ -277,6 +293,10 @@ mem_fail:
  */
 int nmea_parser_push(nmeaPARSER *parser, const char *buff, int buff_sz)
 {
+	#ifdef DEBUG_GPS
+	printf("masuk %s(), %s\r\n", __FUNCTION__, buff);
+	#endif
+	
     int nparse, nparsed = 0;
 
     do
@@ -319,8 +339,11 @@ int nmea_parser_top(nmeaPARSER *parser)
  * @return Received packet type
  * @see nmeaPACKTYPE
  */
-int nmea_parser_pop(nmeaPARSER *parser, void **pack_ptr)
-{
+int nmea_parser_pop(nmeaPARSER *parser, void **pack_ptr)	{
+	#ifdef DEBUG_GPS
+	printf("masuk %s()\r\n", __FUNCTION__);
+	#endif
+	
     int retval = GPNON;
     nmeaParserNODE *node = (nmeaParserNODE *)parser->top_node;
 

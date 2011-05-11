@@ -7,7 +7,7 @@
  * $Id: generator.c 17 2008-03-11 11:56:11Z xtimor $
  *
  */
-
+#include "FreeRTOS.h"
 #include "nmea/gmath.h"
 #include "nmea/generate.h"
 #include "nmea/generator.h"

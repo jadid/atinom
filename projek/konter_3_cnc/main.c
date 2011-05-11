@@ -27,7 +27,7 @@
 #include "queue.h"
 #include "semphr.h"
 
-#include "math.h"
+#include <math.h>
 
 #define BAUD_RATE	( ( unsigned portLONG ) 115200 )
 
@@ -235,6 +235,7 @@ void tabelSin() {
 		//sudut = (i*360.00)/xPWM;
 		rad	  = ((i+0.75*xPWM)*PI*2.00)/xPWM;
 		
+		tmp = atan(2);
 		tmp = (sin(rad)/2.00)+0.5;
 		nPWM[i] = (int) (maxKonter*tmp);
 

@@ -7,7 +7,7 @@
  * $Id: generate.c 17 2008-03-11 11:56:11Z xtimor $
  *
  */
-
+#include "FreeRTOS.h"
 #include "nmea/tok.h"
 #include "nmea/sentence.h"
 #include "nmea/generate.h"

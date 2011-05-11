@@ -54,6 +54,7 @@
  * \endcode
  */
 
+#include "FreeRTOS.h"
 #include "nmea/tok.h"
 #include "nmea/parse.h"
 #include "nmea/context.h"
@@ -293,6 +294,10 @@ int nmea_parse_GPGSV(const char *buff, int buff_sz, nmeaGPGSV *pack)
  */
 int nmea_parse_GPRMC(const char *buff, int buff_sz, nmeaGPRMC *pack)
 {
+	#ifdef DEBUG_GPS
+	printf("masuk %s()\r\n", __FUNCTION__);
+	#endif
+	
     int nsen;
     char time_buff[NMEA_TIMEPARSE_BUF];
 
@@ -465,8 +470,10 @@ void nmea_GPGSV2info(nmeaGPGSV *pack, nmeaINFO *info)
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
  */
-void nmea_GPRMC2info(nmeaGPRMC *pack, nmeaINFO *info)
-{
+void nmea_GPRMC2info(nmeaGPRMC *pack, nmeaINFO *info)	{
+	#ifdef DEBUG_GPS
+	printf("masuk %s()\r\n", __FUNCTION__);
+	#endif
     NMEA_ASSERT(pack && info);
 
     if('A' == pack->status)

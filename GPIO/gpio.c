@@ -13,23 +13,23 @@
 #endif
 
 #ifdef BOARD_KOMON_420_SAJA
-#include "../adc/ad7708.h"
+#include "../modul/adc/ad7708.h"
 #endif
 
 #ifdef BOARD_KOMON_420_SABANG
 #ifdef PAKAI_ADC
-#include "../adc/ad7708.h"
+#include "../modul/adc/ad7708.h"
 #endif
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
-#include "../adc/ad7708.h"
+#include "../modul/adc/ad7708.h"
 
 #define AD7708_GPIO_KOMON
 #endif
 
 #ifdef BOARD_KOMON_B_THERMO
-#include "../adc/ad7708.h"
+#include "../modul/adc/ad7708.h"
 
 #define AD7708_GPIO_KOMON
 #endif

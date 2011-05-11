@@ -23,7 +23,7 @@
 #ifdef PAKAI_HTTP
 
 #include "../tinysh/enviro.h"
-#include "../adc/ad7708.h"
+#include "../modul/adc/ad7708.h"
 
 #ifdef CENDOL
 //	#include "../tinysh/setting_eth.c" 

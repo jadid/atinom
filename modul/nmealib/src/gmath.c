@@ -10,8 +10,9 @@
 
 /*! \file gmath.h */
 
+#include "FreeRTOS.h"
 #include "nmea/gmath.h"
-
+#include <stdio.h>
 #include <math.h>
 #include <float.h>
 

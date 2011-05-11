@@ -7,7 +7,7 @@
  * $Id: sentence.c 17 2008-03-11 11:56:11Z xtimor $
  *
  */
-
+#include "FreeRTOS.h"
 #include "nmea/sentence.h"
 
 #include <string.h>

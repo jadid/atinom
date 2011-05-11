@@ -55,7 +55,10 @@
  * $Id: httpd.c,v 1.2 2006/06/11 21:46:38 adam Exp $
  */
 
-#ifdef PAKAI_ETH
+
+
+//#ifdef PAKAI_HTTP
+//#if 1
 
 #include "uip.h"
 #include "httpd.h"
@@ -65,6 +68,7 @@
 
 #include <string.h>
 
+#ifdef PAKAI_ETH
 #include "buat_file.c"
 
 #define STATE_WAITING 0
@@ -459,4 +463,5 @@ httpd_init(void)
 /*---------------------------------------------------------------------------*/
 /** @} */
 
+//#endif
 #endif

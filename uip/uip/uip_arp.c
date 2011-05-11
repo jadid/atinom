@@ -65,10 +65,12 @@
  * $Id: uip_arp.c 319 2008-11-08 05:04:56Z jcw $
  *
  */
-#ifdef PAKAI_ETH
+
 #include <string.h>
 
 #include "uip_arp.h"
+
+#ifdef PAKAI_ETH
 
 struct __attribute__((packed))arp_hdr {
   struct __attribute__((packed))uip_eth_hdr ethhdr;

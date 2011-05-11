@@ -14,6 +14,7 @@
 #include "task.h"
 
 #ifdef PAKAI_ETH
+//#if 1
 
 #include "uip.h"
 #include "uip_arp.h"

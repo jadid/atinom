@@ -17,12 +17,15 @@
  * diberikan paksa close jika data diterima kurang dari jumlah seharusnya
  * 
  */
-#ifdef PAKAI_ETH
+
+
 
 #include "monita_uip.h"
 #include "uip.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef PAKAI_ETH
 
 struct t_xdata 			xdata  		;/*__attribute__ ((section (".eth_test")));*/
 struct t_data_float 	data_float  ;/*__attribute__ ((section (".eth_test")));*/

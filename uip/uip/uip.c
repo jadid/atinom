@@ -6,7 +6,7 @@
 //  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/uip/uip/uip.c $
 //
 
-#ifdef PAKAI_ETH
+
 
 #define DEBUG_PRINTF(...) /*printf(__VA_ARGS__)*/
 
@@ -113,7 +113,7 @@
 
 
 
-
+#ifdef PAKAI_ETH
 
 
 // hardcoded IP disini

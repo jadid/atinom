@@ -44,7 +44,10 @@
  * $Id: httpd-cgi.c,v 1.2 2006/06/11 21:46:37 adam Exp $
  *
  */
-#ifdef PAKAI_ETH
+
+
+//#if 1
+
 #include "uip.h"
 #include "psock.h"
 #include "httpd.h"
@@ -53,6 +56,8 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#ifdef PAKAI_ETH
 
 HTTPD_CGI_CALL(file, "file-stats", file_stats);
 HTTPD_CGI_CALL(tcp, "tcp-connections", tcp_stats);

@@ -39,12 +39,14 @@
  * $Id: uip_arch.c 241 2008-10-29 10:59:45Z jcw $
  *
  */
-#ifdef PAKAI_ETH
+
 
 #include "uip.h"
 #include "uip_arch.h"
 #define BUF ((struct __attribute__((packed))uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 #define IP_PROTO_TCP    6
+
+#ifdef PAKAI_ETH
 
 /*-----------------------------------------------------------------------------------*/
 void uip_add32(u8_t *op32, u16_t op16)

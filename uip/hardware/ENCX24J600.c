@@ -57,6 +57,8 @@
  * Howard Schlunder		12/07/07	Original
  ********************************************************************/
 
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -64,13 +66,16 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+
+#ifdef PAKAI_ETH
+
 #include "../uip/uip.h"
 #include "../uip/uip_arp.h"
 #include "../uip/uipopt.h"
 
 #include "../../tinysh/enviro.h"
 
-#ifdef PAKAI_ETH
+
 
 //#include "TCPIP.h"
 #include "../../hardware/hardware.h"

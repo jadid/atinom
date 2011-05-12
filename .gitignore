@@ -8,3 +8,6 @@
 *h~
 *.d
 *.S
+*log
+*vcproj
+*sln

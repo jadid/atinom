@@ -39,11 +39,13 @@
  * $Id: telnetd.c 267 2008-10-31 03:29:52Z jcw $
  *
  */
-#ifdef PAKAI_ETH
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 
+
+#if defined(PAKAI_ETH) && defined(PAKE_TELNETD)
 #include <string.h>
 
 #define MIN(x,y) ((x)<(y)?(x):(y))

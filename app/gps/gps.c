@@ -31,7 +31,7 @@ portTASK_FUNCTION(gps, pvParameters )	{
 	nmea_zero_INFO(&info);
     nmea_parser_init(&parser);
 	
-  	printf("GPS init !!\r\n");
+  	printf(" Monita : GPS init !!\r\n");
   	//ser2_putstring("Masuk serial 2\r\n");
   	vTaskDelay(500);
   	

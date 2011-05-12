@@ -69,6 +69,11 @@ static unsigned int nomer_mesin=0;
 #define BOARD_KOMON_WEB
 #endif
 
+#ifdef BOARD_KOMON_420_SABANG_2_3
+#define BOARD_KOMON_WEB
+#endif
+
+
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
 #ifdef PAKAI_PM

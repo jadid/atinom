@@ -8,7 +8,8 @@
 
 
 #include "enviro.h"
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
+#include "../../app/monita/monita_uip.h"
 
 #ifdef TES_BACA_TULIS
 int tes_tulis_flash()

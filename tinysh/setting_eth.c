@@ -7,7 +7,8 @@
 	Setting data id via webserver
 */
 
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
+//#include "../app/monita/monita_uip.h"
 
 #ifndef __SETTING_ETH__
 #define __SETTING_ETH__

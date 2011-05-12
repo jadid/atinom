@@ -67,7 +67,7 @@
 #include "task.h"
 #include "semphr.h"
 
-#ifdef PAKAI_ETH
+#if defined(PAKAI_ETH) && defined(PAKAI_ENCX24J600)
 
 #include "../uip/uip.h"
 #include "../uip/uip_arp.h"

@@ -54,14 +54,17 @@
  * $Id: webclient.c,v 1.2 2006/06/11 21:46:37 adam Exp $
  *
  */
-#ifdef PAKAI_WEBCLIENT
-//#if 1
+
+#if 1
 #include "uip.h"
 #include "uiplib.h"
 #include "webclient.h"
 //#include "resolv.h"
 
 #include <string.h>
+
+//#ifdef PAKAI_WEBCLIENT
+
 
 #define uchr unsigned char
 #define WEBCLIENT_TIMEOUT 100

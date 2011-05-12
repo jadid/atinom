@@ -9,7 +9,7 @@
 #include "FreeRTOS.h"
 
 #include "spi.h"
-#include "../uip/hardware/enc28j60.h"
+//#include "../uip/hardware/enc28j60.h"
 
 //#define GPIO0_FIODIR	FIO1DIR
 //#define GPIO0_FIOSET	FIO1SET

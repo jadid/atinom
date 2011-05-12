@@ -64,6 +64,8 @@
 #include "FreeRTOS.h"
 #include "../uip/uipopt.h"
 
+#if defined(PAKAI_ETH) && defined(PAKAI_ENCX24J600)
+
 #ifdef BOARD_KOMON_420_SABANG_2_3
 
 #include "MAC.h"
@@ -815,5 +817,6 @@ typedef union __attribute__((aligned(2), packed)) {
 #define PHSTAT3_r1		(1<<1)
 #define PHSTAT3_r0		(1)
 
+#endif
 
 #endif

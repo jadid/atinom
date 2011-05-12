@@ -28,7 +28,8 @@
 #endif
 
 
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
+//#include "../app/monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
 #ifdef PAKE_TELNETD
@@ -100,7 +101,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
-	printf("UIP : uip_init\r\n");
+	printf("Init Application ......\r\n");
+	printf(" UIP : uip_init\r\n");
 
 	uip_init ();
 	
@@ -108,19 +110,19 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	uip_ipaddr( xIPAddr, envx->IP0, envx->IP1, envx->IP2, envx->IP3 );
 	uip_sethostaddr( xIPAddr );
 
-	printf("ARP : arp_init\r\n");
+	printf(" ARP : arp_init\r\n");
 	uip_arp_init ();
 	
-	#if defined(BOARD_KOMON_420_SABANG_2_3) || defined(PAKAI_ENCX24J600) 
-		printf("Init ENC624J600 .. ");
+	#if defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENCX24J600) 
+		printf(" Init ENC624J600 .. ");
 		
 		if ( (status_eth=enc624Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
 		}	else	{
 			printf("ENC tidak respons !\r\n");
 		}
-	#else
-		printf("Init ENC28J .. ");
+	#else 	// defined(BOARD_KOMON_420_SABANG_2_1) && defined(PAKAI_ENC28J60) 
+		printf(" Init ENC28J .. ");
 		if ( (status_eth=enc28j60Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
 		}	else	{
@@ -138,48 +140,48 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	}
 	
 	#ifdef PAKE_HTTP
-	printf("SIMPLE HTTP : init\r\n");
+	printf(" Monita : http init\r\n");
 	httpd_init ();
 	#endif
 	
 	#ifdef PAKE_TELNETD
-	printf("SIMPLE TELNET : init\r\n");
+	printf(" MONITA : telnet init\r\n");
     telnetd_init ();
 	#endif
 
 #ifdef BOARD_KOMON
-    printf("MONITA : monita init\r\n");
+    printf(" MONITA : monita init\r\n");
 //    monita_init();
 #endif
 	
 #if (PAKAI_KONTROL == 1)
-	printf("MONITA : monita kontrol init\r\n");
+	printf(" MONITA : monita kontrol init\r\n");
 	kontrol_init();
 #endif
 
 //#ifdef BOARD_TAMPILAN
 //#ifdef CARI_SUMBERNYA
 #ifdef SAMPURASUN_SERVER
-	printf("MONITA : sambungan_aktif init\r\n");
+	printf(" MONITA : sambungan_aktif init\r\n");
 	sambungan_init();
 	mul = 0;
 #endif
 
 #ifdef SAMPURASUN_CLIENT
     //printf("MONITA : monita init\r\n");
-    printf("Monita : sampurasun client init !\r\n");
+    printf(" Monita : sampurasun client init !\r\n");
     monita_init();
 #endif
 
 #ifdef PAKAI_MODBUSTCP
-	printf("Monita : modbus TCP init !\r\n");
+	printf(" Monita : modbus TCP init !\r\n");
 	modbustcp_init();
 #endif
 
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
 		webclient_init();
-		printf("webclient inited !\r\n");
+		printf(" webclient inited !\r\n");
 		unsigned char datakeserver[512];
 		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
@@ -228,7 +230,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	for (;;)	{
 		vTaskDelay(1);
 		//portYIELD();
-	#ifdef PAKAI_ETH
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
 			wclient++;
@@ -357,8 +358,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		#endif
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
-		if (cek_paket())	
-		{
+		if (cek_paket())	{
 			//printf("masuk cek paket !!!\r\n");
 			#if 1
 			  paket_per_menit++;
@@ -517,7 +517,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			#endif
 		#endif
 		//*/
-	#endif
 	}
 }
 

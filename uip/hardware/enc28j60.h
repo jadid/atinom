@@ -15,6 +15,8 @@
 #include "FreeRTOS.h"
 #include "../uip/uipopt.h"
 
+#if defined(PAKAI_ETH) && defined(PAKAI_ENC28J60)
+
 #ifdef BOARD_KOMON_420_SABANG_2_3
 #define CS_ENC	BIT(16)	/* P0 */
 #define INT_ENC	BIT(13) /* P2 */
@@ -663,5 +665,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay);
 #define	PHLCON_LFRQ1	(1ul<<3)
 #define	PHLCON_LFRQ0	(1ul<<2)
 #define	PHLCON_STRCH	(1ul<<1)
+
+#endif
 
 #endif

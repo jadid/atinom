@@ -63,6 +63,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+
+#if defined(PAKAI_ETH) && defined(PAKAI_ENC28J60)
+
 #include "../uip/uip.h"
 #include "../uip/uip_arp.h"
 #include "../uip/uipopt.h"
@@ -892,3 +895,4 @@ static void encMACreadBulk (u8_t *buffer, u16_t length)
   ENC28J60_Deselect ();
 }
 
+#endif

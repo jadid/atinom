@@ -30,6 +30,8 @@
 #define SSP1BSY	0x10
 #define SSP1RNE	0x04
 
+//#define  init_ss1()	init_gpio_mmc()
+
 void init_spi_mmc(char min);
 void kirim_word_mmc(unsigned char t);
 unsigned char ambil_word_mmc(void);

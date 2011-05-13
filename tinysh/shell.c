@@ -622,6 +622,7 @@ void data_frek_rpm() {
 	}	
 }
 
+
 //static void cek_rpm(int argc, char **argv)
 void cek_rpm()	{
 	unsigned int i;
@@ -788,7 +789,9 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp_exe","proses gsm_ftp","[args]",
                               mulai_gsm_ftp,0,0,0};
 #endif
 
- 
+#ifdef PAKAI_ADC
+	unsigned char status_adcnya=0; 
+#endif 
 
 extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
@@ -1031,9 +1034,10 @@ vTaskDelay(100);
 		#endif
 		
 		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
-			kalibrasi_adc1();
+			status_adcnya = kalibrasi_adc1();
 			vTaskDelay(100);
-			start_adc_1();
+			if (status_adcnya)
+				start_adc_1();
 		#endif
 		
 		#ifdef BOARD_KOMON_A_RTD

@@ -18,6 +18,7 @@ void setup_hardware() {
 	
 	#ifdef PAKAI_ADC
 		setup_adc();
+	//	init_ss1();
 	#endif
 	
 	#ifdef CEK_BLINK
@@ -73,8 +74,8 @@ void setup_hardware() {
 
 void init_hardware()	{
 	#ifdef PAKAI_ADC
-		//init_gpio_adc();
 		init_gpio_mmc();
+		
 		init_spi_mmc(0);		// untuk adc dan mmc
 	#endif
 	

@@ -6,6 +6,8 @@
 	porting ke freeRTOS & LPC2368
 	
 	*/
+	
+#include "FreeRTOS.h"
 
 //extern unsigned int kanal_aktif;
 
@@ -39,6 +41,10 @@ char kalibrasi_adc1(int fdy)
 	vTaskDelay(200);
 	
 	//cek ID
+	cek = cek_adc_id();	
+	printf(" id = 0x%X \n", cek);
+	
+	cek = 199;
 	cek = cek_adc_id();	
 	printf(" id = 0x%X \n", cek);
 	

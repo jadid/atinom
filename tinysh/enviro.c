@@ -149,7 +149,7 @@ int baca_env(char tampil)
 		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
-	printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
+	//printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
 	
 	if (ev->magic1 == MAGIC_1)	{
 		if (ev->magic2 == MAGIC_2)		{			

@@ -12,6 +12,11 @@
 #define false	0
 #define true	1
 #ifdef PAKAI_ADC
+
+#if defined(BOARD_KOMON_420_SABANG_2_3)
+	#include "../../hardware/hardware.h"
+#endif
+
 char kalibrasi_adc1(int fdy)
 {
 	unsigned char er;

@@ -26,6 +26,10 @@
 	#include "sfile.c"
 #endif
 
+#ifdef PAKAI_GPS
+	#include "gps.c"
+#endif
+
 /*
 #ifdef CARI_SUMBERNYA
 	#include "utils.c"
@@ -962,6 +966,11 @@ vTaskDelay(100);
 		tinysh_add_command(&kirim_serial_cmd);
 	#endif
 #endif
+
+#ifdef PAKAI_GPS
+	tinysh_add_command(&cek_gps_cmd);
+#endif
+
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);

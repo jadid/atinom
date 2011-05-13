@@ -55,7 +55,7 @@
  *
  */
 
-#if 1
+//#if 1
 #include "uip.h"
 #include "uiplib.h"
 #include "webclient.h"
@@ -63,7 +63,7 @@
 
 #include <string.h>
 
-//#ifdef PAKAI_WEBCLIENT
+#ifdef PAKAI_WEBCLIENT
 
 
 #define uchr unsigned char

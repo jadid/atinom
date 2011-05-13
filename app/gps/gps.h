@@ -1,6 +1,12 @@
 
+#ifdef PAKAI_GPS
+
+#include "FreeRTOS.h"
 #include <nmea/info.h>
-//#include <nmea/parse.h>
 #include <nmea/parser.h>
-//#include <nmea/gmath.h>
-//#include <string.h>
+
+nmeaINFO infoGPS;
+nmeaPARSER parserGPS;
+nmeaPOS dposGPS;
+
+#endif

@@ -74,7 +74,7 @@ inline void uncs_ad7708(void)
 #define kirim_word	spiPut
 #define ambil_word	spiPut
 
-#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG)
+#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 void kirim_word_mmc(unsigned char t);
 unsigned char ambil_word_mmc(void);
 
@@ -417,7 +417,7 @@ void proses_data_adc(void)
 }
 #endif
 
-#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG)
+#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 void proses_data_adc(void)
 {
 	unsigned char temp;

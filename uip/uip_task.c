@@ -21,11 +21,11 @@
 
 
 
-#include "./hardware/enc28j60.h"
+//#include "./hardware/enc28j60.h"
 
-#ifdef PAKAI_WEBCLIENT
-#include "../webserver/webclient/webclient.c"
-#endif
+//#ifdef PAKAI_WEBCLIENT
+//#include "../webserver/webclient/webclient.c"
+//#endif
 
 
 //#include "../monita/monita_uip.h"
@@ -162,7 +162,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 //#ifdef BOARD_TAMPILAN
 //#ifdef CARI_SUMBERNYA
 #ifdef SAMPURASUN_SERVER
-	printf(" MONITA : sambungan_aktif init\r\n");
+	//printf(" MONITA : sambungan_aktif init\r\n");
+	printf(" Monita : sampurasun server init !!\n");	
 	sambungan_init();
 	mul = 0;
 #endif

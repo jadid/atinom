@@ -5,15 +5,22 @@
 	
 	*/
 
+#ifndef __COMMAND_ADC__
+#define __COMMAND_ADC__
+
 #include "ad7708.h"
 #include "../tinysh/enviro.h"
+
+#if defined(BOARD_KOMON_420_SABANG_2_3)
+	#include "../../hardware/hardware.h"
+#endif
 
 #ifdef PAKAI_ADC
 extern struct t_adc st_adc;
 
 void simpan_ke_data_f() {
 	
-	#ifdef BOARD_KOMON_420_SAJA
+	#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG_2_3)
 		int g;
 		float temp;
 		//extern struct t_adc st_adc;
@@ -40,11 +47,13 @@ void simpan_ke_data_f() {
 		struct t_sumber *sumber;
 		sumber = (char *) ALMT_SUMBER;
 		
-		struct t_env *envx;
-		envx = (char *) ALMT_ENV;
+		// kenapa bisa redeclaration ???
+		//struct t_env *envx;
+		//envx = (char *) ALMT_ENV;
 		
-		float temp;
-		int g=0, sararumber=-1;
+		//float temp;
+		//int g=0;
+		int sararumber=-1;
 		#ifdef BOARD_KOMON_420_SABANG
 			
 			for (g=0; g<JML_SUMBER; g++) {
@@ -167,4 +176,6 @@ void status_adc(void) {
 
 static tinysh_cmd_t cek_adc_cmd={0,"status_adc","konversi adc & voltnya","[args]",
                               status_adc,0,0,0};
+#endif
+
 #endif

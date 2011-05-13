@@ -1,8 +1,7 @@
 #include "FreeRTOS.h"
 #include "lpc23xx.h"
 #include "task.h"
-#include "queue.h"
-#include "semphr.h"
+
 
 void setup_hardware(void);
 
@@ -51,5 +50,26 @@ void setup_hardware(void);
 		#define AssertChipSelect()		FIO0CLR = CS_ENC  // P0.16		// ENC28J60_Select()
 		#define DeassertChipSelect()	FIO0SET = CS_ENC				// ENC28J60_Deselect()
 	#endif
+	
+	#ifdef PAKAI_ADC
+		#define port_cs_ad7708		BIT(6)	/* P1 */
+		#define port_rdy_ad7708		BIT(11)	/* P2 */
+		
+		//#define rate_7708 	25			// 55 data per detik
+		#define rate_7708		71			// 20 data per detik
 
+		#define	UNIPOLAR		0x08
+		//#define range_RTD		(4 | UNIPOLAR)	// 0 - 320 mV
+
+		#define range_RTD		(5 | UNIPOLAR)	// 0 - 640 mV
+		#define range_420		(7 | UNIPOLAR)	// 0 - 2.5 V
+
+		//#define range_adc		13				// 0 - 640 mV
+			
+		//#define faktor_pengali_RTD		0.320
+		#define faktor_pengali_RTD		0.640
+		#define faktor_pengali_420		2.5
+		
+		#define AD7708_LPC_KOMON
+	#endif
 #endif

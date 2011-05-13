@@ -363,7 +363,7 @@ void sambungan_init(void)	{
 		status[i].stat = 0;
 		status[i].reply = 0;
 	}	
-	printf("Monita : sampurasun server init !!\n");	
+	//printf(" Monita : sampurasun server init !!\n");	
 }
 
 /* 

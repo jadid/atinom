@@ -116,18 +116,22 @@
 	#define JML_RELAY 8
 #endif
 
-#ifdef PAKAI_MODBUSTCP
-
-#endif
-
 #define 	PORT_MONITA 	5001
 #define 	PORT_DAYTIME	13
 #define 	ISO_nl 			0x0a
 #define		PORT_KONTROL	7235
-#define		PORT_KIRIM_BALIK	6543
-#define		PORT_HTTP	80
 
-#define		PORT_MODBUSTCP	502
+#ifdef PAKAI_KIRIM_BALIK
+	#define		PORT_KIRIM_BALIK	6543
+#endif
+
+#ifdef PAKAI_HTTP
+	#define		PORT_HTTP	80
+#endif
+
+#ifdef PAKAI_MODBUSTCP
+	#define		PORT_MODBUSTCP	502
+#endif
 
 /* offset masing2 data pada array */
 #if 0
@@ -259,7 +263,7 @@ struct t_sumber {
 	//char modul;			// khusus modbus, jenis modul 0: PM, 1: KTA, 2:????, dst
 	char stack;			// jika modul berisi BANYAK_SUMBER : adc, pm, dll
 	char status;		// tidak aktif, timeout, dll
-	char tipe;			// 0:PM_710, 1:PM_810, 2:KTA
+	char tipe;			// 0:PM_710, 1:PM_810, 2:KTA, 3:MICOM
 };
 
 /*

@@ -114,10 +114,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	uip_arp_init ();
 	
 	#if defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENCX24J600) 
-		printf(" Init ENC624J600 .. ");
+		printf(" Init ENC624J600.. ");
 		
 		if ( (status_eth=enc624Init())== 1)	{
-			 printf(" .. ENC OK\r\n");
+			 printf(".. ENC OK\r\n");
 		}	else	{
 			printf("ENC tidak respons !\r\n");
 		}
@@ -126,12 +126,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		if ( (status_eth=enc28j60Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
 		}	else	{
-			printf("ENC tidak respons !\r\n");
+			printf(" ENC tidak respons !\r\n");
 		}
 	#endif
 
 	if (status_eth==0)	{
-		printf("Ethernet ERROR !!!\r\n");
+		printf("\r\nEthernet ERROR !!!\r\n");
 		printf("Komunikasi dan Perintah via Ethernet tidak bisa dilakukan !!!\r\n");
 		vTaskDelay(1000);
 		for (;;)	{
@@ -163,20 +163,20 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 //#ifdef CARI_SUMBERNYA
 #ifdef SAMPURASUN_SERVER
 	//printf(" MONITA : sambungan_aktif init\r\n");
-	printf(" Monita : sampurasun server init !!\n");	
 	sambungan_init();
+	printf(" Monita : sampurasun server init !!\n");	
 	mul = 0;
 #endif
 
 #ifdef SAMPURASUN_CLIENT
     //printf("MONITA : monita init\r\n");
-    printf(" Monita : sampurasun client init !\r\n");
     monita_init();
+    printf(" Monita : sampurasun client init !\r\n");
 #endif
 
 #ifdef PAKAI_MODBUSTCP
-	printf(" Monita : modbus TCP init !\r\n");
 	modbustcp_init();
+	printf(" Monita : modbus TCP init !\r\n");
 #endif
 
 #ifdef PAKAI_WEBCLIENT

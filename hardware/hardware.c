@@ -102,11 +102,8 @@ void init_hardware()	{
  *						APLIKASI ada di sini 
  */
 //***************************************************************/
-
-	#ifdef PAKAI_GPS
-		init_gps();
-	#endif
-
+	
+	init_ambilcepat();
 }
 
 #ifdef CEK_BLINK

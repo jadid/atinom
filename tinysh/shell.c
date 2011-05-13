@@ -146,9 +146,16 @@ extern struct sambungan_state samb;
 
 extern xTaskHandle *hdl_shell;
 extern xTaskHandle *hdl_lcd;
-extern xTaskHandle *hdl_led;
+
+#ifdef PAKAI_LED_UTAMA 
+	extern xTaskHandle *hdl_led;
+#endif
+
 extern xTaskHandle *hdl_tampilan;
-extern xTaskHandle *hdl_ether;
+#ifdef PAKAI_ETH
+	extern xTaskHandle *hdl_ether;
+#endif
+extern xTaskHandle *hdl_ambilcepat;
 
 #ifdef PAKAI_GPS
 	extern xTaskHandle *hdl_gps;
@@ -359,21 +366,21 @@ void cek_stack(void)
 	#if (TAMPILAN_MALINGPING == 1)
 	//extern xTaskHandle hdl_proses_pm;  matikan dulu, pm belum diaktifkan
 	
-	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
-	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(	   " Tampilan    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(	   " LCD         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
 	
-	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	printf(    " Ether       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	#ifdef PAKAI_SELENOID
-		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
+		printf(" Relay       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
 		
 	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
-		printf(" GSM      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
+		printf(" GSM         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
 	#endif
 	
 	#ifdef PAKAI_CRON
-		printf(" CRON     : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cron));
+		printf(" CRON        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cron));
 	#endif
 	
 	#ifdef AMBIL_PM
@@ -381,12 +388,10 @@ void cek_stack(void)
 	#endif
 	
 	#ifdef BOARD_CNC
-		printf(" CNC      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
+		printf(" CNC         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
 	#endif
 	
-	#ifdef PAKAI_GPS
-		printf(" GPS      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_gps));
-	#endif
+	printf(    " Ambil Cepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
 }							 
 
 //static 
@@ -1159,6 +1164,7 @@ vTaskDelay(100);
 					#endif
 				#endif
 				
+				/*
 				#ifdef PAKAI_ADC
 					#ifdef BOARD_KOMON_A_RTD
 					proses_data_adc();
@@ -1183,9 +1189,11 @@ vTaskDelay(100);
 				#ifdef BOARD_KOMON_KONTER
 					data_frek_rpm();
 				#endif
+				//*/
 			}
 	  }
-	  
+		
+		/*
 		// pembacaaan ADC dipindah dari task eth ke shell 1 Okt 2010.
 		#ifdef PAKAI_ADC
 			#ifdef BOARD_KOMON_A_RTD
@@ -1207,6 +1215,7 @@ vTaskDelay(100);
 			
 			simpan_ke_data_f();
 		#endif
+		//*/
 		
 		#ifdef BOARD_KOMON_KONTER
 			data_frek_rpm();

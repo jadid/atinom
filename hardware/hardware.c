@@ -73,8 +73,8 @@ void setup_hardware() {
 
 void init_hardware()	{
 	#ifdef PAKAI_ADC
-		init_gpio_adc();
-		//init_gpio_mmc();
+		//init_gpio_adc();
+		init_gpio_mmc();
 		init_spi_mmc(0);		// untuk adc dan mmc
 	#endif
 	

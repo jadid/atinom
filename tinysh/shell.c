@@ -1022,32 +1022,31 @@ vTaskDelay(100);
 	printf("size struct Titik  = %d\r\n", sizeof (struct t_titik) * JML_MESIN * TIAP_MESIN);
 	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
-	
-	#ifdef BOARD_KOMON_420_SAJA
-	kalibrasi_adc1();
-	vTaskDelay(100);
-	start_adc_1();
-	#endif
-	
-	#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
-		#ifdef PAKAI_ADC
+
+	#ifdef PAKAI_ADC	
+		#ifdef BOARD_KOMON_420_SAJA
 			kalibrasi_adc1();
 			vTaskDelay(100);
 			start_adc_1();
 		#endif
-		vTaskDelay(100);
-	#endif
+		
+		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
+			kalibrasi_adc1();
+			vTaskDelay(100);
+			start_adc_1();
+		#endif
+		
+		#ifdef BOARD_KOMON_A_RTD
+			kalibrasi_adc1();
+			vTaskDelay(100);
+			start_adc_1();
+		#endif
 	
-	#ifdef BOARD_KOMON_A_RTD
-	kalibrasi_adc1();
-	vTaskDelay(100);
-	start_adc_1();
-	#endif
-	
-	#ifdef BOARD_KOMON_B_THERMO
-	kalibrasi_adc1();
-	vTaskDelay(100);
-	start_adc_1();
+		#ifdef BOARD_KOMON_B_THERMO
+			kalibrasi_adc1();
+			vTaskDelay(100);
+			start_adc_1();
+		#endif
 	#endif
 	
 	#ifdef BOARD_KOMON_KONTER

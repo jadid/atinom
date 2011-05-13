@@ -41,8 +41,10 @@ void setup_hardware(void);
 
 		#define FIO_CEK_PAKET			FIO2PIN
 
-		#define init_enc_port()			FIO2DIR = FIO2DIR & ~(INT_ENC); \
-										FIO0DIR = FIO0DIR | CS_ENC;
+		#define init_enc_port()		do {	\
+										FIO2DIR = FIO2DIR & ~(INT_ENC); \
+										FIO0DIR = FIO0DIR | CS_ENC;	\
+									} while (0);
 									
 		#define ENCX24J600_Reset()		FIO0CLR = CS_ENC
 		#define ENCX24J600_Unreset()	FIO0SET = CS_ENC
@@ -52,13 +54,13 @@ void setup_hardware(void);
 	#endif
 	
 	#ifdef PAKAI_ADC
-		#define port_cs_ad7708		BIT(6)	/* P1 */
+		#define port_cs_ad7708		BIT(6)	/* P0 */
 		#define port_rdy_ad7708		BIT(11)	/* P2 */
 		
 		//#define rate_7708 	25			// 55 data per detik
 		#define rate_7708		71			// 20 data per detik
 
-		#define	UNIPOLAR		0x08
+		#define	UNIPOLAR		0x08		// nilai positif saja
 		//#define range_RTD		(4 | UNIPOLAR)	// 0 - 320 mV
 
 		#define range_RTD		(5 | UNIPOLAR)	// 0 - 640 mV
@@ -71,5 +73,11 @@ void setup_hardware(void);
 		#define faktor_pengali_420		2.5
 		
 		#define AD7708_LPC_KOMON
+		
+		#define setup_adc()		do {	\
+										FIO0DIR = FIO0DIR | port_cs_ad7708;	\
+										FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\	
+										uncs_ad7708();	\
+									} while(0);
 	#endif
 #endif

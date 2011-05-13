@@ -217,9 +217,9 @@ void hitung_rpm(void)
 }
 #endif
 
+#ifdef TAMPILAN_LPC_4
 void init_gpio_keypad(void)
 {
-#ifdef TAMPILAN_LPC_4
 	extern void ( gpio_ISR_Wrapper_keypad )( void );
 
 	portENTER_CRITICAL();
@@ -240,8 +240,8 @@ void init_gpio_keypad(void)
 	IO2_INT_EN_F = PF14;
 
 	portEXIT_CRITICAL();
-#endif
 }
+#endif
 
 #ifdef AD7708_GPIO_KOMON
 void init_gpio_adc(void)

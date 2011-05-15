@@ -20,7 +20,7 @@ extern struct t_adc st_adc;
 
 void simpan_ke_data_f() {
 	
-	#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG_2_3)
+	#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG_2_3) || defined(BOARD_KOMON_420_SABANG)
 		int g;
 		float temp;
 		//extern struct t_adc st_adc;

@@ -88,7 +88,22 @@ THUMB_SOURCE= \
 		../../tinysh/enviro.c \
 		../../GPIO/gpio.c \
 		../../modul/spi/spi.c \
+		../../app/ambilcepat.c	\
+		../../modul/spi/low_ss1.c	\
+#		LCD/lcd_320.c \
+#		tampilan.c \
+#		LCD/menu_monita.c \
+#		LCD/menu_popup.c \
+
+#PM_SOURCE = \
+#		pm_server.c \
+
+ADC_SOURCE = \
+		../../modul/adc/ad7708.c	\
+
+UIP_SOURCE = \
 		../../uip/hardware/enc28j60.c	\
+		../../app/monita/monita_uip.c \
 		../../uip/clock.c \
 		../../uip/lib/memb.c \
 		../../uip/uip/uip.c \
@@ -99,21 +114,11 @@ THUMB_SOURCE= \
 		../../uip/uip/psock.c \
 		../../uip/uip/uiplib.c \
 		../../uip/uip_task.c \
-		../../monita/monita_uip.c \
+		../../uip/apps/telnetd/telnetd.c	\
 		../../webserver/httpd.c \
 		../../webserver/httpd-fs.c \
 		../../webserver/http-strings.c \
 		../../webserver/httpd-cgi.c \
-		../../uip/apps/telnetd/telnetd.c	\
-		../../modul/spi/low_ss1.c	\
-		../../modul/adc/ad7708.c	\
-#		LCD/lcd_320.c \
-#		tampilan.c \
-#		LCD/menu_monita.c \
-#		LCD/menu_popup.c \
-
-#PM_SOURCE = \
-#		pm_server.c \
 
 WEBCLIENT_SOURCE = \
 		../../webserver/webclient/webclient.c			\
@@ -125,6 +130,8 @@ ARM_SOURCE= \
 		../../GPIO/gpio_ISR.c 
 		
 #THUMB_SOURCE += $(PM_SOURCE)
+THUMB_SOURCE += $(ADC_SOURCE)
+THUMB_SOURCE += $(UIP_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)

@@ -49,9 +49,6 @@
 #define PAKAI_WEBCLIENT
 #define BANYAK_SUMBER
 
-#define SAMPURASUN_CLIENT
-#define SAMPURASUN_SERVER
-
 #define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
 #define _printf	printf2
@@ -67,15 +64,24 @@
 #define PAKAI_MAX485		1
 #define PAKAI_SERIAL_3				// mendefinisikan aktif serial 1
 #define PAKAI_PM			3		// nyambung ke SERIAL 3
-
+		
 #ifdef PAKAI_PM
 	#define BAUD_PM			19200
 	#define TIPE_PM810
 	#define TIPE_PM710
 #endif
 
+#define PAKAI_LED_UTAMA
+#define PAKAI_MODBUS_RTU
+
+#define PAKAI_SHELL
+
 #define PAKAI_ETH
 #ifdef PAKAI_ETH
+	#define PAKAI_ENC28J60
+
+	#define SAMPURASUN_CLIENT
+	#define SAMPURASUN_SERVER
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
 #endif

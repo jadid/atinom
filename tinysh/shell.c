@@ -11,6 +11,8 @@
 #include "rw_flash.c"
 #include "set_ipaddr.c"
 
+#include "../hardware/hardware.h"
+
 #define debug_printf printf
 
 #if (VERSI_KONFIG == 2)

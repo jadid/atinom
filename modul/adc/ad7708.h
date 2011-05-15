@@ -22,8 +22,9 @@
 #ifdef PAKAI_ADC
 // 21 Okt 2010
 #ifdef BOARD_KOMON_420_SABANG
-	#define port_cs_ad7708		BIT(17)	/* P1 */
-	#define port_rdy_ad7708		BIT(11)	/* P2 */
+/*
+	#define port_cs_ad7708		BIT(17)	// P1 //
+	#define port_rdy_ad7708		BIT(11)	// P2 //
 
 	//#define rate_7708 	25			// 55 data per detik
 	#define rate_7708		71			// 20 data per detik
@@ -41,6 +42,7 @@
 	#define faktor_pengali_420		2.5
 
 	#define AD7708_LPC_KOMON
+//*/
 #endif
 
 /* 3 Nov 2009 */

@@ -15,7 +15,7 @@
 #define true	1
 #ifdef PAKAI_ADC
 
-#if defined(BOARD_KOMON_420_SABANG_2_3)
+#if defined(BOARD_KOMON_420_SABANG_2_3) || defined(BOARD_KOMON_420_SABANG)
 	#include "../../hardware/hardware.h"
 #endif
 

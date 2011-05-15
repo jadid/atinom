@@ -285,15 +285,15 @@ void init_gpio_adc(void)
 #endif
 
 #ifdef BOARD_KOMON_420_SABANG
-
+/*
 #ifdef PAKAI_ADC
 void init_gpio_adc(void)
 {
 	portENTER_CRITICAL();
 	
-	/* GPIO CS diset output */
+	// GPIO CS diset output //
 	FIO1DIR = FIO1DIR | port_cs_ad7708;
-	/* port 2, nanti ganti ke mode interrupt */
+	// port 2, nanti ganti ke mode interrupt //
 	FIO2DIR = FIO2DIR & ~port_rdy_ad7708;
 	
 	uncs_ad7708();
@@ -302,5 +302,5 @@ void init_gpio_adc(void)
 	//portEXIT_CRITICAL();
 }
 #endif
-
+//*/
 #endif

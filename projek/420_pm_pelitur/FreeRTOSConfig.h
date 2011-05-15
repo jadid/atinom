@@ -36,8 +36,7 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-#define PAKE_TELNETD
-#define PAKAI_HTTP
+
 
 #define PAKAI_ID
 #define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
@@ -73,6 +72,12 @@
 	#define BAUD_PM			19200
 	#define TIPE_PM810
 	#define TIPE_PM710
+#endif
+
+#define PAKAI_ETH
+#ifdef PAKAI_ETH
+	#define PAKE_TELNETD
+	#define PAKAI_HTTP
 #endif
 
 //#define TES_GET_WEB

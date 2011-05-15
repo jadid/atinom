@@ -81,3 +81,15 @@ void setup_hardware(void);
 									} while(0);
 	#endif
 #endif
+
+
+#ifdef BOARD_KOMON_420_SABANG
+	#ifdef PAKAI_LED_UTAMA
+		#define LED_UTAMA	BIT(27)
+		
+		#define setup_led_utama()	do {	\
+										FIO0DIR = LED_UTAMA;	\
+										FIO0CLR = LED_UTAMA;	\
+									} while(0)
+	#endif
+#endif

@@ -69,8 +69,6 @@ inline void uncs_ad7708(void)
 
 //#ifdef BOARD_KOMON_A_RTD
 
-#ifdef AD7708_LPC_KOMON
-
 #define kirim_word	spiPut
 #define ambil_word	spiPut
 
@@ -96,12 +94,16 @@ inline void cs_ad7708(void)
 {
 	portENTER_CRITICAL();
 	SPI_SPCR = MSTR | CPOL;
-	FIO1CLR = port_cs_ad7708;
+	//FIO1CLR = port_cs_ad7708;
+	//FIO0CLR = port_cs_ad7708;
+	ad7708_select();
 }
 
 inline void uncs_ad7708(void)
 {
-	FIO1SET = port_cs_ad7708;
+	//FIO1SET = port_cs_ad7708;
+	//FIO0SET = port_cs_ad7708;
+	ad7708_deselect();
 	SPI_SPCR = MSTR;			// ENC biar gak problem
 	portEXIT_CRITICAL();
 }
@@ -110,7 +112,7 @@ inline spi_rx(void)
 {
 	return ;
 }
-#endif
+//#endif
 
 unsigned char cek_status(void)
 {
@@ -218,6 +220,7 @@ unsigned char cek_mode(void)
 	s = spi_rx();	//dummy, hanya mengosongkan RDBR
 	s = ambil_word();
 	uncs_ad7708();
+	//printf(" mode: %02x__  ", s);
 	return s;
 }
 
@@ -278,7 +281,7 @@ unsigned char cek_adc_id(void)
 	
 	
 	cs_ad7708();
-	kirim_word(m_read | 0x0F);
+	kirim_word(m_read | reg_id);
 	//spiPut(m_read | 0x0F);
 	//r = spiPut(0x00);
 	r = ambil_word();
@@ -286,6 +289,7 @@ unsigned char cek_adc_id(void)
 
 	return r;
 }
+
 void start_adc_1(int fdx)
 {
 	int i;
@@ -321,10 +325,14 @@ void start_adc_1(int fdx)
 	#ifdef BOARD_KOMON_420_SAJA
 	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
 	#endif
+
+	#ifdef BOARD_KOMON_420_SABANG_2_3
+	temp_char = (unsigned char) ((st_adc.cur_kanal << 4) + range_420);
+	#endif
 		
 	set_adccon(temp_char);
-	set_mode((unsigned char) (3 + 16));			//continuous sampling + CHCON
-		
+	set_mode((unsigned char) (3 + 16));			//continuous sampling + CHCON	// 0x03 | 0x10
+	
 	//cek filter
 	printf(" FILTER ADC = %d ;", (unsigned char) cek_filter());
 	printf(" ADCCON = %d ;", (unsigned char) cek_adccon());
@@ -505,6 +513,6 @@ void hitung_data_float(void)
 #endif
 }
 
-#endif		// #define PAKAI_ADC
+#endif
 
 #endif		// #define __AD7708__

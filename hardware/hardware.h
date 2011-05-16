@@ -54,8 +54,11 @@ void setup_hardware(void);
 	#endif
 	
 	#ifdef PAKAI_ADC
-		#define port_cs_ad7708		BIT(6)	/* P0 */
-		#define port_rdy_ad7708		BIT(11)	/* P2 */
+		#define port_cs_ad7708		BIT(6)	// P0.6  //
+		#define port_rdy_ad7708		BIT(11)	// P2.11 //
+	
+		#define ad7708_select()		FIO0CLR = port_cs_ad7708
+		#define ad7708_deselect()	FIO0SET = port_cs_ad7708
 		
 		//#define rate_7708 	25			// 55 data per detik
 		#define rate_7708		71			// 20 data per detik
@@ -105,6 +108,9 @@ void setup_hardware(void);
 	#ifdef PAKAI_ADC
 		#define port_cs_ad7708		BIT(17)	/* P1 */
 		#define port_rdy_ad7708		BIT(11)	/* P2 */
+
+		#define ad7708_select()		FIO1CLR = port_cs_ad7708
+		#define ad7708_deselect()	FIO1SET = port_cs_ad7708
 		
 		//#define rate_7708 	25			// 55 data per detik
 		#define rate_7708		71			// 20 data per detik
@@ -124,8 +130,8 @@ void setup_hardware(void);
 		#define AD7708_LPC_KOMON
 		
 		#define setup_adc()		do {	\
-									FIO1DIR = FIO1DIR | port_cs_ad7708;		\
-									FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\
+									FIO1DIR = FIO1DIR | port_cs_ad7708;		\	
+									FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\	
 									uncs_ad7708();							\
 								} while (0);
 	#endif

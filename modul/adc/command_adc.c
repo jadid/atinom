@@ -12,7 +12,7 @@
 #include "../tinysh/enviro.h"
 
 #if defined(BOARD_KOMON_420_SABANG_2_3)
-	#include "../../hardware/hardware.h"
+//	#include "../../hardware/hardware.h"
 #endif
 
 #ifdef PAKAI_ADC
@@ -159,7 +159,7 @@ void status_adc(void) {
 		}
 	#endif 
 	
-	#ifdef BOARD_KOMON_420_SABANG
+	#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 		printf("Status ADC: Voltage 4-20 mA / OnOff\r\n");
 		for (i=0; i<KANALNYA; i++)	{
 			//*

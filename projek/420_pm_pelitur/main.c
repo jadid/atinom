@@ -37,18 +37,6 @@ xTaskHandle hdl_led;
 xTaskHandle hdl_shell;
 xTaskHandle hdl_ether;
 
-void dele(int dd)
-{
-	int g;
-	int i;
-	int dum;
-
-	for (i=0; i<dd; i++)
-	{
-		dum = FIO0DIR;
-	}
-}
-
 
 /*-----------------------------------------------------------*/
 #define jalankan
@@ -65,6 +53,7 @@ int main( void )
 
 #ifdef jalankan
 	init_led_utama();
+	init_hardware();
 
 	vTaskStartScheduler();
 

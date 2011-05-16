@@ -298,8 +298,8 @@ int enc28j60Init (void)
   encBankSelect (BANK3);
 
 	#if 1
-	printf("MAC address : ");
-	printf("  (%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X) ", \
+	printf("   MAC address : ");
+	printf("%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X", \
 		uip_ethaddr.addr [0], uip_ethaddr.addr [1],	\
 		uip_ethaddr.addr [2], uip_ethaddr.addr [3], \
 		uip_ethaddr.addr [4], uip_ethaddr.addr [5]);

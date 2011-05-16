@@ -26,7 +26,7 @@ char kalibrasi_adc1(int fdy)
 	int t;
 	int loop_ulang;
 	int loop;
-	int loop_full_calib;
+	//int loop_full_calib;
 	
 	unsigned char temp_char;
 	unsigned char cek;
@@ -34,7 +34,7 @@ char kalibrasi_adc1(int fdy)
 	
 	printf("Start calibrating ADC");
 
-	stop_adc();
+	stop_adc();				// set_mode(1);
 	set_calibrated(0);
 	vTaskDelay(200);
 	reset_adc();
@@ -44,33 +44,32 @@ char kalibrasi_adc1(int fdy)
 	cek = cek_adc_id();	
 	printf(" id = 0x%X \n", cek);
 	
-	cek = 199;
-	cek = cek_adc_id();	
-	printf(" id = 0x%X \n", cek);
-	
 	vTaskDelay(10);
 	set_iocon(0x00);
 	er = 0;
 	ada_adc_1 = false;
 	
+	//return 0;
 	//*
 	for (t=0; t<10; t++)
 	{
 		temp_char = (unsigned char) ((er << 4) + 15);		// 0x0F
 	   	if (er == 8)
-	   	temp_char = (unsigned char) ((14 << 4) + 15);
+			temp_char = (unsigned char) ((14 << 4) + 15);
 	   	if (er == 9)
-	   	temp_char = (unsigned char) ((15 << 4) + 15);
+			temp_char = (unsigned char) ((15 << 4) + 15);
 	   
 	  	loop_ulang = 0;
 	   	
 	   	kalib_ulang:
 	   	loop_ulang++;
-		set_adccon(temp_char);
-		
+		set_adccon(temp_char);	// 0x0F: UNIPOLAR | 2.56 V
+		//printf("temp_char: %02x\r\n", temp_char);
 		// kalibrasi zero scale + CHCON //
-		set_mode(4 + 16);			
+		set_mode(4 + 16);		// 0x14		: CHOP enabled, NEG to 0V, REFIN 0-2.56V, CHCON:10 ch,
+		vTaskDelay(1);
 		cek = cek_adccon();
+		//printf("   adccon: %02x\r\n", cek);
 		if (cek != temp_char) printf(" !%d ", cek); 
 		//serial_puts("tidak cocok");
 		
@@ -78,7 +77,7 @@ char kalibrasi_adc1(int fdy)
 		loop = 0;
 		printf(" : Kanal %3d : ", (1+t));
 		
-		while ((cek_mode() & 0x3) != 0x1)
+		while ((cek_mode() & 0x3) != 0x1)		// cari nilai 0x01
 		{
 			vTaskDelay(10);
 			loop++;

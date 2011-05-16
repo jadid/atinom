@@ -16,7 +16,8 @@
 
 void rtc_init(void)
 {
-	PCONP |= BIT(9);
+	PCONP |= BIT(9);		// RTC
+	//PCONP |= BIT(33);		// RAM Vbat
 	
 	/*--- Initialize registers ---*/    
   	RTC_AMR = 0;

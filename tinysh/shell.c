@@ -146,7 +146,10 @@ void reset_cpu(void);
 
 extern struct sambungan_state samb;
 
+#ifdef PAKAI_SHELL
 extern xTaskHandle *hdl_shell;
+#endif
+
 extern xTaskHandle *hdl_lcd;
 
 #ifdef PAKAI_LED_UTAMA 
@@ -183,6 +186,9 @@ extern xTaskHandle *hdl_ambilcepat;
 #endif
 
 char str[20];
+
+#if 1
+//#ifdef PAKAI_SHELL
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -372,7 +378,10 @@ void cek_stack(void)
 	printf(	   " LCD         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
 	
+	#ifdef PAKAI_ETH
 	printf(    " Ether       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#endif
+	
 	#ifdef PAKAI_SELENOID
 		printf(" Relay       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
@@ -1255,4 +1264,4 @@ void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
 	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }
-
+#endif

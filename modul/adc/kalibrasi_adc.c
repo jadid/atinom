@@ -60,6 +60,7 @@ char kalibrasi_adc1(int fdy)
 			temp_char = (unsigned char) ((15 << 4) + 15);
 	   
 	  	loop_ulang = 0;
+	   	printf("   Kanal %2d : ", (1+t));
 	   	
 	   	kalib_ulang:
 	   	loop_ulang++;
@@ -75,7 +76,7 @@ char kalibrasi_adc1(int fdy)
 		
 		vTaskDelay(1);
 		loop = 0;
-		printf(" : Kanal %3d : ", (1+t));
+		
 		
 		while ((cek_mode() & 0x3) != 0x1)		// cari nilai 0x01
 		{
@@ -89,7 +90,7 @@ char kalibrasi_adc1(int fdy)
 				   	goto kalib_ulang;
 				}
 
-				printf("\n gagal !\r\n");
+				printf(".... GAGAL !!!\r\n");
 				ada_adc_1 = false;
 				break;
 			}

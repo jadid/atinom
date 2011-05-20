@@ -81,13 +81,13 @@
 //#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		4800
-	#define PAKAI_GPS				2
+//	#define PAKAI_GPS				2
 //	#define DEBUG_GPS
 #endif
 
 #define PAKAI_SHELL
 
-#define PAKAI_ETH
+//#define PAKAI_ETH
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600

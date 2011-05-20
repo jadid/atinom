@@ -45,7 +45,7 @@ int main( void )	{
 	setup_hardware();				// @"../../hardware/hardware.h"
 
 #ifdef PAKAI_ADC
-	init_gpio_adc();
+//	init_gpio_adc();
 	init_gpio_mmc();
 	init_spi_mmc(0);		// untuk adc dan mmc
 #endif

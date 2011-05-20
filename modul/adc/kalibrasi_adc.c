@@ -19,6 +19,45 @@
 	#include "../../hardware/hardware.h"
 #endif
 
+#if 0
+char kalib_adc() {
+	int itungadc=0;
+	
+	printf("Start calibrating ADC");
+	set_calibrated(0);
+	vTaskDelay(200);
+	
+	printf("ID adc: 0x%02x\r\n", cek_adc_id());
+	
+	reset_adc();
+	vTaskDelay(100);
+	printf("cek iocon: 0x%02x", cek_iocon());
+	set_iocon(0x00);
+	printf(" .... cek iocon: 0x%02x\r\n", cek_iocon());
+	vTaskDelay(1);
+	
+	printf("cek filter: 0x%02x", cek_filter());
+	set_filter(rate_7708);
+	printf(" .... cek filter: 0x%02x\r\n", cek_filter());
+	vTaskDelay(1);
+	
+	printf("cek adccon: 0x%02x", cek_adccon());
+	set_adccon(0x00 | 0x08 | 0x07);
+	printf(" .... cek adccon: 0x%02x\r\n", cek_adccon());
+	vTaskDelay(1);
+	
+	printf("cek mode: 0x%02x", cek_mode());
+	set_mode(0x14);
+	printf(" .... cek mode: 0x%02x\r\n", cek_mode());
+	
+	do {
+		printf(" %d.... cek mode: 0x%02x\r\n", itungadc++, cek_mode());
+		vTaskDelay(100);
+	} while(itungadc<100);
+	return 0;
+}
+#endif 
+
 char kalibrasi_adc1(int fdy)
 {
 	unsigned char er;
@@ -29,7 +68,7 @@ char kalibrasi_adc1(int fdy)
 	//int loop_full_calib;
 	
 	unsigned char temp_char;
-	unsigned char cek;
+	unsigned char cek,nloop=0;
 	//unsigned int mask;
 	
 	printf("Start calibrating ADC");
@@ -37,20 +76,23 @@ char kalibrasi_adc1(int fdy)
 	stop_adc();				// set_mode(1);
 	set_calibrated(0);
 	vTaskDelay(200);
-	reset_adc();
+	//printf("\r\nstlh stop, mode: 0x%02x, status: 0x%02x\r\n", cek_mode(), cek_status());
+	//printf("cek test1: 0x%02x, test2: 0x%02x\r\n", cek_test1adc(), cek_test2adc());
+	reset_adc();			// bersihkan mem
 	vTaskDelay(200);
-	
+	//printf("stlh reset, mode: 0x%02x, status: 0x%02x\r\n", cek_mode(), cek_status());
+	//printf("cek tes1: 0x%02x, test2: 0x%02x\r\n", cek_test1adc(), cek_test2adc());
 	//cek ID
-	cek = cek_adc_id();	
-	printf(" id = 0x%X \n", cek);
-	
+	printf(" id = 0x%X \n", cek_adc_id());
+	//printf(" mode: 0x%02x\r\n", cek_mode());
 	vTaskDelay(10);
 	set_iocon(0x00);
+	//printf(" mode: 0x%02x, iocon: 0x%02x\r\n", cek_mode(), cek_iocon());
 	er = 0;
 	ada_adc_1 = false;
 	
-	//return 0;
 	//*
+	t=0;
 	for (t=0; t<10; t++)
 	{
 		temp_char = (unsigned char) ((er << 4) + 15);		// 0x0F
@@ -62,31 +104,35 @@ char kalibrasi_adc1(int fdy)
 	  	loop_ulang = 0;
 	   	printf("   Kanal %2d : ", (1+t));
 	   	
+	   	//printf(" mode: 0x%02x\r\n", cek_mode());
 	   	kalib_ulang:
 	   	loop_ulang++;
-		set_adccon(temp_char);	// 0x0F: UNIPOLAR | 2.56 V
+		set_adccon(temp_char);	// 0x0F: UNIPOLAR | 2.56 V		// no ___1___.
+		vTaskDelay(1);
+		//printf(" mode: 0x%02x, adccon: 0x%02x, status: 0x%02x\r\n", cek_mode(), cek_adccon(), cek_status());
 		//printf("temp_char: %02x\r\n", temp_char);
 		// kalibrasi zero scale + CHCON //
-		set_mode(4 + 16);		// 0x14		: CHOP enabled, NEG to 0V, REFIN 0-2.56V, CHCON:10 ch,
+		set_mode(4 + 16);		// no ___2___  : 0x14 : CHOP enabled, NEG to 0V, REFIN 0-2.56V, CHCON:10 ch,
 		vTaskDelay(1);
-		cek = cek_adccon();
-		//printf("   adccon: %02x\r\n", cek);
-		if (cek != temp_char) printf(" !%d ", cek); 
+		//cek = cek_adccon();		// 0x0F
+		//printf("   mode: 0x%02x, adccon: 0x%02x, status: 0x%02x\r\n", cek_mode(), cek_adccon(), cek_status());
+		//if (cek != temp_char) printf(" !%d ", cek); 
 		//serial_puts("tidak cocok");
 		
-		vTaskDelay(1);
+		//vTaskDelay(1);
 		loop = 0;
 		
 		
-		while ((cek_mode() & 0x3) != 0x1)		// cari nilai 0x01
+		while ((cek=cek_mode() & 0x7) != 0x1)		// cari nilai 0x01, agar keluar dari loop
 		{
 			vTaskDelay(10);
+			
 			loop++;
-			if (loop > 50) 
+			if (loop > 150) 
 			{
 				if (loop_ulang < 6)
 				{
-					printf(" recalib ");
+					printf(" recalib %d, cek: 0x%02x ", ++nloop, cek);
 				   	goto kalib_ulang;
 				}
 
@@ -94,6 +140,7 @@ char kalibrasi_adc1(int fdy)
 				ada_adc_1 = false;
 				break;
 			}
+			
 		}
 		
 		if (loop < 50) 

@@ -83,9 +83,9 @@ CFLAGS= $(DEBUG) \
 THUMB_SOURCE= \
 		main.c \
 		../../hardware/hardware.c \
-		../../system/setup_cpu.c \
-		../../system/syscall.c \
-		../../system/reset_cpu.c \
+		../../hardware/system/setup_cpu.c \
+		../../hardware/system/syscall.c \
+		../../hardware/system/reset_cpu.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
@@ -98,10 +98,10 @@ THUMB_SOURCE= \
 		../../tinysh/shell.c \
 		../../tinysh/enviro.c \
 		../../GPIO/gpio.c \
-		../../monita/monita_uip.c \
-		../../system/idle_hook.c \
+		../../app/monita/monita_uip.c \
+		../../hardware/system/idle_hook.c \
 		../../modul/adc/ad7708.c	\
-
+		../../app/ambilcepat.c	\
 
 
 UIP_SOURCE = \
@@ -170,8 +170,8 @@ RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
 	$(DISAMB) $(NAMA_FILE).elf -d > $(NAMA_FILE).S
 
-RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../system/boot.s Makefile 
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../system/boot.s $(LINKER_FLAGS)
+RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../modul/system/boot.s Makefile 
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../modul/system/boot.s $(LINKER_FLAGS)
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) -mthumb $< -o $@

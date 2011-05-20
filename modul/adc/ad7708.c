@@ -93,7 +93,7 @@ unsigned char ambil_word_mmc(void);
 inline void cs_ad7708(void)
 {
 	portENTER_CRITICAL();
-	SPI_SPCR = MSTR | CPOL;
+	//SPI_SPCR = MSTR | CPOL;
 	//FIO1CLR = port_cs_ad7708;
 	//FIO0CLR = port_cs_ad7708;
 	ad7708_select();
@@ -104,7 +104,7 @@ inline void uncs_ad7708(void)
 	//FIO1SET = port_cs_ad7708;
 	//FIO0SET = port_cs_ad7708;
 	ad7708_deselect();
-	SPI_SPCR = MSTR;			// ENC biar gak problem
+	//SPI_SPCR = MSTR;			// ENC biar gak problem
 	portEXIT_CRITICAL();
 }
 
@@ -187,6 +187,27 @@ unsigned char set_mode(unsigned char t)
 	return 1;
 }
 
+unsigned char cek_test1adc(void)
+{
+	unsigned char s;
+   cs_ad7708();
+	kirim_word(m_read | reg_test1_adc);
+	s = spi_rx();		//dummy, hanya mengosongkan RDBR
+	s = ambil_word();
+	uncs_ad7708();
+	return s;
+}
+
+unsigned char cek_test2adc(void)
+{
+	unsigned char s;
+   cs_ad7708();
+	kirim_word(m_read | reg_test2_adc);
+	s = spi_rx();		//dummy, hanya mengosongkan RDBR
+	s = ambil_word();
+	uncs_ad7708();
+	return s;
+}
 
 //9 oktober
 

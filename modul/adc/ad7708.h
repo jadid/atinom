@@ -113,6 +113,9 @@
 #define reg_iocon				0x07
 #define reg_id					0x0F
 
+#define reg_test1_adc			0x0C
+#define reg_test2_adc			0x0D
+
 
 /*
 #if (range_adc == 15)
@@ -141,6 +144,7 @@ unsigned char set_mode(unsigned char t);
 unsigned char cek_iocon(void);
 unsigned char cek_adccon(void);
 unsigned char cek_mode(void);
+unsigned char cek_filter(void);
 unsigned char cek_adc_id(void);
 void stop_adc(void);
 void reset_adc(void);
@@ -148,5 +152,7 @@ unsigned char set_calibrated(unsigned char c);
 
 inline unsigned int cek_adc_rdy(void);
 
+unsigned char cek_test1adc(void);
+unsigned char cek_test2adc(void);
 //static unsigned short baca_data(void);
 #endif

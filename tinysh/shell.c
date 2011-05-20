@@ -1045,10 +1045,14 @@ vTaskDelay(100);
 		#endif
 		
 		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
+			//status_adcnya = kalib_adc();
 			status_adcnya = kalibrasi_adc1();
 			vTaskDelay(100);
 			if (status_adcnya)
 				start_adc_1();
+			else {
+				printf("gak start adc 1\r\n");
+			}
 		#endif
 		
 		#ifdef BOARD_KOMON_A_RTD

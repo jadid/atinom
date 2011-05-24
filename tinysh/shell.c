@@ -12,11 +12,14 @@
 #include "set_ipaddr.c"
 
 #include "../hardware/hardware.h"
+#include "utils.c"
 
 #define debug_printf printf
 
+#ifdef PAKAI_SHELL
+
 #if (VERSI_KONFIG == 2)
-#include "utils.c"
+
 #include "group.c"
 #include "sumber.c"
 //#include "../monita/monita_kontrol_2.c"
@@ -362,8 +365,8 @@ void cek_stack(void)
 {
 	printf("Sisa stack masing2 task (bytes)\r\n");
 	garis_bawah();
-	printf(" Shell    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
-	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
+	printf(     " Shell      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
+	printf(     " Led        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
 	#ifdef BOARD_TAMPILAN
 	//#ifdef CARI_SUMBERNYA
@@ -1268,4 +1271,6 @@ void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
 	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
 }
+#endif
+
 #endif

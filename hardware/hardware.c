@@ -33,6 +33,9 @@ void setup_hardware() {
 		setup_serial2_P0();
 	#endif
 	
+	#ifdef PAKAI_I2C
+		setup_gpio_i2c();
+	#endif
 		
 	#ifdef PAKAI_SERIAL_3
 		/* PCONP enable UART3 */
@@ -75,7 +78,6 @@ void setup_hardware() {
 void init_hardware()	{
 	#ifdef PAKAI_ADC
 		init_gpio_mmc();
-		
 		init_spi_mmc(0);		// untuk adc dan mmc
 	#endif
 	
@@ -94,10 +96,14 @@ void init_hardware()	{
 	#ifdef PAKAI_SERIAL_2_P0
 		serial2_init( PAKAI_SERIAL_2_P0, (1 * configMINIMAL_STACK_SIZE) );
 	#endif
+	
 	#ifdef PAKAI_SERIAL_3_P0
 		serial3_init( PAKAI_SERIAL_3_P0, (1 * configMINIMAL_STACK_SIZE) );
 	#endif
 	
+	#ifdef PAKAI_I2C
+		
+	#endif
 //***************************************************************/
 /*
  *						APLIKASI ada di sini 

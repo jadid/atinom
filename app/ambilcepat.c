@@ -11,10 +11,16 @@
 
 xTaskHandle hdl_ambilcepat;
 
+
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(500);
+  	
+  	int loopambil=0;
 	
-  	printf(" Monita : Ambil cepat init !!\r\n");
+	#ifdef PAKAI_SHELL
+		printf(" Monita : Ambil cepat init !!\r\n");
+  	#endif
+  	
   	#ifdef PAKAI_GPS
 		int hasil_gpsnya;
 		awal_gps();
@@ -24,9 +30,23 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		extern unsigned char status_adcnya; 
   	#endif
   	
+  	#ifdef PAKAI_I2C
+		unsigned char st_tsc=0;
+		char a;
+		int i;
+		int c=0;
+		
+		if (setup_fma())	printf(" NO ack !\r\n");
+		else	{			
+			printf(" OK ack !\r\n");
+			st_tsc = 1;
+		}
+  	#endif
+  	
   	vTaskDelay(100);
   	for(;;) {
-		vTaskDelay(2);
+		vTaskDelay(1);
+		loopambil++;
 		#ifdef PAKAI_GPS
 			//if (serPollGPS())	
 			{
@@ -53,8 +73,100 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#ifdef BOARD_KOMON_KONTER
 			data_frek_rpm();
 		#endif
-	}
 	
+		#ifdef PAKAI_I2C
+			#if 1
+			if (loopambil%500==0) {	// 2*250: 500ms = 0.5 detik
+				printf("__detik: %3d,  ", c++);
+				baca_register_tsc();
+
+				#if 0
+				if (int_berganti() == 0) 
+				{
+					printf("disentuh\r\n");
+				}
+				else
+					printf("HIGH\r\n");
+					//vSerialPutString(0, "HIGH\r\n");
+				#endif
+			}
+			#endif
+			#if 0
+			if (st_tsc) {
+				if (xSerialGetChar(1, &c, 0xFFFF ) == pdTRUE)
+				{
+					vSerialPutString(0, "Tombol ditekan = ");
+					xSerialPutChar(	0, (char ) c);
+					vSerialPutString(0, " \r\n");
+					
+					if ( (char) c == 's')
+					{
+						printf(" Set\r\n");
+						/*
+						if (i2c_set_register(0x68, 1, 8))
+						{
+							out(" NO ACK !!\r\n");
+						}
+						else
+							out(" OK\r\n");
+						*/
+						
+						if (setup_fma())
+						{
+							printf(" NO ack !\r\n");
+						}
+						else
+							printf(" OK ack !\r\n");
+							
+						
+					}
+					else
+					{
+						printf("====\r\n");
+						for (i=0;i<16; i++)
+						{
+							if (i == 8) printf("****\r\n");
+							
+							if (i2c_read_register(0x68, (0x50 + i), &a))
+							{
+								printf(" Read failed !\r\n");
+							}
+							else
+							{
+								printf(" Read OK =");
+								a = a + '0';
+								printf("%c", (char) a);
+								printf(" \r\n");
+							}
+						}
+							
+							printf("KEY \r\n");
+							if (i2c_read_register(0x68, 0x68, &a))
+							{
+								printf(" Read failed !\r\n");
+							}
+							else
+							{
+								printf(" Read OK =");
+								a = a + '0';
+								printf("%c", (char) a);
+								printf(" \r\n");
+							}
+							//a = read_key();
+							//a = a + '0';
+							//xSerialPutChar(	0, (char ) a);
+					}
+				}
+			}
+			#endif
+
+		#endif
+
+		if (loopambil>30000) {
+			loopambil=0;
+		}
+	}
+
 	#ifdef PAKAI_GPS
 		deinit_gps();
 	#endif

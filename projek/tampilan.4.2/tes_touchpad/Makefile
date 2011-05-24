@@ -29,7 +29,7 @@
 #	***************************************************************************
 
 
-RTOS_SOURCE_DIR=../../modul/FreeRTOS_Source
+RTOS_SOURCE_DIR=../FreeRTOS_Source
 
 
 #CC=arm-elf-gcc
@@ -37,40 +37,28 @@ RTOS_SOURCE_DIR=../../modul/FreeRTOS_Source
 LDSCRIPT=lpc2368.ld
 
 #PAT =/usr/local/arm_gc2/bin/./
-PAT =../../TOOLCHAIN/bin/./
+PAT =../TOOLCHAIN/bin/./
 CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
-PENULIS= ../../modul/Penulis/./lpc_dbe
+PENULIS= ../Penulis/./lpc_dbe
 
-NAMA_FILE=420_medco
+NAMA_FILE=blin_ser
 
-############# GPS ################
-GPSDIR = ../../modul/nmealib/src
-GPSMODULES = parse parser tok context time info gmath  
-GPSOBJ = $(GPSMODULES:%=build/%.o) 
-GPSLIB = lidah/libnmea.a
-############# GPS ################
-
-
-#LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
-LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=$(NAMA_FILE).map 
+LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 
 OPTIM=-O1
 
 
 CFLAGS= $(DEBUG) \
 		$(OPTIM) \
-		-I../../TOOLCHAIN/arm-elf/include/ \
+		-I../TOOLCHAIN/arm-elf/include/ \
 		-T$(LDSCRIPT) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
-		-I ../../hardware/ \
-		-I ../../modul/ \
-		-I ../../modul/nmealib/include/ \
-		-I ../../uip/uip/ \
+		-I ../uip/uip \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -78,95 +66,39 @@ CFLAGS= $(DEBUG) \
 		-D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) \
 		-fomit-frame-pointer \
 		-mthumb-interwork \
+		-s -w
 
 								
 THUMB_SOURCE= \
 		main.c \
-		../../hardware/hardware.c \
-		../../hardware/system/setup_cpu.c \
-		../../hardware/system/syscall.c \
-		../../hardware/system/reset_cpu.c \
-		../../hardware/system/idle_hook.c \
+		../system/setup_cpu.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
-		../../modul/spi/spi.c \
-		../../modul/serial/serial.c \
-		../../modul/spi/low_ss1.c	\
-		../../tinysh/tinysh.c \
-		../../tinysh/shell.c \
-		../../tinysh/enviro.c \
-		../../GPIO/gpio.c \
-		../../app/ambilcepat.c	\
+		../system/serial/serial.c \
+		bitbang_i2c.c fma1125.c
 		
-ADC_SOURCE = \
-		../../modul/adc/ad7708.c	\
-
-
-UIP_SOURCE = \
-		../../app/monita/monita_uip.c \
-		../../uip/clock.c \
-		../../uip/lib/memb.c \
-		../../uip/uip/uip.c \
-		../../uip/uip/uip_arch.c \
-		../../uip/uip/uip_arp.c \
-		../../uip/uip/uip_timer.c \
-		../../uip/uip/uip-fw.c \
-		../../uip/uip/psock.c \
-		../../uip/uip/uiplib.c \
-		../../uip/uip_task.c \
-		../../uip/apps/telnetd/telnetd.c	\
-		../../webserver/httpd.c \
-		../../webserver/httpd-fs.c \
-		../../webserver/http-strings.c \
-		../../webserver/httpd-cgi.c \
-		
-ETH_SOURCE = \
-		../../uip/hardware/enc28j60.c	\
-		../../uip/hardware/ENCX24J600.c	\
-
-
-WEBCLIENT_SOURCE = \
-		../../webserver/webclient/webclient.c			\
-		../../webserver/webclient/webclient-strings.c	\
-
-#MODULES_GPS = parse parser tok context time info gmath  
-GPS_SOURCE = \
-		../../modul/nmealib/src/parse.c \
-		../../modul/nmealib/src/parser.c \
-		../../modul/nmealib/src/context.c \
-		../../modul/nmealib/src/info.c \
-		../../modul/nmealib/src/gmath.c \
-		../../modul/nmealib/src/timegps.c \
-		../../modul/nmealib/src/tok.c \
-		../../app/gps/gps.c		\
-
-
+#		../system/syscall.c \
+#		../system/reset_cpu.c \
+#		../tinysh/tinysh.c	\
+#		../tinysh/shell.c
+	
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
-		../../modul/serial/serialISR.c \
-		../../GPIO/gpio_ISR.c 
-
-
-THUMB_SOURCE += $(GPS_SOURCE)
-THUMB_SOURCE += $(UIP_SOURCE)
-THUMB_SOURCE += $(ADC_SOURCE)
-#THUMB_SOURCE += $(PM_SOURCE)
-THUMB_SOURCE += $(WEBCLIENT_SOURCE)
-THUMB_SOURCE += $(ETH_SOURCE)
+		../system/serial/serialISR.c \
+#		i2c.c	i2c_handler.c
+		
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)
 
-LIBS = -lc -lgcc -lm -Llib
-
-###### GPS #######
-LIBGPSI = -lm -Llidah -lnmea
+LIBS = -lc -lgcc -lm
 
 
-all: RTOSDemo.bin  sizeafter
+
+all: RTOSDemo.bin sizebefore 
 
 RTOSDemo.bin : RTOSDemo.hex 
 	$(OBJCOPY) $(NAMA_FILE).elf -O binary $(NAMA_FILE).bin
@@ -175,8 +107,8 @@ RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
 	$(DISAMB) $(NAMA_FILE).elf -d > $(NAMA_FILE).S
 
-RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../hardware/system/boot.s Makefile 
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../hardware/system/boot.s $(LINKER_FLAGS)
+RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../system/boot.s Makefile 
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../system/boot.s $(LINKER_FLAGS) 
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) -mthumb $< -o $@
@@ -184,14 +116,12 @@ $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 $(ARM_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-clean : gpsclean
+clean :
 	rm $(THUMB_OBJS)
 	rm $(ARM_OBJS)
 	rm $(NAMA_FILE).elf
 	rm $(NAMA_FILE).hex
 	rm $(NAMA_FILE).bin
-	rm $(NAMA_FILE).S
-	rm $(NAMA_FILE).map
 #	touch Makefile
 	
 tulis :
@@ -200,8 +130,8 @@ tulis :
 tulis1 :
 	$(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB1 115200 14748
 		
-MSG_SIZE_BEFORE = Size sebelum: 
-MSG_SIZE_AFTER = Size setelah:
+MSG_SIZE_BEFORE = Size before: 
+MSG_SIZE_AFTER = Size after:
 
 # Display size of file.
 HEXSIZE = $(UKURAN) --target=$(FORMAT) $(NAMA_FILE).hex
@@ -211,22 +141,6 @@ sizebefore:
 
 sizeafter:
 	@if [ -f $(NAMA_FILE).elf ]; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); echo; fi
-
-gpso: pregps $(GPSLIB)
-	
-pregps:
-	mkdir -p build
-
-$(GPSLIB): $(GPSOBJ)
-	mkdir -p lidah
-	ar rsc $@ $^
-	ranlib $@
-	
-build/%.o: $(GPSDIR)/%.c 
-	$(CC) $(CFLAGS) -c $< -o $@
-
-gpsclean:
-	rm -f build/*.o
 
 
 

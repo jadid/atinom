@@ -11,21 +11,17 @@
 */
 
 //#include <avr/io.h>
-//#define F_CPU 16000000UL
+#define F_CPU 16000000UL
 //#include <util/delay.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "hardware.h"
-
-#if 0
 #define GPIO_SCL	BIT(15)		// P0.15 (SCK)
 #define GPIO_SDA	BIT(18)		// P0.18 (MOSI)
 #define GPIO_INT	BIT(17)		// P0.17 (MISO)
 #define DUMMY		BIT(26)		// led
-#endif
 
 #if 0
 #define DDR 	DDRC
@@ -52,7 +48,7 @@
 // tetapi jika mau SCL_clr, harus
 // dibuat output dulu
 
-#if 0
+
 //#define SCL_set() 	(FIO0SET = GPIO_SCL)
 #define SCL_set() 	(FIO0DIR &= ~GPIO_SCL)
 #define SCL_clr() 	(FIO0CLR = GPIO_SCL)
@@ -65,7 +61,6 @@
 #define SDA_out() 	(FIO0DIR |= GPIO_SDA)
 #define SDA_in() 	(FIO0DIR &= ~GPIO_SDA)
 #define SDA_read() 	(FIO0PIN & GPIO_SDA)
-#endif
 
 static int togle_int;
 int i2c_read_register(char addr, char reg, char *val);
@@ -73,29 +68,24 @@ int i2c_read_register(char addr, char reg, char *val);
 #define outc(c) xSerialPutChar(	0, (char ) c)
 #define out(s) vSerialPutString(0, s)
 
-/*
 void init_gpio_i2c(void)
 {	
 		FIO0DIR &= ~GPIO_INT;		
 		togle_int = 0;
 }
-//*/
-
-
 
 int int_berganti(void)
 {
 	char a;
 	
-	//if ( FIO0PIN & GPIO_INT )
-	if (I2C_INT_PIN & GPIO_INT )
+	if ( FIO0PIN & GPIO_INT )
 	{
 		//return 1;
 		// cek keypad yang ditekan
 		out("KEY \r\n");
 					if (i2c_read_register(0x68, 0x68, &a))
 					{
-						out("\r\n Read failed !\r\n");
+						out(" Read failed !\r\n");
 					}
 					else
 					{
@@ -122,8 +112,7 @@ void delay(void)
 	// 50 sekitar 7.5 uS
 	
 	for (i=0; i<50; i++)		// 15 uS
-		//y = (FIO0PIN & DUMMY); 
-		y = (I2C_PIN & DUMMY); 
+		y = (FIO0PIN & DUMMY); 
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
 int i2c_write(unsigned char data)
@@ -149,9 +138,7 @@ int i2c_write(unsigned char data)
 		while ( !SCL_read() )
 		{
 			delay();
-			#ifdef DEBUG_TSC
 			outc('s');
-			#endif
 			tot++;
 			if (tot > 100) return -1;
 		}		
@@ -172,9 +159,7 @@ int i2c_write(unsigned char data)
 	while ( !SCL_read() )
 	{
 			delay();
-			#ifdef DEBUG_TSC
 			outc('s');
-			#endif
 			tot++;
 			if (tot > 100) return -1;
 	}		
@@ -198,9 +183,7 @@ int i2c_write(unsigned char data)
 int i2c_read(unsigned char *pdata, int ack)
 {
 	SDA_in();
-	#ifdef DEBUG_TSC
 	outc('Z');
-	#endif
 	unsigned char data=0x00;
 	char index;
 	int tot = 0;
@@ -217,9 +200,7 @@ int i2c_read(unsigned char *pdata, int ack)
 		while ( !SCL_read() )
 		{
 			delay();
-			#ifdef DEBUG_TSC
 			outc('s');
-			#endif
 			tot++;
 			if (tot > 100) return -1;
 		}
@@ -231,15 +212,10 @@ int i2c_read(unsigned char *pdata, int ack)
 		if(SDA_read())
 		{
 			data++;
-			#ifdef DEBUG_TSC
 			outc('-');
-			#endif
 		}
-		else {
-			#ifdef DEBUG_TSC
+		else
 			outc('x');
-			#endif
-		}
 			
 		delay();
 		SCL_out();	// LOW, 
@@ -279,9 +255,7 @@ void i2c_start(void)
 	while ( !SCL_read() )
 	{
 			delay();
-			#ifdef DEBUG_TSC
 			outc('a');
-			#endif
 			tot++;
 			if (tot > 100) return -1;
 	}		
@@ -313,9 +287,7 @@ void i2c_stop(void)
 	while ( !SCL_read() )
 	{
 			delay();
-			#ifdef DEBUG_TSC
 			outc('b');
-			#endif
 			tot++;
 			if (tot > 100) return -1;
 	}		
@@ -367,17 +339,13 @@ int i2c_read_register(char addr, char reg, char *val)
 	i2c_start();
 	if ( i2c_write(c) )
 	{
-		#ifdef DEBUG_TSC
-		outc('a');
-		#endif
+		outc('A');
 		i2c_stop();
 		return -1;
 	}
 	if ( i2c_write(reg) )
 	{
-		#ifdef DEBUG_TSC
 		outc('B');
-		#endif
 		i2c_stop();
 		return -2;
 	}
@@ -386,9 +354,7 @@ int i2c_read_register(char addr, char reg, char *val)
 	i2c_start();
 	if ( i2c_write(c) )
 	{
-		#ifdef DEBUG_TSC
 		outc('C');
-		#endif
 		i2c_stop();
 		return -3;
 	}
@@ -396,14 +362,10 @@ int i2c_read_register(char addr, char reg, char *val)
 	{
 		//i2c_stop();
 		//return -4;
-		#ifdef DEBUG_TSC
 		outc('D');
-		#endif
 	}
 	i2c_stop();
-	#ifdef DEBUG_TSC
 	outc('E');
-	#endif
 	
 	//*val = data;
 	return 0;

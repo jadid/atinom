@@ -44,7 +44,7 @@ DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
 PENULIS= ../../modul/Penulis/./lpc_dbe
 
-NAMA_FILE=420_medco
+NAMA_FILE=tampilan.4.2
 
 ############# GPS ################
 GPSDIR = ../../modul/nmealib/src
@@ -143,6 +143,9 @@ GPS_SOURCE = \
 		../../modul/nmealib/src/tok.c \
 		../../app/gps/gps.c		\
 
+TSC_SOURCE = \
+		../../modul/i2c/bitbang_i2c.c	\
+		../../app/tsc/fma1125.c		\
 
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
@@ -156,6 +159,7 @@ THUMB_SOURCE += $(ADC_SOURCE)
 #THUMB_SOURCE += $(PM_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 THUMB_SOURCE += $(ETH_SOURCE)
+THUMB_SOURCE += $(TSC_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

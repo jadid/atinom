@@ -37,7 +37,7 @@
 
 #define HTTPD_FS_STATISTICS 1
 
-#include "../fatfs/ff.h"
+#include "../modul/fatfs/ff.h"
 
 struct httpd_fs_file {
   char *data;

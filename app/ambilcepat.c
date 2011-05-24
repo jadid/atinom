@@ -13,7 +13,7 @@ xTaskHandle hdl_ambilcepat;
 
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
-  	vTaskDelay(500);
+  	vTaskDelay(400);
   	
   	int loopambil=0;
 	
@@ -38,12 +38,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		if (setup_fma())	printf(" NO ack !\r\n");
 		else	{			
-			printf(" OK ack !\r\n");
+			printf("Init TSC OK ack !!!\r\n");
 			st_tsc = 1;
 		}
   	#endif
   	
-  	vTaskDelay(100);
+  	vTaskDelay(50);
   	for(;;) {
 		vTaskDelay(1);
 		loopambil++;
@@ -76,19 +76,21 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	
 		#ifdef PAKAI_I2C
 			#if 1
-			if (loopambil%500==0) {	// 2*250: 500ms = 0.5 detik
-				printf("__detik: %3d,  ", c++);
-				baca_register_tsc();
+			if (st_tsc) {
+				if (loopambil%500==0) {	// 2*250: 500ms = 0.5 detik
+					//printf("__detik: %3d\r\n", c++);
+					//baca_register_tsc();
 
-				#if 0
-				if (int_berganti() == 0) 
-				{
-					printf("disentuh\r\n");
+					#if 1
+					if (int_berganti() == 0) 
+					{
+						//printf("disentuh\r\n");
+					}
+					else
+						printf("HIGH\r\n");
+						//vSerialPutString(0, "HIGH\r\n");
+					#endif
 				}
-				else
-					printf("HIGH\r\n");
-					//vSerialPutString(0, "HIGH\r\n");
-				#endif
 			}
 			#endif
 			#if 0

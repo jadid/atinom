@@ -69,6 +69,7 @@ CFLAGS= $(DEBUG) \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
 		-I ../../hardware/ \
 		-I ../../modul/ \
+		-I ../../app/ \
 		-I ../../modul/nmealib/include/ \
 		-I ../../uip/uip/ \
 		-D ROWLEY_LPC23xx \
@@ -143,6 +144,9 @@ GPS_SOURCE = \
 		../../modul/nmealib/src/tok.c \
 		../../app/gps/gps.c		\
 
+PWM_DIMMER = \
+#		../../app/pwm_dimmer/pwmdimmer.c			\
+		
 
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
@@ -156,6 +160,8 @@ THUMB_SOURCE += $(ADC_SOURCE)
 #THUMB_SOURCE += $(PM_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 THUMB_SOURCE += $(ETH_SOURCE)
+THUMB_SOURCE += $(PWM_DIMMER)
+
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

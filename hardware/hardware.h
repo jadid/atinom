@@ -83,6 +83,14 @@ void setup_hardware(void);
 										uncs_ad7708();	\
 									} while(0);
 	#endif
+
+	#ifdef PAKAI_TIMER2
+		#define setup_timer2()		do	{	\
+										PCONP |= BIT(22);		\				
+										PCLKSEL1 &= ~(BIT(12) | BIT(13));	\
+										PCLKSEL1 |= BIT(12);				\
+									} while(0)
+	#endif
 #endif
 
 

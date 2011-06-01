@@ -36,7 +36,11 @@ void setup_hardware() {
 	#ifdef PAKAI_I2C
 		setup_gpio_i2c();
 	#endif
-		
+	
+	#ifdef PAKAI_GPIO_DIMMER
+		setup_timer2();
+	#endif
+	
 	#ifdef PAKAI_SERIAL_3
 		/* PCONP enable UART3 */
 		PCONP |= BIT(25);
@@ -103,6 +107,10 @@ void init_hardware()	{
 	
 	#ifdef PAKAI_I2C
 		
+	#endif
+	
+	#ifdef PAKAI_TIMER2
+		init_timer2();
 	#endif
 //***************************************************************/
 /*

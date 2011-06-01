@@ -46,6 +46,10 @@ xTaskHandle hdl_ether;
 int main( void )	{
 	setup_hardware();				// @"../../hardware/hardware.h"
 
+	FIO1DIR |= BIT(31) | BIT(30);
+	FIO1SET = BIT(31);		// led indi
+	//FIO1SET = BIT(30);		// pwm
+	
 	init_led_utama();
 	init_hardware();
 
@@ -56,6 +60,48 @@ int main( void )	{
 	return 0;
 
 }
+
+#if 0
+static int pwmPulseWidth = 20000;
+static int pwmPercentage = 50;
+
+/*
+int pwmDutyCycle (int percentage)	{
+  if ((percentage < 0) || (percentage > 100))
+    return -1;
+
+  PWM_MR5 = ((configCPU_CLOCK_HZ / pwmPulseWidth) * (pwmPercentage = percentage)) / 100;
+  PWM_LER = PWM_LER_M5L;
+
+  return 0;
+}
+//*/
+
+void initPWM() {
+	PCONP |= BIT(6);
+	//PCB_PINSEL1 = (PCB_PINSEL1 & ~PCB_PINSEL1_P021_MASK) | PCB_PINSEL1_P021_PWM5;
+	PCLKSEL0 &= ~(BIT(12) | BIT(13));	// PCLK = CCLK
+	PCLKSEL0 |= BIT(12);
+	
+	PINSEL3 &= ~(BIT(20) | BIT(21));
+	PINSEL3 |= (BIT(21));
+	
+#define CNT_EN		0
+#define PWM_EN		3
+
+	
+	PWM_TCR  = PWM_TCR_CR;
+	PWM_PR   = 0;
+	PWM_MR0  = (configCPU_CLOCK_HZ / pwmPulseWidth);
+	PWM_MCR |= PWM_MCR_MR0R;
+	PWM_PCR |= PWM_PCR_ENA5;
+	PWM_TCR  = (PWM_TCR_CE | PWM_TCR_PWME);
+	
+	PWM1TCR  = 
+	
+	pwmDutyCycle (50);
+}
+#endif
 
 void togle_led_utama(void)	{
 	if (tog)	{
@@ -82,10 +128,23 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 	loop_idle = 0;
 	idle_lama = 0;
 	
+	int w=1;
+	
 	for (;;)	{
 		togle_led_utama();
 		vTaskDelay(500);
-		
+		//*
+		//w-=1;
+		w=1-w;
+		if (w)	{
+			//FIO1CLR = BIT(30);
+			FIO1SET = BIT(31);
+		}
+		else {
+			//FIO1SET = BIT(30);
+			FIO1CLR = BIT(31);
+		}
+		//*/
 		//printf(" - Tanggal   : %d-%d-%d\r\n", infoGPS.utc.day, infoGPS.utc.mon, infoGPS.utc.year);
 	}
 }

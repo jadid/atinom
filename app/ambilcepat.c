@@ -43,6 +43,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		}
   	#endif
   	
+  	#ifdef PAKAI_GPIO_DIMMER
+		//init_remang();
+  	#endif
+  	
   	vTaskDelay(50);
   	for(;;) {
 		vTaskDelay(1);
@@ -78,8 +82,8 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#if 1
 			if (st_tsc) {
 				if (loopambil%500==0) {	// 2*250: 500ms = 0.5 detik
-					//printf("__detik: %3d\r\n", c++);
-					//baca_register_tsc();
+					printf("__detik: %3d\r\n", c++);
+					baca_register_tsc();
 
 					#if 1
 					if (int_berganti() == 0) 
@@ -167,6 +171,27 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		if (loopambil>30000) {
 			loopambil=0;
 		}
+		
+		#ifdef PAKAI_GPIO_DIMMER
+			//remangkan();
+			/*
+			loop_pwm++;
+			
+			#ifdef DEBUG_PWM_GPIO
+			if (loop_pwm>500) {
+				loop_pwm=0;
+				blink_pwm=1-blink_pwm;
+				if (blink_pwm) {
+					FIO1SET = BIT(30);
+				} else {
+					FIO1CLR = BIT(30);
+				}
+			}
+			#endif
+			//*/
+		#endif
+		
+		
 	}
 
 	#ifdef PAKAI_GPS

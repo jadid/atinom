@@ -74,6 +74,42 @@ void init_timer2() {
 }
 #endif
 
+#ifdef PAKAI_GPIO_DIMMER
+extern unsigned char persen_pwm;
+
+void init_timer2() {
+	extern void ( timer2_ISR_Wrapper )( void );
+	
+	portENTER_CRITICAL();
+	T2TCR = TxTCR_Counter_Reset;           // reset & disable timer 2
+
+	// setup Timer 2 to count forever
+	// Periode Timer 2 adalah 50 ns
+	// akan overflow setiap 3.57 menit, interrupt dan
+	// lakukan sesuatu pada variabel2.
+	T2PR = 5 - 1;               	// set the prescale divider (60 / 3, 20 Mhz (1 us))
+	T2CCR = 0;                      // disable dulu compare registers
+	T2EMR = 0;                      // disable external match register
+	T2TCR = TxTCR_Counter_Enable;
+
+	//siapkan interrupt handler untuk Timer 2
+	VICIntSelect &= ~(VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer2));
+	VICIntEnClr  = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer2);
+	VICVectAddr26 = ( portLONG )timer2_ISR_Wrapper;
+	VICVectPriority26 = 0x01;
+	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_Timer2);
+
+	T2MR0 =  100;		// maksimum
+	
+	T2MCR = TxMCR_MR0I;     // interrupt on cmp-match0		// untuk 
+	T2IR  = TxIR_MR0_Interrupt; // clear match0 interrupt
+
+	T2TCR = TxTCR_Counter_Enable;         // enable timer 2
+	
+	portEXIT_CRITICAL();
+	//printf("sudah masuk init timer2...\r\n");
+}
+#endif
 
 #ifdef BOARD_KOMON_KONTER
 extern struct t2_konter konter;

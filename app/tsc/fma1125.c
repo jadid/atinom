@@ -22,27 +22,27 @@
 #define TSC_APIS_3       0x08   // Mode 3 / reports two strongest outputs - for multitouch applications
 
 const unsigned char tsc_init_data[] = {   // This only contains the writable TSC registers.
-	30, // 0x00: PA0 Alpha
-	30, // 0x01: PA1 Alpha
-	30, // 0x02: PA2 Alpha
-	30, // 0x03: PA3 Alpha
-	30, // 0x04: PA4 Alpha
-	30, // 0x05: PA5 Alpha
-	30, // 0x06: PA6 Alpha
-	30, // 0x07: PA7 Alpha
-	90, // 0x08: Reference Delay
+	8, // 0x00: PA0 Alpha		// 30
+	8, // 0x01: PA1 Alpha
+	8, // 0x02: PA2 Alpha
+	8, // 0x03: PA3 Alpha
+	8, // 0x04: PA4 Alpha
+	8, // 0x05: PA5 Alpha
+	8, // 0x06: PA6 Alpha
+	8, // 0x07: PA7 Alpha
+	50, // 0x08: Reference Delay	90
 	4,  // 0x09: Beta
-	39, // 0x0A: AIC Wait Time
-	22,  // 0x0B: PA0 Strength Threshold
-	30,  // 0x0C: PA1 Strength Threshold
-	30,  // 0x0D: PA2 Strength Threshold
-	30,  // 0x0E: PA3 Strength Threshold
-	30,  // 0x0F: PA4 Strength Threshold
-	30,  // 0x10: PA5 Strength Threshold
-	30,  // 0x11: PA6 Strength Threshold
-	30,  // 0x12: PA7 Strength Threshold
-	(TSC_APIS_1 + TSC_FILTER_EN),  // 0x13: Feature
-	128,  // 0x14: Integration Time
+	39, // 0x0A: AIC Wait Time		// 0x27
+	1,  // 0x0B: PA0 Strength Threshold: 1/10 ss/d 1/20 Int time		// 30
+	1,  // 0x0C: PA1 Strength Threshold
+	1,  // 0x0D: PA2 Strength Threshold
+	1,  // 0x0E: PA3 Strength Threshold
+	1,  // 0x0F: PA4 Strength Threshold
+	1,  // 0x10: PA5 Strength Threshold
+	1,  // 0x11: PA6 Strength Threshold
+	1,  // 0x12: PA7 Strength Threshold
+	(TSC_APIS_2 + TSC_FILTER_EN),  // 0x13: Feature		TSC_APIS_1
+	15,  // 0x14: Integration Time			// 128
 	0x1f, // 0x15: IDLE State Enter Time
 	0x20, // 0x16: Control 1
 	0x00, // 0x17: Control 2
@@ -50,12 +50,12 @@ const unsigned char tsc_init_data[] = {   // This only contains the writable TSC
 	0x00, // 0x19: GPIO Data Out
 	0x00, // 0x1A: PA Direction (0 = OUTPUT, 1 = INPUT)
 	0x00, // 0x1B: GPIO Direction (0 = OUTPUT, 1 = INPUT)
-	0x00, // 0x1C: PA Configuration (0 = TOUCH INPUT, 1 = GPIO)
+	0x00, // 0x1C: PA Configuration (0 = TOUCH INPUT, 1 = GPIO) : as input PA
 	0x00, // 0x1D: GPIO Configuration (0 = Direct Touch Output, 1 = GPIO)
 	0x20, // 0x1E: Calibration Interval
 	0xff, // 0x1F: GINT Interrupt Mask (1 = MASKED)
 	0xff, // 0x20: GINT Interrupt Pending Clear
-	0x00, // 0x21: PA EINT Enable
+	0x00, // 0x21: PA EINT Enable : 0x00: disable interrupt
 	0x00, // 0x22: GPIO EINT Enable
 	0x05, // 0x23: Filter Period
 	0x04, // 0x24: Filter Threshold
@@ -63,8 +63,8 @@ const unsigned char tsc_init_data[] = {   // This only contains the writable TSC
 	0x7e, // 0x26: GINT Interrupt Edge Enable
 	0x00, // 0x27: GPIO Input Bouncing Canceling Period
 	0xFF, // 0x28: Register Check, tadinya 0x00
-	0x00, // 0x29: PA0_R_SEL~PA3_ R_SEL
-	0x00, // 0x2A: PA4_R_SEL~PA7_ R_SEL
+	0x00, // 0x29: PA0_R_SEL~PA3_ R_SEL		//			10 pF
+	0x00, // 0x2A: PA4_R_SEL~PA7_ R_SEL		//			10 pF
 	0x00, // 0x2B: REF_R_SEL
 	0x00, // 0x2C: Beta Disable
 	0x00, // 0x2D: GPIO0~GPIO1 Dimming Unit Period
@@ -107,8 +107,9 @@ int setup_fma(void)
 	int td=0;
 	vTaskDelay(350);
 	
-	if (td=test_device( ADDR_FMA1 )) {
-		printf("test device: %d\r\n", td);
+	td=test_device( ADDR_FMA1 );
+	printf("test device: %d\r\n", td);
+	if (td) {
 		return -1;
 	}
 	else
@@ -116,6 +117,7 @@ int setup_fma(void)
 		// reset register check
 		// supaya INT tidak terus generate clock
 		i2c_set_register( ADDR_FMA1, TSC_REGISTER_CHECK, 0xFF );		// 0x28
+		printf("Register check ... done !!\r\n");
 		vTaskDelay(10);
 		
 		for (i=0; i<61; i++) 
@@ -125,13 +127,23 @@ int setup_fma(void)
 				return -2;
 			}
 		}
+		printf("Init Register TSC ... done !!\r\n");
 		vTaskDelay(50);
 		if( i2c_set_register( ADDR_FMA1, TSC_WARM_RESET, 0x00))       // isue warm reset, do not wait for ACK
 		{
 			return -3;
 		}
-		
+		printf("Warm Reset ... done !!\r\n");
 		vTaskDelay(200);	// 200ms
+		
+		#if 1
+		if( i2c_set_register( ADDR_FMA1, TSC_PA_EINT_ENABLE, 0xFF))
+		{
+			return -4;
+		}
+			printf(".... else enable EINT !!\r\n");
+		#endif
+		
 		return 0;
 	}
 }
@@ -140,24 +152,31 @@ int setup_fma(void)
 
 void baca_register_tsc() {
 	unsigned char qq;
-	int ww;
+	int ww, zz;
 	
 	//printf("\t%s\r\n", __FUNCTION__);
-	i2c_read_register(ADDR_FMA1, TSC_ALPHA_00, &qq);
-	printf("ALPHA0: %d\t", qq);
+	i2c_read_register(ADDR_FMA1, TSC_TOUCH_BYTE, &qq);
+	printf("0x%02X: TOUCH_BYTE: %d\r\n", TSC_TOUCH_BYTE, qq);
 	
-	ww = i2c_read_register(ADDR_FMA1, TSC_STR_THRES_00, &qq);
-	printf("STR_THRES0: %d\t", qq);
-	
-	//*	
-	i2c_read_register(ADDR_FMA1, TSC_STRENGTH_00, &qq);
-	printf("STRENGTH0: %d\t", qq);
-	
-	i2c_read_register(ADDR_FMA1, TSC_IMP_00, &qq);
-	printf("IMP0: %d\t", qq);
-	
-	i2c_read_register(ADDR_FMA1, TSC_REF_IMP_00, &qq);
-	printf("REF_IMP0: %d\r\n", qq);
+	for (ww=0; ww<8; ww++) 
+	{
+		i2c_read_register(ADDR_FMA1, (TSC_ALPHA_00+ww), &qq);		// TSC_ALPHA_00
+		printf("0x%02X: ALPHA%d: %d   ", (TSC_ALPHA_00+ww), ww, qq);
+
+		i2c_read_register(ADDR_FMA1, (TSC_STR_THRES_00+ww), &qq);
+		printf("0x%02X: STR_THRES%d: %d   ", (TSC_STR_THRES_00+ww),  ww, qq);
+
+		//*	
+		i2c_read_register(ADDR_FMA1, (TSC_STRENGTH_00+ww), &qq); // TSC_STRENGTH_00   0x50
+		printf("0x%02X: STRENGTH%d: %d   ", (TSC_STRENGTH_00+ww), ww, qq);
+
+		i2c_read_register(ADDR_FMA1, (TSC_IMP_00+ww), &qq);	// SC_IMP_00   0x58
+		printf("0x%02X: IMP%d: %d   ", (TSC_IMP_00+ww), ww, qq);
+		
+		i2c_read_register(ADDR_FMA1, (TSC_REF_IMP_00+ww), &qq);		// 0x60
+		printf("0x%02X: REF_IMP%d: %d\r\n", (TSC_REF_IMP_00+ww), ww, qq);
+	}
+	printf("\r\n");
 	//*/
 }
 

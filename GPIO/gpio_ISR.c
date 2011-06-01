@@ -27,6 +27,55 @@
 extern xSemaphoreHandle keypad_sem;
 #endif
 
+#ifdef PAKAI_GPIO_DIMMER
+	int loop_dm = 1, loop_dimmer;
+	extern int persen_pwm;
+	#define FULL_PERSEN		100
+	
+	void timer2_ISR_Wrapper( void )		{
+		portSAVE_CONTEXT();
+
+		#if ( DEBUG_KONTER == 1) 
+		togle_led_konter();
+		#endif
+		
+		timer2_ISR_Handler();
+
+		portRESTORE_CONTEXT();
+	}
+
+	void timer2_ISR_Handler( void )	{
+		/*
+		if (T2IR & TxIR_MR0_Interrupt) {
+			FIO1CLR = BIT(30);
+		}
+		
+		if (T2IR & TxIR_MR1_Interrupt) {
+			FIO1SET = BIT(30);
+		}
+		//*/
+		#if 1
+		if (T2IR & TxIR_MR0_Interrupt) {
+			//loop_dm = 1-loop_dm;
+			loop_dimmer++;
+			T2IR	= TxIR_MR0_Interrupt;
+			T2TC	= 0;
+			
+			if (loop_dimmer>FULL_PERSEN)	loop_dimmer=0;
+			
+			if (loop_dimmer<persen_pwm)	FIO1CLR = BIT(30);
+			//if (loop_dm)				FIO1SET = BIT(30);
+			else						FIO1SET = BIT(30);
+		}
+		#endif
+		//*/
+		T2TCR	= TxTCR_Counter_Enable;         // enable timer 2
+
+		VICVectAddr = 0;
+	}
+
+#endif
+
 #ifdef BOARD_CNC
 int itungT2=0;
 int iSin=0;

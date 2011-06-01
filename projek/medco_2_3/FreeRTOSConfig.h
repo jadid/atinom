@@ -100,8 +100,14 @@
 	#define PAKAI_HTTP
 #endif
 
-#define PAKAI_ADC
-
+//#define PAKAI_ADC
+#define PAKAI_GPIO_DIMMER
+#ifdef PAKAI_GPIO_DIMMER
+	#define PAKAI_TIMER2
+	
+	
+#endif
+//#define DEBUG_PWM_GPIO
 
 /*-----------------------------------------------------------
  * Application specific definitions.

@@ -134,6 +134,10 @@ int status_MMC=0;
 	#define TXDE	BIT(24)
 #endif
 
+#ifdef PAKAI_GPIO_DIMMER
+	#include "dimmer.c"
+#endif
+
 #include "enviro.h"
 #include "../GPIO/gpio.h"
 //#include "../monita/monita_uip.h"
@@ -991,6 +995,11 @@ vTaskDelay(100);
 
 #ifdef PAKAI_GPS
 	tinysh_add_command(&cek_gps_cmd);
+#endif
+
+#ifdef PAKAI_GPIO_DIMMER
+	tinysh_add_command(&set_dimmer_cmd);
+	tinysh_add_command(&cek_dimmer_cmd);
 #endif
 
 	/* add sub commands

@@ -52,10 +52,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		vTaskDelay(1);
 		loopambil++;
 		#ifdef PAKAI_GPS
-			//if (serPollGPS())	
+			if (serPollGPS())	
 			{
 				hasil_gpsnya = proses_gps();
-				#ifdef DEBUG_GPSs
+				#if 0
 					info_gps(hasilGPS);
 				#endif
 			}

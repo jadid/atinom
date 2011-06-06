@@ -58,8 +58,9 @@ portTASK_FUNCTION(gps, pvParameters )	{
 int proses_gps() {
 	int parsenya=0;
 	parsenya = nmea_parse(&parserGPS, pesanGPS, (int)strlen(pesanGPS), &infoGPS);
-	//printf("serPoll : %d :%3d: %s\r\n", parsenya, (int)strlen(pesan2), pesan2);
+	printf("serPoll : %d :%3d: %s\r\n", parsenya, (int)strlen(pesanGPS), pesanGPS);
 	nmea_info2pos(&infoGPS, &dposGPS);
+	info_gps(parsenya);
 	return parsenya;
 }
 
@@ -87,11 +88,13 @@ int serPollGPS(void) {
 		//xSerialPutChar2(1, c, 50);
 		//printf("%c",c);
 		if (c=='\r' || c=='\n') {
+			pesanGPS[nC] = '\r';
+			pesanGPS[nC++] = '\n';
+			pesanGPS[nC++] = '\0';
 			komplet = nC;
-			pesanGPS[nC] = '\0';
 			nC=0;
 			//ser2_putstring("\n");
-			//printf("komplet: %d isi: %s__\r\n", komplet, pesan2);
+			printf("komplet: %d isi: %s__\r\n", komplet, pesanGPS);
 		} else {
 			pesanGPS[nC] = c;
 			komplet = 0;
@@ -106,7 +109,8 @@ void awal_gps() {
     nmea_parser_init(&parserGPS);
 	
   	printf(" Monita : GPS init !!\r\n");
-  	strcpy(pesanGPS, "$GPRMC,084702.000,A,0612.6782,S,10654.3289,E,0.00,278.92,030511,,,A*72\r\n");
+  	
+  	//strcpy(pesanGPS, "$GPRMC,084702.000,A,0612.6782,S,10654.3289,E,0.00,278.92,030511,,,A*72\r\n");
 } 
 
 void deinit_gps() {

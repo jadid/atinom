@@ -88,7 +88,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 					#if 1
 					if (int_berganti() == 0) 
 					{
-						//printf("disentuh\r\n");
+						printf("disentuh\r\n");
 					}
 					else
 						printf("HIGH\r\n");

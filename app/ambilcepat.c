@@ -49,7 +49,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
   	vTaskDelay(50);
   	for(;;) {
-		vTaskDelay(1);
+		vTaskDelay(2);
 		loopambil++;
 		#ifdef PAKAI_GPS
 			if (serPollGPS())	

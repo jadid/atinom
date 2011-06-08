@@ -31,7 +31,7 @@ void set_dimmer(int argc, char **argv)	{
 	
 	sscanf(argv[1], "%d", &persen_pwm);
 	if (persen_pwm>100) persen_pwm=100;
-	if (persen_pwm><0)	persen_pwm=0;
+	if (persen_pwm<0)	persen_pwm=0;
 	printf("  Persen dimmer: %d\r\n", persen_pwm);
 }
 

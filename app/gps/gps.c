@@ -58,9 +58,9 @@ portTASK_FUNCTION(gps, pvParameters )	{
 int proses_gps() {
 	int parsenya=0;
 	parsenya = nmea_parse(&parserGPS, pesanGPS, (int)strlen(pesanGPS), &infoGPS);
-	printf("serPoll : %d :%3d: %s\r\n", parsenya, (int)strlen(pesanGPS), pesanGPS);
+	//printf("serPoll : %d :%3d: %s\r\n", parsenya, (int)strlen(pesanGPS), pesanGPS);
 	nmea_info2pos(&infoGPS, &dposGPS);
-	info_gps(parsenya);
+	//info_gps(parsenya);
 	return parsenya;
 }
 
@@ -87,14 +87,20 @@ int serPollGPS(void) {
 	{
 		//xSerialPutChar2(1, c, 50);
 		//printf("%c",c);
-		if (c=='\r' || c=='\n') {
+		if (c=='\r') {
+			//printf("R");
+		} else if (c=='\n') {
+			//printf("N\r\n");
+			//nC++;
 			pesanGPS[nC] = '\r';
-			pesanGPS[nC++] = '\n';
-			pesanGPS[nC++] = '\0';
+			nC++;
+			pesanGPS[nC] = '\n';
+			nC++;
+			pesanGPS[nC] = '\0';
 			komplet = nC;
 			nC=0;
 			//ser2_putstring("\n");
-			printf("komplet: %d isi: %s__\r\n", komplet, pesanGPS);
+			//printf("komplet: %d isi: %s__\r\n", komplet, pesanGPS);
 		} else {
 			pesanGPS[nC] = c;
 			komplet = 0;

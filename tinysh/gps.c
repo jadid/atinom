@@ -40,8 +40,8 @@ void cek_gps(int argc, char **argv)	{
 		printf("   Bujur     : %7.3f° %s\r\n", nmea_radian2degree(dposGPS.lon), ((nmea_radian2degree(dposGPS.lon)>0)?"BT":"BB") );
 		printf("   Elevasi   : %7.3f meter\r\n", infoGPS.elv);
 		printf("   Deklanasi : %7.3f°\r\n", infoGPS.declination);
-		printf("   Arah      : %7.3f° \r\n", infoGPS.speed);
-		printf("   Kecepatan : %7.3f km/j\r\n", infoGPS.direction);
+		printf("   Arah      : %7.3f° \r\n", infoGPS.direction);
+		printf("   Kecepatan : %7.3f km/j\r\n", infoGPS.speed);
 		printf("   Tanggal   : %d-%d-%d\r\n", infoGPS.utc.day, infoGPS.utc.mon, infoGPS.utc.year);
 		printf("   Waktu     : %d:%02d:%02d %03d\r\n", infoGPS.utc.hour, infoGPS.utc.min, infoGPS.utc.sec, infoGPS.utc.hsec);
 		printf("   PDOP      : %7.3f, HDOP: %7.3f, VDOP: %7.3f\r\n", infoGPS.PDOP, infoGPS.HDOP, infoGPS.VDOP);

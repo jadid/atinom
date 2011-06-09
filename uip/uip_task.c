@@ -36,6 +36,12 @@
 #include "apps/telnetd/telnetd.h"
 #endif
 
+#ifdef PAKAI_WEBCLIENT
+	#ifdef WEBCLIENT_GPS
+		#include "../app/gps/gps.h"
+	#endif
+#endif
+
 #ifdef BOARD_KOMON_420_SAJA
 #define BOARD_KOMON
 #include "../adc/ad7708.h"
@@ -193,6 +199,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		extern int  noawal;
 		int tiapKirim=950;
 		int maxkirim=12;
+	#ifdef WEBCLIENT_GPS
+		extern nmeaINFO infoGPS;
+		extern nmeaPOS dposGPS;
+		tiapKirim = (1000*1)-15;
+	#endif
 #endif
 
 #ifdef PAKAI_KIRIM_BALIK
@@ -235,9 +246,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		if (envx->statusWebClient==1) {
 			wclient++;
 			if (envx->burst==1) {
-				jmlData=kirimModul(1, 0, 0, il, dl);
-				//jmlsumbernya=1;
-				tiapKirim = 500;
+				#ifdef WEBCLIENT_DATA
+					jmlData=kirimModul(1, 0, 0, il, dl);
+					//jmlsumbernya=1;
+					tiapKirim = 500;
+				#endif
 			} else 
 			{			// kirim 1-1
 				/*
@@ -263,7 +276,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					//printf("wclient: %d\r\n", wclient);
 				#endif
 				//*/
-			}	
+			}
+			#ifdef WEBCLIENT_DATA
 			if (wclient == tiapKirim) {
 				ngitung++;
 				
@@ -327,6 +341,30 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					
 				}
 			}
+			#endif
+			
+			#ifdef WEBCLIENT_GPS
+			
+			if (wclient == tiapKirim) {
+				wclient = 0;
+				sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+				strcpy(datakeserver, envx->berkas);
+				strcat(datakeserver, "?i=");
+				strcat(datakeserver, envx->SN);
+				strcat(datakeserver, "&p=diesel&w=");
+				sprintf(il, "%d%02d%02d-%02d%02d%02d-%03d", \
+					infoGPS.utc.year, infoGPS.utc.mon, infoGPS.utc.day, \
+					infoGPS.utc.hour, infoGPS.utc.min, infoGPS.utc.sec, infoGPS.utc.hsec);
+				strcat(datakeserver, il);
+				sprintf(dl, "&s=%d&l=%.3f&b=%.3f&a=%.3f ", \
+					infoGPS.satinfo.inuse, \
+					nmea_radian2degree(dposGPS.lat), nmea_radian2degree(dposGPS.lon), infoGPS.direction);
+				strcat(datakeserver, dl);
+				
+				printf("datakeserver: %s\r\n",datakeserver);
+				//webclient_get(ipdest, 80, datakeserver);
+			}
+			#endif
 		}
 		#endif
 		

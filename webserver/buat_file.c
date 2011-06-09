@@ -234,17 +234,18 @@ void buat_bottom(void) {
     strcat(tot_buf, head_buf);
 }
 
-#define DIGANTI 4
+#define DIGANTI 5
 
 //int ganti(char* input);
 
 int ganti_karakter(char *dest, char *src) {
-	char *asli[] = {"+", "%2F", "%2C", "%23"};
-	char *pengganti[] = {" ","/", ".", "#"};
+	char *asli[] = {"+", "%2F", "%2C", "%23", "C"};
+	char *pengganti[] = {" ","/", ".", "#", "."};
 	char * pch;
 
 	int i=0, j=0, k=0;
-	for (j=0; src[j] != '\0'; ++j) {
+	//for (j=0; src[j] != '\0'; ++j) {
+	for (j=0; src[j] != '\0'; j++) {
 		dest[i] = src[j];
 
 		for (k=0; k<DIGANTI; k++) {
@@ -369,8 +370,9 @@ float stof(char * str) {
 
 int ganti_setting(char *str) {
 //#ifndef BANYAK_SUMBER
-	//printf("Data telah diubah: %s\r\n", str);
-	char tmp[30], kets[30], keta[30], ketb[30], ketc[30], ketd[30];
+	//printf(" str: %s\r\n", str);
+	char tmp[30], kets[60], keta[30], ketb[30], ketc[30], ketd[30], ketaz[60];
+	char ketip[30];
 	unsigned int ret_ip;
 	
 	int nk=0, no=0, titik=0, z=0;
@@ -401,37 +403,58 @@ int ganti_setting(char *str) {
 			
 			ids = strchr(tmp,'=');
 			titik = atoi(ids+1);
-			//printf("  id: %d\r\n", titik);
+			printf("  id: %d\r\n", titik);
 		} 
-		else if (strncmp(tmp, "k", 1)==0) {
+		else if (strncmp(tmp, "k", 1)==0) {		// nama board
 			ket = strchr(tmp,'=');
-			ganti_karakter(kets, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			ganti_karakter(ketaz, ket+1);
+			
+			if (strlen(ketaz)>30) {
+				strncpy(kets, ketaz, 26);
+				kets[27] = '\0';
+			}
+			else
+				strcpy(kets, ketaz);
+			printf("  board, len: %d ket: %s, kets: %s\r\n", strlen(kets), ket+1, kets);
 		}
-		else if (strncmp(tmp, "f", 1)==0) {
+		else if (strncmp(tmp, "f", 1)==0) {		// file webclient
 			ket = strchr(tmp,'=');
-			ganti_karakter(keta, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			ganti_karakter(ketaz, ket+1);
+			if (strlen(ketaz)>30)
+				strncpy(keta, ketaz, 30);
+			else
+				strcpy(keta, ketaz);
+			printf("  file  ket: %s, keta: %s\r\n", ket+1, keta);
 		}
-		else if (strncmp(tmp, "q", 1)==0) {
+		else if (strncmp(tmp, "q", 1)==0) {		// no serial
 			ket = strchr(tmp,'=');
-			ganti_karakter(ketb, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			//ganti_karakter(ketb, ket+1);
+			ganti_karakter(ketaz, ket+1);
+			if (strlen(ketaz)>20) {
+				strncpy(ketb, ketaz, 19);
+				ketb[27] = '\0';
+			} else
+				strcpy(ketb, ketaz);
+			printf("  seri  ket: %s, ketb: %s\r\n", ket+1, ketb);
 		}
-		else if (strncmp(tmp, "p", 1)==0) {
+		else if (strncmp(tmp, "p", 1)==0) {		// ip
 			ket = strchr(tmp,'=');
+			strcpy(ketip, "");
 			ganti_karakter(ketc, ket+1);
-			printf("  ket: %s, ketc: %s\r\n", ket+1, ketc);
+			//printf("  IP    ket: %s, ketc : %s\r\n", ket+1, ketc);
+			
+			ganti_karakter(ketip, ketc);
+			printf("  IP    ket: %s, ketip: %s\r\n", ket+1, ketip);
 		}
-		else if (strncmp(tmp, "t", 1)==0) {
+		else if (strncmp(tmp, "t", 1)==0) {		// gateway
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketd, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			printf("  gatew ket: %s, ketd: %s\r\n", ket+1, ketd);
 		}
 		else if (strncmp(tmp, "z", 1)==0) {
 			ids = strchr(tmp,'=');
 			z = atoi(ids+1);
-			//printf("  z: %d, ids: %s\r\n", z, ids+1);
+			printf("  z: %d, ids: %s\r\n", z, ids+1);
 		}
 		else if (strncmp(tmp, "a", 1)==0) {
 			ids = strchr(tmp,'=');
@@ -516,10 +539,13 @@ int ganti_setting(char *str) {
 		portEXIT_CRITICAL();
 		
 		//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
-		sprintf(p_sbr->nama_board,"%s", kets);
 		//*
+		sprintf(p_sbr->nama_board,"%s", kets);
+		sprintf(p_sbr->SN,"%s", ketb);
+		sprintf(p_sbr->berkas,"%s", keta);
 		
-		ret_ip = baca_ip(ketc);	
+		//printf("ip: %s\r\n", ketip);
+		ret_ip = baca_ip(ketip);	
 		p_sbr->IP0 = (unsigned char)(ret_ip >> 24);
 		p_sbr->IP1 = (unsigned char)(ret_ip >> 16);
 		p_sbr->IP2 = (unsigned char)(ret_ip >> 8);
@@ -531,8 +557,7 @@ int ganti_setting(char *str) {
 		p_sbr->GW2 = (unsigned char)(ret_ip >> 8);
 		p_sbr->GW3 = (unsigned char)(ret_ip);
 		//*/
-		sprintf(p_sbr->SN,"%s", ketb);
-		sprintf(p_sbr->berkas,"%s", keta);
+		
 		p_sbr->statusWebClient = aa;
 		p_sbr->burst = bb;
 		
@@ -1296,13 +1321,13 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			ganti_karakter(ket, env2ww->nama_board);
 			sprintf(head_buf, "<tr>" \
-					"<td>Nama Board</td><td><input type=\"text\" name=\"k\" value=\"%s\"></td>" \
+					"<td>Nama Board</td><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"30\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
 			
 			ganti_karakter(ket, env2ww->SN);
 			sprintf(head_buf, "<tr>" \
-					"<td>No Seri</td><td><input type=\"text\" name=\"q\" value=\"%s\"></td>" \
+					"<td>No Seri</td><td><input type=\"text\" name=\"q\" value=\"%s\" size=\"30\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
 

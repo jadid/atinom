@@ -29,10 +29,6 @@ void setup_hardware() {
 		xSerialPortInitMinimal( BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE  );
 	#endif
 	
-	#ifdef PAKAI_SERIAL_2_P0
-		setup_serial2_P0();
-	#endif
-	
 	#ifdef PAKAI_I2C
 		setup_gpio_i2c();
 	#endif
@@ -45,29 +41,24 @@ void setup_hardware() {
 		/* PCONP enable UART3 */
 		PCONP |= BIT(25);
 		
+		#ifdef PAKAI_SERIAL_3_P0
+			setup_serial3_P0();
+		#endif
+		
 		/* PCLK UART3, PCLK = CCLK */
 		PCLKSEL1 &= ~(BIT(18) | BIT(19));
 		PCLKSEL1 |= BIT(18);
 		
-		/* init TX3, RX3 */
-		PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));
-		PINSEL1 |= (BIT(18) | BIT(19));
-		PINSEL1 |= (BIT(20) | BIT(21));
-		PINSEL1 &= ~(BIT(16) | BIT(17));
-		/* TXDE di highkan */
-		FIO0DIR |= TXDE;
-		//FIO0SET = TXDE;		// on	---> bisa kirim
-		//FIO0SET &= ~TXDE;		// off	---> gak bisa kirim
-		//FIO0CLR = TXDE;
-		FIO0SET = TXDE;
 		
-		FIO0DIR |= RXDE;
-		FIO0SET  = RXDE;
 	#endif
 
-	#ifdef PAKAI_SERIAL_2
+	#ifdef PAKAI_SERIAL_2			
 		/* PCONP enable UART2 */
 		PCONP |= BIT(24);
+		
+		#ifdef PAKAI_SERIAL_2_P0
+			setup_serial2_P0();
+		#endif
 		
 		/* PCLK UART2, PCLK = CCLK */
 		PCLKSEL1 &= ~(BIT(16) | BIT(17));

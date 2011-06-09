@@ -32,7 +32,20 @@ void setup_hardware(void);
 										PINSEL0 |= (BIT(20) | BIT(22));	\
 									} while(0)
 	#endif
-
+	
+	#ifdef PAKAI_SERIAL_3_P0
+		#define setup_serial3_P0()	do 	{	\
+										PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));		\
+										PINSEL1 |= (BIT(18) | BIT(19));								\
+										PINSEL1 |= (BIT(20) | BIT(21));								\
+										PINSEL1 &= ~(BIT(16) | BIT(17));							\
+										FIO0DIR |= TXDE;					\
+										FIO0SET = TXDE;						\
+										FIO0DIR |= RXDE;					\
+										FIO0SET  = RXDE;					\
+									} while(0)
+	#endif
+	
 	#ifdef PAKAI_ETH
 		#define CS_ENC					BIT(16)	/* P0 */
 		#define INT_ENC					BIT(13) /* P2 */

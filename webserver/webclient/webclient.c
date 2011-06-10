@@ -142,6 +142,7 @@ webclient_close(void)
   s.state = WEBCLIENT_STATE_CLOSE;
 }
 /*-----------------------------------------------------------------------------------*/
+#ifdef WEBCLIENT_DATA
 int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	char id[16], dt[16];
 	int i=0,z=0;
@@ -208,7 +209,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	//printf("no awal: %d\r\n", noawal);
 	return jmlAktif;
 }
-
+#endif
 /*-----------------------------------------------------------------------------------*/
 unsigned char
 webclient_get(char *host, u16_t port, char *file)
@@ -246,12 +247,14 @@ webclient_get(char *host, u16_t port, char *file)
   strncpy(s.file, file, sizeof(s.file));
   strncpy(s.host, host, sizeof(s.host));
   
-  //printf("___%s(): %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
+  //printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
   init_connection();
   
   //printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   //printf("___%s(): strlen(s.file): %d\r\n", __FUNCTION__, strlen(s.file));
+  
+  printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
   return 1;
 }

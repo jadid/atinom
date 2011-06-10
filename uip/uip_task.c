@@ -188,21 +188,30 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
 		webclient_init();
-		printf(" webclient inited !\r\n");
+		printf(" init webclient ... [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
 		unsigned char datakeserver[512];
 		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
+	#ifdef WEBCLIENT_DATA
 		char il[256], dl[256];
-		char ipdest[15], angkaangka[5];
+		char angkaangka[5];
+		int maxkirim=12;
 		extern int kirimURL;
 		extern char terkirimURL;
 		extern int  noawal;
+	#endif
+		char ipdest[15];
 		int tiapKirim=950;
-		int maxkirim=12;
+		
 	#ifdef WEBCLIENT_GPS
 		extern nmeaINFO infoGPS;
 		extern nmeaPOS dposGPS;
-		tiapKirim = (1000*1)-15;
+		char waktu[20];		//		20110609-220228-000
+		char bujur[12], lintang[12], arah[12], satelit[12];
+		tiapKirim = 5;		// 2 detik
+		int menit = 0;
+		
+		//double lintang=0.0, bujur=0.0;
 	#endif
 #endif
 
@@ -344,26 +353,38 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			#endif
 			
 			#ifdef WEBCLIENT_GPS
-			
-			if (wclient == tiapKirim) {
-				wclient = 0;
-				sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
-				strcpy(datakeserver, envx->berkas);
-				strcat(datakeserver, "?i=");
-				strcat(datakeserver, envx->SN);
-				strcat(datakeserver, "&p=diesel&w=");
-				sprintf(il, "%d%02d%02d-%02d%02d%02d-%03d", \
-					infoGPS.utc.year, infoGPS.utc.mon, infoGPS.utc.day, \
-					infoGPS.utc.hour, infoGPS.utc.min, infoGPS.utc.sec, infoGPS.utc.hsec);
-				strcat(datakeserver, il);
-				sprintf(dl, "&s=%d&l=%.3f&b=%.3f&a=%.3f ", \
-					infoGPS.satinfo.inuse, \
-					nmea_radian2degree(dposGPS.lat), nmea_radian2degree(dposGPS.lon), infoGPS.direction);
-				strcat(datakeserver, dl);
-				
-				printf("datakeserver: %s\r\n",datakeserver);
-				//webclient_get(ipdest, 80, datakeserver);
-			}
+				if (wclient>1000) {		// 1 detik, 60000 = 60 detik = 1 menit
+					wclient=0;
+					menit++;
+				}
+				if (menit == tiapKirim) {
+					//wclient = 0;
+					menit=0;
+					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					strcpy(datakeserver, envx->berkas);
+					strcat(datakeserver, "?i=");
+					strcat(datakeserver, envx->SN);
+					strcat(datakeserver, "&p=diesel&w=");
+					sprintf(waktu, "%d%02d%02d-%02d%02d%02d-%03d", \
+						infoGPS.utc.year, infoGPS.utc.mon, infoGPS.utc.day, \
+						infoGPS.utc.hour, infoGPS.utc.min, infoGPS.utc.sec, infoGPS.utc.hsec);
+					strcat(datakeserver, waktu);
+
+					sprintf(satelit, "&s=%d", infoGPS.satinfo.inuse);
+					strcat(datakeserver, satelit);
+					
+					sprintf(lintang, "&l=%.3f", nmea_radian2degree(dposGPS.lat));
+					strcat(datakeserver, lintang);
+					
+					sprintf(bujur, "&b=%.3f", nmea_radian2degree(dposGPS.lon));
+					strcat(datakeserver, bujur);
+					
+					sprintf(arah, "&a=%.3f", infoGPS.direction);
+					strcat(datakeserver, arah);
+
+					printf("datakeserver: %d : %s\r\n",strlen(datakeserver), datakeserver);
+					webclient_get(ipdest, 80, datakeserver);
+				}
 			#endif
 		}
 		#endif

@@ -6,6 +6,8 @@
 void setup_hardware(void);
 
 #ifdef BOARD_KOMON_420_SABANG_2_3
+	#define uC	"NXP LPC 2387"
+	
 	#ifdef PAKAI_LED_UTAMA
 		#define LED_UTAMA	BIT(27)
 		

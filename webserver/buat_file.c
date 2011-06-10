@@ -13,6 +13,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "hardware.h"
 
 #ifdef BOARD_TAMPILAN
 	#define BESAR_BUF_HTTP	256		//8192
@@ -1629,7 +1630,7 @@ void buat_file_about(void)	{
 	strcat(tot_buf, "<h4>Operating System FreeRTOS 5.1.1");
 	sprintf(head_buf, "<br>Modul %s versi %s", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "<br>Prosesor NXP LPC 2368 %d MHz", configCPU_CLOCK_HZ /1000000);
+	sprintf(head_buf, "<br>Prosesor %s %d MHz", uC, configCPU_CLOCK_HZ /1000000);
 	strcat(tot_buf, head_buf);
 	sprintf(head_buf, "<br>Build dengan ARM-GCC %s %s %s",__VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);

@@ -47,6 +47,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		//init_remang();
   	#endif
   	
+  	#ifdef AMBIL_PM
+		printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
+  	#endif
+  	
   	vTaskDelay(50);
   	for(;;) {
 		vTaskDelay(2);
@@ -59,6 +63,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 					info_gps(hasilGPS);
 				#endif
 			}
+		#endif
+		
+		#ifdef PAKAI_PM			// AMBIL_PM
+		
 		#endif
 		
 		#ifdef PAKAI_ADC

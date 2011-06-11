@@ -86,7 +86,7 @@ unsigned int paket_kita=0;
 unsigned char status_eth = 0;
 			
 extern xTaskHandle hdl_ether;
-
+//#define DEBUG_UIP_TASK
 
 static portTASK_FUNCTION( tunggu, pvParameters )	{
 	unsigned char spi1, spi2;

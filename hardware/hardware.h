@@ -110,6 +110,8 @@ void setup_hardware(void);
 
 
 #ifdef BOARD_KOMON_420_SABANG
+	#define uC	"NXP LPC 2387"
+	
 	#ifdef PAKAI_LED_UTAMA
 		#define LED_UTAMA	BIT(27)
 		
@@ -121,6 +123,15 @@ void setup_hardware(void);
 	
 	#ifdef PAKAI_SHELL
 		#define BAUD_RATE_SHELL	( ( unsigned portLONG ) 115200 )
+	#endif
+
+	#ifdef PAKAI_SERIAL_2_P0
+		#define setup_serial2_P0()	do 	{	\
+										PCONP |= BIT(24);	\
+										PCLKSEL1 &= ~(BIT(16) | BIT(17));	\
+										PCLKSEL1 |= BIT(16);	\
+										PINSEL0 |= (BIT(20) | BIT(22));	\
+									} while(0)
 	#endif
 	
 	#ifdef PAKAI_MODBUS_RTU

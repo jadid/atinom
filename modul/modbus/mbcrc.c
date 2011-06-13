@@ -32,7 +32,7 @@
 //#include "port.h"
 
 
-USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen );
+USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug );
 
 static const UCHAR aucCRCHi[] = {
     0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
@@ -84,12 +84,23 @@ static const UCHAR aucCRCLo[] = {
     0x41, 0x81, 0x80, 0x40
 };
 
-USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen )
+USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug )
 {
     UCHAR           ucCRCHi = 0xFF;
     UCHAR           ucCRCLo = 0xFF;
     int             iIndex;
-
+    
+    #if 0
+    printf("masuk %s...!!!, debug: %d, %02X %02X %02X %02X\r\n", __FUNCTION__, debug, pucFrame[0], pucFrame[1], pucFrame[2], pucFrame[3]);
+    if (debug) {
+		printf("%s(): len: %d\r\n", __FUNCTION__, usLen);
+		for (iIndex=0; iIndex<usLen; iIndex++) {
+			printf("%02X ", pucFrame[iIndex]);
+		}
+		printf("\r\n");
+	}
+	#endif
+	
     while( usLen-- )
     {
         iIndex = ucCRCLo ^ *( pucFrame++ );

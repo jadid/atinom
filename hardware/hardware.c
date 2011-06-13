@@ -84,8 +84,10 @@ void init_hardware()	{
 		init_shell();
 	#endif
 	
+	#if 0
 	#if (defined(PAKAI_PM) && defined(AMBIL_PM))
 		init_task_pm();
+	#endif
 	#endif
 	
 	#ifdef PAKAI_SERIAL_2_P0

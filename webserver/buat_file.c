@@ -806,6 +806,13 @@ void buat_file_index(unsigned int flag, char *kata) {
 	strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n</tr>\n");
 #endif
 
+#ifdef BOARD_KOMON_420_SABANG_2_3		// buat PM meter
+	strcat(tot_buf, "<tr>\n<th width=\"100px\">Kanal</th>\n");
+	strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
+	strcat(tot_buf, "<th width=\"100px\">Satuan</th>\n");
+	strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n</tr>\n");
+#endif
+
 #ifdef BOARD_KOMON_B_THERMO	
 	strcat(tot_buf, "<th>Teg (Volt)</th>\n");
 	strcat(tot_buf, "<th>Celcius</th>\n");
@@ -901,7 +908,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 //*
 
-#ifdef BOARD_KOMON_420_SABANG
+#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 	struct t_dt_set *p_dt;
 	p_dt = (char *) ALMT_DT_SET;
 	//printf("no: %d, alamat: %d\r\n", no, pmx[i].alamat);
@@ -929,7 +936,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 	}
 #endif
 
-#ifdef BOARD_KOMON_420_SAJA
+#if defined(BOARD_KOMON_420_SAJA)
 #ifdef PAKAI_ADC
 	struct t_setting *konfig;
 	konfig = (char *) ALMT_KONFIG;
@@ -1423,7 +1430,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			if (pertamax>0) {
 				strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
 				strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
-				#ifdef BOARD_KOMON_420_SABANG
+				#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 					strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
 				#endif
 				#ifdef BOARD_KOMON_KONTER
@@ -1462,7 +1469,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				strcat(tot_buf, "</tbody>\n</table>\n");
 			#endif
 		
-			#ifdef BOARD_KOMON_420_SABANG
+			#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 				struct t_dt_set *p_dt;
 				p_dt = (char *) ALMT_DT_SET;
 				

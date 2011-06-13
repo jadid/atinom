@@ -188,7 +188,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
 		webclient_init();
-		printf(" init webclient ... [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
+		printf(" Monita : webclient init !! [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
 		unsigned char datakeserver[512];
 		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
@@ -346,7 +346,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
 					//printf("datakeserver: %s\r\n",datakeserver);
-					webclient_get(ipdest, 80, datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}
 			}
@@ -382,8 +382,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					sprintf(arah, "&a=%.3f", infoGPS.direction);
 					strcat(datakeserver, arah);
 
-					printf("datakeserver: %d : %s\r\n",strlen(datakeserver), datakeserver);
-					webclient_get(ipdest, 80, datakeserver);
+					//printf("datakeserver: %d : %s\r\n",strlen(datakeserver), datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);
 				}
 			#endif
 		}

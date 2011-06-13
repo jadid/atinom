@@ -69,11 +69,11 @@ unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk)	{
    pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
    pmod.jum_lo = (unsigned char) (uk & 0x00FF);
 
-   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2);
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
    pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
    pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
 
-   	return (1 + 1 + 1 + (uk * 2) + 2);
+   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
 }
 
 unsigned short cek_PM(int alamatPM) {
@@ -90,7 +90,7 @@ unsigned short cek_PM(int alamatPM) {
 	pmod.jum_hi = (unsigned char) ((5 & 0xFF00) >> 8);
 	pmod.jum_lo = (unsigned char) (5 & 0x00FF);
 
-	dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2);
+	dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
 	pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
 	pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
 
@@ -163,9 +163,9 @@ void taruh_data_710(int no_slave, int urt)	{
 		else if (satuan_t == 3) satuan_amp[no_slave] = 1000.0;
 		else if (satuan_t == 4) satuan_amp[no_slave] = 10000.0;
 		
-		//printf("satuan t: %d, satuan amp: %f\r\n", satuan_t, satuan_amp);
-		
-		//move_ke(80, 12);
+		#ifdef CEK_PM
+		printf("satuan t: %d, satuan amp: %f\r\n", satuan_t, satuan_amp);
+		#endif
         //printw("sat amp  : %d : %X", satuan_t, (short) satuan_t);
 
 		//volt
@@ -181,9 +181,9 @@ void taruh_data_710(int no_slave, int urt)	{
 		else if (satuan_t == 2)  satuan_volt[no_slave] = 100.0;
 		else if (satuan_t == 3)  satuan_volt[no_slave] = 1000.0;
 		else if (satuan_t == 4)  satuan_volt[no_slave] = 10000.0;
-
-		//printf("satuan t: %d, satuan volt: %f\r\n", satuan_t, satuan_volt);
-
+		#ifdef CEK_PM
+		printf("satuan t: %d, satuan volt: %f\r\n", satuan_t, satuan_volt);
+		#endif
 		//power
 		satuan_t = buf[7+HD];
 		satuan_t = (satuan_t << 8) | buf[8+HD];
@@ -197,9 +197,9 @@ void taruh_data_710(int no_slave, int urt)	{
 		else if (satuan_t == 2)  satuan_kw[no_slave] = 100.0;
 		else if (satuan_t == 3)  satuan_kw[no_slave] = 1000.0;
 		else if (satuan_t == 4)  satuan_kw[no_slave] = 10000.0;
-
-		//printf("satuan t: %d, satuan kw: %f\r\n", satuan_t, satuan_kw);
-		
+		#ifdef CEK_PM
+		printf("satuan t: %d, satuan kw: %f\r\n", satuan_t, satuan_kw);
+		#endif
 		//energy
 		satuan_t = buf[9+HD];
 		satuan_t = (satuan_t << 8) | buf[10+HD];
@@ -213,8 +213,9 @@ void taruh_data_710(int no_slave, int urt)	{
 		else if (satuan_t == 2) satuan_kwh[no_slave] = 100.0;
 		else if (satuan_t == 3) satuan_kwh[no_slave] = 1000.0;
 		else if (satuan_t == 4) satuan_kwh[no_slave] = 10000.0;
-
-		//printf("satuan t: %d, satuan kwh: %f\r\n", satuan_t, satuan_kwh);
+		#ifdef CEK_PM
+		printf("satuan t: %d, satuan kwh: %f\r\n", satuan_t, satuan_kwh);
+		#endif
 		//urut_PM710 = 0;
 	}
 	else if (urt == 1) 	{		// kva, kvar, PF, volt1, volt2, amper
@@ -225,8 +226,9 @@ void taruh_data_710(int no_slave, int urt)	{
 		data_PM710[no_slave].kvar = buf[5+HD];
 		data_PM710[no_slave].kvar = (data_PM710[no_slave].kvar << 8) | buf[6+HD];
 		asli_PM710[no_slave].kvar = (signed) data_PM710[no_slave].kvar * satuan_kw[no_slave];
+		#ifdef CEK_PM
 		printf("kvar asli: %.2f, kvar data: %d\r\n", asli_PM710[no_slave].kvar, (signed) data_PM710[no_slave].kvar);
-		
+		#endif
 		data_PM710[no_slave].pf = buf[7+HD];
 		data_PM710[no_slave].pf = (data_PM710[no_slave].pf << 8) | buf[8+HD];
 		asli_PM710[no_slave].pf = data_PM710[no_slave].pf * 0.0001;
@@ -237,13 +239,19 @@ void taruh_data_710(int no_slave, int urt)	{
 			asli_PM710[no_slave].volt1 = 0;
 		else
 			asli_PM710[no_slave].volt1 = data_PM710[no_slave].volt1 * satuan_volt[no_slave];
-
+		#ifdef CEK_PM
+		printf("volt1 asli: %.2f, volt1 data: %d\r\n", asli_PM710[no_slave].volt1, (signed) data_PM710[no_slave].volt1);
+		#endif
+		
 		data_PM710[no_slave].volt2 = buf[11+HD];
 		data_PM710[no_slave].volt2 = (data_PM710[no_slave].volt2 << 8) | buf[12+HD];
 		if (data_PM710[no_slave].volt2 == 32768)
 			asli_PM710[no_slave].volt2 = 0;
 		else
 			asli_PM710[no_slave].volt2 = data_PM710[no_slave].volt2 * satuan_volt[no_slave];
+		#ifdef CEK_PM
+		printf("volt2 asli: %.2f, volt2 data: %d\r\n", asli_PM710[no_slave].volt2, (signed) data_PM710[no_slave].volt2);
+		#endif
 
 		data_PM710[no_slave].amp = buf[13+HD];
 		data_PM710[no_slave].amp = (data_PM710[no_slave].amp << 8) | buf[14+HD];
@@ -251,6 +259,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			asli_PM710[no_slave].amp = 0;
 		else
 			asli_PM710[no_slave].amp = data_PM710[no_slave].amp * satuan_amp[no_slave];
+		#ifdef CEK_PM
+		printf("amp asli: %.2f, data: %d\r\n", asli_PM710[no_slave].amp, (signed) data_PM710[no_slave].amp);
+		#endif
 
 		data_PM710[no_slave].frek = buf[15+HD];
 		data_PM710[no_slave].frek = (data_PM710[no_slave].frek << 8) | buf[16+HD];
@@ -258,6 +269,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			asli_PM710[no_slave].frek = 0;
 		else
 			asli_PM710[no_slave].frek = data_PM710[no_slave].frek * 0.01;
+		#ifdef CEK_PM
+		printf("frek asli: %.2f, volt1 data: %d\r\n", asli_PM710[no_slave].frek, (signed) data_PM710[no_slave].frek);
+		#endif
 
 		//urut_PM710 = 2;
 	}
@@ -268,28 +282,38 @@ void taruh_data_710(int no_slave, int urt)	{
 			asli_PM710[no_slave].ampA = 0;
 		else
 			asli_PM710[no_slave].ampA = data_PM710[no_slave].ampA * satuan_amp[no_slave];
-
+		#ifdef CEK_PM
+		printf("ampA asli: %.2f, ampA data: %d\r\n", asli_PM710[no_slave].ampA, (signed) data_PM710[no_slave].ampA);
+		#endif
+		
 		data_PM710[no_slave].ampB = buf[5+HD];
 		data_PM710[no_slave].ampB = (data_PM710[no_slave].ampB << 8) | buf[6+HD];
 		if (data_PM710[no_slave].ampB == 32768)
 			asli_PM710[no_slave].ampB = 0;
 		else
 			asli_PM710[no_slave].ampB = data_PM710[no_slave].ampB * satuan_amp[no_slave];
-
+		#ifdef CEK_PM
+		printf("ampB asli: %.2f, ampB data: %d\r\n", asli_PM710[no_slave].ampB, (signed) data_PM710[no_slave].ampB);
+		#endif
 		data_PM710[no_slave].ampC = buf[7+HD];
 		data_PM710[no_slave].ampC = (data_PM710[no_slave].ampC << 8) | buf[8+HD];
 		if (data_PM710[no_slave].ampC == 32768)
 			asli_PM710[no_slave].ampC = 0;
 		else
 			asli_PM710[no_slave].ampC = data_PM710[no_slave].ampC * satuan_amp[no_slave];
-
+		#ifdef CEK_PM
+		printf("ampC asli: %.2f, ampC data: %d\r\n", asli_PM710[no_slave].ampC, (signed) data_PM710[no_slave].ampC);
+		#endif
+		
 		data_PM710[no_slave].ampN = buf[9+HD];
 		data_PM710[no_slave].ampN = (data_PM710[no_slave].ampN << 8) | buf[10+HD];
 		if (data_PM710[no_slave].ampN == 32768)
 			asli_PM710[no_slave].ampN = 0;
 		else
 			asli_PM710[no_slave].ampN = data_PM710[no_slave].ampN * satuan_amp[no_slave];
-
+		#ifdef CEK_PM
+		printf("ampN asli: %.2f, ampN data: %d\r\n", asli_PM710[no_slave].ampN, (signed) data_PM710[no_slave].ampN);
+		#endif
 		//urut_PM710 = 3;
 	}
 	else if (urt == 3)	{		// voltA_B, B_C, A_C, A_N, B_N, C_N
@@ -347,7 +371,7 @@ void taruh_data_710(int no_slave, int urt)	{
 		data_PM710[no_slave].kwh = (data_PM710[no_slave].kwh << 8) | buf[3+HD];
 		data_PM710[no_slave].kwh = (data_PM710[no_slave].kwh << 8) | buf[4+HD];
 		asli_PM710[no_slave].kwh = data_PM710[no_slave].kwh * satuan_kwh[no_slave];
-		//printf("____________-kWhnya: %.2f, data: %d, satuan: %f\r\n", asli_PM710[no_slave].kwh, data_PM710[no_slave].kwh, satuan_kwh);
+		printf("____________-kWhnya: %.2f, data: %d, satuan: %f\r\n", asli_PM710[no_slave].kwh, data_PM710[no_slave].kwh, satuan_kwh);
 		
 		// kVAh
 		data_PM710[no_slave].kvah = buf[9+HD];
@@ -374,7 +398,7 @@ void taruh_data_710(int no_slave, int urt)	{
 
 		//urut_PM710 = 4;
 	}
-	else if (urt == 5)	{		// 
+	else if (urt == 5)	{		// kW_A, kW_B, kW_C
 		// kW_A, kW_B, kW_C
 		data_PM710[no_slave].kwA = buf[3+HD];
 		data_PM710[no_slave].kwA  = (data_PM710[no_slave].kwA  << 8) | buf[4+HD];
@@ -498,8 +522,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_amp[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_amp[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_amp[pm_dibaca] = 10000.0;
-			//printf("\r\n__sat amp : %d_____%f\r\n", satuan_t, satuan_amp[pm_dibaca]);
-
+			#ifdef CEK_PM
+			printf("__sat amp : %d_____%f\r\n", satuan_t, satuan_amp[pm_dibaca]);
+			#endif
 			//ampere2 (L-N)
 			satuan_t = buf[5+HD];
 			satuan_t = (satuan_t << 8) + buf[6+HD];
@@ -513,6 +538,10 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_amp2[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_amp2[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_amp2[pm_dibaca] = 10000.0;
+			#ifdef CEK_PM
+			printf("__sat amp2 : %d_____%f\r\n", satuan_t, satuan_amp2[pm_dibaca]);
+			#endif
+			
 			// buf[7] & [8] kosong
 
 			// volt (L - L)
@@ -528,8 +557,10 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_volt[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_volt[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_volt[pm_dibaca] = 10000.0;
-			//printf("\r\n__satuan_volt : %d_____%f\r\n", satuan_t, satuan_volt[pm_dibaca]);
-
+			#ifdef CEK_PM
+			printf("__satuan_volt : %d_____%f\r\n", satuan_t, satuan_volt[pm_dibaca]);
+			#endif
+			
 			// volt2 (L - N)
 			satuan_t = buf[9+HD];
 			satuan_t = (satuan_t << 8) + buf[10+HD];
@@ -543,7 +574,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_volt2[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_volt2[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_volt2[pm_dibaca] = 10000.0;
-
+			#ifdef CEK_PM
+			printf("__sat volt2 : %d_____%f\r\n", satuan_t, satuan_volt2[pm_dibaca]);
+			#endif
 			//power
 			satuan_t = buf[11+HD];
 			satuan_t = (satuan_t << 8) + buf[12+HD];
@@ -557,9 +590,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			else if (satuan_t == 2) satuan_kw[pm_dibaca] = 100.0;
 			else if (satuan_t == 3) satuan_kw[pm_dibaca] = 1000.0;
 			else if (satuan_t == 4) satuan_kw[pm_dibaca] = 10000.0;
-
-			//printf("\r\n__satuan_kw: %d_____%f\r\n", satuan_t, satuan_kw[pm_dibaca]);
-			
+			#ifdef CEK_PM
+			printf("__satuan_kw: %d_____%f\r\n", satuan_t, satuan_kw[pm_dibaca]);
+			#endif
 			//energy
 			satuan_kwh[pm_dibaca] = 10.00;	
 			//*
@@ -578,7 +611,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].ampA = 0;
 			else
 				asli_PM710[pm_dibaca].ampA = data_PM710[pm_dibaca].ampA * satuan_amp[pm_dibaca];
-			//printf("\r\n ampA: %d, satuan amp: %f", data_PM710[pm_dibaca].ampA, satuan_amp[pm_dibaca]);
+			#ifdef CEK_PM
+			printf("ampA: %d - %.2f, satuan amp: %f\r\n", data_PM710[pm_dibaca].ampA, asli_PM710[pm_dibaca].ampA, satuan_amp[pm_dibaca]);
+			#endif
 			
 			// ampere B
 			data_PM710[pm_dibaca].ampB = buf[5+HD];
@@ -587,8 +622,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].ampB = 0;
 			else
 				asli_PM710[pm_dibaca].ampB = data_PM710[pm_dibaca].ampB * satuan_amp[pm_dibaca];
-			//printf("\r\n ampB: %d", data_PM710[pm_dibaca].ampB);
-
+			#ifdef CEK_PM
+			printf("ampB: %d - %.2f\r\n", data_PM710[pm_dibaca].ampB, asli_PM710[pm_dibaca].ampB);
+			#endif
 			// ampere C
 			data_PM710[pm_dibaca].ampC = buf[7+HD];
 			data_PM710[pm_dibaca].ampC = (data_PM710[pm_dibaca].ampC << 8) + buf[8+HD];
@@ -596,8 +632,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].ampC = 0;
 			else
 				asli_PM710[pm_dibaca].ampC = data_PM710[pm_dibaca].ampC * satuan_amp[pm_dibaca];
-			//printf("\r\n ampC: %d", data_PM710[pm_dibaca].ampC);
-
+			#ifdef CEK_PM
+			printf("ampC: %d - %.2f\r\n", data_PM710[pm_dibaca].ampC, asli_PM710[pm_dibaca].ampC);
+			#endif
 			// ampere N
 			data_PM710[pm_dibaca].ampN = buf[9+HD];
 			data_PM710[pm_dibaca].ampN = (data_PM710[pm_dibaca].ampN << 8) + buf[10+HD];
@@ -605,8 +642,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].ampN = 0;
 			else
 				asli_PM710[pm_dibaca].ampN = data_PM710[pm_dibaca].ampN * satuan_amp[pm_dibaca];
-			//printf("\r\n ampN: %d", data_PM710[pm_dibaca].ampN);
-
+			#ifdef CEK_PM
+			printf("ampN: %d - %.2f\r\n", data_PM710[pm_dibaca].ampN, asli_PM710[pm_dibaca].ampN);
+			#endif
 			// ampere average
 			data_PM710[pm_dibaca].amp = buf[11+HD];
 			data_PM710[pm_dibaca].amp = (data_PM710[pm_dibaca].amp << 8) + buf[12+HD];
@@ -614,8 +652,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].amp = 0;
 			else
 				asli_PM710[pm_dibaca].amp = data_PM710[pm_dibaca].amp * satuan_amp[pm_dibaca];
-			//printf("\r\n amp: %d", data_PM710[pm_dibaca].amp);
-
+			#ifdef CEK_PM
+			printf("amp : %d - %.2f\r\n", data_PM710[pm_dibaca].amp, asli_PM710[pm_dibaca].amp);
+			#endif
 		 }
 		else if (urt == 2)		{	//xx voltA_B, B_C, A_C, A_N, B_N & C_N
 			//voltA_B, B_C, A_C, A_N, B_N & C_N
@@ -625,24 +664,27 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].voltA_B = 0;
 			else
 				asli_PM710[pm_dibaca].voltA_B = data_PM710[pm_dibaca].voltA_B * satuan_volt[pm_dibaca];
-			//printf("\r\n data_PM710[pm_dibaca].voltA_B: %d", data_PM710[pm_dibaca].voltA_B);
-
+			#ifdef CEK_PM
+			printf("voltA_B: %d - %.2f\r\n", data_PM710[pm_dibaca].voltA_B, asli_PM710[pm_dibaca].voltA_B);
+			#endif
 			data_PM710[pm_dibaca].voltB_C = buf[5+HD];
 			data_PM710[pm_dibaca].voltB_C = (data_PM710[pm_dibaca].voltB_C << 8) + buf[6+HD];
 			if (data_PM710[pm_dibaca].voltB_C == 32768)
 				asli_PM710[pm_dibaca].voltB_C = 0;
 			else
 				asli_PM710[pm_dibaca].voltB_C = data_PM710[pm_dibaca].voltB_C * satuan_volt[pm_dibaca];
-			//printf("\r\n data_PM710[pm_dibaca].voltB_C: %d", data_PM710[pm_dibaca].voltB_C);
-			
+			#ifdef CEK_PM
+			printf("voltB_C: %d - %.2f\r\n", data_PM710[pm_dibaca].voltB_C, asli_PM710[pm_dibaca].voltB_C);
+			#endif
 			data_PM710[pm_dibaca].voltA_C = buf[7+HD];
 			data_PM710[pm_dibaca].voltA_C = (data_PM710[pm_dibaca].voltA_C << 8) + buf[8+HD];
 			if (data_PM710[pm_dibaca].voltA_C == 32768)
 				asli_PM710[pm_dibaca].voltA_C = 0;
 			else
 				asli_PM710[pm_dibaca].voltA_C = data_PM710[pm_dibaca].voltA_C * satuan_volt[pm_dibaca];
-			//printf("\r\n data_PM710.voltB_C: %d, satuan_volt: %f", data_PM710[pm_dibaca].voltB_C, satuan_volt[pm_dibaca]);
-			
+			#ifdef CEK_PM
+			printf("voltB_C: %d - %.2f, satuan_volt: %f\r\n", data_PM710[pm_dibaca].voltB_C, asli_PM710[pm_dibaca].voltA_C, satuan_volt[pm_dibaca]);
+			#endif
 			// L-L average
 			data_PM710[pm_dibaca].volt1 = buf[9+HD];
 			data_PM710[pm_dibaca].volt1 = (data_PM710[pm_dibaca].volt1 << 8) + buf[10+HD];
@@ -650,14 +692,18 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].volt1 = 0;
 			else
 				asli_PM710[pm_dibaca].volt1 = data_PM710[pm_dibaca].volt1 * satuan_volt[pm_dibaca];
-			//printf("\r\n data_PM710.volt1: %d, satuan_volt: %f", data_PM710[pm_dibaca].volt1, satuan_volt[pm_dibaca]);
-			
+			#ifdef CEK_PM
+			printf("volt1  : %d - %.2f, satuan_volt: %f\r\n", data_PM710[pm_dibaca].volt1, asli_PM710[pm_dibaca].volt1, satuan_volt[pm_dibaca]);
+			#endif
 			data_PM710[pm_dibaca].voltA_N = buf[11+HD];
 			data_PM710[pm_dibaca].voltA_N = (data_PM710[pm_dibaca].voltA_N << 8) + buf[12+HD];
 			if (data_PM710[pm_dibaca].voltA_N == 32768)
 				asli_PM710[pm_dibaca].voltA_N = 0;
 			else
 				asli_PM710[pm_dibaca].voltA_N = data_PM710[pm_dibaca].voltA_N * satuan_volt[pm_dibaca];
+			#ifdef CEK_PM
+			printf("voltAN : %d - %.2f\r\n", data_PM710[pm_dibaca].voltA_N, asli_PM710[pm_dibaca].voltA_N);
+			#endif
 
 
 			data_PM710[pm_dibaca].voltB_N = buf[13+HD];
@@ -666,6 +712,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].voltB_N = 0;
 			else
 				asli_PM710[pm_dibaca].voltB_N = data_PM710[pm_dibaca].voltB_N * satuan_volt[pm_dibaca];
+			#ifdef CEK_PM
+			printf("voltBN : %d - %.2f\r\n", data_PM710[pm_dibaca].voltB_N, asli_PM710[pm_dibaca].voltB_N);
+			#endif
 
 
 			data_PM710[pm_dibaca].voltC_N = buf[15+HD];
@@ -674,6 +723,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].voltC_N = 0;
 			else
 				asli_PM710[pm_dibaca].voltC_N = data_PM710[pm_dibaca].voltC_N * satuan_volt[pm_dibaca];
+			#ifdef CEK_PM
+			printf("voltCN : %d - %.2f\r\n", data_PM710[pm_dibaca].voltC_N, asli_PM710[pm_dibaca].voltC_N);
+			#endif
 			
 			// buf[17] + buf[18] : Tegangan N-R
 
@@ -684,8 +736,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].volt2 = 0;
 			else
 				asli_PM710[pm_dibaca].volt2 = data_PM710[pm_dibaca].volt2 * satuan_volt[pm_dibaca];
-			//printf("\r\n volt2: %d, satuan_volt: %f", data_PM710[pm_dibaca].volt2, satuan_volt[pm_dibaca]);
-
+			#ifdef CEK_PM
+			printf("volt2  : %d - %.2f, satuan_volt: %f\r\n", data_PM710[pm_dibaca].volt2, asli_PM710[pm_dibaca].volt2, satuan_volt[pm_dibaca]);
+			#endif
 		 }
 		else if (urt == 3)		 {	//xx kwA, kwB, kwC, kw dll
 			// kwA, kwB, kwC, kw
@@ -695,32 +748,36 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].kwA = 0;
 			else
 				asli_PM710[pm_dibaca].kwA = data_PM710[pm_dibaca].kwA * satuan_kw[pm_dibaca];
-			//printf("\r\n kwA: %d, satuan kW: %f", data_PM710[pm_dibaca].kwA, satuan_kw[pm_dibaca]);
-
+			#ifdef CEK_PM
+			printf("kwA: %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kwA, asli_PM710[pm_dibaca].kwA, satuan_kw[pm_dibaca]);
+			#endif
 			data_PM710[pm_dibaca].kwB = buf[5+HD];
 			data_PM710[pm_dibaca].kwB = (data_PM710[pm_dibaca].kwB << 8) + buf[6+HD];
 			if (data_PM710[pm_dibaca].kwB == 32768)
 				asli_PM710[pm_dibaca].kwB = 0;
 			else
 				asli_PM710[pm_dibaca].kwB = data_PM710[pm_dibaca].kwB * satuan_kw[pm_dibaca];
-			//printf("\r\n kwB: %d, satuan kW: %f", data_PM710[pm_dibaca].kwB, satuan_kw[pm_dibaca]);
-			
+			#ifdef CEK_PM
+			printf("kwB: %d - %.2f\r\n", data_PM710[pm_dibaca].kwB, asli_PM710[pm_dibaca].kwB);
+			#endif
 			data_PM710[pm_dibaca].kwC = buf[7+HD];
 			data_PM710[pm_dibaca].kwC = (data_PM710[pm_dibaca].kwC << 8) + buf[8+HD];
 			if (data_PM710[pm_dibaca].kwC == 32768)
 				asli_PM710[pm_dibaca].kwC = 0;
 			else
 				asli_PM710[pm_dibaca].kwC = data_PM710[pm_dibaca].kwC * satuan_kw[pm_dibaca];
-			//printf("\r\n kwC: %d, satuan kW: %f", data_PM710[pm_dibaca].kwC, satuan_kw[pm_dibaca]);
-
+			#ifdef CEK_PM
+			printf("kwC: %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kwC, asli_PM710[pm_dibaca].kwC, satuan_kw[pm_dibaca]);
+			#endif
 			data_PM710[pm_dibaca].kw = buf[9+HD];
 			data_PM710[pm_dibaca].kw = (data_PM710[pm_dibaca].kw << 8) + buf[10+HD];
 			if (data_PM710[pm_dibaca].kw == 32768)
 				asli_PM710[pm_dibaca].kw = 0;
 			else
 				asli_PM710[pm_dibaca].kw = data_PM710[pm_dibaca].kw * satuan_kw[pm_dibaca];
-			//printf("\r\n kw: %d, satuan kW: %f", data_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
-
+			#ifdef CEK_PM
+			printf("kw : %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+			#endif
 			// kvarA, kvarB, kvarC, kvar
 			data_PM710[pm_dibaca].kvarA = buf[11+HD];
 			data_PM710[pm_dibaca].kvarA = (data_PM710[pm_dibaca].kvarA << 8) + buf[12+HD];
@@ -728,29 +785,39 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].kvarA = 0;
 			else
 				asli_PM710[pm_dibaca].kvarA = (signed short) data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca];
-
+			#ifdef CEK_PM
+			printf("kvarA: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarA, asli_PM710[pm_dibaca].kvarA);
+			#endif
+			
 			data_PM710[pm_dibaca].kvarB = buf[13+HD];
 			data_PM710[pm_dibaca].kvarB = (data_PM710[pm_dibaca].kvarB << 8) + buf[14+HD];
 			if (data_PM710[pm_dibaca].kvarB == 32768)
 				asli_PM710[pm_dibaca].kvarB = 0;
 			else
 				asli_PM710[pm_dibaca].kvarB = (signed short) data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca];
-
+			#ifdef CEK_PM
+			printf("kvarB: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarB, asli_PM710[pm_dibaca].kvarB);
+			#endif
+			
 			data_PM710[pm_dibaca].kvarC = buf[15+HD];
 			data_PM710[pm_dibaca].kvarC = (data_PM710[pm_dibaca].kvarC << 8) + buf[16+HD];
 			if (data_PM710[pm_dibaca].kvarC == 32768)
 				asli_PM710[pm_dibaca].kvarC = 0;
 			else
 				asli_PM710[pm_dibaca].kvarC = (signed short) data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca];
-
+			#ifdef CEK_PM
+			printf("kvarC: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarC, asli_PM710[pm_dibaca].kvarC);
+			#endif
+			
 			data_PM710[pm_dibaca].kvar = buf[17+HD];
 			data_PM710[pm_dibaca].kvar = (data_PM710[pm_dibaca].kvar << 8) + buf[18+HD];
 			if (data_PM710[pm_dibaca].kvar == 32768)
 				asli_PM710[pm_dibaca].kvar = 0;
 			else
 				asli_PM710[pm_dibaca].kvar = (signed short) data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca];
-			//printf("kvar asli: %.2f, kvar data: %d\r\n", asli_PM710[pm_dibaca].kvar, (signed short) data_PM710[pm_dibaca].kvar);
-
+			#ifdef CEK_PM
+			printf("kvar : %d - %.2f\r\n", data_PM710[pm_dibaca].kvar, asli_PM710[pm_dibaca].kvar);
+			#endif
 			// kvaA, kvaB, kvaC, kva
 			data_PM710[pm_dibaca].kvaA = buf[19+HD];
 			data_PM710[pm_dibaca].kvaA = (data_PM710[pm_dibaca].kvaA << 8) + buf[20+HD];
@@ -758,13 +825,19 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].kvaA = 0;
 			else
 				asli_PM710[pm_dibaca].kvaA = data_PM710[pm_dibaca].kvaA * satuan_kw[pm_dibaca];
-
+			#ifdef CEK_PM
+			printf("kvarA: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarA, asli_PM710[pm_dibaca].kvarA);
+			#endif
+			
 			data_PM710[pm_dibaca].kvaB = buf[21+HD];
 			data_PM710[pm_dibaca].kvaB = (data_PM710[pm_dibaca].kvaB << 8) + buf[22+HD];
 			if (data_PM710[pm_dibaca].kvaB == 32768)
 				asli_PM710[pm_dibaca].kvaB = 0;
 			else
 				asli_PM710[pm_dibaca].kvaB = data_PM710[pm_dibaca].kvaB * satuan_kw[pm_dibaca];
+			#ifdef CEK_PM
+			printf("kvarB: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarB, asli_PM710[pm_dibaca].kvarB);
+			#endif
 
 			data_PM710[pm_dibaca].kvaC = buf[23+HD];
 			data_PM710[pm_dibaca].kvaC = (data_PM710[pm_dibaca].kvaC << 8) + buf[24+HD];
@@ -772,6 +845,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].kvaC = 0;
 			else
 				asli_PM710[pm_dibaca].kvaC = data_PM710[pm_dibaca].kvaC * satuan_kw[pm_dibaca];
+			#ifdef CEK_PM
+			printf("kvarC: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarC, asli_PM710[pm_dibaca].kvarC);
+			#endif
 
 			data_PM710[pm_dibaca].kva = buf[25+HD];
 			data_PM710[pm_dibaca].kva = (data_PM710[pm_dibaca].kva << 8) + buf[26+HD];
@@ -779,6 +855,9 @@ void taruh_data_710(int no_slave, int urt)	{
 				asli_PM710[pm_dibaca].kva = 0;
 			else
 				asli_PM710[pm_dibaca].kva = data_PM710[pm_dibaca].kva * satuan_kw[pm_dibaca];
+			#ifdef CEK_PM
+			printf("kvar : %d - %.2f\r\n", data_PM710[pm_dibaca].kvar, asli_PM710[pm_dibaca].kvar);
+			#endif
 
 		 }
 		else if (urt == 4)		 {	//xx pfA, pfB, pfC, pf
@@ -793,8 +872,9 @@ void taruh_data_710(int no_slave, int urt)	{
 
 			   asli_PM710[pm_dibaca].pfA = data_PM710[pm_dibaca].pfA * 0.001;
 			}
-			//printf("\r\n pfA: %d", data_PM710[pm_dibaca].pfA);
-			
+			#ifdef CEK_PM
+			printf("pfA: %d - %.2f\r\n", data_PM710[pm_dibaca].pfA, asli_PM710[pm_dibaca].pfB);
+			#endif
 			data_PM710[pm_dibaca].pfB = buf[5+HD];
 			data_PM710[pm_dibaca].pfB = (data_PM710[pm_dibaca].pfB << 8) + buf[6+HD];
 			if (data_PM710[pm_dibaca].pfB == 0x8000) asli_PM710[pm_dibaca].pfB = 1.00;
@@ -805,11 +885,12 @@ void taruh_data_710(int no_slave, int urt)	{
 
 			   asli_PM710[pm_dibaca].pfB = data_PM710[pm_dibaca].pfB * 0.001;
 			}
-			//printf("\r\n pfB: %d", data_PM710[pm_dibaca].pfB);
+			#ifdef CEK_PM
+			printf("pfB: %d - %.2f\r\n", data_PM710[pm_dibaca].pfB, asli_PM710[pm_dibaca].pfB);
+			#endif
 
 			data_PM710[pm_dibaca].pfC = buf[7+HD];
 			data_PM710[pm_dibaca].pfC = (data_PM710[pm_dibaca].pfC << 8) + buf[8+HD];
-			//Memo1->Lines->Add(IntToStr( data_PM710[pm_dibaca].pfC));
 			if (data_PM710[pm_dibaca].pfC == 0x8000) asli_PM710[pm_dibaca].pfC = 1.00;
 			else
 			{
@@ -818,7 +899,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			   
 			   asli_PM710[pm_dibaca].pfC = data_PM710[pm_dibaca].pfC * 0.001;
 			}
-			//printf("\r\n pfC: %d", data_PM710[pm_dibaca].pfC);
+			#ifdef CEK_PM
+			printf("pfC: %d - %.2f\r\n", data_PM710[pm_dibaca].pfC, asli_PM710[pm_dibaca].pfC);
+			#endif
 
 			data_PM710[pm_dibaca].pf = buf[9+HD];
 			data_PM710[pm_dibaca].pf = (data_PM710[pm_dibaca].pf << 8) + buf[10+HD];
@@ -830,7 +913,9 @@ void taruh_data_710(int no_slave, int urt)	{
 
 			   asli_PM710[pm_dibaca].pf = data_PM710[pm_dibaca].pf * 0.001;
 			}
-			//printf("\r\n pf: %d", data_PM710[pm_dibaca].pf);
+			#ifdef CEK_PM
+			printf("pf : %d - %.2f\r\n", data_PM710[pm_dibaca].pf, asli_PM710[pm_dibaca].pf);
+			#endif
 
 		 }
 		else if (urt == 5)		 {	//xx
@@ -843,7 +928,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			#ifndef MOD_SERVER
 			f = data_PM710[pm_dibaca].frek * 0.01;
 			#endif
-			//printf("\r\nNilai frek1: %f ... %d\r\n", data_PM710[pm_dibaca].frek * 0.01, data_PM710[pm_dibaca].frek);
+			#ifdef CEK_PM
+			printf("frek: %d - %.2f\r\n", data_PM710[pm_dibaca].frek, asli_PM710[pm_dibaca].frek);
+			#endif
 		 }
 		else if (urt == 6)		 {
 			//ENERGI
@@ -860,7 +947,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			data_PM710[pm_dibaca].kwh = (data_PM710[pm_dibaca].kwh << 8) + buf[4+HD];
 			data_PM710[pm_dibaca].kwh = data_PM710[pm_dibaca].kwh + temp;
 			asli_PM710[pm_dibaca].kwh = data_PM710[pm_dibaca].kwh * satuan_kwh[pm_dibaca];
-
+			#ifdef CEK_PM
+			printf("kWh: %d - %f\r\n", data_PM710[pm_dibaca].kwh, asli_PM710[pm_dibaca].kwh);
+			#endif
 			//
 			temp2 = buf[15+HD];
 			temp2 = (temp2 << 8) + buf[16+HD];
@@ -874,6 +963,9 @@ void taruh_data_710(int no_slave, int urt)	{
 			data_PM710[pm_dibaca].kvarh = (data_PM710[pm_dibaca].kvarh << 8) + buf[12+HD];
 			data_PM710[pm_dibaca].kvarh = data_PM710[pm_dibaca].kvarh + temp;
 			asli_PM710[pm_dibaca].kvarh = data_PM710[pm_dibaca].kvarh * satuan_kwh[pm_dibaca];
+			#ifdef CEK_PM
+			printf("kvarh: %d - %f\r\n", data_PM710[pm_dibaca].kvarh, asli_PM710[pm_dibaca].kvarh);
+			#endif
 		 }
 		else if (urt == 7)		 {
 			//ENERGI KVAH
@@ -890,7 +982,10 @@ void taruh_data_710(int no_slave, int urt)	{
 			data_PM710[pm_dibaca].kvah = (data_PM710[pm_dibaca].kvah << 8) + buf[4+HD];
 			data_PM710[pm_dibaca].kvah = data_PM710[pm_dibaca].kvah + temp;
 			asli_PM710[pm_dibaca].kvah = data_PM710[pm_dibaca].kvah * satuan_kwh[pm_dibaca];
-
+			#ifdef CEK_PM
+			printf("kvah: %d - %f\r\n", data_PM710[pm_dibaca].kvah, asli_PM710[pm_dibaca].kvah);
+			#endif
+			
 			//kontrol_PM[pm_dibaca].alamat = addr_PM710;
 			kontrol_PM[pm_dibaca].alamat = pm_dibaca;
 			kontrol_PM[pm_dibaca].konek = 1;             // tersambung

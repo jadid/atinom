@@ -101,7 +101,7 @@ int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 #endif
 
 #ifdef PAKAI_PM
-#include "pm_server.c"
+//#include "pm_server.c"
 #include "sumber.c"
 #endif
 
@@ -386,7 +386,7 @@ void cek_stack(void)
 	#endif
 	
 	#ifdef PAKAI_ETH
-	printf(    " Ether       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	printf(    " Ether      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	#endif
 	
 	#ifdef PAKAI_SELENOID
@@ -409,7 +409,7 @@ void cek_stack(void)
 		printf(" CNC         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
 	#endif
 	
-	printf(    " Ambil Cepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
+	printf(    " AmbilCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
 }							 
 
 //static 
@@ -1278,7 +1278,7 @@ vTaskDelay(100);
 
 void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY+1, ( xTaskHandle * ) &hdl_shell);
 }
 #endif
 

@@ -8,7 +8,7 @@
 #ifndef __AMBILCEPAT__
 #define __AMBILCEPAT__
 
-
+#include "monita/monita_uip.h"
 xTaskHandle hdl_ambilcepat;
 
 
@@ -49,6 +49,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
   	#ifdef AMBIL_PM
 		printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
+		vTaskDelay(1000);
+  	#endif
+  	
+  	#ifdef PAKAI_PM
+		int almtSumber=0;
+		int sPM=0;
   	#endif
   	
   	vTaskDelay(50);
@@ -64,9 +70,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				#endif
 			}
 		#endif
-		
+
 		#ifdef PAKAI_PM			// AMBIL_PM
-		
+			sedot_pm();
 		#endif
 		
 		#ifdef PAKAI_ADC
@@ -198,8 +204,6 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#endif
 			//*/
 		#endif
-		
-		
 	}
 
 	#ifdef PAKAI_GPS
@@ -214,7 +218,7 @@ int nAmbilCepat=10;
 #endif
 
 void init_ambilcepat(void)	{
-	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_ambilcepat);
+	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+1, ( xTaskHandle * ) &hdl_ambilcepat);
 }
 
 #endif

@@ -1001,6 +1001,29 @@ void taruh_data_710(int no_slave, int urt)	{
 	}
 #endif
 
+#ifdef TIPE_MICOM_M300
+	#define T10_des2		0.01
+	#define T11_des3		0.001
+	#define T12_des4		0.0001
+	
+	void taruh_data_301(int pm_dibaca, int urut) {
+		if (urut==0) {
+			data_PM710[pm_dibaca].voltA_N = buf[3+HD];
+			data_PM710[pm_dibaca].voltA_N = (data_PM710[pm_dibaca].voltA_N << 8) + buf[4+HD];		
+			if (data_PM710[pm_dibaca].voltA_N == 32768)
+				asli_PM710[pm_dibaca].voltA_N = 0;
+			else
+				asli_PM710[pm_dibaca].voltA_N = data_PM710[pm_dibaca].voltA_N * satuan_amp[pm_dibaca];
+			#ifdef CEK_PM
+			printf("ampA: %d - %.2f, satuan amp: %f\r\n", data_PM710[pm_dibaca].voltA_N, asli_PM710[pm_dibaca].voltA_N, satuan_amp[pm_dibaca]);
+			#endif
+		}
+		else if (urut==1) {
+			
+		}
+	}
+#endif
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 

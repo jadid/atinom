@@ -323,7 +323,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				// hitung jml loop kirim ke server
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
-					tiapKirim=950/jmlsumbernya;
+					//tiapKirim=950/jmlsumbernya;
+					tiapKirim=150/jmlsumbernya;
 				}
 				
 				
@@ -345,7 +346,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, "&");
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
-					//printf("datakeserver: %s\r\n",datakeserver);
+					printf("datakeserver: %s\r\n",datakeserver);
 					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}

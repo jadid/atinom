@@ -218,7 +218,7 @@ int nAmbilCepat=10;
 #endif
 
 void init_ambilcepat(void)	{
-	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+1, ( xTaskHandle * ) &hdl_ambilcepat);
+	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_ambilcepat);
 }
 
 #endif

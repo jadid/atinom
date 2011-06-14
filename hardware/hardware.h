@@ -94,14 +94,14 @@ void setup_hardware(void);
 		
 		#define setup_adc()		do {	\
 										FIO0DIR = FIO0DIR | port_cs_ad7708;	\
-										FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\	
+										FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\
 										uncs_ad7708();	\
 									} while(0);
 	#endif
 
 	#ifdef PAKAI_TIMER2
 		#define setup_timer2()		do	{	\
-										PCONP |= BIT(22);		\				
+										PCONP |= BIT(22);		\
 										PCLKSEL1 &= ~(BIT(12) | BIT(13));	\
 										PCLKSEL1 |= BIT(12);				\
 									} while(0)
@@ -164,8 +164,8 @@ void setup_hardware(void);
 		#define AD7708_LPC_KOMON
 		
 		#define setup_adc()		do {	\
-									FIO1DIR = FIO1DIR | port_cs_ad7708;		\	
-									FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\	
+									FIO1DIR = FIO1DIR | port_cs_ad7708;		\
+									FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\
 									uncs_ad7708();							\
 								} while (0);
 	#endif

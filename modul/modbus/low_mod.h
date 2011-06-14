@@ -66,20 +66,26 @@
 #endif // tipe_PM710
 
 #ifdef TIPE_PM810
-//#define JML_REQ_PM	8
-#define meter_current_810    1100		// 1100
-#define meter_voltage_810    1120		// 1120
-#define meter_power_810      1140		// 1140
-#define meter_faktor_810     1160		// 1160
-#define meter_energi2_810    1701    	// 1700
-#define reg_frek_810         1180	 	// 1180 x
-#define meter_energi_vah_810 1725    	// 1724
+	//#define JML_REQ_PM	8
+	#define meter_current_810    1100		// 1100
+	#define meter_voltage_810    1120		// 1120
+	#define meter_power_810      1140		// 1140
+	#define meter_faktor_810     1160		// 1160
+	#define meter_energi2_810    1701    	// 1700
+	#define reg_frek_810         1180	 	// 1180 x
+	#define meter_energi_vah_810 1725    	// 1724
 
-//#define reg_kwh_810   4000     // 2 register
-
-#define reg_satuan_810      3210		//3209 x
-
+	//#define reg_kwh_810   4000     // 2 register
+	#define reg_satuan_810      3210		//3209 x
 #endif //TIPE_PM810
+
+#ifdef TIPE_MICOM_M300
+	#define info_micom				30001		//
+	#define meter_voltage_micom		30454		// 11 data: VA, VB, VC, VAB, VBC, VCA, IA, IB, IC, IN, frek
+	#define meter_power_each_micom	30483		//  9 data: kwA, kwB, kwC, kvarA, kvarB, kvarC, kvaA, kvaB, kvaC
+	#define meter_power_micom		30501		//  4 data: Tot P, Q, S, pf 
+	#define meter_energi_micom		30508		//    data: wh, varh
+#endif	// TIPE_MICOM_M300
 
 struct d_pmod {
       unsigned char addr;

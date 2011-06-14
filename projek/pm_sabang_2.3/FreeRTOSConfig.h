@@ -59,7 +59,8 @@
 
 #define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
-	#define PAKAI_SERIAL_3_P0	38400
+	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
+	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
 	#define PAKAI_MAX485		1
@@ -74,7 +75,7 @@
 	#ifdef PAKAI_PM
 		#define TIPE_PM810
 		//#define TIPE_PM710
-		//#define TIPE_MICOM_M300
+		#define TIPE_MICOM_M300
 	#endif
 #endif
 
@@ -109,6 +110,11 @@
 	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
+	
+	#ifdef PAKAI_WEBCLIENT
+		#define WEBCLIENT_DATA
+		//#define WEBCLIENT_GPS
+	#endif
 #endif
 
 //#define PAKAI_ADC

@@ -211,6 +211,8 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 }
 #endif
 /*-----------------------------------------------------------------------------------*/
+//unsigned char webclient_get(char *host, u16_t port, char *file) __attribute__ ((naked));
+
 unsigned char
 webclient_get(char *host, u16_t port, char *file)
 {
@@ -238,25 +240,26 @@ webclient_get(char *host, u16_t port, char *file)
     }
   }*/
 
-  conn = uip_connect( ip_modul, htons(port));
-  if (conn == NULL) {
-	  return 0;
-  }
+	portENTER_CRITICAL();
+	conn = uip_connect( ip_modul, htons(port));
+	if (conn == NULL) {
+		return 0;
+	}
 
-  s.port = port;
-  strncpy(s.file, file, sizeof(s.file));
-  strncpy(s.host, host, sizeof(s.host));
+	s.port = port;
+	strncpy(s.file, file, sizeof(s.file));
+	strncpy(s.host, host, sizeof(s.host));
   
-  //printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
+	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
-  init_connection();
+	init_connection();
+	portEXIT_CRITICAL();
+	//printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
+	//printf("___%s(): strlen(s.file): %d\r\n", __FUNCTION__, strlen(s.file));
   
-  //printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
-  //printf("___%s(): strlen(s.file): %d\r\n", __FUNCTION__, strlen(s.file));
+	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
-  //printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
-  
-  return 1;
+	return 1;
 }
 /*-----------------------------------------------------------------------------------*/
 static unsigned char *

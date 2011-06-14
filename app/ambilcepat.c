@@ -47,14 +47,14 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		//init_remang();
   	#endif
   	
-  	#ifdef AMBIL_PM
-		printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
-		vTaskDelay(1000);
-  	#endif
-  	
   	#ifdef PAKAI_PM
 		int almtSumber=0;
 		int sPM=0;
+  	#endif
+  	
+	#ifdef AMBIL_PM
+		printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
+		vTaskDelay(3000);
   	#endif
   	
   	vTaskDelay(50);

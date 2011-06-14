@@ -80,11 +80,13 @@ extern struct t_adc st_adc;
 #define PAKE_HTTP
 #endif
 
+#define DEBUG_WEBCLIENT
+
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
 	
 unsigned char status_eth = 0;
-			
+		
 extern xTaskHandle hdl_ether;
 //#define DEBUG_UIP_TASK
 
@@ -195,6 +197,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	#ifdef WEBCLIENT_DATA
 		char il[256], dl[256];
 		char angkaangka[5];
+		#ifdef DEBUG_WEBCLIENT
+		char countwc[15];
+		int wc=0;
+		#endif
 		int maxkirim=12;
 		extern int kirimURL;
 		extern char terkirimURL;
@@ -236,7 +242,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	// supaya cukup waktu buat siap2 //
 	loop = -1000;
 	
-	#ifdef BOARD_KOMON_420_SABANG
+	#if defined(BOARD_KOMON_420_SABANG) || defined (BOARD_KOMON_420_SABANG_2_3)
 	vTaskDelay(200);
 	#endif
 
@@ -324,7 +330,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
 					//tiapKirim=950/jmlsumbernya;
-					tiapKirim=150/jmlsumbernya;
+					tiapKirim=330/jmlsumbernya;
 				}
 				
 				
@@ -341,12 +347,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, "&p=diesel&j=");
 					sprintf(angkaangka, "%d", jmlData);
 					strcat(datakeserver, angkaangka);
+					#ifdef DEBUG_WEBCLIENT
+						strcat(datakeserver, "&cc=");
+						wc++;
+						sprintf(countwc, "%d", wc);
+						strcat(datakeserver, countwc);
+					#endif
 					strcat(datakeserver, "&");
 					strcat(datakeserver, il);
 					strcat(datakeserver, "&");
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
-					printf("datakeserver: %s\r\n",datakeserver);
+					//printf("datakeserver: %s\r\n",datakeserver);
 					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}
@@ -583,8 +595,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 
 
 void start_ether(void)	{	//8
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 12), \
-		NULL, tskIDLE_PRIORITY + 2, ( xTaskHandle * ) &hdl_ether );
+	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 15), \
+		NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
 }
 
 void dispatch_tcp_appcall (void)	{
@@ -630,7 +642,7 @@ void dispatch_tcp_appcall (void)	{
 
 #ifdef PAKAI_WEBCLIENT
 	/* webclient */
-	if (uip_conn->rport == HTONS(80))	{
+	if (uip_conn->rport == HTONS(PORT_HTTP))	{
 		webclient_appcall();
 	}
 #endif

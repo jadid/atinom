@@ -19,7 +19,7 @@
 #include "uip.h"
 #include "uip_arp.h"
 
-
+#define PAKAI_ETH_TEST
 
 //#include "./hardware/enc28j60.h"
 
@@ -601,9 +601,14 @@ void start_ether(void)	{	//8
 
 void dispatch_tcp_appcall (void)	{
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
+
+#ifdef PAKAI_ETH_TEST
+	if (uip_conn->lport == HTONS (9876))
+		eth_test_appcall ();
+#endif
 	
 #ifdef PAKE_HTTP
-	if (uip_conn->lport == HTONS (80))
+	if (uip_conn->lport == HTONS (PORT_HTTP))
 		httpd_appcall ();
 #endif
 

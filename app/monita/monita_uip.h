@@ -129,6 +129,8 @@
 	#define		PORT_HTTP	80
 #endif
 
+#ifdef 
+
 #ifdef PAKAI_MODBUSTCP
 	#define		PORT_MODBUSTCP	502
 #endif

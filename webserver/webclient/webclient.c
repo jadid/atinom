@@ -119,6 +119,8 @@ webclient_port(void)
 /*-----------------------------------------------------------------------------------*/
 void webclient_init(void) {
 	kirimURL=0;
+	uip_listen(HTONS(PORT_HTTP));
+	
 }
 /*-----------------------------------------------------------------------------------*/
 static void init_connection(void) {
@@ -489,24 +491,24 @@ webclient_appcall(void)
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    //printf("%s(): Connected\r\n", __FUNCTION__);
+    printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    //printf("%s(): Closed\r\n", __FUNCTION__);
+    printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	 //printf("%s(): Aborted\r\n", __FUNCTION__);
+	 printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	 //printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	 printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   
@@ -526,7 +528,7 @@ webclient_appcall(void)
     ++s.timer;
     if(s.timer == WEBCLIENT_TIMEOUT) {
       //webclient_timedout();
-	  //printf("%s(): Timeout 2\r\n", __FUNCTION__);
+	  printf("%s(): Timeout 2\r\n", __FUNCTION__);
       uip_abort();
       return;
     }

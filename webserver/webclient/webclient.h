@@ -46,6 +46,8 @@
 #ifndef __WEBCLIENT_H__
 #define __WEBCLIENT_H__
 
+#include "FreeRTOS.h"
+
 #ifdef PAKAI_WEBCLIENT
 #include "webclient-strings.h"
 #include "uipopt.h"

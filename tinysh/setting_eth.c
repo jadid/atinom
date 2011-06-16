@@ -10,6 +10,8 @@
 //#include "../monita/monita_uip.h"
 //#include "../app/monita/monita_uip.h"
 
+#include "FreeRTOS.h"
+
 #ifndef __SETTING_ETH__
 #define __SETTING_ETH__
 

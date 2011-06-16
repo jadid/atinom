@@ -71,7 +71,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			}
 		#endif
 
-		#ifdef PAKAI_PM			// AMBIL_PM
+		#ifdef AMBIL_PM			// AMBIL_PM
 			sedot_pm();
 		#endif
 		
@@ -89,7 +89,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		#ifdef BOARD_KOMON_KONTER
-			data_frek_rpm();
+		//	data_frek_rpm();
 		#endif
 	
 		#ifdef PAKAI_I2C

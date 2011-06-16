@@ -76,6 +76,10 @@ void init_hardware()	{
 		init_spi_mmc(0);		// untuk adc dan mmc
 	#endif
 	
+	#ifdef BOARD_KOMON_KONTER
+		init_gpio();
+	#endif	
+
 	#ifdef PAKAI_ETH
 		start_ether();
 	#endif

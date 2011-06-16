@@ -97,7 +97,7 @@
 #include "utils.c"
 #include "set_kanal.c"
 
-int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
+//int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 #endif
 
 #ifdef PAKAI_PM
@@ -599,12 +599,14 @@ unsigned int is_angka(float a)	{
 	return (a == a);
 }
 
+/*
 void baca_rtc_mem() {
 	int i;
 	for (i=0; i<KANALNYA; i++) {
 		konter.t_konter[i].hit = rtcRate[i];
 	}
 }
+
 
 void data_frek_rpm() {
 	unsigned int i;
@@ -639,7 +641,7 @@ void data_frek_rpm() {
 		}
 	}	
 }
-
+//*/
 
 //static void cek_rpm(int argc, char **argv)
 void cek_rpm()	{

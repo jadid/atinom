@@ -223,7 +223,8 @@ int baca_env(char tampil)
 			#endif
 			
 			#ifdef BANYAK_SUMBER
-				#ifndef BOARD_TAMPILAN 
+				#if defined(PAKAI_SHELL)
+				#if !defined(BOARD_TAMPILAN)
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
 				#endif
@@ -231,6 +232,7 @@ int baca_env(char tampil)
 				printf("set sumber menjadi default\r\n");
 				set_awal_sumber();
 				set_data_default();
+				#endif
 			#endif
 
 			return -1;
@@ -246,6 +248,7 @@ int baca_env(char tampil)
 		#endif
 		
 		#ifdef BANYAK_SUMBER
+			#ifdef PAKAI_SHELL
 			#ifndef BOARD_TAMPILAN 
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
@@ -264,6 +267,7 @@ int baca_env(char tampil)
 			set_awal_sumber();
 			set_data_default();
 			//set_magic_no();
+			#endif
 		#endif
 		
 		return -1;

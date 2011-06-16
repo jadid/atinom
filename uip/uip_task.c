@@ -678,22 +678,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				paket_kita = 0;
 			}
 		}	// tanpa paket
-		/*
-		// proses ADC dipindah ke shell 1 Okt 2010// 
-		#ifdef PAKAI_ADC
-			#ifdef BOARD_KOMON_A_RTD
-			proses_data_adc();
-			#endif
-			 
-			#ifdef BOARD_KOMON_B_THERMO
-			proses_data_adc();
-			#endif
-			 
-			#ifdef BOARD_KOMON_420_SAJA
-			proses_data_adc();
-			#endif
-		#endif
-		//*/
 	}
 }
 

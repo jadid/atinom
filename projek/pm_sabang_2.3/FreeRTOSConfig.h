@@ -45,7 +45,7 @@
 #define BOARD_KOMON
 //#define BOARD_KOMON_420_SABANG
 #define BOARD_KOMON_420_SABANG_2_3
-#define VERSI_KOMON		"1.70"
+#define VERSI_KOMON		"1.90"
 
 
 #define BANYAK_SUMBER
@@ -60,7 +60,7 @@
 #define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
-	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
+//	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
 	#define PAKAI_MAX485		1
@@ -105,11 +105,11 @@
 	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
-	#define SAMPURASUN_CLIENT
-	#define SAMPURASUN_SERVER
-	#define PAKAI_WEBCLIENT
-	#define PAKE_TELNETD
-	#define PAKAI_HTTP
+//	#define SAMPURASUN_CLIENT
+//	#define SAMPURASUN_SERVER
+//	#define PAKAI_WEBCLIENT
+//	#define PAKE_TELNETD
+//	#define PAKAI_HTTP
 	
 	#ifdef PAKAI_WEBCLIENT
 		#define WEBCLIENT_DATA

@@ -26,10 +26,12 @@
 //#include <regex.h>
 //#include "../app/monita/monita_uip.h"
 
+#include "FreeRTOS.h"
+
 #ifndef __SUMBER__
 #define __SUMBER__
 
-struct t_sumber *sumber;
+//struct t_sumber *sumber;
 //int cek_nomer_sumber(char *arg, int maks);
 //void set_awal_sumber(void);
 //static int simpan_sumber( struct t_sumber *pgr);

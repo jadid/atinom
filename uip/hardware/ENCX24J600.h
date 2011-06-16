@@ -55,7 +55,9 @@
 
 #ifndef __ENCX24J600_H
 #define __ENCX24J600_H
-#include "GenericTypeDefsUIP.h"
+//#include "DefsUIP.h"
+//#include "GenericTypeDefsUIP.h"
+#include "TypeDefsUIP.h"
 //#include "HardwareProfile.h"
 
 #define ENC100_INTERFACE_MODE	0
@@ -84,7 +86,7 @@
 //#define FIO_CEK_PAKET		FIO2PIN
 
 //#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
-							FIO0DIR = FIO0DIR | CS_ENC;
+//							FIO0DIR = FIO0DIR | CS_ENC;
 
 #define BOARD_KOMON
 #endif

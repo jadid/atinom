@@ -75,7 +75,7 @@
 
 #ifdef  BOARD_KOMON_420_SABANG_2_3
 	#include "utils.c"
-	#define TXDE	BIT(24)
+//	#define TXDE	BIT(24)
 #endif 
 
 #ifdef  BOARD_KOMON_420_SABANG

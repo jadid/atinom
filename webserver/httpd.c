@@ -421,6 +421,15 @@ handle_connection(struct httpd_state *s)
   }	
 }
 /*---------------------------------------------------------------------------*/
+#ifdef PAKAI_ETH_TEST
+void eth_test_appcall(void) {
+	if(uip_newdata() || uip_rexmit()) {
+		uip_send("ok\n", 3);
+		printf("kirim OK !!\r\n");
+	}
+}
+#endif
+
 void httpd_appcall(void)
 {
   struct httpd_state *s = (struct httpd_state *)&(uip_conn->appstate2);
@@ -455,11 +464,13 @@ void httpd_appcall(void)
  *             This function initializes the web server and should be
  *             called at system boot-up.
  */
+#ifdef PAKAI_HTTP
 void
 httpd_init(void)
 {
   uip_listen(HTONS(PORT_HTTP));
 }
+#endif
 /*---------------------------------------------------------------------------*/
 /** @} */
 

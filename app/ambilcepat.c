@@ -13,7 +13,7 @@ xTaskHandle hdl_ambilcepat;
 
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
-  	vTaskDelay(400);
+  	vTaskDelay(500);
   	
   	int loopambil=0;
 	
@@ -59,7 +59,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
   	vTaskDelay(50);
   	for(;;) {
-		vTaskDelay(2);
+		vTaskDelay(5);
 		loopambil++;
 		#ifdef PAKAI_GPS
 			if (serPollGPS())	

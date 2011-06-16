@@ -129,10 +129,20 @@
 	#define		PORT_HTTP	80
 #endif
 
-#ifdef 
+#ifdef PAKAI_WEBCLIENT
+	#define		PORT_HTTP	80
+#endif
+
+#ifdef PAKAI_TELNET
+	#define		PORT_TELNET	23
+#endif
 
 #ifdef PAKAI_MODBUSTCP
 	#define		PORT_MODBUSTCP	502
+#endif
+
+#ifdef PAKAI_ETH_TEST
+	#define 	PORT_ETH_TEST	9876
 #endif
 
 /* offset masing2 data pada array */

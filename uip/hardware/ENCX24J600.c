@@ -274,10 +274,12 @@ int enc624Init() {
 	
 	DeassertChipSelect();
 	ENCX24J600_Reset();
-	vTaskDelay (100 / portTICK_RATE_MS);
+	//vTaskDelay (100 / portTICK_RATE_MS);
+	vTaskDelay(10);
 	ENCX24J600_Unreset ();
-	vTaskDelay (100 / portTICK_RATE_MS);
-	
+	//vTaskDelay (100 / portTICK_RATE_MS);
+	vTaskDelay(10);
+	//printf("clk eth: %d\r\n", GetCLKOUT());
 	return MACInit();
 	
 }
@@ -538,6 +540,7 @@ int MACInit(void)
 
 	    // Set up SPI pins on PIC18s
 		#if defined(__18CXX)
+		{
 			ENC100_SCK_AL_TRIS = 0;
 			ENC100_SI_RD_RW_TRIS = 0;
 			ENC100_SO_WR_B0SEL_EN_TRIS = 1;
@@ -547,7 +550,9 @@ int MACInit(void)
 			ENC100_SPI_IF = 0;
 			ENC100_SPISTATbits.CKE = 1;	// Transmit data on rising edge of clock
 			ENC100_SPISTATbits.SMP = 0;	// Input sampled at middle of data output time
+		}
 		#elif defined(__C30__)
+		{
 		    ENC100_SPISTAT = 0;    		// clear SPI
 
 			// Ensure SPI doesn't exceed processor limit
@@ -589,12 +594,15 @@ int MACInit(void)
 		    ENC100_SPICON1bits.CKE = 1;
 		    ENC100_SPICON1bits.MSTEN = 1;
 		    ENC100_SPISTATbits.SPIEN = 1;
+		}
 		#elif defined(__C32__)
+		{
 			ENC100_SPIBRG = (GetPeripheralClock()-1ul)/2ul/ENC100_MAX_SPI_FREQ;
 			ENC100_SPICON1bits.SMP = 1;	// Delay SDI input sampling (PIC perspective) by 1/2 SPI clock
 		    ENC100_SPICON1bits.CKE = 1;
 		    ENC100_SPICON1bits.MSTEN = 1;
 			ENC100_SPICON1bits.ON = 1;
+		}
 		#endif
 	#endif
 
@@ -623,6 +631,7 @@ int MACInit(void)
 	// Use ENCx24J600 preprogrammed MAC address, if AppConfig is not already set
 	// mati dulu saja
 	//*
+	vTaskDelay(1);
 	if(((AppConfig.MyMACAddr.v[0] == 0x00u) && (AppConfig.MyMACAddr.v[1] == 0x04u) && (AppConfig.MyMACAddr.v[2] == 0xA3u) && (AppConfig.MyMACAddr.v[3] == 0x00u) && (AppConfig.MyMACAddr.v[4] == 0x00u) && (AppConfig.MyMACAddr.v[5] == 0x00u)) ||
 		((AppConfig.MyMACAddr.v[0] | AppConfig.MyMACAddr.v[1] | AppConfig.MyMACAddr.v[2] | AppConfig.MyMACAddr.v[3] | AppConfig.MyMACAddr.v[4] | AppConfig.MyMACAddr.v[5]) == 0x00u))
 	{
@@ -644,14 +653,14 @@ int MACInit(void)
 	else
 	{	
 		// override MAC. nanti dulu saja
-		((BYTE*)&w)[0] = AppConfig.MyMACAddr.v[0];
-		((BYTE*)&w)[1] = AppConfig.MyMACAddr.v[1];
+		((BYTE*)&w)[0] = AppConfig.MyMACAddr.v[0] = UIP_ETHADDR0;
+		((BYTE*)&w)[1] = AppConfig.MyMACAddr.v[1] = UIP_ETHADDR1;
 		WriteReg(MAADR1, w);
-		((BYTE*)&w)[0] = AppConfig.MyMACAddr.v[2];
-		((BYTE*)&w)[1] = AppConfig.MyMACAddr.v[3];
+		((BYTE*)&w)[0] = AppConfig.MyMACAddr.v[2] = UIP_ETHADDR2;
+		((BYTE*)&w)[1] = AppConfig.MyMACAddr.v[3] = UIP_ETHADDR3;
 		WriteReg(MAADR2, w);
-		((BYTE*)&w)[0] = AppConfig.MyMACAddr.v[4];
-		((BYTE*)&w)[1] = AppConfig.MyMACAddr.v[5];
+		((BYTE*)&w)[0] = AppConfig.MyMACAddr.v[4] = UIP_ETHADDR4;
+		((BYTE*)&w)[1] = AppConfig.MyMACAddr.v[5] = UIP_ETHADDR5;		// yg ini harus di bikin random
 		WriteReg(MAADR3, w);
 		printf("tulis MAC: %02hX:%02hX:%02hX:%02hX:%02hX:%02hX\r\n", \
 			AppConfig.MyMACAddr.v[0], AppConfig.MyMACAddr.v[1], AppConfig.MyMACAddr.v[2], \
@@ -681,12 +690,14 @@ int MACInit(void)
 	// Enable RX packet reception
 	BFSReg(ECON1, ECON1_RXEN);
 	
+	
 	#ifdef PAKAI_INT_ENCX24J600
 		WriteReg(EIE, EIE_INTIE | EIE_LINKIE | EIE_PKTIE | EIE_TXABTIE | EIE_RXABTIE);
 		//WriteReg(EIE, EIE_INTIE | EIE_LINKIE);		
 	#endif
 	
 	awalkahRx=0;
+	vTaskDelay(10);
 	
 	return 1;
 }//end MACInit
@@ -3708,17 +3719,19 @@ extern ROM BYTE SSL_N[SSL_RSA_KEY_SIZE/8], SSL_D[SSL_RSA_KEY_SIZE/8];
 
 Deleted Only
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 void RSAInit(void)
 {
 	smRSA = SM_RSA_IDLE;
 }
-
+#endif
 /*****************************************************************************
   Function:
 	BOOL RSABeginUsage(RSA_OP op, BYTE vKeyByteLen)
 
 Same
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 BOOL RSABeginUsage(RSA_OP op, BYTE vKeyByteLen)
 {
 	WORD oldPtr;
@@ -3773,7 +3786,7 @@ BOOL RSABeginUsage(RSA_OP op, BYTE vKeyByteLen)
 
 	return TRUE;
 }
-
+#endif
 /*****************************************************************************
   Function:
 	void RSAEndUsage(void)
@@ -3781,6 +3794,7 @@ BOOL RSABeginUsage(RSA_OP op, BYTE vKeyByteLen)
 Same
 Need to clear MODEXST to cancel
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 void RSAEndUsage(void)
 {
 	smRSA = SM_RSA_IDLE;
@@ -3789,13 +3803,14 @@ void RSAEndUsage(void)
 	if(ReadReg(EIR) & EIR_CRYPTEN)
 		ToggleCRYPTEN();
 }
-
+#endif
 /*****************************************************************************
   Function:
 	void RSASetData(BYTE* data, BYTE len, RSA_DATA_FORMAT format)
 
 Replaced
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 void RSASetData(BYTE* data, BYTE len, RSA_DATA_FORMAT format)
 {
 	WORD oldPtr;
@@ -3855,13 +3870,14 @@ void RSASetData(BYTE* data, BYTE len, RSA_DATA_FORMAT format)
 	// Wait for DMA engine to finish copying data into ModEx engine
     while(!MACIsMemCopyDone());
 }
-
+#endif
 /*****************************************************************************
   Function:
 	void RSASetResult(BYTE* data, RSA_DATA_FORMAT format)
 
 Replaced
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 void RSASetResult(BYTE* data, RSA_DATA_FORMAT format)
 {	
 	// Little-endian input is not supported for ENC624 hardware crypto
@@ -3870,13 +3886,14 @@ void RSASetResult(BYTE* data, RSA_DATA_FORMAT format)
 		
 	vOutput = data;
 }
-
+#endif
 /*****************************************************************************
   Function:
 	void RSASetE(BYTE *data, BYTE len, RSA_DATA_FORMAT format)
 
 Replace
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 #if defined(STACK_USE_RSA_ENCRYPT)
 void RSASetE(BYTE* data, BYTE len, RSA_DATA_FORMAT format)
 {
@@ -3903,13 +3920,14 @@ void RSASetE(BYTE* data, BYTE len, RSA_DATA_FORMAT format)
     while(!MACIsMemCopyDone());
 }
 #endif
-
+#endif
 /*****************************************************************************
   Function:
 	void RSASetN(BYTE* data, RSA_DATA_FORMAT format)
 
 Replace
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 #if defined(STACK_USE_RSA_ENCRYPT)
 void RSASetN(BYTE* data, RSA_DATA_FORMAT format)
 {
@@ -3933,13 +3951,14 @@ void RSASetN(BYTE* data, RSA_DATA_FORMAT format)
     while(!MACIsMemCopyDone());
 }
 #endif
-
+#endif
 /*****************************************************************************
   Function:
 	RSA_STATUS RSAStep(void)
 
 Replace
   ***************************************************************************/
+#ifdef PAKAI_ETH_RSA
 RSA_STATUS RSAStep(void)
 {
 	WORD oldPtr;
@@ -3989,7 +4008,7 @@ RSA_STATUS RSAStep(void)
 	return RSA_WORKING;
 	
 }
-
+#endif
 
 /****************************************************************************
   Section:
@@ -4017,6 +4036,7 @@ Not Needed
 
 //* 
 // A function potentially useful for debugging, but a waste of code otherwise
+#ifdef TEST_ENC
 void ENC100DumpState(void)
 {
 	WORD w;
@@ -4062,6 +4082,7 @@ void ENC100DumpState(void)
 	}
 	printf("\r\n\r\n");
 }
+#endif
 //*/
 
 #endif //#if defined(ENC100_INTERFACE_MODE)

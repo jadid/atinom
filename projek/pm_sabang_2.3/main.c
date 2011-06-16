@@ -65,7 +65,9 @@ void togle_led_utama(void)	{
 		/* kalkulasi idle loop */
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
+		#ifdef PAKAI_PM
 		jmlPM = 0;
+		#endif
 		/* reset wdog setiap detik */
 		tendang_wdog();
 	}	else	{

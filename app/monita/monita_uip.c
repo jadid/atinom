@@ -19,7 +19,7 @@
  */
 
 
-
+#include "FreeRTOS.h"
 #include "monita_uip.h"
 #include "uip.h"
 #include <stdio.h>
@@ -70,8 +70,10 @@ extern struct t_adc st_adc;
 	//int status_MMC=0;
 #endif
 
+/*
 #ifdef PAKAI_MODBUSTCP
 	void modbustcp_init() {
+		printf(" Monita : modbus TCP init !\r\n");
 		uip_listen(HTONS(PORT_MODBUSTCP));
 	}
 	
@@ -147,15 +149,14 @@ extern struct t_adc st_adc;
 		}
 		printf("\r\n");
 		
-		/*
-		portENTER_CRITICAL();
-		memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
-		portEXIT_CRITICAL();
-		//*/	
+		//portENTER_CRITICAL();
+		//memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
+		//portEXIT_CRITICAL();
 		//send data ke network
 		uip_send((char *) &regmod, 9+regmod.nReg);
 	}
 #endif
+//*/
 
 #ifdef BOARD_KOMON
 

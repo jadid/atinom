@@ -164,9 +164,6 @@ ARM_OBJS = $(ARM_SOURCE:.c=.o)
 
 LIBS = -lc -lgcc -lm -Llib
 
-###### GPS #######
-LIBGPSI = -lm -Llidah -lnmea
-
 
 all: RTOSDemo.bin  sizeafter
 

@@ -19,7 +19,7 @@
 #include "uip.h"
 #include "uip_arp.h"
 
-#define PAKAI_ETH_TEST
+//#define PAKAI_ETH_TEST
 
 //#include "./hardware/enc28j60.h"
 
@@ -68,7 +68,7 @@ extern struct t_adc st_adc;
 #define RT_MENIT		(configTICK_RATE_HZ * 15)
 
 #ifdef BOARD_KOMON
-#define PAKE_HTTP
+//#define PAKE_HTTP
 #endif
 
 #ifdef BOARD_TAMPILAN
@@ -89,6 +89,102 @@ unsigned char status_eth = 0;
 		
 extern xTaskHandle hdl_ether;
 //#define DEBUG_UIP_TASK
+
+#ifdef PAKAI_ETH_TEST
+	void eth_test_init(void) {
+		uip_listen(HTONS(9876));
+	}
+#endif
+	
+#ifdef PAKAI_MODBUSTCP
+	void modbustcp_init() {
+		printf(" Monita : modbus TCP init: %d !\r\n", PORT_MODBUSTCP);
+		//uip_listen(HTONS(PORT_MODBUSTCP));
+		uip_listen(HTONS(502));
+	}
+	
+	void modbustcp_appcall() {
+		int len;
+		unsigned char str_monita[32];
+		int i;
+		unsigned char ipne[32];		
+		struct t_reg_modbus regmod;
+		
+		if (uip_newdata())	{
+			len = uip_datalen();
+			sprintf(ipne, " :%d.%d.%d.%d", \
+			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
+			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
+			
+			printf("newdata modbus = %d %s\n", len, ipne);
+			portENTER_CRITICAL();
+			memcpy(str_monita, (char *) uip_appdata, len);
+			portEXIT_CRITICAL();
+			
+			if (len >= 10)		{
+				for (i=0; i<len; i++) {
+					printf("%d ", str_monita[i]);
+					if (i>=0 && i<5) {
+						regmod.ref[i] = (unsigned char) str_monita[i];
+					}
+					if (i==6)
+						regmod.ui = (unsigned char) str_monita[i];
+					if (i==7)	
+						regmod.func = (unsigned char) str_monita[i];
+					if (i==8) {
+						regmod.reg = (unsigned int) (str_monita[i]<<8) + (unsigned int) str_monita[i+1] + 1;
+						i++;
+					}
+					if (i==10) {
+						regmod.nReg = (unsigned int) (str_monita[i]<<8) + (unsigned int) str_monita[i+1];
+						i++;
+					}
+				}	
+				printf("\r\n");
+
+				printf ("idCoil: %d, Reg: %d, nData: %d\r\n", regmod.func, regmod.reg, regmod.nReg);
+				
+				aksiModbus(regmod);
+			}
+			else 	{
+				uip_close();	
+			}	
+		}
+	
+		if (uip_poll())	{
+			uip_close();	
+		}
+	}
+	
+	void aksiModbus(struct t_reg_modbus regmod) {
+		//struct t_reg_modbus_respon modrespon;
+		int tt=0, www;
+		
+		for(tt=0; tt<regmod.nReg; tt++) {
+			www = (rand()%1000+5);
+			regmod.data[tt*2] = (www>>8);
+			regmod.data[tt*2+1] = www;
+			printf("www: %d : %d %d\r\n", www, regmod.data[tt], regmod.data[tt+1]);
+		}
+		printf("\r\n");
+		regmod.nReg *= 2;
+		regmod.len = 3 + regmod.nReg;
+		
+		for(tt=0; tt<(9+regmod.nReg); tt++) {
+			printf("%hX ", * ((char *) &regmod+tt));
+		}
+		printf("\r\n");
+		
+		/*
+		portENTER_CRITICAL();
+		memcpy(xdata.buf, (char *) &data_float, sizeof (data_float));
+		portEXIT_CRITICAL();
+		//*/	
+		//send data ke network
+		uip_send((char *) &regmod, 9+regmod.nReg);
+	}
+#endif
+
 
 static portTASK_FUNCTION( tunggu, pvParameters )	{
 	unsigned char spi1, spi2;
@@ -152,6 +248,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	httpd_init ();
 	#endif
 	
+	#ifdef PAKAI_ETH_TEST
+		printf("    ETH TEST INIT... !!!\r\n");
+		eth_test_init();
+	#endif
+	
+	uip_listen(HTONS(80));
+	uip_listen(HTONS(502));
+
+	#ifdef PAKAI_MODBUSTCP
+		modbustcp_init();
+	#endif
+	
 	#ifdef PAKE_TELNETD
 	printf(" MONITA : telnet init\r\n");
     telnetd_init ();
@@ -159,7 +267,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 
 #ifdef BOARD_KOMON
     printf(" MONITA : monita init\r\n");
-//    monita_init();
 #endif
 	
 #if (PAKAI_KONTROL == 1)
@@ -182,10 +289,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
     printf(" Monita : sampurasun client init !\r\n");
 #endif
 
-#ifdef PAKAI_MODBUSTCP
-	modbustcp_init();
-	printf(" Monita : modbus TCP init !\r\n");
-#endif
+
 
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
@@ -329,8 +433,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				// hitung jml loop kirim ke server
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
-					//tiapKirim=950/jmlsumbernya;
-					tiapKirim=330/jmlsumbernya;
+					tiapKirim=950/jmlsumbernya;
+					//tiapKirim=330/jmlsumbernya;
 				}
 				
 				
@@ -471,7 +575,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              //printf("______kirim balek UIP !!!___\r\n");
+		    	              printf("______kirim balek UIP !!!___\r\n");
 		    	              ech624Kirim();
 		    	              #endif
 							  paket_kita++;
@@ -488,7 +592,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              //printf("______kirim balek ARP !!!___\r\n");
+		    	              printf("______kirim balek ARP !!!___\r\n");
 		    	              ech624Kirim();
 		    	              #endif
 						  }
@@ -607,7 +711,7 @@ void dispatch_tcp_appcall (void)	{
 		eth_test_appcall ();
 #endif
 	
-#ifdef PAKE_HTTP
+#if defined(PAKE_HTTP) || defined(PAKAI_HTTP)
 	if (uip_conn->lport == HTONS (PORT_HTTP))
 		httpd_appcall ();
 #endif

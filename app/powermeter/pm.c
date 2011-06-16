@@ -25,7 +25,7 @@
 #include <float.h>
 
 #define TUNGGU_PM_TX	50
-#define TUNGGU_PM_RX	100
+#define TUNGGU_PM_RX	80
 
 #include "../monita/monita_uip.h"
 #include "modbus/low_mod.h"
@@ -253,7 +253,7 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 		#ifdef LIAT_RX
 			printf("\r\nbalasan: %d\r\n", hasil_pm);
 			#if 0
-				ph = &buf_rx[8];
+				ph = &buf_rx[HD];
 				for(gg=0;gg<hasil_pm-lenpmod-2; gg++) {
 					printf("%02X ", *ph++);
 				}
@@ -261,7 +261,7 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 			#endif
 		#endif
 
-		ph = &buf_rx[8];
+		ph = &buf_rx[HD];
 		mbhcrc = usMBCRC16((unsigned char *) ph, (hasil_pm-lenpmod-2), 1);
 		hi = ((mbhcrc&0xFF00)>>8);
 		lo = (mbhcrc&0xFF);

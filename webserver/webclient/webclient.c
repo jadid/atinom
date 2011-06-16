@@ -56,6 +56,7 @@
  */
 
 //#if 1
+#include "FreeRTOS.h"
 #include "uip.h"
 #include "uiplib.h"
 #include "webclient.h"
@@ -246,6 +247,8 @@ webclient_get(char *host, u16_t port, char *file)
 	conn = uip_connect( ip_modul, htons(port));
 	if (conn == NULL) {
 		return 0;
+	} else {
+		printf("uip_connect bukan NULL\r\n");
 	}
 
 	s.port = port;

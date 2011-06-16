@@ -37,7 +37,7 @@ RTOS_SOURCE_DIR=../../modul/FreeRTOS_Source
 LDSCRIPT=lpc2368.ld
 
 #PAT =/usr/local/arm_gc2/bin/./
-PAT =../../TOOLCHAIN/bin/./
+PAT =../../modul/TOOLCHAIN/bin/./
 CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
@@ -62,7 +62,7 @@ OPTIM=-O1
 
 CFLAGS= $(DEBUG) \
 		$(OPTIM) \
-		-I../../TOOLCHAIN/arm-elf/include/ \
+		-I../../modul/TOOLCHAIN/arm-elf/include/ \
 		-T$(LDSCRIPT) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \
@@ -99,7 +99,7 @@ THUMB_SOURCE= \
 		../../tinysh/tinysh.c \
 		../../tinysh/shell.c \
 		../../tinysh/enviro.c \
-		../../GPIO/gpio.c \
+		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
 		
 ADC_SOURCE = \
@@ -151,7 +151,7 @@ PWM_DIMMER = \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../modul/serial/serialISR.c \
-		../../GPIO/gpio_ISR.c 
+		../../modul/GPIO/gpio_ISR.c 
 
 
 THUMB_SOURCE += $(GPS_SOURCE)

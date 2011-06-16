@@ -109,7 +109,7 @@
 //	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT
 //	#define PAKE_TELNETD
-//	#define PAKAI_HTTP
+	#define PAKAI_HTTP
 	
 	#ifdef PAKAI_WEBCLIENT
 		#define WEBCLIENT_DATA

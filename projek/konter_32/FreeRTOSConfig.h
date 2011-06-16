@@ -60,7 +60,7 @@
 	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 //	#define PAKAI_ENCX24J600
 
-	#define PAKAI_MODBUSTCP
+//	#define PAKAI_MODBUSTCP
 	#define SAMPURASUN_CLIENT
 	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT

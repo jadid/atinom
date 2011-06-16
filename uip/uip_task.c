@@ -19,9 +19,7 @@
 #include "uip.h"
 #include "uip_arp.h"
 
-//#define PAKAI_ETH_TEST
 
-//#include "./hardware/enc28j60.h"
 
 #ifdef PAKAI_WEBCLIENT
 	#include "../webserver/webclient/webclient.h"
@@ -80,7 +78,8 @@ extern struct t_adc st_adc;
 #define PAKE_HTTP
 #endif
 
-#define DEBUG_WEBCLIENT
+//#define DEBUG_WEBCLIENT
+//#define PAKAI_ETH_TEST
 
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
@@ -95,7 +94,16 @@ extern xTaskHandle hdl_ether;
 		uip_listen(HTONS(9876));
 	}
 #endif
-	
+
+#ifdef PAKAI_ETH_TEST
+void eth_test_appcall(void) {
+	if(uip_newdata() || uip_rexmit()) {
+		uip_send("ok\n", 3);
+		printf("kirim OK !!\r\n");
+	}
+}
+#endif
+
 #ifdef PAKAI_MODBUSTCP
 	void modbustcp_init() {
 		printf(" Monita : modbus TCP init: %d !\r\n", PORT_MODBUSTCP);

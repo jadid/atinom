@@ -36,7 +36,7 @@ RTOS_SOURCE_DIR=../../modul/FreeRTOS_Source
 LDSCRIPT=lpc2368.ld
 
 #PAT =/usr/local/arm_gc2/bin/./
-PAT =../../TOOLCHAIN/bin/./
+PAT =../../modul/TOOLCHAIN/bin/./
 CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
@@ -52,7 +52,7 @@ OPTIM=-O1
 		
 CFLAGS= $(DEBUG) \
 		$(OPTIM) \
-		-I../../TOOLCHAIN/arm-elf/include/ \
+		-I../../modul/TOOLCHAIN/arm-elf/include/ \
 		-T$(LDSCRIPT) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \

@@ -71,6 +71,7 @@ CFLAGS= $(DEBUG) \
 		-I ../../modul/ \
 		-I ../../modul/nmealib/include/ \
 		-I ../../uip/uip/ \
+		-I ../../app/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -98,7 +99,7 @@ THUMB_SOURCE= \
 		../../tinysh/tinysh.c \
 		../../tinysh/shell.c \
 		../../tinysh/enviro.c \
-		../../GPIO/gpio.c \
+		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
 		
 ADC_SOURCE = \
@@ -149,7 +150,7 @@ PM_SOURCE = \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../modul/serial/serialISR.c \
-		../../GPIO/gpio_ISR.c 
+		../../modul/GPIO/gpio_ISR.c 
 
 
 THUMB_SOURCE += $(GPS_SOURCE)

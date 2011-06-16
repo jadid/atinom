@@ -11,6 +11,10 @@
 #include "monita/monita_uip.h"
 xTaskHandle hdl_ambilcepat;
 
+#ifdef BOARD_KOMON_KONTER_3_0
+	#include "../modul/GPIO/gpio.h"
+#endif
+
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(500);
@@ -50,11 +54,11 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#ifdef PAKAI_PM
 		int almtSumber=0;
 		int sPM=0;
-  	#endif
-  	
-	#ifdef AMBIL_PM
-		printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
-		vTaskDelay(3000);
+		
+		#ifdef AMBIL_PM
+			printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
+			vTaskDelay(3000);
+		#endif
   	#endif
   	
   	vTaskDelay(50);
@@ -71,8 +75,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			}
 		#endif
 
-		#ifdef AMBIL_PM			// AMBIL_PM
-			sedot_pm();
+		#ifdef PAKAI_PM
+			#ifdef AMBIL_PM			// AMBIL_PM
+				sedot_pm();
+			#endif
 		#endif
 		
 		#ifdef PAKAI_ADC
@@ -89,7 +95,17 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		#ifdef BOARD_KOMON_KONTER
-		//	data_frek_rpm();
+			if (loopambil%20==0) {		// 5x20 = 100
+				hitung_rpm();
+			}
+			data_frek_rpm();
+		#endif
+
+		#ifdef BOARD_KOMON_KONTER_3_0
+			if (loopambil%20==0) {		// 5x20 = 100
+				hitung_rpm();
+				data_frek_rpm();
+			}
 		#endif
 	
 		#ifdef PAKAI_I2C

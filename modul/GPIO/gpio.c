@@ -7,16 +7,18 @@
 
 #include "FreeRTOS.h"
 #include "gpio.h"
-#include "../tampilan/tampilan.h"
 
+#ifdef BOARD_TAMPILAN
+	#include "../tampilan/tampilan.h"
+#endif
 #ifdef BOARD_KOMON_420_SAJA
 #include "../adc/ad7708.h"
 #endif
 
 #ifdef BOARD_KOMON_420_SABANG
-#ifdef PAKAI_ADC
-#include "../adc/ad7708.h"
-#endif
+	#ifdef PAKAI_ADC
+	#include "../adc/ad7708.h"
+	#endif
 #endif
 
 #ifdef BOARD_KOMON_A_RTD
@@ -67,19 +69,23 @@ void init_timer2() {
 #endif
 
 
-#ifdef BOARD_KOMON_KONTER
-extern struct t2_konter konter;
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+//extern struct t2_konter konter;
 
-static unsigned int giliran;
+//extern static unsigned int giliran;
 
 /* 	
 	dibuatkan variable terpisah supaya tidak balapan
 	dengan interupt 
 */
 
-unsigned int 	data_putaran[JUM_GPIO];
-unsigned int 	data_hit[JUM_GPIO];
+//unsigned int 	data_putaran[JUM_GPIO];
+//unsigned int 	data_hit[JUM_GPIO];
 
+//extern unsigned int data_putaran[];
+//extern unsigned int data_hit[];
+
+/*
 static void reset_konter(void)
 {
 	int i;
@@ -97,7 +103,7 @@ static void reset_konter(void)
 	}
 
 }
-
+//*/
 
 void init_gpio(void)
 {
@@ -166,7 +172,7 @@ void init_gpio(void)
 
 	portEXIT_CRITICAL();
 }
-
+/*
 void hitung_rpm(void)
 {	
 	portENTER_CRITICAL();
@@ -178,10 +184,10 @@ void hitung_rpm(void)
 	}
 	else
 	{
-		/* didapatkan frekuensi (HZ) putaran */
+		// didapatkan frekuensi (HZ) putaran //
 		//temp_rpm = konter.t_konter[i].beda; // beda msh dlm nS
 		
-		/* rpm */
+		// rpm //
 		data_putaran[giliran] = konter.t_konter[giliran].beda;
 		data_hit[giliran] = konter.t_konter[giliran].hit;
 	}
@@ -207,8 +213,10 @@ void hitung_rpm(void)
 	#endif
 	
 }
+//*/
 #endif
 
+#ifdef BOARD_TAMPILAN
 void init_gpio_keypad(void)
 {
 #ifdef TAMPILAN_LPC_4
@@ -234,6 +242,7 @@ void init_gpio_keypad(void)
 	portEXIT_CRITICAL();
 #endif
 }
+#endif
 
 #ifdef AD7708_GPIO_KOMON
 void init_gpio_adc(void)

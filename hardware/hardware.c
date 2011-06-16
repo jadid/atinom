@@ -76,7 +76,7 @@ void init_hardware()	{
 		init_spi_mmc(0);		// untuk adc dan mmc
 	#endif
 	
-	#ifdef BOARD_KOMON_KONTER
+	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 		init_gpio();
 	#endif	
 

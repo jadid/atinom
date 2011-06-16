@@ -5,8 +5,12 @@
  *      Author: jadid
  */
 
+#include "FreeRTOS.h"
+
 #ifndef GPIO_H_
 #define GPIO_H_
+
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 
 #define kont_10		0x10	// P24, konter_10
 #define kont_9		0x08	// P23
@@ -38,4 +42,7 @@ struct t2_konter{
 	ts_konter t_konter[JUM_GPIO];
 };
 
+void init_gpio(void);
+
+#endif
 #endif /* GPIO_H_ */

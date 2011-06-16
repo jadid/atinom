@@ -37,9 +37,10 @@
 #include "lpc23xx.h"
 
 #define BOARD_KOMON
-#define BOARD_KOMON_KONTER
+//#define BOARD_KOMON_KONTER
+#define BOARD_KOMON_KONTER_3_0
 //#define BOARD_KOMON_KONTER_3_1
-#define VERSI_KOMON		"1.50"
+#define VERSI_KOMON		"1.70"
 
 #define BANYAK_SUMBER
 #define PAKAI_ID
@@ -59,13 +60,18 @@
 	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 //	#define PAKAI_ENCX24J600
 
-//	#define PAKAI_MODBUSTCP
+	#define PAKAI_MODBUSTCP
 	#define SAMPURASUN_CLIENT
 	#define SAMPURASUN_SERVER
-//	#define PAKAI_WEBCLIENT
+	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
+
+	#ifdef PAKAI_WEBCLIENT
+		#define WEBCLIENT_DATA
+	#endif
 #endif
+
 
 #define PROMPT 		"Konter@"
 #define NAMA_BOARD	"Babelan Komon Konter"

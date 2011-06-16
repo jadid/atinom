@@ -66,6 +66,10 @@ static unsigned int nomer_mesin=0;
 #define BOARD_KOMON_WEB
 #endif
 
+#ifdef BOARD_KOMON_KONTER_3_0
+#define BOARD_KOMON_WEB
+#endif
+
 #ifdef BOARD_KOMON_420_SABANG
 #define BOARD_KOMON_WEB
 #endif
@@ -819,7 +823,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 	if (pertamax>0) {
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
 		//printf("env2->IP3: %d, pmx[no].IP3: %d", env2->IP3, pmx[no].IP3);

@@ -6,14 +6,14 @@
 	24 Sept 2010
 	Setting data id via webserver
 //*/
-
-#ifndef __SHELL_GPS__
-#define __SHELL_GPS__
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+
+#ifndef __SHELL_GPS__
+#define __SHELL_GPS__
+
 
 #include "../app/gps/gps.h"
 

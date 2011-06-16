@@ -14,6 +14,7 @@
 //
 #include "FreeRTOS.h"
 #include "../uip/uipopt.h"
+#include "hardware.h"
 
 #if defined(PAKAI_ETH) && defined(PAKAI_ENC28J60)
 
@@ -21,7 +22,7 @@
 #ifdef BOARD_KOMON_420_SABANG_2_3
 /*
 #define CS_ENC	BIT(16)	// P0 //
-#define INT_ENC	BIT(13) // P2 //
+#define INT_ENC	BIT(13) // P2 /
 
 #define ENC28J60_Select()   FIO0CLR = CS_ENC  // P0.16		// ENC28J60_Select()
 #define ENC28J60_Deselect() FIO0SET = CS_ENC				// ENC28J60_Deselect()

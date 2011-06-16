@@ -244,15 +244,76 @@ void setup_hardware(void);
 	#endif
 	
 	#ifdef PAKAI_ETH
-		#ifdef BOARD_KOMON_KONTER
+		#define CS_ENC	BIT(18)
+		#define INT_ENC	BIT(17)
+
+		#define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
+		#define ENC28J60_Deselect() FIO1SET = CS_ENC
+
+		// seharusnya tidak ada pin reset (sudah disambung ke VCC)
+		#define ENC28J60_Reset()    FIO1CLR = CS_ENC
+		#define ENC28J60_Unreset()  FIO1SET = CS_ENC
+
+		#define FIO_CEK_PAKET		FIO1PIN
+		#define init_enc_port()		do 	{	\
+										FIO1DIR = FIO1DIR & ~(INT_ENC); \
+										FIO1DIR = FIO1DIR | CS_ENC;	\
+									} while(0)
+	#endif
+#endif
+
+#ifdef BOARD_KOMON_KONTER_3_0
+	#define uC	"NXP LPC 2387"
+	
+	#ifdef PAKAI_LED_UTAMA
+		#define LED_UTAMA	BIT(27)
+		
+		#define setup_led_utama()	do {	\
+										FIO0DIR = LED_UTAMA;	\
+										FIO0CLR = LED_UTAMA;	\
+									} while(0)
+	#endif
+	
+	#ifdef PAKAI_SHELL
+		#define BAUD_RATE_SHELL	( ( unsigned portLONG ) 115200 )
+	#endif
+
+	#ifdef PAKAI_SERIAL_2_P0
+		#define setup_serial2_P0()	do 	{	\
+										PCONP |= BIT(24);	\
+										PCLKSEL1 &= ~(BIT(16) | BIT(17));	\
+										PCLKSEL1 |= BIT(16);	\
+										PINSEL0 |= (BIT(20) | BIT(22));	\
+									} while(0)
+	#endif
+	
+	#ifdef PAKAI_ETH
+		#define CS_ENC	BIT(18)
+		#define INT_ENC	BIT(17)
+
+		#define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
+		#define ENC28J60_Deselect() FIO1SET = CS_ENC
+
+		// seharusnya tidak ada pin reset (sudah disambung ke VCC)
+		#define ENC28J60_Reset()    FIO1CLR = CS_ENC
+		#define ENC28J60_Unreset()  FIO1SET = CS_ENC
+
+		#define FIO_CEK_PAKET		FIO1PIN
+		#define init_enc_port()		do 	{	\
+										FIO1DIR = FIO1DIR & ~(INT_ENC); \
+										FIO1DIR = FIO1DIR | CS_ENC;	\
+									} while(0)
+	#endif
+#endif
+
+
+#ifdef BOARD_KOMON_KONTER_3_1
+
+
+	#ifdef PAKAI_ETH
 		#define CS_ENC	BIT(18)
 
-
-		#ifdef BOARD_KOMON_KONTER_3_1
-			#define INT_ENC	BIT(13)
-		#else
-			#define INT_ENC	BIT(17)
-		#endif
+		#define INT_ENC	BIT(13)
 
 
 		#define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
@@ -262,21 +323,9 @@ void setup_hardware(void);
 		#define ENC28J60_Reset()    FIO1CLR = CS_ENC
 		#define ENC28J60_Unreset()  FIO1SET = CS_ENC
 
-		#ifdef BOARD_KOMON_KONTER_3_1
-			#define FIO_CEK_PAKET		FIO2PIN
-		#else
-			#define FIO_CEK_PAKET		FIO1PIN
-		#endif
+		#define FIO_CEK_PAKET		FIO2PIN
 
-
-		#ifdef BOARD_KOMON_KONTER_3_1
-			#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
-										FIO1DIR = FIO1DIR | CS_ENC;
-		#else
-			#define init_enc_port()		FIO1DIR = FIO1DIR & ~(INT_ENC); \
-										FIO1DIR = FIO1DIR | CS_ENC;
-		#endif
-
-	#endif
+		#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \
+									FIO1DIR = FIO1DIR | CS_ENC;
 	#endif
 #endif

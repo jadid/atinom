@@ -88,12 +88,12 @@ THUMB_SOURCE= \
 		../../tinysh/tinysh.c \
 		../../tinysh/shell.c \
 		../../tinysh/enviro.c \
-		../../GPIO/gpio.c \
+		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
 
 ETH_SOURCE = \
 		../../uip/hardware/enc28j60.c	\
-		../../uip/hardware/ENCX24J600.c	\
+#		../../uip/hardware/ENCX24J600.c	\
 
 UIP_SOURCE = \
 		../../app/monita/monita_uip.c \
@@ -125,10 +125,9 @@ RPM_SOURCE = \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../modul/serial/serialISR.c \
-		../../GPIO/gpio_ISR.c 
+		../../modul/GPIO/gpio_ISR.c 
 		
 #THUMB_SOURCE += $(GPS_SOURCE)
-THUMB_SOURCE += $(RPM_SOURCE)
 THUMB_SOURCE += $(UIP_SOURCE)
 #THUMB_SOURCE += $(PM_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)

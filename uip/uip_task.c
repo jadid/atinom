@@ -23,9 +23,9 @@
 
 //#include "./hardware/enc28j60.h"
 
-//#ifdef PAKAI_WEBCLIENT
-//#include "../webserver/webclient/webclient.c"
-//#endif
+#ifdef PAKAI_WEBCLIENT
+	#include "../webserver/webclient/webclient.h"
+#endif
 
 
 //#include "../monita/monita_uip.h"
@@ -252,9 +252,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		printf("    ETH TEST INIT... !!!\r\n");
 		eth_test_init();
 	#endif
-	
-	uip_listen(HTONS(80));
-	uip_listen(HTONS(502));
 
 	#ifdef PAKAI_MODBUSTCP
 		modbustcp_init();
@@ -266,7 +263,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	#endif
 
 #ifdef BOARD_KOMON
-    printf(" MONITA : monita init\r\n");
+    //printf(" MONITA : monita init\r\n");
 #endif
 	
 #if (PAKAI_KONTROL == 1)
@@ -433,8 +430,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				// hitung jml loop kirim ke server
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
-					tiapKirim=950/jmlsumbernya;
-					//tiapKirim=330/jmlsumbernya;
+					//tiapKirim=950/jmlsumbernya;
+					tiapKirim=200/jmlsumbernya;
 				}
 				
 				

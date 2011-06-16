@@ -17,7 +17,10 @@
 #include "task.h"
 #include "semphr.h"
 #include "gpio.h"
+
+#ifdef BOARD_TAMPILAN
 #include "../tampilan/tampilan.h"
+#endif
 
 #ifdef TAMPILAN_LPC_4
 extern xSemaphoreHandle keypad_sem;
@@ -50,7 +53,7 @@ void timer2_ISR_Handler( void )
 #endif
 
 
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 struct t2_konter konter;
 #endif
 
@@ -65,9 +68,9 @@ void gpio_ISR_Wrapper_keypad( void ) __attribute__ ((naked));
 void gpio_ISR_keypad_Handler( void );
 
 
-void set_konter(int st, unsigned int period);
+//void set_konter(int st, unsigned int period);
 
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 void gpio_ISR_Wrapper( void )
 {
 	/* Save the context of the interrupted task. */
@@ -108,7 +111,7 @@ void gpio_ISR_Wrapper_keypad( void )
 }
 #endif
 
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 void timer1_ISR_Wrapper( void )
 {
 	/* Save the context of the interrupted task. */
@@ -246,6 +249,7 @@ void timer1_ISR_Handler( void )
 	VICVectAddr = 0;
 }
 
+/*
 void set_konter(int st, unsigned int period)
 {
 	//new_period = T1TC;
@@ -263,6 +267,7 @@ void set_konter(int st, unsigned int period)
 	konter.t_konter[st].hit++;
 	konter.t_konter[st].last_period = period;
 }
+//*/
 #endif // KOMON_KONTER
 
 #ifdef TAMPILAN_LPC_4

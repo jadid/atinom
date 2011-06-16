@@ -57,7 +57,7 @@ unsigned int mati_total = 0;
 
 int main( void )	{
 	setup_hardware();				// @"../../hardware/hardware.h"
-
+	
 	init_led_utama();
 	init_hardware();
 
@@ -107,7 +107,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 			
 			*/
 		
-		hitung_rpm();
+		//hitung_rpm();
 		
 		muter++;		
 		if (muter > 5)		{

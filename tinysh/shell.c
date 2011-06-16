@@ -93,9 +93,11 @@
 #include "set_kanal.c"
 #endif
 
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+//#include "GPIO/gpio.c"
 #include "utils.c"
 #include "set_kanal.c"
+#include "rpm.c"
 
 //int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 #endif
@@ -139,9 +141,9 @@ int status_MMC=0;
 #endif
 
 #include "enviro.h"
-#include "../GPIO/gpio.h"
+//#include "GPIO/gpio.h"
 //#include "../monita/monita_uip.h"
-#include "../app/monita/monita_uip.h"
+#include "monita/monita_uip.h"
 
 #include <stdlib.h>
 
@@ -590,98 +592,14 @@ static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
 #endif
 
 
-#ifdef BOARD_KOMON_KONTER
-extern unsigned int data_putaran[];
-extern unsigned int data_hit[];	
-extern struct t2_konter konter;
-				
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+
+/*		
 unsigned int is_angka(float a)	{
 	return (a == a);
 }
-
-/*
-void baca_rtc_mem() {
-	int i;
-	for (i=0; i<KANALNYA; i++) {
-		konter.t_konter[i].hit = rtcRate[i];
-	}
-}
-
-
-void data_frek_rpm() {
-	unsigned int i;
-	float temp_f;
-	float temp_rpm;
-	
-	struct t_env *env2;
-	env2 = (char *) ALMT_ENV;
-	
-	for (i=0; i<KANALNYA; i++)	{
-//		if (i>6) 
-		{
-			if (data_putaran[i])	{
-				// cari frekuensi
-				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
-				// rpm
-				temp_rpm = temp_f * 60;
-			}
-			else	{
-				temp_f = 0;
-				temp_rpm = 0;
-			}
-			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
-			data_f[i*2] = (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
-			
-			if (data_f[(i*2)+1]>10000000) {		// reset setelah 10juta, 7 digit
-			//if (data_f[(i*2)+1]>1000) {		// tes saja, reset setelah 10juta, 7 digit
-				data_f[(i*2)+1] = 0;
-				konter.t_konter[i].hit = 0;
-			}
-			rtcRate[i] = (int) konter.t_konter[i].hit;
-		}
-	}	
-}
 //*/
 
-//static void cek_rpm(int argc, char **argv)
-void cek_rpm()	{
-	unsigned int i;
-	float temp_f;
-	float temp_rpm;
-	
-	printf("Global hit = %d\n", konter.global_hit);
-	printf("Ov flow = %d\n", konter.ovflow);
-
-	for (i=0; i<10; i++)	{
-		#ifndef BOARD_KOMON_KONTER_3_1
-		if (i>6) 
-		#endif
-		{
-			if (data_putaran[i])	{
-				// cari frekuensi
-				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
-				// rpm
-				temp_rpm = temp_f * 60;
-			}
-			else	{
-				temp_f = 0;
-				temp_rpm = 0;
-			}	
-	
-			printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
-				(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
-		}
-	}
-	
-	#if (KONTER_MALINGPING == 1)
-	/* data kanal 1 adalah adc1 (adc0 internal) */
-	extern float volt_supply;
-	printf("\r\nADC 1 = %.3f\r\n", volt_supply );						
-	#endif
-}
-
-//static 
-tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]", cek_rpm,0,0,0};
 
 #endif
 /*****************************************************************************/
@@ -858,7 +776,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 	tinysh_add_command(&cek_rpm_cmd);
 	tinysh_add_command(&set_kanal_cmd);
 #endif
@@ -1082,7 +1000,7 @@ vTaskDelay(100);
 		#endif
 	#endif
 	
-	#ifdef BOARD_KOMON_KONTER
+	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 		#ifdef PAKAI_RTC
 		rtc_init();
 		vTaskDelay(100);
@@ -1170,20 +1088,20 @@ vTaskDelay(100);
     {
 		vTaskDelay(1);
 	  lop++;
-	  if (xSerialGetChar(1, &c, 100 ) == pdTRUE)
+	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)
 	  {
 			lop = 0;
 			tinysh_char_in((unsigned char)c);
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 6000)
+	  if (lop > 60)
 	  {
 			lop = 0;
 			printf("\r\nPasswd lock!\r\n");
 			while(1)
 			{
-				if (xSerialGetChar(1, &c, 100) == pdTRUE)	{
+				if (xSerialGetChar(1, &c, 1000) == pdTRUE)	{
 					if (proses_passwd( &c ) == 1) break;
 				}
 				#ifdef PAKAI_MMC
@@ -1195,62 +1113,12 @@ vTaskDelay(100);
 						}
 					#endif
 				#endif
-				
-				/*
-				#ifdef PAKAI_ADC
-					#ifdef BOARD_KOMON_A_RTD
-					proses_data_adc();
-					#endif
-					 
-					#ifdef BOARD_KOMON_B_THERMO
-					proses_data_adc();
-					#endif
-					
-					#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
-						proses_data_adc();
-					#endif
-					
-					#ifdef BOARD_KOMON_420_SAJA
-					proses_data_adc();
-					hitung_datanya();
-					#endif
-					
-					simpan_ke_data_f();
-				#endif
-				
-				#ifdef BOARD_KOMON_KONTER
-					data_frek_rpm();
-				#endif
-				//*/
+
 			}
 	  }
 		
-		/*
-		// pembacaaan ADC dipindah dari task eth ke shell 1 Okt 2010.
-		#ifdef PAKAI_ADC
-			#ifdef BOARD_KOMON_A_RTD
-				proses_data_adc();
-			#endif
-		 
-			#ifdef BOARD_KOMON_B_THERMO
-				proses_data_adc();
-			#endif
-				 
-			#ifdef BOARD_KOMON_420_SAJA
-				proses_data_adc();
-				hitung_datanya();
-			#endif
-			
-			#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
-				proses_data_adc();
-			#endif
-			
-			simpan_ke_data_f();
-		#endif
-		//*/
-		
-		#ifdef BOARD_KOMON_KONTER
-			data_frek_rpm();
+		#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+		//	data_frek_rpm();
 		#endif
 	  
 		#ifdef PAKAI_MMC

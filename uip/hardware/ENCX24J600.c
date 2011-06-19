@@ -332,7 +332,7 @@ int ech624Terima(void) {
 	
 	if (nextPaketRx > ENC100_RAM_SIZE)	{
     	awalkahRx = 0;
-    	printf("jml paket overload .... !!!\r\n");
+    	printf("paket overload .... !!!\r\n");
 	}
 	
 	// perbaiki read memory ketika sampe 0x5FFFh
@@ -3634,6 +3634,7 @@ void WritePHYReg(BYTE Register, WORD Data)
   Returns:
 	None
   ***************************************************************************/
+#ifdef PAKAI_ETH_CRYPT
 static void ToggleCRYPTEN(void)
 {
 	WORD wLinkStat;
@@ -3693,7 +3694,7 @@ static void ToggleCRYPTEN(void)
 	if(wInterruptEnable & EIE_INTIE)
 		BFSReg(EIE, EIE_INTIE);
 }
-
+#endif
 
 /****************************************************************************
   Section:

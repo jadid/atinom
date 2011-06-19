@@ -137,6 +137,8 @@
 	#define		PORT_TELNET	23
 #endif
 
+#define		PORT_MODBUSTCP	502
+
 #ifdef PAKAI_MODBUSTCP
 	#define		PORT_MODBUSTCP	502
 #endif

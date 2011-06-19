@@ -79,7 +79,7 @@ extern struct t_adc st_adc;
 #endif
 
 //#define DEBUG_WEBCLIENT
-//#define PAKAI_ETH_TEST
+#define PAKAI_ETH_TEST
 
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
@@ -91,7 +91,8 @@ extern xTaskHandle hdl_ether;
 
 #ifdef PAKAI_ETH_TEST
 	void eth_test_init(void) {
-		uip_listen(HTONS(9876));
+		//uip_listen(HTONS(PORT_MODBUSTCP));
+		uip_listen(HTONS(21));
 	}
 #endif
 
@@ -108,7 +109,7 @@ void eth_test_appcall(void) {
 	void modbustcp_init() {
 		printf(" Monita : modbus TCP init: %d !\r\n", PORT_MODBUSTCP);
 		//uip_listen(HTONS(PORT_MODBUSTCP));
-		uip_listen(HTONS(502));
+		//uip_listen(HTONS(502));
 	}
 	
 	void modbustcp_appcall() {
@@ -580,7 +581,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              printf("______kirim balek UIP !!!___\r\n");
+		    	              //printf("______kirim balek UIP !!!___\r\n");
 		    	              ech624Kirim();
 		    	              #endif
 							  paket_kita++;
@@ -597,7 +598,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              printf("______kirim balek ARP !!!___\r\n");
+		    	              //printf("______kirim balek ARP !!!___\r\n");
 		    	              ech624Kirim();
 		    	              #endif
 						  }
@@ -696,7 +697,8 @@ void dispatch_tcp_appcall (void)	{
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 
 #ifdef PAKAI_ETH_TEST
-	if (uip_conn->lport == HTONS (9876))
+	//if (uip_conn->lport == HTONS (PORT_MODBUSTCP))
+	if (uip_conn->lport == HTONS (21))
 		eth_test_appcall ();
 #endif
 	

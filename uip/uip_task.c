@@ -79,7 +79,7 @@ extern struct t_adc st_adc;
 #endif
 
 //#define DEBUG_WEBCLIENT
-#define PAKAI_ETH_TEST
+//#define PAKAI_ETH_TEST
 
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
@@ -315,6 +315,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		extern int kirimURL;
 		extern char terkirimURL;
 		extern int  noawal;
+		
+		int selang=0;
+		
 	#endif
 		char ipdest[15];
 		int tiapKirim=950;
@@ -385,8 +388,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					jmlsumbernya=0;
 					for(selang=0; selang<JML_SUMBER; selang++) {
 						if (pmx[selang].status==1) {
-							printf("selang: %d, status: %d\r\n", selang, pmx[selang].status);
-							noPMaktif[jmlsumbernya]=selang;
+							//printf("selang: %d, status: %d\r\n", selang, pmx[selang].status);
+							//noPMaktif[jmlsumbernya]=selang;
 							jmlsumbernya++;
 						}
 					}
@@ -394,14 +397,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 						jmlsumbernya=1;
 					}
 					//jmlData=kirimModul(0, noPMaktif[sumbernya], 0, il, dl);
-					printf("jml Data: %d, sumbernya: %d\r\n", jmlData, sumbernya);
+					//printf("jml Data: %d, sumbernya: %d\r\n", jmlData, jmlsumbernya);
 					// kenapa ini ??? harusnya tiap detik, knapa jadi tiap 4 detik ????
 					//tiapKirim = (int) (100/jmlsumbernya);
-					tiapKirim = (int) (195/jmlsumbernya);
+					tiapKirim = (int) (1900/jmlsumbernya);
 					//printf("wclient: %d\r\n", wclient);
 				#endif
 				//*/
 			}
+			
 			#ifdef WEBCLIENT_DATA
 			if (wclient == tiapKirim) {
 				ngitung++;
@@ -419,7 +423,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					}
 				}
 				jmlsumbernya++;
-				//printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
+				printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
 				
 				// cek datanya PM ?? // <--- ternyata gak cuma PM, modul lain juga bisa
 				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
@@ -437,12 +441,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				}
 				
 				// hitung jml loop kirim ke server
+				/*
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
 					//tiapKirim=950/jmlsumbernya;
-					tiapKirim=200/jmlsumbernya;
+					tiapKirim=2000/jmlsumbernya;
 				}
-				
+				//*/
 				
 				wclient = 0;				
 
@@ -468,8 +473,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, "&");
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
-					//printf("datakeserver: %s\r\n",datakeserver);
-					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					
+					printf("datakeserver: %s\r\n",datakeserver);
+					//webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}
 			}
@@ -516,7 +522,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		#ifdef SAMPURASUN_SERVER
 		//#ifdef CARI_SUMBERNYA
 		loop++;
-		if (loop > 200) 		// 50, 40, 80
+		if (loop > 500) 		// 50, 40, 80		// aslinya 200
 		{
 			loop = 0;
 			

@@ -1543,6 +1543,7 @@ void MACPutROMArray(ROM BYTE *val, WORD len)
  * 					called, this function will block until it is it complete.
  *					If anything is being received, it will be completed.
  *****************************************************************************/
+#ifdef PAKAI_ETH_CRYPT
 void MACPowerDown(void)
 {
 	// Disable packet reception
@@ -1564,7 +1565,7 @@ void MACPowerDown(void)
 	WritePHYReg(PHCON1, PHCON1_PSLEEP);			// Turn off the PHY
 	BFCReg(ECON2, ECON2_ETHEN | ECON2_STRCH);	// Turn off general internal clocks and LED stretching so they immediately turn off and don't get stuck on
 }//end MACPowerDown
-
+#endif
 
 /******************************************************************************
  * Function:        void MACEDPowerDown(void)
@@ -1590,6 +1591,7 @@ void MACPowerDown(void)
  *					full TX/RX activity will work as normal and no power saving 
  *					will occur.
  *****************************************************************************/
+#ifdef PAKAI_ETH_CRYPT
 void MACEDPowerDown(void)
 {
 	// Put the PHY into energy detect mode
@@ -1602,7 +1604,7 @@ void MACEDPowerDown(void)
 	ENC100Flags.PoweredDown = 1;
 	BFCReg(ECON2, ECON2_ETHEN | ECON2_STRCH);	
 }//end MACEDPowerDown
-
+#endif
 /******************************************************************************
  * Function:        void MACPowerUp(void)
  *

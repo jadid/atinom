@@ -52,6 +52,7 @@ int main( void )	{
 	vTaskStartScheduler();
 
 	printf("Keluar dari Scheduler !!!!\r\n");
+	vTaskDelay(4000);
     /* Will only get here if there was insufficient memory to create the idle task. */
 	return 0;
 

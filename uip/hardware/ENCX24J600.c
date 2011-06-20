@@ -84,7 +84,7 @@
 
 
 #define __ENCX24J600_C
-#define PAKAI_INT_ENCX24J600
+//#define PAKAI_INT_ENCX24J600
 //#include "HardwareProfile.h"
 
 int int_tris;		// apa ini ??
@@ -1626,7 +1626,7 @@ void MACEDPowerDown(void)
  *					transmitted will most likely be lost.  MACIsLinked() can 
  *					be called to determine if a link is established.
  *****************************************************************************/
-void MACPowerUp(void)
+void MACPowerUp(void)		// ora perlu karena selalu ON
 {	
 	// Start up general clocks and reenable LED stretching
 	ENC100Flags.PoweredDown = 0;
@@ -1669,7 +1669,8 @@ void MACPowerUp(void)
  *
  * Note:            
  *****************************************************************************/
-void SetCLKOUT(BYTE NewConfig)
+#ifdef PAKAI_ETH_CKLOUT
+void SetCLKOUT(BYTE NewConfig)		// gak perlu, ini buat debug 
 {	
 	WORD w;
 	
@@ -1677,7 +1678,7 @@ void SetCLKOUT(BYTE NewConfig)
 	((BYTE*)&w)[1] |= (NewConfig & 0x0F);
 	WriteReg(ECON2, w);
 }//end SetCLKOUT
-
+#endif
 
 /******************************************************************************
  * Function:        BYTE GetCLKOUT(void)
@@ -1701,7 +1702,8 @@ void SetCLKOUT(BYTE NewConfig)
  *
  * Note:            None
  *****************************************************************************/
-BYTE GetCLKOUT(void)
+#ifdef PAKAI_ETH_CKLOUT
+BYTE GetCLKOUT(void)				// gak perlu karena SetCLKOUT tidak dipake
 {	
 	WORD w;
 
@@ -1709,7 +1711,7 @@ BYTE GetCLKOUT(void)
 
 	return ((BYTE*)&w)[1] & 0x0F;
 }//end GetCLKOUT
-
+#endif
 
 /******************************************************************************
  * Function:        void SetRXHashTableEntry(MAC_ADDR DestMACAddr)
@@ -1734,7 +1736,7 @@ BYTE GetCLKOUT(void)
  *					to "#if 1" to uncomment it.
  *****************************************************************************/
 #if 0
-void SetRXHashTableEntry(MAC_ADDR DestMACAddr)
+void SetRXHashTableEntry(MAC_ADDR DestMACAddr)			// sudah dinggak perlukan
 {
 	DWORD_VAL CRC = {0xFFFFFFFF};
 	WORD HTRegister;

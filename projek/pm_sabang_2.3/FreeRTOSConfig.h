@@ -90,7 +90,7 @@
 
 #define PAKAI_LED_UTAMA
 
-//#define PAKAI_SERIAL_2
+#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		4800
 	#define PAKAI_GPS				2
@@ -112,8 +112,8 @@
 //	#define PAKAI_HTTP
 	
 	#ifdef PAKAI_WEBCLIENT
-		#define WEBCLIENT_DATA
-		//#define WEBCLIENT_GPS
+		//#define WEBCLIENT_DATA
+		#define WEBCLIENT_GPS
 	#endif
 #endif
 

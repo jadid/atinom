@@ -257,7 +257,7 @@ webclient_get(char *host, u16_t port, char *file)
   
 	printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
-	//init_connection();
+	init_connection();
 	//portEXIT_CRITICAL();
 	//printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   

@@ -268,7 +268,7 @@ unsigned int cek_paket(void)
 	
 }
 
-int enc624Init() {
+int Enc624Init() {
 	init_enc_port();
 	spiInit ();
 	
@@ -286,7 +286,8 @@ int enc624Init() {
 
 //#define DEBUG_ETHRX
 
-int ech624Terima(void) {
+
+int Enc624Terima(void) {
 	#ifdef DEBUG_ETHRX
 	BYTE a[32];
 	int i,j,k,l;
@@ -299,12 +300,14 @@ int ech624Terima(void) {
 	int fff;
 	
 	if (!MACIsLinked()) {
+		//printf("tak nyambung %d..", jmlTuris++);
 		return 0;
-		//printf("nyambung %d..", jmlTuris++);
 	}
 
-	if(!(ReadReg(EIR) & EIR_PKTIF))
+	if(!(ReadReg(EIR) & EIR_PKTIF)) {
+		//printf("EIR_PKTIF ...");
 		return 0;
+	}
 	
 	nPaket = (BYTE) ReadReg(ESTAT);		//printf("\r\njml paket: %d, flag: %d\r\n", nPaket, (ReadReg(EIR) & EIR_PKTIF));
 
@@ -382,7 +385,7 @@ int ech624Terima(void) {
 
 //#define DEBUG_ETHTX
 
-void ech624Kirim() {
+void Enc624Kirim() {
 	WORD lenPaket = uip_len;
 	int header = 54;
 
@@ -439,7 +442,7 @@ void ech624Kirim() {
 
 int MACInit(void)
 {
-//	volatile portTickType xTicks;
+	volatile portTickType xTicks;
 	WORD w;
 
 	#if defined(ENC100_INT_TRIS)	// Interrupt output from ENCx24J600
@@ -628,9 +631,14 @@ int MACInit(void)
 	
 	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
 	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
-	
+	printf("\r\nERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
+	BFSReg(ERXFCON, ERXFCON_BCEN);
+	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	// set Filter
 	
+//	BFCReg(ERXFCON, ERXFCON_BCEN);
+	//WriteReg(ERXFCON, );
+	// ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN3 | ERXFCON_PMEN0
 	
 	// Use ENCx24J600 preprogrammed MAC address, if AppConfig is not already set
 	// mati dulu saja

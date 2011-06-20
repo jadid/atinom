@@ -466,7 +466,7 @@ u16_t enc28j60Receive (void)
   //  Set read Pointer
   //
   encBankSelect (BANK0);
-  encWriteReg16 (ERDPTL, ethRxPointer);
+  encWriteReg16 (ERDPTL, ethRxPointer);	// selalu baca awal memori RX
 
 	// alamat paket berikutnya
   ethRxPointer = encMACread ();

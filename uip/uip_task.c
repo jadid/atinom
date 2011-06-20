@@ -229,7 +229,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	#if defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENCX24J600) 
 		printf(" Init ENC624J600.. ");
 		
-		if ( (status_eth=enc624Init())== 1)	{
+		if ( (status_eth=Enc624Init())== 1)	{
 			 printf(".. ENC OK\r\n");
 		}	else	{
 			printf("ENC tidak respons !\r\n");
@@ -557,7 +557,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		      #if defined(PAKAI_ENC28J60)
 		      if ((uip_len = enc28j60Receive ()) > 0)
 		      #elif defined(PAKAI_ENCX24J600)
-		      if ((uip_len = ech624Terima()) > 0)
+		      if ((uip_len = Enc624Terima()) > 0)
 		      #endif
 		      {  
 				  //printf("uiplen: %d\r\n", uip_len);
@@ -588,7 +588,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
 		    	              //printf("______kirim balek UIP !!!___\r\n");
-		    	              ech624Kirim();
+		    	              Enc624Kirim();
 		    	              #endif
 							  paket_kita++;
 		    	            }
@@ -605,7 +605,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
 		    	              //printf("______kirim balek ARP !!!___\r\n");
-		    	              ech624Kirim();
+		    	              Enc624Kirim();
 		    	              #endif
 						  }
 		    	     }
@@ -642,7 +642,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 							#if defined(PAKAI_ENC28J60)
 							enc28j60Send ();
 							#elif defined(PAKAI_ENCX24J600)
-							ech624Kirim();
+							Enc624Kirim();
 							#endif
 						}
 					}
@@ -661,7 +661,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 						#if defined(PAKAI_ENC28J60)
 							enc28j60Send ();
 						#elif defined(PAKAI_ENCX24J600)
-							enc624Kirim();
+							Enc624Kirim();
 						#endif
 					}
 				}

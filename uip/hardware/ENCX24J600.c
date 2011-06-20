@@ -84,7 +84,7 @@
 
 
 #define __ENCX24J600_C
-//#define PAKAI_INT_ENCX24J600
+#define PAKAI_INT_ENCX24J600		// untuk mengaktifkan interrupt yg datang
 //#include "HardwareProfile.h"
 
 int int_tris;		// apa ini ??
@@ -439,6 +439,7 @@ void ech624Kirim() {
 
 int MACInit(void)
 {
+//	volatile portTickType xTicks;
 	WORD w;
 
 	#if defined(ENC100_INT_TRIS)	// Interrupt output from ENCx24J600
@@ -627,7 +628,10 @@ int MACInit(void)
 	
 	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
 	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
-
+	
+	// set Filter
+	
+	
 	// Use ENCx24J600 preprogrammed MAC address, if AppConfig is not already set
 	// mati dulu saja
 	//*

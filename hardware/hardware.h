@@ -187,6 +187,79 @@ void setup_hardware(void);
 	#endif
 	
 	#ifdef PAKAI_I2C
+		#define ADDR_FMA1	0x68
+	
+		#ifdef I2C_GPIO
+			#define GPIO_SCL	BIT(17)		// P1.17
+			#define GPIO_SDA	BIT(18)		// P1.18
+			#define GPIO_INT	BIT(0)		// P2.0
+			#define DUMMY		BIT(27)		// led
+			
+			#define I2C_DIR		FIO1DIR
+			#define I2C_CLR		FIO1CLR
+			#define I2C_PIN		FIO1PIN
+			#define I2C_SET		FIO1SET
+			#define I2C_INT_DIR		FIO2DIR
+			#define I2C_INT_PIN		FIO2PIN
+		#endif
+		
+		#define setup_gpio_i2c()	(I2C_INT_DIR &= ~GPIO_INT)
+		
+		#define SCL_set() 	(I2C_DIR &= ~GPIO_SCL)
+		#define SCL_clr() 	(I2C_CLR =   GPIO_SCL)
+		#define SCL_out() 	(I2C_DIR |=  GPIO_SCL)
+		#define SCL_in()	(I2C_DIR &= ~GPIO_SCL)
+		#define SCL_read() 	(I2C_PIN &   GPIO_SCL)
+
+		#define SDA_set() 	(I2C_SET =   GPIO_SDA)
+		#define SDA_clr() 	(I2C_CLR =   GPIO_SDA)
+		#define SDA_out() 	(I2C_DIR |=  GPIO_SDA)
+		#define SDA_in() 	(I2C_DIR &= ~GPIO_SDA)
+		#define SDA_read() 	(I2C_PIN &   GPIO_SDA)
+	#endif
+#endif
+
+#ifdef BOARD_TAMPILAN_4_3
+	#define FIO_KEYPAD 			FIO2PIN
+	
+	
+	#ifdef PAKAI_BACKLIT
+		#define LED_PICKUP			BIT(14)
+		#define BACKLIT				BIT(20)	// PF15, P1.20
+	
+		#define setup_backlit()	do {	\
+										FIO1DIR  = FIO1DIR | LED_PICKUP | BACKLIT;		\
+										FIO1MASK = FIO1MASK & ~(LED_PICKUP | BACKLIT);	\
+								} while(0)
+	#endif
+	
+	#define PF14				BIT(12)			// P2, 12
+	#define PF11				BIT(16)
+	#define PF12				BIT(17)
+	#define PF13				BIT(18)
+	
+	#define KEY_DAT	(PF11 | PF12 | PF13)
+
+	#define ATAS		0
+	#define BAWAH	131072
+	#define KANAN	65536
+	#define OK		196608
+	#define CANCEL	262144
+
+	#ifdef PAKAI_LED_UTAMA
+		#define LED_UTAMA	BIT(27)
+		
+		#define setup_led_utama()	do {	\
+										FIO0DIR = LED_UTAMA;	\
+										FIO0CLR = LED_UTAMA;	\
+									} while(0)
+	#endif
+	
+	#ifdef PAKAI_SHELL
+		#define BAUD_RATE_SHELL	( ( unsigned portLONG ) 115200 )
+	#endif
+	
+	#ifdef PAKAI_I2C
 		#ifdef I2C_GPIO
 			#define GPIO_SCL	BIT(17)		// P1.17
 			#define GPIO_SDA	BIT(18)		// P1.18

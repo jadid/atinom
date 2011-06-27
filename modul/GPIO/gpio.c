@@ -9,7 +9,7 @@
 #include "gpio.h"
 
 #ifdef BOARD_TAMPILAN
-	#include "../tampilan/tampilan.h"
+	//#include "../tampilan/tampilan.h"
 #endif
 #ifdef BOARD_KOMON_420_SAJA
 #include "../adc/ad7708.h"

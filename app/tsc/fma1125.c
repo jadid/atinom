@@ -12,6 +12,7 @@
 
 #include "FreeRTOS.h"
 #include "fma1125.h"
+//#include "hardware.h"
 
 #define ADDR_FMA1	0x68
 
@@ -270,8 +271,11 @@ void baca_register_tsc() {
 	//*/
 }
 
+static int loop_read;
+
 char read_key(void)
-{ 
+{
+	#if 0
 	char d = 'A';
 	
 	if ( i2c_read_register( ADDR_FMA1, 0, &d))
@@ -279,4 +283,65 @@ char read_key(void)
 		return 0;
 	}
 	return d;
+	#endif
+	
+	#if 1
+	unsigned char d = 'A';
+	int i;
+	char tek[32];
+	
+	for (i=0; i<8; i++)
+	{
+		i2c_read_register( ADDR_FMA1, (0x50 + i), &d);
+		//sprintf(tek, "%d, %d",i, d);
+		sprintf(tek, "%d, 0x%X, %d",i, (i+0x50), d);
+
+		#if (USE_EMU_TFT == 0)
+		teks_layar( 20, (i*8) + 10, tek);
+		#else
+		teks_layar( 20, (i*16) + 10, tek);
+		#endif
+	}
+
+	for (i=0; i<8; i++)
+	{
+		i2c_read_register( ADDR_FMA1, (0x58 + i), &d);
+		sprintf(tek, "%d, 0x%X, %d",i, (0x58 + i), d);
+
+		#if (USE_EMU_TFT == 0)
+		teks_layar( 20, (i*8) + 80, tek);
+		#else
+		teks_layar( 20, (i*16) + 160, tek);
+		#endif	
+	}
+	
+	for (i=0; i<8; i++)
+	{
+		i2c_read_register( ADDR_FMA1, (0x60 + i), &d);
+		sprintf(tek, "%d, 0x%X, %d",i, (0x60 + i), d);
+
+		#if (USE_EMU_TFT == 0)
+		teks_layar( 120, (i*8) + 80, tek);
+		#else
+		teks_layar( 240, (i*16) + 160, tek);
+		#endif	
+	}
+	
+	//if ( i2c_read_register( ADDR_FMA1, 0x68, &d))
+	i2c_read_register( ADDR_FMA1, 0x68, &d);
+	{
+		loop_read++;
+		
+		//sprintf(tek, "key %d, tot = %d", d, tot_touch);
+		sprintf(tek, "key %d, Loop %d", d, loop_read);
+
+		#if (USE_EMU_TFT == 0)
+		teks_layar( 20, 180, tek);
+		#else
+		teks_layar( 20, 360, tek);
+		#endif
+		//tot_touch = 0;
+		return 0;
+	}
+	#endif
 }

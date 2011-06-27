@@ -109,11 +109,11 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 	
 		#ifdef PAKAI_I2C
-			#if 1
+			#if 0
 			if (st_tsc) {
 				if (loopambil%500==0) {	// 2*250: 500ms = 0.5 detik
 					printf("__detik: %3d\r\n", c++);
-					baca_register_tsc();
+					//baca_register_tsc();
 
 					#if 1
 					if (int_berganti() == 0) 

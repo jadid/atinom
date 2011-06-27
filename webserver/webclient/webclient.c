@@ -243,7 +243,6 @@ webclient_get(char *host, u16_t port, char *file)
     }
   }*/
 
-	//portENTER_CRITICAL();
 	conn = uip_connect( ip_modul, htons(port));
 	if (conn == NULL) {
 		return 0;
@@ -258,7 +257,7 @@ webclient_get(char *host, u16_t port, char *file)
 	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
 	init_connection();
-	//portEXIT_CRITICAL();
+
 	//printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   
 	printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d, len: %d\r\n", __FUNCTION__,host, port, file, strlen(s.file), uip_len);

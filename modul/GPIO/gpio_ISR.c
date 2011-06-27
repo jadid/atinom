@@ -19,7 +19,7 @@
 #include "gpio.h"
 
 #ifdef BOARD_TAMPILAN
-#include "../tampilan/tampilan.h"
+//#include "../tampilan/tampilan.h"
 #endif
 
 #ifdef TAMPILAN_LPC_4

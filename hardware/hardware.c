@@ -16,6 +16,10 @@ void setup_hardware() {
 		setup_led_utama();
 	#endif
 	
+	#ifdef PAKAI_BACKLIT
+		setup_backlit();
+	#endif
+	
 	#ifdef PAKAI_ADC
 		setup_adc();
 	//	init_ss1();
@@ -79,13 +83,24 @@ void init_hardware()	{
 	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 		init_gpio();
 	#endif	
-
+	
+	#ifdef PAKAI_BACKLIT
+		
+	#endif
+	
 	#ifdef PAKAI_ETH
 		start_ether();
 	#endif
 	
 	#ifdef PAKAI_SHELL
 		init_shell();
+	#endif
+	
+	#ifdef PAKAI_TAMPILAN
+		init_port_lcd();
+		init_lcd();
+		init_task_lcd();		// 1, +1
+		init_task_tampilan();
 	#endif
 	
 	#if 0

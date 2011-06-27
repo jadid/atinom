@@ -46,7 +46,7 @@
 	
 */
 
-#include "../monita/monita_uip.h"
+//#include "../app/monita/monita_uip.h"
 
 int tulis_flash(int dst, unsigned short *data, int pjg);
 void judul(char *s);

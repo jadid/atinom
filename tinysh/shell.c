@@ -35,6 +35,10 @@
 	#include "gps.c"
 #endif
 
+#ifdef PAKAI_TSC
+	#include "tsc.c"
+#endif
+
 /*
 #ifdef CARI_SUMBERNYA
 	#include "utils.c"
@@ -165,7 +169,9 @@ extern xTaskHandle *hdl_lcd;
 	extern xTaskHandle *hdl_led;
 #endif
 
+#ifdef PAKAI_TAMPILAN
 extern xTaskHandle *hdl_tampilan;
+#endif
 #ifdef PAKAI_ETH
 	extern xTaskHandle *hdl_ether;
 #endif
@@ -915,6 +921,13 @@ vTaskDelay(100);
 
 #ifdef PAKAI_GPS
 	tinysh_add_command(&cek_gps_cmd);
+#endif
+
+#ifdef PAKAI_TSC
+	tinysh_add_command(&setting_fma_cmd);
+	tinysh_add_command(&set_fma_cmd);
+	tinysh_add_command(&read_fma_cmd);
+	tinysh_add_command(&baca_register_tsc_cmd);
 #endif
 
 #ifdef PAKAI_GPIO_DIMMER

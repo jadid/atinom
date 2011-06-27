@@ -327,7 +327,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		extern nmeaPOS dposGPS;
 		char waktu[20];		//		20110609-220228-000
 		char bujur[12], lintang[12], arah[12], satelit[12];
-		tiapKirim = 5;		// 2 detik
+		tiapKirim = 1;		// 1 detik
 		int menit = 0;
 		
 		//double lintang=0.0, bujur=0.0;

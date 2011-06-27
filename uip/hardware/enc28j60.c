@@ -272,11 +272,15 @@ int enc28j60Init (void)
   //encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_BCEN);
 	// set filter
 	encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN);
-	encWriteReg(EPMM0, 0x3f);
-	encWriteReg(EPMM1, 0x30);
+	
+//#define UIP_ETHADDR0 0x00
+//#define UIP_ETHADDR1 0xbd
+//#define UIP_ETHADDR2 0x3b
+
+	encWriteReg(EPMM0, 0x3f);		// 0011 1111
+	encWriteReg(EPMM1, 0x30);		// 0011 0000
 	encWriteReg(EPMCSL, 0xf9);
 	encWriteReg(EPMCSH, 0xf7);
-
 
   encBankSelect (BANK2);
   encWriteReg (MACON2, 0);  // Remove all reset conditions

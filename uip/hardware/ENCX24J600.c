@@ -275,18 +275,18 @@ int Enc624Init() {
 	DeassertChipSelect();
 	ENCX24J600_Reset();
 	//vTaskDelay (100 / portTICK_RATE_MS);
-	vTaskDelay(10);
+	vTaskDelay(2);
 	ENCX24J600_Unreset ();
 	//vTaskDelay (100 / portTICK_RATE_MS);
-	vTaskDelay(10);
+	vTaskDelay(2);
 	//printf("clk eth: %d\r\n", GetCLKOUT());
-	return MACInit();
+	return Enc64MACInit();
 	
 }
 
 //#define DEBUG_ETHRX
 
-
+// 00:04:A3:10:49:71
 int Enc624Terima(void) {
 	#ifdef DEBUG_ETHRX
 	BYTE a[32];
@@ -440,7 +440,7 @@ void Enc624Kirim() {
 	MACFlush();
 }
 
-int MACInit(void)
+int Enc64MACInit(void)
 {
 	volatile portTickType xTicks;
 	WORD w;
@@ -631,13 +631,27 @@ int MACInit(void)
 	
 	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
 	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
-	printf("\r\nERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
-	BFSReg(ERXFCON, ERXFCON_BCEN);
+	printf("\r\n");
 	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
+	printf("EPMO: 0x%04x\r\n", ReadReg(EPMO));
+	printf("EPMM1: 0x%04x\r\n", ReadReg(EPMM1));
+	// default
+	WriteReg(EPMO, 0x0000);
+	WriteReg(EPMCS, 0x5BFC);
+	WriteReg(EPMM1, 0x0FC0);
+	
+	BFSReg(ERXFCON, ERXFCON_CRCEN | ERXFCON_RUNTEN | ERXFCON_UCEN | ERXFCON_MCEN |ERXFCON_PMEN0);	//  | ERXFCON_MCEN  | ERXFCON_MPEN
+	//				CRC	valid ??	paket>64byte	 unicast ??		
+	BFCReg(ERXFCON, ERXFCON_BCEN | ERXFCON_NOTPM);	//  
+	//BFCReg(ERXFCON, ERXFCON_UCEN);	// 
+	
+	printf("\r\n");
+	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
+	printf("EPMCS: 0x%04x\r\n", ReadReg(EPMCS));
+	printf("EPMM1: 0x%04x\r\n", ReadReg(EPMM1));
 	// set Filter
 	
 //	BFCReg(ERXFCON, ERXFCON_BCEN);
-	//WriteReg(ERXFCON, );
 	// ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN3 | ERXFCON_PMEN0
 	
 	// Use ENCx24J600 preprogrammed MAC address, if AppConfig is not already set
@@ -698,7 +712,8 @@ int MACInit(void)
 	#elif defined(ENC100_FORCE_100MBPS_FULL_DUPLEX)
 		WritePHYReg(PHCON1, PHCON1_SPD100 | PHCON1_PFULDPX);
 	#endif
-
+	printf("\r\n\r\nERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
+	printf("MACON1 : 0x%04x\r\n", ReadPHYReg(MACON1));
 	// Enable RX packet reception
 	BFSReg(ECON1, ECON1_RXEN);
 	

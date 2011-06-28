@@ -79,7 +79,7 @@
 #define NAMA_BOARD	"Babelan Tampilan-4.2"
 
 #define PAKAI_LED_UTAMA
-#define CEK_BLINK
+//#define CEK_BLINK
 
 //#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
@@ -115,7 +115,13 @@
 #define PAKAI_FONT_KOMIK	1
 #define PAKAI_BACKLIT
 
-#define PAKAI_TSC
+//#define CARI_SUMBER
+
+#define PAKAI_KEYPAD_BARITO_36
+
+#ifdef PAKAI_KEYPAD_BARITO_36
+	#define PAKAI_TSC
+#endif
 
 /*-----------------------------------------------------------
  * Application specific definitions.

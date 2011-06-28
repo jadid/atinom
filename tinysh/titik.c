@@ -11,12 +11,12 @@
 	
 */
 
-#include "../monita/monita_uip.h"
-extern struct t_mesin mesin[];
+#include "../app/monita/monita_uip.h"
+//extern struct t_mesin mesin[];
 extern struct t_titik titik[TIAP_MESIN * JML_MESIN];
 
 /* keterangan masing2 titik lihat di menu_monita.c */
-extern char keter[100][25];
+//extern char keter[100][25];
 
 char *f_out(float ff);
 							  
@@ -24,6 +24,9 @@ void cek_titik(int no_mes)
 {
 	int i;
 	int pasnya;
+	
+	//struct t_titik *titik;
+	//titik = (char *) ALMT_TITIK;
 	
 	printf(" No. Sbr. Knl. Modul    Data : Keterangan\r\n");
 	
@@ -36,11 +39,13 @@ void cek_titik(int no_mes)
 
 	for (i=0; i<60; i++)
 	{
-		
+		/*
 		printf("%3d. %3d. %3d. %3d. %9s: %s\r\n", pasnya+1, titik[pasnya].ID_sumber, \
 			titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya].data), \
 			keter[i]);
-		
+		//*/
+		printf("%3d. %3d. %3d. %3d. %9s: \r\n", pasnya+1, titik[pasnya].ID_sumber, \
+			titik[pasnya].kanal, titik[pasnya].alamat, f_out(titik[pasnya].data));
 		pasnya++;	
 	}
 
@@ -189,6 +194,9 @@ void set_titik(int argc, char **argv)
 		return;	
 	}
 	
+	//struct t_titik *p_titik;
+	//p_titik = pvPortMalloc( JML_SUMBER * sizeof (struct t_titik) );
+	
 	printf(" set_titik %s dipanggil\r\n", argv[1]);
 	garis_bawah();
   	display_args(argc,argv);
@@ -230,7 +238,7 @@ void set_titik(int argc, char **argv)
 				
 				titik[ttk - 1].alamat = almt;
 				printf("Set titik %d, pada sumber %d, pada kanal %d, pada alamat %d\r\n", \
-				ttk, sumb, kanal, almt); 
+						ttk, sumb, kanal, almt); 
 			}
 			else
 				printf(" ERR: Argumen nomer kanal salah !\r\n");

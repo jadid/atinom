@@ -24,10 +24,10 @@
  * baca & tulis
  */
 
-//struct t_sumber sumber[JML_SUMBER];
-//struct t_mesin	mesin[JML_MESIN];
-//struct t_titik	titik[TIAP_MESIN * JML_MESIN];
-struct t_titik	titik[32];
+struct t_sumber sumber[JML_SUMBER];
+struct t_mesin	mesin[JML_MESIN];
+struct t_titik	titik[TIAP_MESIN * JML_MESIN];
+//struct t_titik	titik[32];
 //struct t_data_hitung data_hitung[JML_MESIN];
 
 //struct t_data_float s_data[JML_SUMBER]; /* __attribute__ ((section (".eth_test"))); */
@@ -98,6 +98,23 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	//set_awal_sumber();
 	//set_awal_titik();
 	
+	#if 1
+	for (;;)
+	{
+		vTaskDelay(201);
+		
+		cls_layar();
+		
+		
+		loop++;
+		//sprintf(tek, "loop tampilan = %d", loop);
+		//teks_layar(10, 20, tek);
+		
+		update_lcd();	
+	}
+	#endif
+	
+	
 	read_sumber();
 	//read_mesin();
 	//read_titik();
@@ -162,7 +179,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	//update_lcd_layer3();
 	
 	loop = 0;
-	//*
+	#if 1
 	for (;;)
 	{
 		vTaskDelay(201);
@@ -176,7 +193,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 		
 		update_lcd();	
 	}
-	//*/
+	#endif
 	
 	#if 1	
 	
@@ -286,7 +303,7 @@ void init_task_tampilan(void)
 	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 10), \
 		NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
-
+//#ifdef PAKAI_KEYPAD_BARITO_32
 int cek_keypad(void)
 {
 	//portENTER_CRITICAL();
@@ -301,7 +318,7 @@ int cek_keypad(void)
 		return 0;	
 	}
 }
-
+//#endif
 /* 
 	menghitung konsumsi bahan bakar per menit,
 	fungsi ini akan dipanggil 1 kali per detik jika sedang dipilih

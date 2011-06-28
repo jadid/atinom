@@ -71,6 +71,7 @@ void togle_led_utama(void)	{
 		FIO0SET = LED_UTAMA;
 		#ifdef PAKAI_BACKLIT
 			FIO1SET = LED_PICKUP;
+			FIO1SET = BACKLIT;
 		#endif
 		tog = 0;
 		
@@ -84,6 +85,7 @@ void togle_led_utama(void)	{
 		FIO0CLR = LED_UTAMA;
 		#ifdef PAKAI_BACKLIT
 			FIO1CLR = LED_PICKUP;
+			FIO1CLR = BACKLIT;
 		#endif
 		tog = 1;
 		//ser2_putstring("masuk ...\r\n");	

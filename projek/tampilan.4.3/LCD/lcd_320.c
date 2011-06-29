@@ -201,8 +201,8 @@ void init_lcd(void)
 		tulis_param(40);//P7. APL
 		tulis_param(00);//P8. APH 
 	
-	//dele(100);	
-	vTaskDelay(10);
+	dele(100);	
+	//vTaskDelay(5);
 	
 	tulis_command(0x44); // SCROLL
 		tulis_param((char) (AWAL_LAYER_SATU & 0xFF));		//	--> awal grafik 0x640 (1600)		4
@@ -220,8 +220,8 @@ void init_lcd(void)
 		tulis_param(0x00);//	9
 		tulis_param(0x00);//	10
 	
-	//dele(100);
-	vTaskDelay(10);
+	dele(100);
+	//vTaskDelay(5);
 	
 	
 	//HDOT SCR			

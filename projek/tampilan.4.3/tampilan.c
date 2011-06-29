@@ -24,9 +24,9 @@
  * baca & tulis
  */
 
-struct t_sumber sumber[JML_SUMBER];
-struct t_mesin	mesin[JML_MESIN];
-struct t_titik	titik[TIAP_MESIN * JML_MESIN];
+//struct t_sumber sumber[JML_SUMBER];
+//struct t_mesin	mesin[JML_MESIN];
+//struct t_titik	titik[TIAP_MESIN * JML_MESIN];
 //struct t_titik	titik[32];
 //struct t_data_hitung data_hitung[JML_MESIN];
 
@@ -98,7 +98,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	//set_awal_sumber();
 	//set_awal_titik();
 	
-	#if 1
+	#if 0
 	for (;;)
 	{
 		vTaskDelay(201);
@@ -179,7 +179,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	//update_lcd_layer3();
 	
 	loop = 0;
-	#if 1
+	#if 0
 	for (;;)
 	{
 		vTaskDelay(201);

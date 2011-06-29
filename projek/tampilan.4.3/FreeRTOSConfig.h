@@ -79,7 +79,7 @@
 #define NAMA_BOARD	"Babelan Tampilan-4.2"
 
 #define PAKAI_LED_UTAMA
-//#define CEK_BLINK
+#define CEK_BLINK
 
 //#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
@@ -95,9 +95,9 @@
 	#define I2C_GPIO
 #endif
 
-//#define PAKAI_ETH
+#define PAKAI_ETH
 #ifdef PAKAI_ETH
-//	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
+	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 //	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
@@ -115,13 +115,9 @@
 #define PAKAI_FONT_KOMIK	1
 #define PAKAI_BACKLIT
 
-//#define CARI_SUMBER
+//#define BANYAK_SUMBER
 
-#define PAKAI_KEYPAD_BARITO_36
-
-#ifdef PAKAI_KEYPAD_BARITO_36
-	#define PAKAI_TSC
-#endif
+#define PAKAI_TSC
 
 /*-----------------------------------------------------------
  * Application specific definitions.

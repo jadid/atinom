@@ -116,7 +116,7 @@ const unsigned char tsc_init_data[] = {   // This only contains the writable TSC
 	30, // 0x02: PA2 Alpha
 	30, // 0x03: PA3 Alpha
 	30, // 0x04: PA4 Alpha
-	30, // 0x05: PA5 Alpha
+	1, // 0x05: PA5 Alpha
 	30, // 0x06: PA6 Alpha
 	30, // 0x07: PA7 Alpha
 	20, // 0x08: Reference Delay	90

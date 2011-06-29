@@ -220,6 +220,7 @@ void setup_hardware(void);
 #endif
 
 #ifdef BOARD_TAMPILAN_4_3
+	#define uC	"NXP LPC 2387"
 	#define FIO_KEYPAD 			FIO2PIN
 	
 	

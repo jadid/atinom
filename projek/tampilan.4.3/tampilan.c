@@ -277,7 +277,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				else if ( key_press == KIRI )
 				{
 					mesin_index--;
-					if (mesin_index < 0) mesin_index = 9;
+					if (mesin_index == 255) mesin_index = 9;
 				}
 				else if ( key_press == OK)
 				{

@@ -30,8 +30,18 @@
 
 #define KEY_DAT	(PF11 | PF12 | PF13)
 
-#define ATAS		0
-#define BAWAH	131072
-#define KANAN	65536
-#define OK		196608
-#define CANCEL	262144
+#ifdef PAKAI_TSC
+	#define CANCEL		1
+	#define OK			2
+	#define TANYA		4
+	#define KIRI		8
+	#define ATAS		16
+	#define KANAN		32
+	#define BAWAH		64	
+#else
+	#define ATAS		0
+	#define BAWAH	131072
+	#define KANAN	65536
+	#define OK		196608
+	#define CANCEL	262144
+#endif

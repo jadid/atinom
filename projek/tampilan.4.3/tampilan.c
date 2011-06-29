@@ -45,7 +45,7 @@ unsigned char daytime[32];
 xSemaphoreHandle keypad_sem;
 
 portTASK_FUNCTION( tampilan_task, pvParameters )	{
-	unsigned int key_press;
+	unsigned char key_press;
 	unsigned char key_index=0;
 	unsigned char mesin_index=0;
 	int i;
@@ -53,6 +53,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	unsigned char jum_OK;
 	char loop_key;
 	int loop_per_menit=0;
+	unsigned char dipencetdeh=0;
 	
 	// set PF14 & PF10 sebagai input interrupt keypad
 	#ifdef TAMPILAN_LPC
@@ -212,7 +213,11 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	*/
 	for (;;)
 	{
+		#ifdef PAKAI_TSC
+		if (key_press = baca_tsc())
+		#else
 		if (cek_keypad())
+		#endif
 		/* jika 1 detik tidak ada keypad, maka force untuk update lcd */
 		//if ( xSemaphoreTake( keypad_sem, 1000 ) == pdTRUE )
 		{	
@@ -225,7 +230,33 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				cls_layar();
 			
 				// cek tombol apa yang ditekan
+				#ifndef PAKAI_TSC 
 				key_press = (FIO1PIN & KEY_DAT);
+				#else
+				switch (key_press) {
+					case 1:
+						key_press = CANCEL;
+						break;
+					case 2:
+						key_press = OK;
+						break;
+					case 4:
+						key_press = TANYA;
+						break;
+					case 8:
+						key_press = KIRI;
+						break;
+					case 16:
+						key_press = ATAS;
+						break;
+					case 32:
+						key_press = KANAN;
+						break;
+					case 64:
+						key_press = BAWAH;
+						break;
+				}
+				#endif
 				//printf("tombol ditekan = %d\n", key_press);	
 			
 				if (key_press == ATAS)
@@ -242,6 +273,11 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				{
 					mesin_index++;
 					if (mesin_index > 9) mesin_index = 0;
+				}
+				else if ( key_press == KIRI )
+				{
+					mesin_index--;
+					if (mesin_index < 0) mesin_index = 9;
 				}
 				else if ( key_press == OK)
 				{
@@ -292,7 +328,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				//hitung_data_hitung();
 			}	
 		}
-		vTaskDelay(100);
+		vTaskDelay(400);
 		loop++;	
 	}
 	#endif

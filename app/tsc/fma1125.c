@@ -196,10 +196,12 @@ int setup_fma(void)
 {
 	unsigned char i;
 	int td=0;
-	vTaskDelay(350);
+	vTaskDelay(150);
 	
 	td=test_device( ADDR_FMA1 );
+	#ifdef DEBUG_TSC
 	printf("test device: %d\r\n", td);
+	#endif
 	if (td) {
 		return -1;
 	}
@@ -208,8 +210,10 @@ int setup_fma(void)
 		// reset register check
 		// supaya INT tidak terus generate clock
 		i2c_set_register( ADDR_FMA1, TSC_REGISTER_CHECK, 0xFF );		// 0x28
+		#ifdef DEBUG_TSC
 		printf("Register check ... done !!\r\n");
-		vTaskDelay(10);
+		#endif
+		vTaskDelay(5);
 		
 		for (i=0; i<61; i++) 
 		{
@@ -218,21 +222,27 @@ int setup_fma(void)
 				return -2;
 			}
 		}
+		#ifdef DEBUG_TSC
 		printf("Init Register TSC ... done !!\r\n");
-		vTaskDelay(50);
+		#endif
+		vTaskDelay(10);
 		if( i2c_set_register( ADDR_FMA1, TSC_WARM_RESET, 0x00))       // isue warm reset, do not wait for ACK
 		{
 			return -3;
 		}
+		#ifdef DEBUG_TSC
 		printf("Warm Reset ... done !!\r\n");
-		vTaskDelay(200);	// 200ms
+		#endif
+		vTaskDelay(100);	// 200ms
 		
 		#if 1
 		if( i2c_set_register( ADDR_FMA1, TSC_PA_EINT_ENABLE, 0xFF))
 		{
 			return -4;
 		}
+		#ifdef DEBUG_TSC
 			printf(".... else enable EINT !!\r\n");
+		#endif
 		#endif
 		
 		return 0;
@@ -240,6 +250,12 @@ int setup_fma(void)
 }
 
 //eint i2c_read_register(char addr, char reg, char *val);
+unsigned char baca_tsc() {
+	unsigned char qq;
+	i2c_read_register(ADDR_FMA1, TSC_TOUCH_BYTE, &qq);
+	//printf("0x%02X: TOUCH_BYTE: %d\r\n", TSC_TOUCH_BYTE, qq);
+	return qq;
+}
 
 void baca_register_tsc() {
 	unsigned char qq;

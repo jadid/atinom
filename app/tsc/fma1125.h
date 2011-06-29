@@ -157,3 +157,4 @@
 //extern const char TSC_REG_NAMES_RW[61][20];
 // extern const char TSC_REG_NAMES_RW[61][1];     // use this in case the plain-text name strings are not needed
 
+unsigned char baca_tsc();

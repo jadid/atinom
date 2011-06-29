@@ -25,15 +25,6 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		printf(" Monita : Ambil cepat init !!\r\n");
   	#endif
   	
-  	#ifdef PAKAI_GPS
-		int hasil_gpsnya;
-		awal_gps();
-  	#endif
-  	
-  	#ifdef PAKAI_ADC
-		extern unsigned char status_adcnya; 
-  	#endif
-  	
   	#ifdef PAKAI_I2C
 		unsigned char st_tsc=0;
 		char a;
@@ -45,6 +36,15 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			printf("Init TSC OK ack !!!\r\n");
 			st_tsc = 1;
 		}
+  	#endif
+  	
+  	#ifdef PAKAI_GPS
+		int hasil_gpsnya;
+		awal_gps();
+  	#endif
+  	
+  	#ifdef PAKAI_ADC
+		extern unsigned char status_adcnya; 
   	#endif
   	
   	#ifdef PAKAI_GPIO_DIMMER

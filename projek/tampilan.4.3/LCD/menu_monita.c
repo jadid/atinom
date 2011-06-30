@@ -298,14 +298,14 @@ extern float data_f[];
 #define lebartunjuk		10
 #define tinggitunjuk	5
 
-void menu_tunjuk(unsigned char pilih) {
-	printf("pilih: %d\r\n", pilih);
+void menu_tunjuk(unsigned char pilih, unsigned char dipencet) {
+	//printf("pilih: %d\r\n", pilih);
 	unsigned char www;
 	
-	//for (www=1; www<5; www++) {
+	if (dipencet) {
 		move_ke(menu_kiri, DATA_ATAS+32+(pilih*DATA_TINGGI));
 		line_ke(menu_besar_kanan, DATA_ATAS+32+(pilih*DATA_TINGGI));
-	//}
+	}
 }
 
 
@@ -358,7 +358,9 @@ void menu_group(unsigned char p, unsigned char grop)
 			sprintf(tek, "%s", p_dt[ temp - 1].nama );
 			teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);  // 14 terlalu mepet
 			
-			data_f[ temp - 1 ] = (float) ((rand() % 100));
+			if (data_f[ temp - 1 ] < p_dt[temp-1].alarm_HH)
+				data_f[ temp - 1 ] = (float) ((rand() % 100));
+				
 			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
 				#ifdef UNTUK_PLTD_LOPANA
 				sprintf(tek, "%6.1f", data_f[ temp - 1] );

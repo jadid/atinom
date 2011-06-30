@@ -193,8 +193,8 @@ int set_data_default(void) {
 		p_gr[i].relay = 0;
 		//p_gr[i].alarm_LL = 0;
 		//p_gr[i].alarm_L = 0;
-		p_gr[i].alarm_HH = 10.0;
-		p_gr[i].alarm_H = 9.0;
+		p_gr[i].alarm_HH = 90.0;
+		p_gr[i].alarm_H = 80.0;
 		p_gr[i].aktif = 0;
 	}
 	

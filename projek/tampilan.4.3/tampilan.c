@@ -260,12 +260,12 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 			
 				if (key_press == ATAS)
 				{
-					key_index--;
+					if (dipencetdeh)	key_index--;
 					if (key_index == 255) key_index = 10;	// 9	   
 				}
 				else if ( key_press == BAWAH )
 				{
-					key_index++;	
+					if (dipencetdeh)	key_index++;	
 					if (key_index > 10) key_index = 0;		// 9
 				}
 				else if ( key_press == KANAN )
@@ -290,7 +290,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 						dipencetdeh = 0;
 					}
 					printf("dipencet deh: %d\r\n", dipencetdeh);
-					vTaskDelay(300);
+					//vTaskDelay(300);
 				}
 				//menu_OK(key_index, mesin_index, jum_OK);
 				jum_OK = 0;
@@ -300,7 +300,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				//menu_monita(key_index);
 				menu_pilih(key_index, mesin_index, 0);
 				menu_group(key_index, mesin_index);		
-				menu_tunjuk(key_index);
+				menu_tunjuk(key_index, dipencetdeh);
 				
 				update_lcd();
 				loop = 0;
@@ -321,7 +321,9 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				//menu_monita(key_index);		
 				menu_pilih(key_index, mesin_index, 0);
 				menu_group(key_index, mesin_index);
-				menu_tunjuk(key_index);
+				dipencetdeh = 0;
+				key_index = 0;
+				menu_tunjuk(key_index, dipencetdeh);
 				//menu_OK(key_index, mesin_index);
 							
 				update_lcd();

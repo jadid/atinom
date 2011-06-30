@@ -42,6 +42,9 @@ struct t_status status[5];
 struct t_data_hitung data_hitung[5];
 unsigned char daytime[32];
 
+#ifdef PAKAI_ALARM
+	extern unsigned char stAlarmDisplay[];
+#endif
 
 unsigned short x;
 unsigned short y;	
@@ -317,7 +320,7 @@ void cetak_data( unsigned char grop, int idx )
 	teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( 14 * idx ), tek);
 }
 
-void menu_group(unsigned char p, unsigned char grop)
+void menu_group(unsigned char pilih, unsigned char grop)
 {
 	int i;
 	struct t_group *p_gr;
@@ -394,11 +397,16 @@ void menu_group(unsigned char p, unsigned char grop)
 		}
 	}
 	
+	#ifdef PAKAI_ALARM
 	for (i=0; i<10; i++) {
-		for (temp=menu_kiri; temp<menu_besar_kanan; temp++) {
-			
+		if (stAlarmDisplay[i]) {
+			for (temp=0; temp<16; temp++) {
+				move_ke(menu_kiri, DATA_ATAS+16+(pilih*DATA_TINGGI)+temp);
+				line_ke(menu_besar_kanan, DATA_ATAS+16+(pilih*DATA_TINGGI)+temp);
+			}
 		}
 	}
+	#endif
 //*/
 }
 

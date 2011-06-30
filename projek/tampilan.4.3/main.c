@@ -69,10 +69,6 @@ int main( void )	{
 void togle_led_utama(void)	{
 	if (tog)	{
 		FIO0SET = LED_UTAMA;
-		#ifdef PAKAI_BACKLIT
-			FIO1SET = LED_PICKUP;
-			FIO1SET = BACKLIT;
-		#endif
 		tog = 0;
 		
 		/* kalkulasi idle loop */
@@ -83,10 +79,6 @@ void togle_led_utama(void)	{
 		tendang_wdog();
 	}	else	{
 		FIO0CLR = LED_UTAMA;
-		#ifdef PAKAI_BACKLIT
-			FIO1CLR = LED_PICKUP;
-			FIO1CLR = BACKLIT;
-		#endif
 		tog = 1;
 		//ser2_putstring("masuk ...\r\n");	
 	}
@@ -101,10 +93,9 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 	for (;;)	{
 		togle_led_utama();
 		vTaskDelay(500);
-		
-		//printf(" - Tanggal   : %d-%d-%d\r\n", infoGPS.utc.day, infoGPS.utc.mon, infoGPS.utc.year);
 	}
 }
+
 void init_led_utama(void) {
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) ,\
 		 NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );

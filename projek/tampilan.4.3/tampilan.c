@@ -32,6 +32,11 @@
 
 //struct t_data_float s_data[JML_SUMBER]; /* __attribute__ ((section (".eth_test"))); */
 
+#ifdef PAKAI_ALARM
+extern unsigned char stAlarmDisplay[];
+extern unsigned char ACK;
+#endif
+
 extern xTaskHandle *hdl_tampilan;
 
 void set_awal_mesin(void);
@@ -44,10 +49,12 @@ unsigned char daytime[32];
 
 xSemaphoreHandle keypad_sem;
 
+unsigned char key_index=0;
+unsigned char mesin_index=0;
+
 portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	unsigned char key_press;
-	unsigned char key_index=0;
-	unsigned char mesin_index=0;
+
 	int i;
 	int loop;
 	unsigned char jum_OK;
@@ -280,7 +287,13 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				}
 				else if ( key_press == OK)
 				{
-					jum_OK++;	
+					jum_OK++;
+					#ifdef PAKAI_ALARM
+					//if (ACK pada kanal yg abnormal)
+					{
+						ACK = 0;
+					}
+					#endif
 				}
 				else if ( key_press == CANCEL)
 				{

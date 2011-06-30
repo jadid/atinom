@@ -95,7 +95,7 @@
 	#define I2C_GPIO
 #endif
 
-//#define PAKAI_ETH
+#define PAKAI_ETH
 #ifdef PAKAI_ETH
 	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 //	#define PAKAI_ENCX24J600
@@ -118,6 +118,10 @@
 #define BANYAK_SUMBER
 #define UNTUK_PLTD_LOPANA
 #define PAKAI_TSC
+
+#define PAKAI_RTC
+
+#define PAKAI_ALARM
 
 /*-----------------------------------------------------------
  * Application specific definitions.

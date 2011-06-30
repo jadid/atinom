@@ -96,6 +96,10 @@ void init_hardware()	{
 		init_shell();
 	#endif
 	
+	#ifdef PAKAI_ALARM
+		init_task_alarm();
+	#endif
+	
 	#ifdef PAKAI_TAMPILAN
 		init_port_lcd();
 		init_lcd();

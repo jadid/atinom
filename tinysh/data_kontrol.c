@@ -209,8 +209,8 @@ int set_data_default(void) {
 		p_gr[i].relay = 0;
 		//p_gr[i].alarm_LL = 0;
 		//p_gr[i].alarm_L = 0;
-		p_gr[i].alarm_HH = 10.0;
-		p_gr[i].alarm_H = 9.0;
+		p_gr[i].alarm_HH = 90.0;
+		p_gr[i].alarm_H = 80.0;
 		p_gr[i].aktif = 0;
 		j++;
 	}
@@ -373,7 +373,7 @@ int set_data(int argc, char **argv)
 		}
 	}
 	//*/
-	else if (strcmp(argv[2], "relay") == 0)		// 	set_data 4 relay [1|aktif] 7
+	else if (strcmp(argv[2], "alarm") == 0)		// 	set_data 4 relay [1|aktif] 7
 	{
 		int slot=0;
 		sprintf(str_data, "%s", argv[1]);	

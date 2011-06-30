@@ -117,7 +117,7 @@ int status_MMC=0;
 #endif
 
 #ifdef PAKAI_RTC
-#include "../system/rtc.h"
+#include "../modul/system/rtc.h"
 #endif
 
 #ifdef PAKAI_GSM_FTP

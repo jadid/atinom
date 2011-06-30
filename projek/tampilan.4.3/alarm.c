@@ -116,9 +116,11 @@ unsigned char cek_alarmkan() {
 		#if 1
 		kk = p_grpq[mesin_index].no_data[ii];
 		//if (kk) {
-		if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
-			stAlarmDisplay[mesin_index*10+jj]=1;
-			//printf("%d: %d   ", jj, kk);
+		if (p_dtq[kk-1].aktif == 1) {
+			if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
+				stAlarmDisplay[mesin_index*10+jj]=1;
+				//printf("%d: %d   ", jj, kk);
+			}
 		}
 		jj++;
 		//}

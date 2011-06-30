@@ -133,14 +133,14 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 		sprintf(tek, "%2d     %s", (i+1), mesin[i].nama);
 		teks_h(20, 30 + (i*9), tek);
 	}
-//*/
+
 	cls_layar();
 	vTaskDelay(800);
 	update_lcd();
 	vTaskDelay(100);
 	update_lcd_layer2();
 	vTaskDelay(10);
-	
+//*/	
 	/*
 	teks_h(14, 20, "Data Sumber Data :");
 	for (i=0; i<JML_SUMBER; i++)
@@ -228,7 +228,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				loop_key = 0;
 			
 				cls_layar();
-			
 				// cek tombol apa yang ditekan
 				#ifndef PAKAI_TSC 
 				key_press = (FIO1PIN & KEY_DAT);
@@ -285,14 +284,23 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				}
 				else if ( key_press == CANCEL)
 				{
-					//jum_OK--;	
+					if (dipencetdeh==0) {
+						dipencetdeh = 1;
+					} else {
+						dipencetdeh = 0;
+					}
+					printf("dipencet deh: %d\r\n", dipencetdeh);
+					vTaskDelay(300);
 				}
 				//menu_OK(key_index, mesin_index, jum_OK);
 				jum_OK = 0;
+
+				printf("key index: %d, mesin_index: %d\r\n", key_index, mesin_index);
 				
 				//menu_monita(key_index);
 				menu_pilih(key_index, mesin_index, 0);
 				menu_group(key_index, mesin_index);		
+				menu_tunjuk(key_index);
 				
 				update_lcd();
 				loop = 0;
@@ -313,6 +321,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				//menu_monita(key_index);		
 				menu_pilih(key_index, mesin_index, 0);
 				menu_group(key_index, mesin_index);
+				menu_tunjuk(key_index);
 				//menu_OK(key_index, mesin_index);
 							
 				update_lcd();
@@ -328,7 +337,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				//hitung_data_hitung();
 			}	
 		}
-		vTaskDelay(400);
+		vTaskDelay(300);
 		loop++;	
 	}
 	#endif
@@ -339,7 +348,8 @@ void init_task_tampilan(void)
 	xTaskCreate( tampilan_task, ( signed portCHAR * ) "Tampilan", (configMINIMAL_STACK_SIZE * 10), \
 		NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
-//#ifdef PAKAI_KEYPAD_BARITO_32
+
+#ifdef PAKAI_KEYPAD_BARITO_32
 int cek_keypad(void)
 {
 	//portENTER_CRITICAL();
@@ -354,7 +364,7 @@ int cek_keypad(void)
 		return 0;	
 	}
 }
-//#endif
+#endif
 /* 
 	menghitung konsumsi bahan bakar per menit,
 	fungsi ini akan dipanggil 1 kali per detik jika sedang dipilih

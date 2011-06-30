@@ -95,28 +95,28 @@
 	#define I2C_GPIO
 #endif
 
-#define PAKAI_ETH
+//#define PAKAI_ETH
 #ifdef PAKAI_ETH
 	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 //	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
 //	#define SAMPURASUN_CLIENT
-//	#define SAMPURASUN_SERVER
+	#define SAMPURASUN_SERVER
 //	#define PAKAI_WEBCLIENT
-//	#define PAKE_TELNETD
+	#define PAKE_TELNETD
 	#define PAKAI_HTTP
 #endif
 
 #define PAKAI_TAMPILAN
 #define BOARD_TAMPILAN 
-#define TAMPILAN_LPC_43
 #define VERSI_KONFIG	2
+#define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
 #define PAKAI_BACKLIT
 
-//#define BANYAK_SUMBER
-
+#define BANYAK_SUMBER
+#define UNTUK_PLTD_LOPANA
 #define PAKAI_TSC
 
 /*-----------------------------------------------------------

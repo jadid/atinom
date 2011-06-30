@@ -169,7 +169,7 @@ void kotak_bolong(unsigned short x1, unsigned short y1, unsigned short x2, unsig
 	
 #define MWID	12
 
-void menu_pilih(unsigned char p, unsigned char grop, unsigned char flag)
+void menu_pilih(unsigned char pilih, unsigned char grop, unsigned char flag)
 {
 	int lebar;
 	int len;
@@ -288,12 +288,26 @@ void menu_pilih(unsigned char p, unsigned char grop, unsigned char flag)
 }
 
 #define DATA_KIRI	20
-#define DATA_ATAS	35
+#define DATA_ATAS	35		// 35	dari judul
 #define DATA_KIRI_KOMIK	DATA_KIRI
 #define DATA_ATAS_KOMIK DATA_ATAS
-#define DATA_TINGGI	18
+#define DATA_TINGGI	17		// 18
 
 extern float data_f[];
+
+#define lebartunjuk		10
+#define tinggitunjuk	5
+
+void menu_tunjuk(unsigned char pilih) {
+	printf("pilih: %d\r\n", pilih);
+	unsigned char www;
+	
+	//for (www=1; www<5; www++) {
+		move_ke(menu_kiri, DATA_ATAS+32+(pilih*DATA_TINGGI));
+		line_ke(menu_besar_kanan, DATA_ATAS+32+(pilih*DATA_TINGGI));
+	//}
+}
+
 
 void cetak_data( unsigned char grop, int idx )
 {
@@ -328,7 +342,7 @@ void menu_group(unsigned char p, unsigned char grop)
 	
 	teks_layar ( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK, "Nama" );
 	teks_layar ( DATA_KIRI_KOMIK + 120, DATA_ATAS_KOMIK, "Data" );
-	teks_layar ( DATA_KIRI_KOMIK + 180, DATA_ATAS_KOMIK, "Satuan" );
+	teks_layar ( DATA_KIRI_KOMIK + 170, DATA_ATAS_KOMIK, "Satuan" );
 	teks_layar ( DATA_KIRI_KOMIK + 220, DATA_ATAS_KOMIK, "Alarm H / HH" );
 //*	
 	for (i=0; i<40; i++)
@@ -344,9 +358,13 @@ void menu_group(unsigned char p, unsigned char grop)
 			sprintf(tek, "%s", p_dt[ temp - 1].nama );
 			teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);  // 14 terlalu mepet
 			
-			//data_f[ temp - 1 ] = (float) ((rand() % 100) * 0.10);
+			data_f[ temp - 1 ] = (float) ((rand() % 100));
 			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
-				sprintf(tek, "%.2f", data_f[ temp - 1] );
+				#ifdef UNTUK_PLTD_LOPANA
+				sprintf(tek, "%6.1f", data_f[ temp - 1] );
+				#else
+				sprintf(tek, "%.1f", data_f[ temp - 1] );
+				#endif
 			} else {
 				sprintf(tek, "%s", (int) data_f[temp-1]?"Aktif":"Mati" );
 			}
@@ -354,19 +372,19 @@ void menu_group(unsigned char p, unsigned char grop)
 			
 			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
 				sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
-				teks_layar( DATA_KIRI_KOMIK + 180, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				teks_layar( DATA_KIRI_KOMIK + 180, 6 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 				
 				// Batas ALARM //
 				//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
 				sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_H );
-				teks_layar( DATA_KIRI_KOMIK + 220, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				teks_layar( DATA_KIRI_KOMIK + 220, 6 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 				
 				//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_H );
 				sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_HH );
-				teks_layar( DATA_KIRI_KOMIK + 255, 8 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				teks_layar( DATA_KIRI_KOMIK + 255, 6 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 				//teks_komik( DATA_KIRI_KOMIK + 240, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
 			}
-			if (jml > 8) break;
+			if (jml > 9) break;
 		}
 	}
 //*/

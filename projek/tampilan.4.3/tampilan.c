@@ -295,7 +295,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				{
 					jum_OK++;
 					#ifdef PAKAI_ALARM
-					printf("m: %d, k: %d\r\n", mesin_index, key_index);
+					//printf("m: %d, k: %d\r\n", mesin_index, key_index);
 					ack_invert(mesin_index, key_index);
 					#endif
 				}

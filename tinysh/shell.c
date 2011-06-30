@@ -172,6 +172,11 @@ extern xTaskHandle *hdl_lcd;
 #ifdef PAKAI_TAMPILAN
 extern xTaskHandle *hdl_tampilan;
 #endif
+
+#ifdef PAKAI_ALARM
+extern xTaskHandle *hdl_alarm;
+#endif
+
 #ifdef PAKAI_ETH
 	extern xTaskHandle *hdl_ether;
 #endif
@@ -382,8 +387,12 @@ void cek_stack(void)
 	
 	#ifdef BOARD_TAMPILAN
 	//#ifdef CARI_SUMBERNYA
-	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
-	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(     " Tampilan   : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(     " LCD        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	#endif
+	
+	#ifdef PAKAI_ALARM
+	printf(     " ALarm      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_alarm));
 	#endif
 	
 	#if (TAMPILAN_MALINGPING == 1)

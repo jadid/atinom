@@ -21,13 +21,19 @@
 xTaskHandle hdl_alarm;
 unsigned char cek_alarmkan();
 unsigned char ACK=0;
-unsigned char stAlarmDisplay[10];
+unsigned char stAlarmDisplay[100];
 
 extern float data_f[];
 extern unsigned char key_index;
 extern unsigned char mesin_index;
 
 unsigned char awalPilih=0;
+
+void ack_invert(unsigned char group, unsigned char pilih) {
+	//printf("ACK group: %d, pilih: %d\r\n", group, pilih);
+	stAlarmDisplay[group*10+pilih] = 0;
+}
+
 
 static portTASK_FUNCTION(alarm_task, pvParameters )	{	
 	unsigned char muter=0, dd=0, ja=0;
@@ -47,8 +53,9 @@ static portTASK_FUNCTION(alarm_task, pvParameters )	{
 			dd = 1-dd;
 			lampukan(dd, ja);
 			#if 0
+				printf("m index: %d\r\n", mesin_index);
 				//printf("dd: %d, ja: %d, ACK: %d, mesin_index: %d\r\n", dd, ja, ACK, mesin_index);
-				printf("dd: %d, ja: %d, ACK: %d\r\n", dd, ja, ACK);
+				//printf("dd: %d, ja: %d, ACK: %d\r\n", dd, ja, ACK);
 				for (ii=0; ii<10; ii++) {
 					printf("%d:%d  ", ii+1, stAlarmDisplay[ii]);
 				}
@@ -104,18 +111,21 @@ unsigned char cek_alarmkan() {
 	
 	// CEK status alarm untuk per GROUP aktif
 	jj=0;
-	for (ii=awalPilih; ii<(awalPilih+10); ii++) {
+	for (ii=awalPilih; ii<(awalPilih+10); ii++) {		// hanya 10 saja
+		//stAlarmDisplay[mesin_index*10+jj]=0;			// direset
+		#if 1
 		kk = p_grpq[mesin_index].no_data[ii];
-		if (kk) {
-			stAlarmDisplay[jj]=0;			// direset
-			if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
-				stAlarmDisplay[jj]=1;
-				//printf("%d: %d   ", jj, kk);
-			}
-			jj++;
+		//if (kk) {
+		if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
+			stAlarmDisplay[mesin_index*10+jj]=1;
+			//printf("%d: %d   ", jj, kk);
 		}
-		if (jj>10) break;
+		jj++;
+		//}
+		
+		#endif
 	}
+	//printf("\r\n");
 	
 	//	CEK ALARM untuk semua TITIK aktif
 	for (jj=0; jj<JML_SUMBER; jj++) {
@@ -164,7 +174,7 @@ void lampu_kuning() {
 
 void init_task_alarm(void)
 {
-	xTaskCreate( alarm_task, ( signed portCHAR * ) "Alarm", (configMINIMAL_STACK_SIZE * 1), \
+	xTaskCreate( alarm_task, ( signed portCHAR * ) "Alarm", (configMINIMAL_STACK_SIZE * 10), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_alarm );	
 }
 

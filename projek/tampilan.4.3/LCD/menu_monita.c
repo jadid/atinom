@@ -44,6 +44,7 @@ unsigned char daytime[32];
 
 #ifdef PAKAI_ALARM
 	extern unsigned char stAlarmDisplay[];
+	extern unsigned char mesin_index;
 #endif
 
 unsigned short x;
@@ -302,13 +303,17 @@ extern float data_f[];
 #define tinggitunjuk	5
 
 void menu_tunjuk(unsigned char pilih, unsigned char dipencet) {
-	//printf("pilih: %d\r\n", pilih);
+	#ifdef PAKAI_ALARM
+	//printf("pilih: %d, mesin: %d\r\n", pilih, mesin_index);
 	unsigned char www;
 	
 	if (dipencet) {
+		move_ke(menu_kiri, DATA_ATAS+31+(pilih*DATA_TINGGI));
+		line_ke(menu_besar_kanan, DATA_ATAS+31+(pilih*DATA_TINGGI), 0);
 		move_ke(menu_kiri, DATA_ATAS+32+(pilih*DATA_TINGGI));
-		line_ke(menu_besar_kanan, DATA_ATAS+32+(pilih*DATA_TINGGI));
+		line_ke(menu_besar_kanan, DATA_ATAS+32+(pilih*DATA_TINGGI), 0);
 	}
+	#endif
 }
 
 
@@ -399,10 +404,11 @@ void menu_group(unsigned char pilih, unsigned char grop)
 	
 	#ifdef PAKAI_ALARM
 	for (i=0; i<10; i++) {
-		if (stAlarmDisplay[i]) {
+		if (stAlarmDisplay[i]==1) {
+			//printf("garis: %d\r\n", DATA_ATAS+17+(stAlarmDisplay[i]*DATA_TINGGI)+temp);
 			for (temp=0; temp<16; temp++) {
-				move_ke(menu_kiri, DATA_ATAS+16+(pilih*DATA_TINGGI)+temp);
-				line_ke(menu_besar_kanan, DATA_ATAS+16+(pilih*DATA_TINGGI)+temp);
+				move_ke(menu_kiri+10, DATA_ATAS+17+(i*DATA_TINGGI)+temp);
+				line_ke(menu_besar_kanan-10, DATA_ATAS+17+(i*DATA_TINGGI)+temp, 1);
 			}
 		}
 	}

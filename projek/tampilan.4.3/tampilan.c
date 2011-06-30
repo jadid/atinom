@@ -285,14 +285,18 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 					mesin_index--;
 					if (mesin_index == 255) mesin_index = 9;
 				}
+				else if ( key_press == TANYA )
+				{
+					#ifdef PAKAI_ALARM
+					ACK = 0;
+					#endif
+				}
 				else if ( key_press == OK)
 				{
 					jum_OK++;
 					#ifdef PAKAI_ALARM
-					//if (ACK pada kanal yg abnormal)
-					{
-						ACK = 0;
-					}
+					printf("m: %d, k: %d\r\n", mesin_index, key_index);
+					ack_invert(mesin_index, key_index);
 					#endif
 				}
 				else if ( key_press == CANCEL)
@@ -302,15 +306,16 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 					} else {
 						dipencetdeh = 0;
 					}
-					printf("dipencet deh: %d\r\n", dipencetdeh);
+					//printf("dipencet deh: %d\r\n", dipencetdeh);
 					//vTaskDelay(300);
 				}
 				//menu_OK(key_index, mesin_index, jum_OK);
 				jum_OK = 0;
 
-				printf("key index: %d, mesin_index: %d\r\n", key_index, mesin_index);
+				//printf("key index: %d, mesin_index: %d\r\n", key_index, mesin_index);
 				
 				//menu_monita(key_index);
+				cls_layar();
 				menu_pilih(key_index, mesin_index, 0);
 				menu_group(key_index, mesin_index);		
 				menu_tunjuk(key_index, dipencetdeh);
@@ -324,7 +329,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 			loop_key = 0;	
 		}
 		
-		if (loop > 5)
+		if (loop > 2)
 		{
 			
 			if (key_index != 10)
@@ -345,7 +350,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 			loop = 0;
 			
 			loop_per_menit++;
-			if (loop_per_menit > 60)
+			if (loop_per_menit > 20)
 			{
 				//printf("hitung \r\n");
 				loop_per_menit = 0;

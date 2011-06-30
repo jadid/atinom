@@ -310,7 +310,7 @@ void init_lcd(void)
 	return;
 }
 
-inline void pixel(int xt,int yt)
+inline void pixel(int xt,int yt, int pilih)
 {
    /* x adalah pojok kiri atas mulai dari nol - 320 (alamat memory 0 --> 40)
    	y adalah juga pojok kiri atas mulai dari nol - 240 (alamat memory 0 --> 240)*/
@@ -321,7 +321,11 @@ inline void pixel(int xt,int yt)
 	hasil = div (xt,8);
 			
 	offsetku = hasil.quot + (yt*40);
-	layar.buf[offsetku] = layar.buf[offsetku] | konvert_y[hasil.rem];
+	if (pilih==1)
+		layar.buf[offsetku] = layar.buf[offsetku] ^ konvert_y[hasil.rem];
+	else
+		layar.buf[offsetku] = layar.buf[offsetku] | konvert_y[hasil.rem];
+	
 }
 
 
@@ -332,7 +336,7 @@ void move_ke(short x1,short y1)
 }
 
 
-void line_ke(short x,short y)
+void line_ke(short x,short y, short pilihnya)
 {
 
 	int dy;  
@@ -348,14 +352,14 @@ void line_ke(short x,short y)
       {//garis lurus kebawah
       	for (m = 0; m<=dy ; m++)
       	{
-         	pixel(x_awal, m+y_awal);
+         	pixel(x_awal, m+y_awal, pilihnya);
       	}
       }
       else  //garis lurus ke atas
       {
       	for (m = 0; m >=dy ; m--)
       	{
-         	pixel(x_awal, m+y_awal);
+         	pixel(x_awal, m+y_awal, pilihnya);
       	}
       }
    }
@@ -366,14 +370,14 @@ void line_ke(short x,short y)
    	{		
 		for (m = 0; m <= dx; m++)
    		{
-				pixel(m + x_awal, y_awal + ((int)((dy*m)/dx)));
+				pixel(m + x_awal, y_awal + ((int)((dy*m)/dx)), pilihnya);
    		}
    	}
    	else if (dx<0)    // arah dari kanan ke kiri
    	{
    		for (m = 0; m >= dx; m--)
    		{
-      		pixel(m + x_awal, y_awal + ((int)((dy*m)/dx)));
+      		pixel(m + x_awal, y_awal + ((int)((dy*m)/dx)), pilihnya);
    		}
    	}
    }
@@ -383,14 +387,14 @@ void line_ke(short x,short y)
    	{
    		for (m = 0; m <= dy; m++)
    		{
-            pixel(x_awal + ((int)((dx*m)/dy)), m+y_awal);
+            pixel(x_awal + ((int)((dx*m)/dy)), m+y_awal, pilihnya);
    		}
    	}
    	else if (dy<0)    // arah dari bawah ke atas kanan tajam
    	{
    		for (m = 0; m >= dy; m--)
    		{
-      		pixel(x_awal + ((int)((dx*m)/dy)), m+y_awal);
+      		pixel(x_awal + ((int)((dx*m)/dy)), m+y_awal, pilihnya);
    		}
    	}
    }
@@ -402,22 +406,22 @@ void line_ke(short x,short y)
 void kotak(int x1, int y1, int x2, int y2)
 {
 	move_ke(x1,y1);
-   line_ke(x1,y2);
-   line_ke(x2,y2);
-   line_ke(x2,y1);
-   line_ke(x1,y1);
+   line_ke(x1,y2,0);
+   line_ke(x2,y2,0);
+   line_ke(x2,y1,0);
+   line_ke(x1,y1,0);
 }
 
 void kotak3d(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2)
 {
 	move_ke(x1,y1);
-   line_ke(x1,y2);
-   line_ke(x2,y2);
-   line_ke(x2,y1);
-   line_ke(x1,y1);
+   line_ke(x1,y2, 0);
+   line_ke(x2,y2, 0);
+   line_ke(x2,y1, 0);
+   line_ke(x1,y1, 0);
    move_ke(x1+1,y2+1);
-   line_ke(x2+1,y2+1);
-   line_ke(x2+1,y1+1);
+   line_ke(x2+1,y2+1, 0);
+   line_ke(x2+1,y1+1, 0);
 }
 
 void update_hard_lcd(void)

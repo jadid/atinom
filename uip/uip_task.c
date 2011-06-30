@@ -693,11 +693,17 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	}
 }
 
-
-void start_ether(void)	{	//8
-	xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 15), \
-		NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
-}
+#ifdef BOARD_TAMPILAN
+	void start_ether(void)	{	//8
+		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 10), \
+			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
+	}
+#else
+	void start_ether(void)	{	//8
+		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 15), \
+			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
+	}
+#endif
 
 void dispatch_tcp_appcall (void)	{
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);

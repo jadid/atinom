@@ -133,7 +133,7 @@ static u8_t tmpage;
 void
 uip_arp_init(void)
 {
-	printf("UIP_ARPTAB_SIZE: %d\r\n", UIP_ARPTAB_SIZE);
+	//printf("UIP_ARPTAB_SIZE: %d\r\n", UIP_ARPTAB_SIZE);
   for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
     memset(arp_table[i].ipaddr, 0, 4);
   }
@@ -170,7 +170,7 @@ static void uip_arp_update(u16_t *pipaddr, struct uip_eth_addr *ethaddr)
   /* Walk through the ARP mapping table and try to find an entry to
      update. If none is found, the IP -> MAC address mapping is
      inserted in the ARP table. */
-    printf("tabel arp: %d\r\n", UIP_ARPTAB_SIZE);
+    //printf("tabel arp: %d\r\n", UIP_ARPTAB_SIZE);
   for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
 
     tabptr = &arp_table[i];
@@ -182,10 +182,12 @@ static void uip_arp_update(u16_t *pipaddr, struct uip_eth_addr *ethaddr)
          the IP address in this ARP table entry. */
       if(pipaddr[0] == tabptr->ipaddr[0] &&
 	 pipaddr[1] == tabptr->ipaddr[1]) {
+	 #if 0
 	 printf("%2d. IP %d.%d.%d.%d: MAC %d.%d.%d.%d.%d.%d\r\n", i, \
 		tabptr->ipaddr[0], tabptr->ipaddr[1], tabptr->ipaddr[2], tabptr->ipaddr[3], \
 		tabptr->ethaddr.addr[0], tabptr->ethaddr.addr[1], tabptr->ethaddr.addr[2], \
 		tabptr->ethaddr.addr[3], tabptr->ethaddr.addr[4], tabptr->ethaddr.addr[5]);
+	#endif
 		//tabptr->ethaddr.addr);
 	/* An old entry found, update this and return. */
 	memcpy(tabptr->ethaddr.addr, ethaddr->addr, 6);
@@ -260,10 +262,12 @@ void uip_arp_ipin(void)
     return;
   }
   uip_arp_update(IPBUF->srcipaddr, &(IPBUF->ethhdr.src));
+  #if 0
   printf("uip_arp_update IP: %d.%d.%d.%d = %d:%d:%d:%d:%d:%d\r\n", \
 		IPBUF->srcipaddr[0], IPBUF->srcipaddr[1], IPBUF->srcipaddr[2], IPBUF->srcipaddr[3], \
 		IPBUF->ethhdr.src.addr[0], IPBUF->ethhdr.src.addr[1], IPBUF->ethhdr.src.addr[2], \
 		IPBUF->ethhdr.src.addr[3], IPBUF->ethhdr.src.addr[4], IPBUF->ethhdr.src.addr[5]);
+  #endif
   return;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -291,7 +295,7 @@ void uip_arp_ipin(void)
 /*-----------------------------------------------------------------------------------*/
 void uip_arp_arpin(void)
 {
-  printf("ARP len:%d, arphdr:%d, opc: %d\r\n", uip_len, sizeof(struct arp_hdr), BUF->opcode);
+  //printf("ARP len:%d, arphdr:%d, opc: %d\r\n", uip_len, sizeof(struct arp_hdr), BUF->opcode);
   
   if(uip_len < sizeof(struct arp_hdr)) {
     uip_len = 0;

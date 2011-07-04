@@ -86,7 +86,7 @@ static void baca_reg_fma(int argc, char **argv)
 		{
 			struct t_env *env2;
 			env2 = (char *) ALMT_ENV;
-			printf("k1: %d, k2: %d\r\n", env2->k1, env2->k2);
+			//printf("k1: %d, k2: %d\r\n", env2->k1, env2->k2);
 		}
 		{
 			//portENTER_CRITICAL();

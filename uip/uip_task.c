@@ -568,7 +568,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		//#else
 		//if (0) {
 		//#endif
-			printf("masuk cek paket !!!\r\n");
+			//printf("masuk cek paket !!!\r\n");
 			#if 1
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
@@ -580,8 +580,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		      if ((uip_len = Enc624Terima()) > 0)
 		      #endif
 		      {  
-				  printf("uiplen: %d, tipe: %d, IP: %d, ARP: %d\r\n", \
-						uip_len, pucUIP_Buffer->type, htons (UIP_ETHTYPE_IP), htons (UIP_ETHTYPE_ARP));
+					//printf("uiplen: %d, tipe: %d, IP: %d, ARP: %d\r\n", \
+					//	uip_len, pucUIP_Buffer->type, htons (UIP_ETHTYPE_IP), htons (UIP_ETHTYPE_ARP));
 				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
@@ -608,7 +608,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              printf("______kirim balek UIP !!!___\r\n");
+		    	              //printf("______kirim balek UIP !!!___\r\n");
 		    	              Enc624Kirim();
 		    	              #endif
 							  paket_kita++;
@@ -629,7 +629,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 						  #endif
 		    	          
 		    	            uip_arp_arpin ();
-							printf("______terima ARP !!!___: %d\r\n", uip_len);
+							//printf("______terima ARP !!!___: %d\r\n", uip_len);
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
@@ -637,7 +637,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              printf("______kirim balek ARP !!!___\r\n");
+		    	              //printf("______kirim balek ARP !!!___\r\n");
 		    	              Enc624Kirim();
 		    	              #endif
 						  //}

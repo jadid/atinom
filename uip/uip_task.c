@@ -265,7 +265,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	
 	
 	
-	#ifdef PAKE_HTTP
+	#if defined(PAKE_HTTP) || defined(PAKAI_HTTP)
 	printf(" Monita : http init\r\n");
 	httpd_init ();
 	#endif
@@ -563,12 +563,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		#endif
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
-		#if defined(PAKAI_ENC28J60) || defined(PAKAI_ENCX24J600)
+		//#if defined(PAKAI_ENC28J60) || defined(PAKAI_ENCX24J600)
 		if (cek_paket())	{
-		#else
-		if (0) {
-		#endif
-			//printf("masuk cek paket !!!\r\n");
+		//#else
+		//if (0) {
+		//#endif
+			printf("masuk cek paket !!!\r\n");
 			#if 1
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet

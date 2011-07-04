@@ -973,7 +973,7 @@ vTaskDelay(100);
 	#ifdef PAKAI_MMC
   	vTaskDelay(340);
   	#else
-  	vTaskDelay(450);
+  	vTaskDelay(50);
   	#endif
 
 	#ifdef PAKAI_SELENOID
@@ -1085,6 +1085,7 @@ vTaskDelay(100);
 	tinysh_add_command(&set_date_cmd);
 	#endif
 	
+	vTaskDelay(1000);
 	
 	struct t_env *envx;
 	envx = (char *) ALMT_ENV;

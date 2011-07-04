@@ -1,6 +1,7 @@
 #ifndef _ENVIRO_H_
 #define _ENVIRO_H_
 
+#include "FreeRTOS.h"
 
 #define IAP_LOCATION 0x7FFFFFF1
 typedef void (*IAP)(unsigned int [],unsigned int[]);
@@ -52,6 +53,10 @@ struct t_env {
 	unsigned char wIP1;
 	unsigned char wIP2;
 	unsigned char wIP3;
+	#ifdef PAKAI_TSC
+	unsigned char k1;
+	unsigned char k2;
+	#endif
 };
 
 #define SEKTOR_ENV	24

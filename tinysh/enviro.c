@@ -139,7 +139,7 @@ int baca_env(char tampil)
 	
 	if (tampil == 1)
 	{
-		printf(" Data Environtment \r\n");
+		printf(" Data Environment\r\n");
 		garis_bawah();
 	}
 	else
@@ -371,6 +371,16 @@ void set_env_default() {
 	env2->GW1 = 168;
 	env2->GW2 = 1;
 	env2->GW3 = 140;
+	
+	env2->wIP0 = 192;
+	env2->wIP1 = 168;
+	env2->wIP2 = 1;
+	env2->wIP3 = 1;
+	
+	#ifdef PAKAI_TSC
+		env2->k1 = 255;
+		env2->k2 = 255;
+	#endif
 	
 	env2->statusWebClient = 0;
 	env2->banyak_sumber=0;

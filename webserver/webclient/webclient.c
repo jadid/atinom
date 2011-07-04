@@ -219,6 +219,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 unsigned char
 webclient_get(char *host, u16_t port, char *file)
 {
+	int gg=0;
   struct uip_conn *conn;
   uip_ipaddr_t *ipaddr;
   static uip_ipaddr_t addr;
@@ -262,6 +263,21 @@ webclient_get(char *host, u16_t port, char *file)
   
 	printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d, len: %d\r\n", __FUNCTION__,host, port, file, strlen(s.file), uip_len);
 	
+	//uip_ipaddr_t hostaddr;
+	//uip_gethostaddr(&hostaddr);
+	//printf("addr: %d.%d.%d.%d.%d\r\n", hostaddr.);
+	
+	
+	//printf("UIP_ETHTYPE_IP: %d masuk.\r\n", UIP_ETHTYPE_IP);
+	for (gg=0; gg<20; gg++) {
+		if (gg%16==0) { 
+			printf("\r\n");
+		} else if (gg%8==0) {
+			printf("  "); 
+		}
+		printf("%02x ", uip_buf[gg]);
+	}
+	printf("\r\n\r\n");
 	return 1;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -487,25 +503,26 @@ newdata(void)
 void
 webclient_appcall(void)
 {
+	printf("%s() masuk\r\n", __FUNCTION__);
   if(uip_connected()) {
     s.timer = 0;
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    //printf("%s(): Connected\r\n", __FUNCTION__);
+    printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    //printf("%s(): Closed\r\n", __FUNCTION__);
+    printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	 //printf("%s(): Aborted\r\n", __FUNCTION__);
+	 printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();

@@ -71,7 +71,7 @@ extern struct t_adc st_adc;
 
 #ifdef BOARD_TAMPILAN
 //#ifdef CARI_SUMBER
-#define PAKE_HTTP
+//#define PAKE_HTTP
 #endif
 
 #ifdef PAKAI_HTTP
@@ -80,6 +80,8 @@ extern struct t_adc st_adc;
 
 //#define DEBUG_WEBCLIENT
 //#define PAKAI_ETH_TEST
+//#define DEBUG_UIP_TASK
+//#define DEBUG_ARP_TASK
 
 unsigned int paket_per_menit=0;
 unsigned int paket_kita=0;
@@ -210,7 +212,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	unsigned int loop_menit=0;	
 	static volatile portTickType xStartTime, xCurrentTime;
 	
-	vTaskDelay(200);
+	vTaskDelay(300);
 	
 	/* baca environtment (dapat IP dll dulu) */
 	baca_env(0);
@@ -234,7 +236,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		}	else	{
 			printf("ENC tidak respons !\r\n");
 		}
-	#else 	// defined(BOARD_KOMON_420_SABANG_2_1) && defined(PAKAI_ENC28J60) 
+	#elif defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENC28J60) 
+		printf(" Init ENC28J .. ");
+		if ( (status_eth=enc28j60Init())== 1)	{
+			 printf(" .. ENC OK\r\n");
+		}	else	{
+			printf(" ENC tidak respons !\r\n");
+		}
+	#else
 		printf(" Init ENC28J .. ");
 		if ( (status_eth=enc28j60Init())== 1)	{
 			 printf(" .. ENC OK\r\n");
@@ -242,7 +251,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			printf(" ENC tidak respons !\r\n");
 		}
 	#endif
-
+	
+	vTaskDelay(100);
+	
 	if (status_eth==0)	{
 		printf("\r\nEthernet ERROR !!!\r\n");
 		printf("Komunikasi dan Perintah via Ethernet tidak bisa dilakukan !!!\r\n");
@@ -251,6 +262,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			vTaskDelay(1000);
 		}
 	}
+	
+	
 	
 	#ifdef PAKE_HTTP
 	printf(" Monita : http init\r\n");
@@ -294,8 +307,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
     monita_init();
     printf(" Monita : sampurasun client init !\r\n");
 #endif
-
-
 
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
@@ -352,19 +363,24 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
 	
-	// supaya cukup waktu buat siap2 //
+	// supaya cuc fkup waktu buat siap2 //
 	loop = -1000;
 	
 	#if defined(BOARD_KOMON_420_SABANG) || defined (BOARD_KOMON_420_SABANG_2_3)
 	vTaskDelay(200);
 	#endif
 
+	int gg;
+
 	#ifdef PAKAI_WEBCLIENT
 		vTaskDelay(2000);
-		vTaskDelay(2000);
+		if (envx->statusWebClient==1) {
+			for(gg=0; gg<5; gg++)
+				vTaskDelay(2000);
+		}
 	#endif
 	
-	int gg;
+	
 	unsigned char ipne[32];	
 	//printf("mau loop for\r\n");
 	for (;;)	{
@@ -547,7 +563,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		#endif
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
+		#if defined(PAKAI_ENC28J60) || defined(PAKAI_ENCX24J600)
 		if (cek_paket())	{
+		#else
+		if (0) {
+		#endif
 			//printf("masuk cek paket !!!\r\n");
 			#if 1
 			  paket_per_menit++;
@@ -560,7 +580,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		      if ((uip_len = Enc624Terima()) > 0)
 		      #endif
 		      {  
-				  //printf("uiplen: %d\r\n", uip_len);
+				  printf("uiplen: %d, tipe: %d, IP: %d, ARP: %d\r\n", \
+						uip_len, pucUIP_Buffer->type, htons (UIP_ETHTYPE_IP), htons (UIP_ETHTYPE_ARP));
 				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
@@ -587,7 +608,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              //printf("______kirim balek UIP !!!___\r\n");
+		    	              printf("______kirim balek UIP !!!___\r\n");
 		    	              Enc624Kirim();
 		    	              #endif
 							  paket_kita++;
@@ -595,19 +616,31 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	     }
 		    	     else if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_ARP))
 		    	     {
+		    	          #ifdef DEBUG_ARP_TASK
+							for (gg=0; gg<uip_len; gg++) {
+								if (gg%16==0) { 
+									printf("\r\n");
+								} else if (gg%8==0) {
+									printf("  "); 
+								}
+								printf("%02x ", uip_buf[gg]);
+							}
+							printf("\r\n\r\n");
+						  #endif
+		    	          
 		    	            uip_arp_arpin ();
-							
+							printf("______terima ARP !!!___: %d\r\n", uip_len);
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
-		    	            if (uip_len > 0)	{
+		    	            //if (uip_len > 0)	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              //printf("______kirim balek ARP !!!___\r\n");
+		    	              printf("______kirim balek ARP !!!___\r\n");
 		    	              Enc624Kirim();
 		    	              #endif
-						  }
+						  //}
 		    	     }
 
 		      }
@@ -755,6 +788,7 @@ void dispatch_tcp_appcall (void)	{
 #ifdef PAKAI_WEBCLIENT
 	/* webclient */
 	if (uip_conn->rport == HTONS(PORT_HTTP))	{
+		printf("panggil webclient_appcall\r\n");
 		webclient_appcall();
 	}
 #endif

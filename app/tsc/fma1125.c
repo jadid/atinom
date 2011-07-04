@@ -14,6 +14,8 @@
 #include "fma1125.h"
 //#include "hardware.h"
 
+#include "../../tinysh/enviro.h"
+
 #define ADDR_FMA1	0x68
 
 
@@ -205,7 +207,12 @@ int setup_fma(void)
 	if (td) {
 		return -1;
 	}
-	else
+	
+	struct t_env *p_env2;
+	p_env2 = (char *) ALMT_ENV;
+	//printf("k1: %d, k2: %d\r\n", p_env2->k1, p_env2->k2);
+	
+	//else
 	{		
 		// reset register check
 		// supaya INT tidak terus generate clock
@@ -217,7 +224,13 @@ int setup_fma(void)
 		
 		for (i=0; i<61; i++) 
 		{
-			if (i2c_set_register( ADDR_FMA1, i, tsc_init_data[i]))		/*set TSC registers*/
+			if (i==41) {
+				if (i2c_set_register( ADDR_FMA1, i, p_env2->k1))
+					return -2;
+			} else if (i==42) {
+				if (i2c_set_register( ADDR_FMA1, i, p_env2->k2))
+					return -2;
+			} else if (i2c_set_register( ADDR_FMA1, i, tsc_init_data[i]))		/*set TSC registers*/
 			{
 				return -2;
 			}

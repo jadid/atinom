@@ -423,9 +423,11 @@ void uip_init(void)
 
   /* IPv4 initialization. */
 #if UIP_FIXEDADDR == 0
+	printf("UIP_FIXEDADDR == 0: %d.%d.%d.%d.%d.%d\r\n", \
+		UIP_ETHADDR0,UIP_ETHADDR1,UIP_ETHADDR2,UIP_ETHADDR3,UIP_ETHADDR4,UIP_ETHADDR5);
   /*  uip_hostaddr[0] = uip_hostaddr[1] = 0;*/
 #endif /* UIP_FIXEDADDR */
-
+	
 }
 /*---------------------------------------------------------------------------*/
 #if UIP_ACTIVE_OPEN
@@ -467,10 +469,13 @@ again:
     }
   }
 
+	printf("conn: %d\r\n", conn);
   if(conn == 0) {
+	  printf("%s() return 0\r\n", conn);
     return 0;
   }
-
+	
+	
   conn->tcpstateflags = UIP_SYN_SENT;
 
   conn->snd_nxt[0] = iss[0];
@@ -710,6 +715,7 @@ uip_process(u8_t flag)
   register struct uip_conn *uip_connr = uip_conn;
 
 #if UIP_UDP
+	printf("%s() UIP_UDP\r\n");
   if(flag == UIP_UDP_SEND_CONN) {
     goto udp_send;
   }

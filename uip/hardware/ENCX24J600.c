@@ -383,7 +383,7 @@ int Enc624Terima(void) {
 	return (lenPaket-4);
 }
 
-//#define DEBUG_ETHTX
+#define DEBUG_ETHTX
 
 void Enc624Kirim() {
 	WORD lenPaket = uip_len;
@@ -444,6 +444,7 @@ int Enc64MACInit(void)
 {
 	volatile portTickType xTicks;
 	WORD w;
+	struct uip_eth_addr mac;
 
 	#if defined(ENC100_INT_TRIS)	// Interrupt output from ENCx24J600
 		ENC100_INT_TRIS = 1;
@@ -631,24 +632,28 @@ int Enc64MACInit(void)
 	
 	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
 	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
+	#if 0
 	printf("\r\n");
 	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
-	printf("EPMO: 0x%04x\r\n", ReadReg(EPMO));
-	printf("EPMM1: 0x%04x\r\n", ReadReg(EPMM1));
+	//printf("EPMO: 0x%04x\r\n", ReadReg(EPMO));
+	//printf("EPMM1: 0x%04x\r\n", ReadReg(EPMM1));
+	#endif
 	// default
 	WriteReg(EPMO, 0x0000);
 	WriteReg(EPMCS, 0x5BFC);
 	WriteReg(EPMM1, 0x0FC0);
 	
-	BFSReg(ERXFCON, ERXFCON_CRCEN | ERXFCON_RUNTEN | ERXFCON_UCEN | ERXFCON_MCEN |ERXFCON_PMEN0);	//  | ERXFCON_MCEN  | ERXFCON_MPEN
+	BFSReg(ERXFCON, ERXFCON_CRCEN | ERXFCON_RUNTEN | ERXFCON_UCEN | ERXFCON_BCEN | ERXFCON_PMEN0);	//  | ERXFCON_MCEN  | ERXFCON_MPEN
 	//				CRC	valid ??	paket>64byte	 unicast ??		
-	BFCReg(ERXFCON, ERXFCON_BCEN | ERXFCON_NOTPM);	//  
+	//BFCReg(ERXFCON, ERXFCON_BCEN | ERXFCON_NOTPM);	//  
 	//BFCReg(ERXFCON, ERXFCON_UCEN);	// 
 	
-	printf("\r\n");
-	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
+	#if 0
+	//printf("\r\n");
+	//printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	printf("EPMCS: 0x%04x\r\n", ReadReg(EPMCS));
 	printf("EPMM1: 0x%04x\r\n", ReadReg(EPMM1));
+	#endif
 	// set Filter
 	
 //	BFCReg(ERXFCON, ERXFCON_BCEN);
@@ -662,19 +667,17 @@ int Enc64MACInit(void)
 		((AppConfig.MyMACAddr.v[0] | AppConfig.MyMACAddr.v[1] | AppConfig.MyMACAddr.v[2] | AppConfig.MyMACAddr.v[3] | AppConfig.MyMACAddr.v[4] | AppConfig.MyMACAddr.v[5]) == 0x00u))
 	{
 		w = ReadReg(MAADR1);
-		uip_ethaddr.addr [0] = AppConfig.MyMACAddr.v[0] = ((BYTE*)&w)[0];
-		uip_ethaddr.addr [1] = AppConfig.MyMACAddr.v[1] = ((BYTE*)&w)[1];
+		uip_ethaddr.addr [0] = AppConfig.MyMACAddr.v[0] = mac.addr[0] = ((BYTE*)&w)[0];
+		uip_ethaddr.addr [1] = AppConfig.MyMACAddr.v[1] = mac.addr[1] = ((BYTE*)&w)[1];
 		w = ReadReg(MAADR2);
-		uip_ethaddr.addr [2] = AppConfig.MyMACAddr.v[2] = ((BYTE*)&w)[0];
-		uip_ethaddr.addr [3] = AppConfig.MyMACAddr.v[3] = ((BYTE*)&w)[1];
+		uip_ethaddr.addr [2] = AppConfig.MyMACAddr.v[2] = mac.addr[2] = ((BYTE*)&w)[0];
+		uip_ethaddr.addr [3] = AppConfig.MyMACAddr.v[3] = mac.addr[3] = ((BYTE*)&w)[1];
 		w = ReadReg(MAADR3);
-		uip_ethaddr.addr [4] = AppConfig.MyMACAddr.v[4] = ((BYTE*)&w)[0];
-		uip_ethaddr.addr [5] = AppConfig.MyMACAddr.v[5] = ((BYTE*)&w)[1];
+		uip_ethaddr.addr [4] = AppConfig.MyMACAddr.v[4] = mac.addr[4] = ((BYTE*)&w)[0];
+		uip_ethaddr.addr [5] = AppConfig.MyMACAddr.v[5] = mac.addr[5] = ((BYTE*)&w)[1];
 		printf("Embd MAC: %02hX:%02hX:%02hX:%02hX:%02hX:%02hX", \
 			AppConfig.MyMACAddr.v[0], AppConfig.MyMACAddr.v[1], AppConfig.MyMACAddr.v[2], \
-			AppConfig.MyMACAddr.v[3], AppConfig.MyMACAddr.v[4], AppConfig.MyMACAddr.v[5]);
-			
-		
+			AppConfig.MyMACAddr.v[3], AppConfig.MyMACAddr.v[4], AppConfig.MyMACAddr.v[5]);			
 	}
 	else
 	{	
@@ -694,6 +697,7 @@ int Enc64MACInit(void)
 	}
 	//*/
 	
+	uip_setethaddr (mac);
 	
 	// Set PHY Auto-negotiation to support 10BaseT Half duplex, 
 	// 10BaseT Full duplex, 100BaseTX Half Duplex, 100BaseTX Full Duplex,
@@ -712,8 +716,11 @@ int Enc64MACInit(void)
 	#elif defined(ENC100_FORCE_100MBPS_FULL_DUPLEX)
 		WritePHYReg(PHCON1, PHCON1_SPD100 | PHCON1_PFULDPX);
 	#endif
+	
+	#if 0
 	printf("\r\n\r\nERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	printf("MACON1 : 0x%04x\r\n", ReadPHYReg(MACON1));
+	#endif
 	// Enable RX packet reception
 	BFSReg(ECON1, ECON1_RXEN);
 	

@@ -302,16 +302,39 @@ extern float data_f[];
 #define lebartunjuk		10
 #define tinggitunjuk	5
 
+unsigned char kursor_vert() {
+	unsigned char www, xx=0, tmp;
+	
+	struct t_group *pg;
+	pg = (char *) ALMT_GROUP;
+		
+	for (www=0; www<40; www++) {
+		tmp = pg[mesin_index].no_data[www];
+		if (  tmp != 0 ) 
+			xx++;
+	}
+	return xx;
+}
+
 void menu_tunjuk(unsigned char pilih, unsigned char dipencet) {
 	#ifdef PAKAI_ALARM
 	//printf("pilih: %d, mesin: %d\r\n", pilih, mesin_index);
-	unsigned char www;
+	unsigned char www, xx=0, tmp;
 	
-	if (dipencet) {
-		move_ke(menu_kiri, DATA_ATAS+31+(pilih*DATA_TINGGI));
-		line_ke(menu_besar_kanan, DATA_ATAS+31+(pilih*DATA_TINGGI), 0);
-		move_ke(menu_kiri, DATA_ATAS+32+(pilih*DATA_TINGGI));
-		line_ke(menu_besar_kanan, DATA_ATAS+32+(pilih*DATA_TINGGI), 0);
+	if (dipencet>0) {
+		xx = kursor_vert();
+		
+		//printf("isi group[%d]: %d\r\n", mesin_index, xx);
+		if (pilih==xx) {
+			pilih = 0;
+		}
+		
+		if (xx>0 && pilih<xx) {
+			move_ke(menu_kiri, DATA_ATAS+31+(pilih*DATA_TINGGI));
+			line_ke(menu_besar_kanan, DATA_ATAS+31+(pilih*DATA_TINGGI), 0);
+			move_ke(menu_kiri, DATA_ATAS+32+(pilih*DATA_TINGGI));
+			line_ke(menu_besar_kanan, DATA_ATAS+32+(pilih*DATA_TINGGI), 0);
+		}
 	}
 	#endif
 }
@@ -404,7 +427,7 @@ void menu_group(unsigned char pilih, unsigned char grop)
 	
 	#ifdef PAKAI_ALARM
 	for (i=0; i<10; i++) {
-		if (stAlarmDisplay[i]==1) {
+		if (stAlarmDisplay[grop*10+i]==1) {
 			//printf("garis: %d\r\n", DATA_ATAS+17+(stAlarmDisplay[i]*DATA_TINGGI)+temp);
 			for (temp=0; temp<16; temp++) {
 				move_ke(menu_kiri+10, DATA_ATAS+17+(i*DATA_TINGGI)+temp);

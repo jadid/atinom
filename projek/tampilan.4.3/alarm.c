@@ -110,6 +110,7 @@ unsigned char cek_alarmkan() {
 	int ii=0, jj=0, kk=0;
 	
 	// CEK status alarm untuk per GROUP aktif
+	#if 0
 	jj=0;
 	for (ii=awalPilih; ii<(awalPilih+10); ii++) {		// hanya 10 saja
 		//stAlarmDisplay[mesin_index*10+jj]=0;			// direset
@@ -127,6 +128,25 @@ unsigned char cek_alarmkan() {
 		
 		#endif
 	}
+	#endif
+	#if 1
+	jj=0;
+	// cek tiap group, aktifkan alarm !!
+	for (ii=0; ii<10; ii++) {		// hanya 10 saja
+		//stAlarmDisplay[mesin_index*10+jj]=0;			// direset
+		#if 1
+		for (jj=0; jj<10; jj++) {
+			kk = p_grpq[ii].no_data[jj];
+			if (p_dtq[kk-1].aktif == 1) {
+				if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
+					stAlarmDisplay[ii*10+jj]=1;
+					//printf("%d: %d   ", jj, kk);
+				}
+			}
+		}
+		#endif
+	}
+	#endif
 	//printf("\r\n");
 	
 	//	CEK ALARM untuk semua TITIK aktif

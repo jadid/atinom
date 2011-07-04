@@ -52,6 +52,8 @@ xSemaphoreHandle keypad_sem;
 unsigned char key_index=0;
 unsigned char mesin_index=0;
 
+#define lama_kursor 10
+
 portTASK_FUNCTION( tampilan_task, pvParameters )	{
 	unsigned char key_press;
 
@@ -267,13 +269,23 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 			
 				if (key_press == ATAS)
 				{
-					if (dipencetdeh)	key_index--;
-					if (key_index == 255) key_index = 10;	// 9	   
+					if (dipencetdeh>0)	{
+						key_index--;
+						dipencetdeh=5;
+					}
+					if (key_index == 255) {
+						key_index = kursor_vert()-1;
+						//key_index = 10;	// 9
+					}
 				}
 				else if ( key_press == BAWAH )
 				{
-					if (dipencetdeh)	key_index++;	
-					if (key_index > 10) key_index = 0;		// 9
+					if (dipencetdeh>0)	{
+						key_index++;
+						dipencetdeh=5;
+					}
+					if (key_index > kursor_vert()) 
+						key_index = 0;		// 9
 				}
 				else if ( key_press == KANAN )
 				{
@@ -302,7 +314,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				else if ( key_press == CANCEL)
 				{
 					if (dipencetdeh==0) {
-						dipencetdeh = 1;
+						dipencetdeh = lama_kursor;
 					} else {
 						dipencetdeh = 0;
 					}
@@ -327,6 +339,11 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 		else
 		{
 			loop_key = 0;	
+			if (dipencetdeh>0) {
+				dipencetdeh--;
+				if (dipencetdeh==0)
+					key_index = 0;
+			}
 		}
 		
 		if (loop > 2)
@@ -339,8 +356,6 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 				//menu_monita(key_index);		
 				menu_pilih(key_index, mesin_index, 0);
 				menu_group(key_index, mesin_index);
-				dipencetdeh = 0;
-				key_index = 0;
 				menu_tunjuk(key_index, dipencetdeh);
 				//menu_OK(key_index, mesin_index);
 							

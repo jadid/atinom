@@ -7,6 +7,7 @@
 
 #include "FreeRTOS.h"
 #include "gpio.h"
+#include "hardware.h"
 
 #ifdef BOARD_TAMPILAN
 	//#include "../tampilan/tampilan.h"

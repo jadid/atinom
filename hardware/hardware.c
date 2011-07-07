@@ -137,17 +137,16 @@ void init_hardware()	{
 	init_ambilcepat();
 }
 
-#ifdef CEK_BLINK
-	void dele(int dd)	{
-		int g;
-		int i;
-		int dum;
-
+void dele(int dd)	{
+	int g;
+	int i;
+	int dum;
 		for (i=0; i<dd; i++)	{
-			dum = FIO0DIR;
-		}
+		dum = FIO0DIR;
 	}
+}
 
+#ifdef CEK_BLINK
 	void blink_led(void)	{
 		int t=0;
 		while(t<5)

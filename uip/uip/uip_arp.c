@@ -136,6 +136,10 @@ uip_arp_init(void)
 	//printf("UIP_ARPTAB_SIZE: %d\r\n", UIP_ARPTAB_SIZE);
   for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
     memset(arp_table[i].ipaddr, 0, 4);
+    #if 0
+    printf("%i. %d.%d.%d.%d\r\n", i+1, \
+		arp_table[i].ipaddr[0], arp_table[i].ipaddr[1],arp_table[i].ipaddr[2],arp_table[i].ipaddr[3]);
+	#endif
   }
 }
 /*-----------------------------------------------------------------------------------*/
@@ -170,10 +174,14 @@ static void uip_arp_update(u16_t *pipaddr, struct uip_eth_addr *ethaddr)
   /* Walk through the ARP mapping table and try to find an entry to
      update. If none is found, the IP -> MAC address mapping is
      inserted in the ARP table. */
-    //printf("tabel arp: %d\r\n", UIP_ARPTAB_SIZE);
+    //printf("%s() tabel arp: %d\r\n", __FUNCTION__, UIP_ARPTAB_SIZE);
   for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
 
     tabptr = &arp_table[i];
+    #if 0
+    printf("tabptr : %d.%d.%d.%d\r\n", tabptr->ipaddr[0], tabptr->ipaddr[1],tabptr->ipaddr[2], tabptr->ipaddr[3]);
+    printf("pipaddr: %d.%d.%d.%d\r\n", pipaddr[0], pipaddr[1], pipaddr[2], pipaddr[3]);
+    #endif
     /* Only check those entries that are actually in use. */
     if(tabptr->ipaddr[0] != 0 &&
        tabptr->ipaddr[1] != 0) {
@@ -183,8 +191,8 @@ static void uip_arp_update(u16_t *pipaddr, struct uip_eth_addr *ethaddr)
       if(pipaddr[0] == tabptr->ipaddr[0] &&
 	 pipaddr[1] == tabptr->ipaddr[1]) {
 	 #if 0
-	 printf("%2d. IP %d.%d.%d.%d: MAC %d.%d.%d.%d.%d.%d\r\n", i, \
-		tabptr->ipaddr[0], tabptr->ipaddr[1], tabptr->ipaddr[2], tabptr->ipaddr[3], \
+	 printf("%2d. IP %d.%d.%d.%d: MAC %02x.%02x.%02x.%02x.%02x.%02x\r\n", i+1, \
+		(tabptr->ipaddr[0] & 0xFF), ((tabptr->ipaddr[0]>>8)&0xFF), (tabptr->ipaddr[1] & 0xFF), ((tabptr->ipaddr[1]>>8)&0xFF), \
 		tabptr->ethaddr.addr[0], tabptr->ethaddr.addr[1], tabptr->ethaddr.addr[2], \
 		tabptr->ethaddr.addr[3], tabptr->ethaddr.addr[4], tabptr->ethaddr.addr[5]);
 	#endif
@@ -197,6 +205,7 @@ static void uip_arp_update(u16_t *pipaddr, struct uip_eth_addr *ethaddr)
       }
     }
   }
+
 
   /* If we get here, no existing ARP table entry was found, so we
      create one. */
@@ -262,14 +271,30 @@ void uip_arp_ipin(void)
     return;
   }
   uip_arp_update(IPBUF->srcipaddr, &(IPBUF->ethhdr.src));
-  #if 0
-  printf("uip_arp_update IP: %d.%d.%d.%d = %d:%d:%d:%d:%d:%d\r\n", \
-		IPBUF->srcipaddr[0], IPBUF->srcipaddr[1], IPBUF->srcipaddr[2], IPBUF->srcipaddr[3], \
+  #if 1
+  printf("%s uip_arp_update IP: %d.%d.%d.%d = %02x:%02x:%02x:%02x:%02x:%02x\r\n", __FUNCTION__, \
+		(IPBUF->srcipaddr[0] & 0xFF), ((IPBUF->srcipaddr[0]>>8)&0xFF), (IPBUF->srcipaddr[1] & 0xFF),  ((IPBUF->srcipaddr[1]>>8)&0xFF), \
 		IPBUF->ethhdr.src.addr[0], IPBUF->ethhdr.src.addr[1], IPBUF->ethhdr.src.addr[2], \
 		IPBUF->ethhdr.src.addr[3], IPBUF->ethhdr.src.addr[4], IPBUF->ethhdr.src.addr[5]);
   #endif
   return;
 }
+
+void uip_arp_table_list() {
+	register struct arp_entry *tabptr = NULL;
+	printf("List IP:\r\n");
+	
+	for(i = 0; i < UIP_ARPTAB_SIZE; ++i) {
+		tabptr = &arp_table[i];
+		if(tabptr->ipaddr[0] != 0 && tabptr->ipaddr[1] != 0) {
+			printf("%2d. IP %3d.%3d.%3d.%3d\t  MAC %02x.%02x.%02x.%02x.%02x.%02x\r\n", i+1, \
+				(tabptr->ipaddr[0] & 0xFF), ((tabptr->ipaddr[0]>>8)&0xFF), (tabptr->ipaddr[1] & 0xFF), ((tabptr->ipaddr[1]>>8)&0xFF), \
+				tabptr->ethaddr.addr[0], tabptr->ethaddr.addr[1], tabptr->ethaddr.addr[2], \
+				tabptr->ethaddr.addr[3], tabptr->ethaddr.addr[4], tabptr->ethaddr.addr[5]);
+		}
+	}
+}
+
 /*-----------------------------------------------------------------------------------*/
 /**
  * ARP processing for incoming ARP packets.
@@ -295,8 +320,9 @@ void uip_arp_ipin(void)
 /*-----------------------------------------------------------------------------------*/
 void uip_arp_arpin(void)
 {
-  //printf("ARP len:%d, arphdr:%d, opc: %d\r\n", uip_len, sizeof(struct arp_hdr), BUF->opcode);
-  
+	#if 0
+		printf("ARP len:%d, arphdr:%d, opc: %d\r\n", uip_len, sizeof(struct arp_hdr), BUF->opcode);
+	#endif
   if(uip_len < sizeof(struct arp_hdr)) {
     uip_len = 0;
     return;

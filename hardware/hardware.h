@@ -4,6 +4,7 @@
 
 
 void setup_hardware(void);
+void dele(int dd);
 
 #ifdef BOARD_KOMON_420_SABANG_2_3
 	#define uC	"NXP LPC 2387"

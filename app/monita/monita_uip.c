@@ -178,7 +178,7 @@ void monita_appcall(void)
 	char stack;
 	unsigned char ipne[32];
 	
-#if 0	
+#if 0
 			sprintf(ipne, " :%d.%d.%d.%d", \
 			htons(uip_conn->ripaddr[0]) >> 8, htons(uip_conn->ripaddr[0]) & 0xFF, \
 			htons(uip_conn->ripaddr[1]) >> 8, htons(uip_conn->ripaddr[1]) & 0xFF );
@@ -235,7 +235,7 @@ void monita_appcall(void)
 					}		
 				#endif
 				
-				#ifdef BOARD_KOMON_420_SABANG
+				#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 					#ifdef BANYAK_SUMBER
 						for (i=0; i<PER_SUMBER;i++)		{
 							data_float.data[i] = data_f[(stack-1)*PER_SUMBER+i];
@@ -619,14 +619,15 @@ void samb_appcall(void)	{
 				//memcpy((char *) &s_data[nomer_sambung].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER].data, in_buf.buf, sizeof (data_float));
 				//memcpy((char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, sizeof (data_float));
+				portENTER_CRITICAL();
 				memcpy( (char *) &data_f[nomer_sambung*PER_SUMBER], in_buf.buf, (PER_SUMBER*sizeof (float)) );
-				
+				portEXIT_CRITICAL();
 				#ifdef BOARD_KOMON_420_SABANG
 					
 					
-					portENTER_CRITICAL();
+					//portENTER_CRITICAL();
 					//memcpy( (char *) &datanya[0], in_buf.buf, (PER_SUMBER*sizeof (float)) );
-					portEXIT_CRITICAL();
+					//portEXIT_CRITICAL();
 				#endif
 				
 				//debug_out_h("-->[%d], mod %d", (nomer_sambung + 1), in_buf.alamat);

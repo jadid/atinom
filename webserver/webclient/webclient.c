@@ -120,12 +120,16 @@ webclient_port(void)
 /*-----------------------------------------------------------------------------------*/
 void webclient_init(void) {
 	kirimURL=0;
-	uip_listen(HTONS(PORT_HTTP));
+	//uip_listen(HTONS(PORT_HTTP));
 	
 }
 /*-----------------------------------------------------------------------------------*/
 static void init_connection(void) {
   s.state = WEBCLIENT_STATE_STATUSLINE;
+
+	#if 1
+		printf("%s() masuk\r\n", __FUNCTION__);
+	#endif
 
   s.getrequestleft = sizeof(http_get) - 1 + 1 +
     sizeof(http_10) - 1 +
@@ -269,7 +273,7 @@ webclient_get(char *host, u16_t port, char *file)
 	
 	
 	//printf("UIP_ETHTYPE_IP: %d masuk.\r\n", UIP_ETHTYPE_IP);
-	for (gg=0; gg<20; gg++) {
+	for (gg=0; gg<40; gg++) {
 		if (gg%16==0) { 
 			printf("\r\n");
 		} else if (gg%8==0) {
@@ -295,6 +299,10 @@ senddata(void)
   u16_t len;
   char *getrequest;
   char *cptr;
+  
+  #if 1
+	printf("%s() masuk\r\n", __FUNCTION__);
+  #endif
   
   if(s.getrequestleft > 0) {
     cptr = getrequest = (char *)uip_appdata;
@@ -341,6 +349,8 @@ parse_statusline(u16_t len)
 {
   char *cptr;
   char *ku = (char *) uip_appdata;
+  
+  printf("%s() masuk, len: %d\r\n", __FUNCTION__, len);
   
   while(len > 0 && s.httpheaderlineptr < sizeof(s.httpheaderline)) {
     //s.httpheaderline[s.httpheaderlineptr] = *(char *)uip_appdata;
@@ -412,6 +422,9 @@ casecmp(char *str1, const char *str2, char len)
 static u16_t
 parse_headers(u16_t len)
 {
+	#if 1
+		printf("%s() masuk\r\n", __FUNCTION__);
+	#endif
   char *cptr;
   char *ku = (char *) uip_appdata;
   static unsigned char i;
@@ -486,6 +499,10 @@ newdata(void)
 
   len = uip_datalen();
 
+	#if 1
+		printf("____________________________%s() masuk, s.state: %d\r\n", __FUNCTION__, s.state);
+	#endif
+
   if(s.state == WEBCLIENT_STATE_STATUSLINE) {
     len = parse_statusline(len);
   }
@@ -535,6 +552,7 @@ webclient_appcall(void)
     acked();
   }
   if(uip_newdata()) {
+	  printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
     s.timer = 0;
     newdata();
   }
@@ -575,6 +593,10 @@ void tulis_foto(char *data, unsigned int len);
 
 void webclient_datahandler(char *data, u16_t len)
 {
+	
+	#if 1
+		printf("%s() masuk\r\n", __FUNCTION__);
+	#endif
 	//printf("%s", __FUNCTION__);
 	
 	//tulis_foto( data, len );

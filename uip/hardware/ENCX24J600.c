@@ -275,10 +275,12 @@ int Enc624Init() {
 	DeassertChipSelect();
 	ENCX24J600_Reset();
 	//vTaskDelay (100 / portTICK_RATE_MS);
-	vTaskDelay(2);
+	//vTaskDelay(2);
+	dele(10000);
 	ENCX24J600_Unreset ();
 	//vTaskDelay (100 / portTICK_RATE_MS);
-	vTaskDelay(2);
+	//vTaskDelay(2);
+	dele(10000);
 	//printf("clk eth: %d\r\n", GetCLKOUT());
 	return Enc64MACInit();
 	
@@ -632,7 +634,7 @@ int Enc64MACInit(void)
 	
 	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
 	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
-	#if 0
+	#if 1
 	printf("\r\n");
 	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	//printf("EPMO: 0x%04x\r\n", ReadReg(EPMO));
@@ -643,12 +645,12 @@ int Enc64MACInit(void)
 	WriteReg(EPMCS, 0x5BFC);
 	WriteReg(EPMM1, 0x0FC0);
 	
-	BFSReg(ERXFCON, ERXFCON_CRCEN | ERXFCON_RUNTEN | ERXFCON_UCEN | ERXFCON_BCEN | ERXFCON_PMEN0);	//  | ERXFCON_MCEN  | ERXFCON_MPEN
+	BFSReg(ERXFCON, ERXFCON_CRCEN | ERXFCON_RUNTEN | ERXFCON_UCEN | ERXFCON_BCEN | ERXFCON_MCEN);	//  | ERXFCON_MCEN  | ERXFCON_MPEN
 	//				CRC	valid ??	paket>64byte	 unicast ??		
 	//BFCReg(ERXFCON, ERXFCON_BCEN | ERXFCON_NOTPM);	//  
 	//BFCReg(ERXFCON, ERXFCON_UCEN);	// 
 	
-	#if 0
+	#if 1
 	//printf("\r\n");
 	//printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	printf("EPMCS: 0x%04x\r\n", ReadReg(EPMCS));
@@ -662,7 +664,8 @@ int Enc64MACInit(void)
 	// Use ENCx24J600 preprogrammed MAC address, if AppConfig is not already set
 	// mati dulu saja
 	//*
-	vTaskDelay(1);
+	//vTaskDelay(1);
+	dele(1000);
 	if(((AppConfig.MyMACAddr.v[0] == 0x00u) && (AppConfig.MyMACAddr.v[1] == 0x04u) && (AppConfig.MyMACAddr.v[2] == 0xA3u) && (AppConfig.MyMACAddr.v[3] == 0x00u) && (AppConfig.MyMACAddr.v[4] == 0x00u) && (AppConfig.MyMACAddr.v[5] == 0x00u)) ||
 		((AppConfig.MyMACAddr.v[0] | AppConfig.MyMACAddr.v[1] | AppConfig.MyMACAddr.v[2] | AppConfig.MyMACAddr.v[3] | AppConfig.MyMACAddr.v[4] | AppConfig.MyMACAddr.v[5]) == 0x00u))
 	{
@@ -731,7 +734,7 @@ int Enc64MACInit(void)
 	#endif
 	
 	awalkahRx=0;
-	vTaskDelay(10);
+	//vTaskDelay(10);
 	
 	return 1;
 }//end MACInit
@@ -974,7 +977,8 @@ BOOL MACGetHeader(MAC_ADDR *remote, BYTE* type)
 		// mati dulu
 		portNOP();
 		//Nop();
-		vTaskDelay(1);
+		dele(1000);
+		//vTaskDelay(1);
 		
 		//Reset();
 	}
@@ -1880,7 +1884,8 @@ int SendSystemReset(void)
 		vCurrentBank = 0;
 		while((ReadReg(ESTAT) & (ESTAT_CLKRDY | ESTAT_RSTDONE | ESTAT_PHYRDY)) != (ESTAT_CLKRDY | ESTAT_RSTDONE | ESTAT_PHYRDY));
 		//Delay10us(3);
-		vTaskDelay(1);
+		dele(1000);
+		//vTaskDelay(1);
 
 		// Check to see if the reset operation was successful by 
 		// checking if EUDAST went back to its reset default.  This test 
@@ -1892,7 +1897,8 @@ int SendSystemReset(void)
 	
 	// Really ensure reset is done and give some time for power to be stable
 	//DelayMs(1);
-	vTaskDelay(1);
+	dele(1000);
+	//vTaskDelay(1);
 
 
 	// If using PSP, verify all address and data lines are working

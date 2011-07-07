@@ -15,6 +15,9 @@ xTaskHandle hdl_ambilcepat;
 	#include "../modul/GPIO/gpio.h"
 #endif
 
+#ifdef DATA_RANDOM
+	extern float data_f[];
+#endif
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(500);
@@ -64,6 +67,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(50);
   	for(;;) {
 		vTaskDelay(5);
+		
+		#ifdef DATA_RANDOM
+			data_f[loopambil%10] = (float) ((rand() % 100));
+			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
+		#endif
+		
 		loopambil++;
 		#ifdef PAKAI_GPS
 			if (serPollGPS())	

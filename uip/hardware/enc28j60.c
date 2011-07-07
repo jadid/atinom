@@ -272,6 +272,7 @@ int enc28j60Init (void)
   //encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_BCEN);
 	// set filter
 	encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN);
+	printf("\r\nERXFCON: 0x%02x\r\n", ERXFCON);
 	
 //#define UIP_ETHADDR0 0x00
 //#define UIP_ETHADDR1 0xbd

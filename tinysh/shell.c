@@ -179,6 +179,7 @@ extern xTaskHandle *hdl_alarm;
 
 #ifdef PAKAI_ETH
 	extern xTaskHandle *hdl_ether;
+	#include "uipcmd.c"
 #endif
 extern xTaskHandle *hdl_ambilcepat;
 
@@ -916,6 +917,9 @@ vTaskDelay(100);
 	tinysh_add_command(&hapus_filenya_cmd);
 #endif
 
+#ifdef PAKAI_ETH
+	tinysh_add_command(&cek_mac_cmd);
+#endif
 
 #ifdef CENDOL
 	tinysh_add_command(&cek_konfig_cmd);

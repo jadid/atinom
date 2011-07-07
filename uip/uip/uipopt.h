@@ -360,7 +360,11 @@
 #ifdef UIP_CONF_ARPTAB_SIZE
 #define UIP_ARPTAB_SIZE UIP_CONF_ARPTAB_SIZE
 #else
-#define UIP_ARPTAB_SIZE 8
+	#if defined(PAKAI_ENCX24J600)
+		#define  UIP_ARPTAB_SIZE 20
+	#else
+		#define UIP_ARPTAB_SIZE 8
+	#endif
 #endif
 
 /**

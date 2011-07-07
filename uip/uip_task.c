@@ -80,7 +80,7 @@ extern struct t_adc st_adc;
 
 //#define DEBUG_WEBCLIENT
 //#define PAKAI_ETH_TEST
-//#define DEBUG_UIP_TASK
+#define DEBUG_UIP_TASK
 //#define DEBUG_ARP_TASK
 
 unsigned int paket_per_menit=0;
@@ -262,9 +262,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			vTaskDelay(1000);
 		}
 	}
-	
-	
-	
+
 	#if defined(PAKE_HTTP) || defined(PAKAI_HTTP)
 	printf(" Monita : http init\r\n");
 	httpd_init ();
@@ -332,16 +330,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	#endif
 		char ipdest[15];
 		int tiapKirim=950;
-		
-	#ifdef WEBCLIENT_GPS
-		extern nmeaINFO infoGPS;
-		extern nmeaPOS dposGPS;
-		char waktu[20];		//		20110609-220228-000
-		char bujur[12], lintang[12], arah[12], satelit[12];
-		tiapKirim = 1;		// 1 detik
-		int menit = 0;
-		
-		//double lintang=0.0, bujur=0.0;
+
+	#ifdef  PAKAI_GPS
+		#ifdef WEBCLIENT_GPS
+			extern nmeaINFO infoGPS;
+			extern nmeaPOS dposGPS;
+			char waktu[20];		//		20110609-220228-000
+			char bujur[12], lintang[12], arah[12], satelit[12];
+			tiapKirim = 1;		// 1 detik
+			int menit = 0;
+			
+			//double lintang=0.0, bujur=0.0;
+		#endif
 	#endif
 #endif
 
@@ -359,6 +359,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	printf("Kirim Balik inited, Target data: sumber %d, target kirim: %d !\r\n", sumber_datanya+1, target_kirim+1);
 #endif
 
+	printf("UIP_LLH_LEN: %d\r\n", UIP_LLH_LEN);
+	
 	//  Initialise the local timers //
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
@@ -490,8 +492,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
 					
-					printf("datakeserver: %s\r\n",datakeserver);
-					//webclient_get(ipdest, PORT_HTTP, datakeserver);
+					//printf("datakeserver: %s\r\n",datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}
 			}
@@ -582,20 +584,26 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		      {  
 					//printf("uiplen: %d, tipe: %d, IP: %d, ARP: %d\r\n", \
 					//	uip_len, pucUIP_Buffer->type, htons (UIP_ETHTYPE_IP), htons (UIP_ETHTYPE_ARP));
+				  //printf("tipe: %d\r\n", pucUIP_Buffer->type);
+				  
 				  
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
 					#ifdef DEBUG_UIP_TASK
-					  printf("UIP_ETHTYPE_IP: %d masuk.\r\n", UIP_ETHTYPE_IP);
-						for (gg=0; gg<uip_len; gg++) {
+						printf("UIP_ETHTYPE_IP: %04x masuk.\r\n", UIP_ETHTYPE_IP);
+						#if 1
+						//for (gg=0; gg<uip_len; gg++) {
+						for (gg=0; gg<32; gg++) {
 							if (gg%16==0) { 
-								printf("\r\n");
+								//printf("\r\n");
+								printf("  "); 
 							} else if (gg%8==0) {
 								printf("  "); 
 							}
 							printf("%02x ", uip_buf[gg]);
 						}
 						printf("\r\n\r\n");
+						#endif
 					#endif
 						uip_arp_ipin ();
 		    	        uip_input ();		// uip.h #define  uip_process(UIP_DATA) << ada data masuk
@@ -617,9 +625,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	     else if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_ARP))
 		    	     {
 		    	          #ifdef DEBUG_ARP_TASK
-							for (gg=0; gg<uip_len; gg++) {
+		    	          printf("UIP_ETHTYPE_ARP: %04x masuk.\r\n", UIP_ETHTYPE_ARP);
+		    	          #if 0
+							//for (gg=0; gg<uip_len; gg++) {
+							for (gg=0; gg<32; gg++) {
 								if (gg%16==0) { 
-									printf("\r\n");
+									//printf("\r\n");
+									printf("  ");
 								} else if (gg%8==0) {
 									printf("  "); 
 								}
@@ -627,20 +639,21 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 							}
 							printf("\r\n\r\n");
 						  #endif
+						  #endif
 		    	          
 		    	            uip_arp_arpin ();
 							//printf("______terima ARP !!!___: %d\r\n", uip_len);
 		    	            /* If the above function invocation resulted in data that
 		    	               should be sent out on the network, the global variable
 		    	               uip_len is set to a value > 0. */
-		    	            //if (uip_len > 0)	{
+		    	            if (uip_len > 0)	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
 		    	              //printf("______kirim balek ARP !!!___\r\n");
 		    	              Enc624Kirim();
 		    	              #endif
-						  //}
+						  }
 		    	     }
 
 		      }

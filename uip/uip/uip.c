@@ -587,7 +587,9 @@ uip_reass(void)
 {
   u16_t offset, len;
   u16_t i;
-
+	
+	printf("%s() masuk\r\n", __FUNCTION__);
+	
   /* If ip_reasstmr is zero, no packet is present in the buffer, so we
      write the IP header of the fragment into the reassembly
      buffer. The timer is updated with the maximum age. */
@@ -713,7 +715,7 @@ uip_add_rcv_nxt(u16_t n)
 uip_process(u8_t flag)
 {
   register struct uip_conn *uip_connr = uip_conn;
-
+	printf("%s() ... masuk flag: %d\r\n", __FUNCTION__, flag);
 #if UIP_UDP
 	//printf("%s() UIP_UDP\r\n");
   if(flag == UIP_UDP_SEND_CONN) {
@@ -725,7 +727,7 @@ uip_process(u8_t flag)
 
   /* Check if we were invoked because of a poll request for a
      particular connection. */
-  if(flag == UIP_POLL_REQUEST)
+  if(flag == UIP_POLL_REQUEST)		// (1 == 3)
   {
     if((uip_connr->tcpstateflags & UIP_TS_MASK) == UIP_ESTABLISHED && !uip_outstanding(uip_connr))
     {
@@ -737,7 +739,7 @@ uip_process(u8_t flag)
 
     /* Check if we were invoked because of the perodic timer fireing. */
   }
-  else if(flag == UIP_TIMER)
+  else if(flag == UIP_TIMER)		// (1 == 2)
   {
 #if UIP_REASSEMBLY
     if(uip_reasstmr != 0) {
@@ -922,6 +924,7 @@ uip_process(u8_t flag)
   if((BUF->ipoffset[0] & 0x3f) != 0 || BUF->ipoffset[1] != 0)
   {
 #if UIP_REASSEMBLY
+	printf("UIP_REASSEMBLY: %s\r\n", __FUNCTION__);
     uip_len = uip_reass();
     if(uip_len == 0) {
       goto drop;

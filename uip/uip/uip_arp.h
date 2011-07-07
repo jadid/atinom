@@ -21,7 +21,8 @@
  * Macros and definitions for the ARP module.
  * \author Adam Dunkels <adam@dunkels.com>
  */
-  
+ 
+ #include "FreeRTOS.h"
 
 /*
  * Copyright (c) 2001-2003, Adam Dunkels.
@@ -114,6 +115,10 @@ void uip_arp_out(void);
 /* The uip_arp_timer() function should be called every ten seconds. It
    is responsible for flushing old entries in the ARP table. */
 void uip_arp_timer(void);
+
+
+// ditambahi untuk cmd di tinysh
+void uip_arp_table_list(void);
 
 /** @} */
 

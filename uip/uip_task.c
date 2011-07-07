@@ -754,6 +754,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 void dispatch_tcp_appcall (void)	{
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 
+	printf("lport: %d, rport:%d, HTTP: %d\r\n", uip_conn->lport, uip_conn->rport, HTONS (PORT_HTTP));
+	
 #ifdef PAKAI_ETH_TEST
 	//if (uip_conn->lport == HTONS (PORT_MODBUSTCP))
 	if (uip_conn->lport == HTONS (21))
@@ -801,7 +803,7 @@ void dispatch_tcp_appcall (void)	{
 #ifdef PAKAI_WEBCLIENT
 	/* webclient */
 	if (uip_conn->rport == HTONS(PORT_HTTP))	{
-		printf("panggil webclient_appcall\r\n");
+		printf("panggil webclient_appcall, rport:%d\r\n", uip_conn->rport);
 		webclient_appcall();
 	}
 #endif

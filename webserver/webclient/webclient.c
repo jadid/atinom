@@ -220,8 +220,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 /*-----------------------------------------------------------------------------------*/
 //unsigned char webclient_get(char *host, u16_t port, char *file) __attribute__ ((naked));
 
-unsigned char
-webclient_get(char *host, u16_t port, char *file)
+unsigned char webclient_get(char *host, u16_t port, char *file)
 {
 	int gg=0;
   struct uip_conn *conn;
@@ -262,6 +261,8 @@ webclient_get(char *host, u16_t port, char *file)
 	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
 	init_connection();
+	printf("rport: %d\r\n",uip_conn->rport);
+	printf("port: %d, host: %s, file: %s\r\n",s.port, s.host, s.file);
 
 	//printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   
@@ -590,6 +591,10 @@ webclient_appcall(void)
 /** @} */
 
 void tulis_foto(char *data, unsigned int len);
+
+void webclient_connected() {
+	printf("%s() masuk\r\n", __FUNCTION__);
+}
 
 void webclient_datahandler(char *data, u16_t len)
 {

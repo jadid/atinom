@@ -243,6 +243,12 @@ static void WriteMemoryWindow(BYTE vWindow, BYTE *vData, WORD wLength);
  * Note:            None
  *****************************************************************************/
 //char led=0;
+
+void BacaStat()	{
+	printf("masuk paket %d: %04X !!!!\r\n", ((ReadReg(ESTAT) & ESTAT_INT)>>15), ReadReg(EIR));
+	
+}
+
 unsigned int cek_paket(void)
 {
 	#if 1
@@ -385,7 +391,7 @@ int Enc624Terima(void) {
 	return (lenPaket-4);
 }
 
-#define DEBUG_ETHTX
+//#define DEBUG_ETHTX
 
 void Enc624Kirim() {
 	WORD lenPaket = uip_len;
@@ -729,8 +735,8 @@ int Enc64MACInit(void)
 	
 	
 	#ifdef PAKAI_INT_ENCX24J600
-		WriteReg(EIE, EIE_INTIE | EIE_LINKIE | EIE_PKTIE | EIE_TXABTIE | EIE_RXABTIE);
-		//WriteReg(EIE, EIE_INTIE | EIE_LINKIE);		
+		//WriteReg(EIE, EIE_INTIE | EIE_LINKIE | EIE_PKTIE | EIE_TXABTIE | EIE_RXABTIE);
+		WriteReg(EIE, EIE_INTIE | EIE_PKTIE);		
 	#endif
 	
 	awalkahRx=0;

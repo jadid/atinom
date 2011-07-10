@@ -80,7 +80,7 @@ extern struct t_adc st_adc;
 
 //#define DEBUG_WEBCLIENT
 //#define PAKAI_ETH_TEST
-#define DEBUG_UIP_TASK
+//#define DEBUG_UIP_TASK
 //#define DEBUG_ARP_TASK
 
 unsigned int paket_per_menit=0;
@@ -658,9 +658,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 
 		      }
 		      #endif
+		      
+		      //BacaStat();
 		}
 		else		{
-			//printf("tidak cek paket  !!!\r\n");
+			//printf("tidak ada paket  !!!\r\n");
 		    /* The poll function returned 0, so no packet was
 		         received. Instead we check if it is time that we do the
 		         periodic processing. */

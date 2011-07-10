@@ -715,7 +715,7 @@ uip_add_rcv_nxt(u16_t n)
 uip_process(u8_t flag)
 {
   register struct uip_conn *uip_connr = uip_conn;
-	printf("%s() ... masuk flag: %d\r\n", __FUNCTION__, flag);
+	//printf("%s() ... masuk flag: %d\r\n", __FUNCTION__, flag);
 #if UIP_UDP
 	//printf("%s() UIP_UDP\r\n");
   if(flag == UIP_UDP_SEND_CONN) {

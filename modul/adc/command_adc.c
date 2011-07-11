@@ -54,7 +54,7 @@ void simpan_ke_data_f() {
 		//float temp;
 		//int g=0;
 		int sararumber=-1;
-		#ifdef BOARD_KOMON_420_SABANG
+		#if defined(BOARD_KOMON_420_SABANG) || defined (BOARD_KOMON_420_SABANG_2_3)
 			
 			for (g=0; g<JML_SUMBER; g++) {
 				if (sumber[g].status==1) {

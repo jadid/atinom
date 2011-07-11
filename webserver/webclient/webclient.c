@@ -127,7 +127,7 @@ void webclient_init(void) {
 static void init_connection(void) {
   s.state = WEBCLIENT_STATE_STATUSLINE;
 
-	#if 1
+	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
 
@@ -261,19 +261,16 @@ unsigned char webclient_get(char *host, u16_t port, char *file)
 	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d\r\n", __FUNCTION__,host, port, file, strlen(s.file));
   
 	init_connection();
-	printf("rport: %d\r\n",uip_conn->rport);
-	printf("port: %d, host: %s, file: %s\r\n",s.port, s.host, s.file);
+
+	#if 0
+	//printf("rport: %d\r\n",uip_conn->rport);
+	//printf("port: %d, host: %s, file: %s\r\n",s.port, s.host, s.file);
 
 	//printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   
-	printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d, len: %d\r\n", __FUNCTION__,host, port, file, strlen(s.file), uip_len);
-	
-	//uip_ipaddr_t hostaddr;
-	//uip_gethostaddr(&hostaddr);
-	//printf("addr: %d.%d.%d.%d.%d\r\n", hostaddr.);
+	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d, len: %d\r\n", __FUNCTION__,host, port, file, strlen(s.file), uip_len);
 	
 	
-	//printf("UIP_ETHTYPE_IP: %d masuk.\r\n", UIP_ETHTYPE_IP);
 	for (gg=0; gg<40; gg++) {
 		if (gg%16==0) { 
 			printf("\r\n");
@@ -283,6 +280,8 @@ unsigned char webclient_get(char *host, u16_t port, char *file)
 		printf("%02x ", uip_buf[gg]);
 	}
 	printf("\r\n\r\n");
+	#endif 
+	
 	return 1;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -301,7 +300,7 @@ senddata(void)
   char *getrequest;
   char *cptr;
   
-  #if 1
+  #if 0
 	printf("%s() masuk\r\n", __FUNCTION__);
   #endif
   
@@ -351,7 +350,7 @@ parse_statusline(u16_t len)
   char *cptr;
   char *ku = (char *) uip_appdata;
   
-  printf("%s() masuk, len: %d\r\n", __FUNCTION__, len);
+  //printf("%s() masuk, len: %d\r\n", __FUNCTION__, len);
   
   while(len > 0 && s.httpheaderlineptr < sizeof(s.httpheaderline)) {
     //s.httpheaderline[s.httpheaderlineptr] = *(char *)uip_appdata;
@@ -423,7 +422,7 @@ casecmp(char *str1, const char *str2, char len)
 static u16_t
 parse_headers(u16_t len)
 {
-	#if 1
+	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
   char *cptr;
@@ -500,7 +499,7 @@ newdata(void)
 
   len = uip_datalen();
 
-	#if 1
+	#if 0
 		printf("____________________________%s() masuk, s.state: %d\r\n", __FUNCTION__, s.state);
 	#endif
 
@@ -521,26 +520,26 @@ newdata(void)
 void
 webclient_appcall(void)
 {
-	printf("%s() masuk\r\n", __FUNCTION__);
+	//printf("%s() masuk\r\n", __FUNCTION__);
   if(uip_connected()) {
     s.timer = 0;
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    printf("%s(): Connected\r\n", __FUNCTION__);
+    //printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    printf("%s(): Closed\r\n", __FUNCTION__);
+    //printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	 printf("%s(): Aborted\r\n", __FUNCTION__);
+	//printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();
@@ -553,7 +552,7 @@ webclient_appcall(void)
     acked();
   }
   if(uip_newdata()) {
-	  printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
+	  //printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
     s.timer = 0;
     newdata();
   }
@@ -593,13 +592,13 @@ webclient_appcall(void)
 void tulis_foto(char *data, unsigned int len);
 
 void webclient_connected() {
-	printf("%s() masuk\r\n", __FUNCTION__);
+	//printf("%s() masuk\r\n", __FUNCTION__);
 }
 
 void webclient_datahandler(char *data, u16_t len)
 {
 	
-	#if 1
+	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
 	//printf("%s", __FUNCTION__);

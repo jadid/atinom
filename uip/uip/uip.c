@@ -588,7 +588,7 @@ uip_reass(void)
   u16_t offset, len;
   u16_t i;
 	
-	printf("%s() masuk\r\n", __FUNCTION__);
+	//printf("%s() masuk\r\n", __FUNCTION__);
 	
   /* If ip_reasstmr is zero, no packet is present in the buffer, so we
      write the IP header of the fragment into the reassembly
@@ -924,7 +924,7 @@ uip_process(u8_t flag)
   if((BUF->ipoffset[0] & 0x3f) != 0 || BUF->ipoffset[1] != 0)
   {
 #if UIP_REASSEMBLY
-	printf("UIP_REASSEMBLY: %s\r\n", __FUNCTION__);
+	//printf("UIP_REASSEMBLY: %s\r\n", __FUNCTION__);
     uip_len = uip_reass();
     if(uip_len == 0) {
       goto drop;

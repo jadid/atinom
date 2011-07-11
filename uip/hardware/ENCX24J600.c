@@ -640,7 +640,7 @@ int Enc64MACInit(void)
 	
 	//printf("\r\nTXSTART: 0x%04Xh\r\n", TXSTART);
 	//printf("RXSTART: 0x%04Xh, RXSIZE: 0x%04Xh, RXSTOP: 0x%04Xh\r\n", RXSTART, RXSIZE, RXSTOP);
-	#if 1
+	#if 0
 	printf("\r\n");
 	printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	//printf("EPMO: 0x%04x\r\n", ReadReg(EPMO));
@@ -656,7 +656,7 @@ int Enc64MACInit(void)
 	//BFCReg(ERXFCON, ERXFCON_BCEN | ERXFCON_NOTPM);	//  
 	//BFCReg(ERXFCON, ERXFCON_UCEN);	// 
 	
-	#if 1
+	#if 0
 	//printf("\r\n");
 	//printf("ERXFCON: 0x%04x\r\n", ReadReg(ERXFCON));
 	printf("EPMCS: 0x%04x\r\n", ReadReg(EPMCS));

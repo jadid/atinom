@@ -359,7 +359,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	printf("Kirim Balik inited, Target data: sumber %d, target kirim: %d !\r\n", sumber_datanya+1, target_kirim+1);
 #endif
 
-	printf("UIP_LLH_LEN: %d\r\n", UIP_LLH_LEN);
+	//printf("UIP_LLH_LEN: %d\r\n", UIP_LLH_LEN);
 	
 	//  Initialise the local timers //
 	xStartTime = xTaskGetTickCount ();
@@ -441,7 +441,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					}
 				}
 				jmlsumbernya++;
-				printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
+				//printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
 				
 				// cek datanya PM ?? // <--- ternyata gak cuma PM, modul lain juga bisa
 				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
@@ -756,7 +756,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 void dispatch_tcp_appcall (void)	{
 	struct sambungan_state *sb = (struct sambungan_state *) &(uip_conn->appstate2);
 
-	printf("lport: %d, rport:%d, HTTP: %d\r\n", uip_conn->lport, uip_conn->rport, HTONS (PORT_HTTP));
+	//printf("lport: %d, rport:%d, HTTP: %d\r\n", uip_conn->lport, uip_conn->rport, HTONS (PORT_HTTP));
 	
 #ifdef PAKAI_ETH_TEST
 	//if (uip_conn->lport == HTONS (PORT_MODBUSTCP))
@@ -805,7 +805,7 @@ void dispatch_tcp_appcall (void)	{
 #ifdef PAKAI_WEBCLIENT
 	/* webclient */
 	if (uip_conn->rport == HTONS(PORT_HTTP))	{
-		printf("panggil webclient_appcall, rport:%d\r\n", uip_conn->rport);
+		//printf("panggil webclient_appcall, rport:%d\r\n", uip_conn->rport);
 		webclient_appcall();
 	}
 #endif

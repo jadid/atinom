@@ -271,7 +271,7 @@ void uip_arp_ipin(void)
     return;
   }
   uip_arp_update(IPBUF->srcipaddr, &(IPBUF->ethhdr.src));
-  #if 1
+  #if 0
   printf("%s uip_arp_update IP: %d.%d.%d.%d = %02x:%02x:%02x:%02x:%02x:%02x\r\n", __FUNCTION__, \
 		(IPBUF->srcipaddr[0] & 0xFF), ((IPBUF->srcipaddr[0]>>8)&0xFF), (IPBUF->srcipaddr[1] & 0xFF),  ((IPBUF->srcipaddr[1]>>8)&0xFF), \
 		IPBUF->ethhdr.src.addr[0], IPBUF->ethhdr.src.addr[1], IPBUF->ethhdr.src.addr[2], \

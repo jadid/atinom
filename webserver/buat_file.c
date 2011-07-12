@@ -666,7 +666,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 #if 1
 	void buat_file_index(unsigned int flag, char *kata) {
 
-	int i, no=0;
+	int i, no=-1;
 	unsigned int cek_mesin;
 	float fl;
 	float temp_rpm;
@@ -726,7 +726,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 
 	#ifdef BANYAK_SUMBER
 		char tmp[5]; char *pch, *pch2;
-		int pertamax=0, nk=0;
+		int pertamax=0, nk=0, nks=-1, ff=0;
 		struct t_setting *konfig;
 		konfig = (char *) ALMT_KONFIG;
 		
@@ -743,6 +743,23 @@ void buat_file_index(unsigned int flag, char *kata) {
 			tmp[nk]='\0';
 			nk = atoi(tmp);
 			//printf("nk: %d, tmp: %s, tmp: %d\r\n", nk, tmp, atoi(tmp)+111);
+		} else {
+			//printf("kata: %s\r\n", kata);
+			pch=strchr(kata,'&');
+			pch=strchr(pch,'=');
+			//printf("pch: %s\r\n", pch+1);
+			pch2=strchr(pch+1, '\0');
+			nk=pch2-pch-1;
+						
+			strncpy(tmp, pch+1, nk);
+			tmp[nk]='\0';
+			nks = atoi(tmp);
+			
+			if (nks>=0) {
+				nk = nks;
+				//printf("nks>0: %d\r\n", nks);
+			}
+			//printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
 		}
 				
 		strcat(tot_buf, "<b>No Modul : </b>");
@@ -751,10 +768,13 @@ void buat_file_index(unsigned int flag, char *kata) {
 			if (pmx[i].status == 1) {
 				if (flag && (i+1)==nk) {
 					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
-					no = i;
-				} else if (pertamax==0 && flag==0) {
+					//printf("flag && (i+1)==nk......%d\r\n", i);
+				} else if ((i+1)==nk) {
 					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
-					no = i;
+					//printf("(i+1)==nk..........    %d\r\n", i);
+				} else if (pertamax==0 && nk==0) {
+					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
+				//*/
 				} else {
 					sprintf(head_buf, "[<a href=\"index.html?sbr=1&d=%d\">%d</a>] ", i+1, i+1);
 				}
@@ -915,7 +935,10 @@ void buat_file_index(unsigned int flag, char *kata) {
 #if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 	struct t_dt_set *p_dt;
 	p_dt = (char *) ALMT_DT_SET;
-	//printf("no: %d, alamat: %d\r\n", no, pmx[i].alamat);
+	
+	if (nk==0) nk=1;
+	no = nk-1;
+	//printf("no: %d, alamat: %d, nk: %d\r\n", no, pmx[i].alamat, nk);
 
 	if (pmx[no].alamat==0) {			// Modul Monita
 		for (i=0; i<PER_SUMBER; i++)	{

@@ -339,9 +339,13 @@ PT_THREAD(handle_output(struct httpd_state *s))
 
 		} 
 		#endif
+		else if (strncmp(s->filename, "/favicon.ico", 12) == 0) {
+			
+		}
 		else {
 			//printf(" Buat file index\r\n");
-			buat_file_index(0, "");
+			//buat_file_index(0, "");
+			buat_file_index(0, s->filename);
 			s->file.len = strlen(tot_buf);
 			portENTER_CRITICAL();
 			s->file.data = tot_buf;

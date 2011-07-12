@@ -375,7 +375,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	int gg;
 
 	#ifdef PAKAI_WEBCLIENT
-		vTaskDelay(2000);
+//		vTaskDelay(2000);
 		if (envx->statusWebClient==1) {
 			for(gg=0; gg<5; gg++)
 				vTaskDelay(2000);
@@ -441,8 +441,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					}
 				}
 				jmlsumbernya++;
-				//printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
 				
+				#if 1
+				if (ngitung%5)
+					printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
+				#endif
+
 				// cek datanya PM ?? // <--- ternyata gak cuma PM, modul lain juga bisa
 				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
 					jmlData=kirimModul(0, nos-1, noawal, il, dl);
@@ -459,11 +463,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				}
 				
 				// hitung jml loop kirim ke server
-				/*
+				//*
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
-					//tiapKirim=950/jmlsumbernya;
-					tiapKirim=2000/jmlsumbernya;
+					tiapKirim=950/jmlsumbernya;
+					if (tiapKirim<200)
+						tiapKirim = 205;
+					//tiapKirim=2000/jmlsumbernya;
 				}
 				//*/
 				

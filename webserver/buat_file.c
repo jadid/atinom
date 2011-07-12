@@ -526,6 +526,7 @@ int ganti_setting(char *str) {
 		p_sbry[no].IP3 = (unsigned char)(ret_ip);
 		
 		//*
+
 		if (simpan_sumber(p_sbry) < 0)		{
 			vPortFree(p_sbry);
 			return -1;
@@ -936,8 +937,10 @@ void buat_file_index(unsigned int flag, char *kata) {
 	struct t_dt_set *p_dt;
 	p_dt = (char *) ALMT_DT_SET;
 	
+	#ifdef BANYAK_SUMBER
 	if (nk==0) nk=1;
 	no = nk-1;
+	
 	//printf("no: %d, alamat: %d, nk: %d\r\n", no, pmx[i].alamat, nk);
 
 	if (pmx[no].alamat==0) {			// Modul Monita
@@ -950,6 +953,9 @@ void buat_file_index(unsigned int flag, char *kata) {
 		}
 		//strcat(tot_buf, "</table>\n");
 	}
+	#else
+	
+	#endif
 	
 #ifdef PAKAI_PM
 	else if (pmx[no].tipe==0 || pmx[no].tipe==1) {		// Power Meter

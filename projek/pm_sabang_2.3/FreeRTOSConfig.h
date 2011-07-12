@@ -57,7 +57,7 @@
 //#define PAKAI_ADC
 
 
-//#define PAKAI_SERIAL_3
+#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
 //	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
@@ -80,9 +80,6 @@
 #endif
 
 
-
-
-
 //#define TES_GET_WEB
 
 #define PROMPT 		"Power@"
@@ -90,7 +87,7 @@
 
 #define PAKAI_LED_UTAMA
 
-#define PAKAI_SERIAL_2
+//#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		4800
 	#define PAKAI_GPS				2
@@ -105,15 +102,17 @@
 	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
-//	#define SAMPURASUN_CLIENT
+	#define SAMPURASUN_CLIENT
 //	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
 	
 	#ifdef PAKAI_WEBCLIENT
-		//#define WEBCLIENT_DATA
-		#define WEBCLIENT_GPS
+		#define WEBCLIENT_DATA
+		#ifdef PAKAI_GPS
+			#define WEBCLIENT_GPS
+		#endif
 	#endif
 #endif
 

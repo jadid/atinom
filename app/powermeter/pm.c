@@ -64,14 +64,22 @@ int sedot_pm() {
 	struct t_sumber *p_sbrq;
 	p_sbrq = (char *) ALMT_SUMBER;
 	unsigned char tipe, alamatClient;
-	//printf("%5d. sedot: %d/%d\r\n", jmlPM, k+1, JML_SUMBER);
+	
+	#ifdef LIAT
+	printf("%5d. sedot: %d/%d\r\n", jmlPM, k+1, JML_SUMBER);
+	#endif
+	
 	jmlPM++;		// kok ini kudu ada ????
 	if ( (k<JML_SUMBER) && (alamatClient>0) ) {
 		if (p_sbrq[k].status==1)
 		{
 			tipe = p_sbrq[k].tipe;
 			alamatClient = p_sbrq[k].alamat;
-			//printf("sumber: %d aktif\r\n", k);
+			
+			#ifdef LIAT
+			printf("sumber: %d aktif\r\n", alamatClient);
+			#endif
+			
 			ap = ambil_pmnya(k, alamatClient, tipe, jml_sequen(tipe));
 			
 			if (ap==1) {

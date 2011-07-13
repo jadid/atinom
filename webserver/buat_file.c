@@ -34,7 +34,7 @@
 	#endif
 
 
-	volatile unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+	unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 //#endif
 char ket[30];
 

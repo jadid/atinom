@@ -344,11 +344,11 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			
 		}
 		else {
-			printf(" Buat file index @else, strlen(tot_buf): %d\r\n", strlen(tot_buf));
+			//printf(" Buat file index @else, strlen(tot_buf): %d\r\n", strlen(tot_buf));
 			//buat_file_index(0, "");
 			buat_file_index(0, s->filename);
-			printf("isi tot_buf:\r\n%s\r\n%s", tot_buf, s->filename);
-			/*
+			//printf("isi tot_buf:\r\n%s\r\n%s", tot_buf, s->filename);
+			//*
 			s->file.len = strlen(tot_buf);
 			portENTER_CRITICAL();
 			s->file.data = tot_buf;

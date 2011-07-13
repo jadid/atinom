@@ -152,6 +152,9 @@ GPS_SOURCE = \
 TSC_SOURCE = \
 		../../modul/i2c/bitbang_i2c.c	\
 		../../app/tsc/fma1125.c		\
+		
+RELAY_SOURCE = \
+		../../app/relay/relay.c	\
 
 RTC_SOURCE = \
 		../../modul/system/rtc.c			\
@@ -175,7 +178,7 @@ THUMB_SOURCE += $(TSC_SOURCE)
 THUMB_SOURCE += $(LCD_SOURCE)
 THUMB_SOURCE += $(RTC_SOURCE)
 THUMB_SOURCE += $(ALARM_SOURCE)
-
+THUMB_SOURCE += $(RELAY_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

@@ -10,10 +10,11 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-//#include "semphr.h"
+#include "semphr.h"
 #include "hardware.h"
 
 #include "monita/monita_uip.h"
+
 
 
 #ifdef PAKAI_ALARM
@@ -182,16 +183,19 @@ void lampu_mati() {
 }
 
 void lampu_hijau() {
-	FIO1SET = BACKLIT;	
+	FIO1SET = BACKLIT;
+	unset_selenoid(1);
 }
 
 void lampu_merah() {
 	FIO1SET = LED_PICKUP;	
+	set_selenoid(1);
 }
 
 void lampu_kuning() {
 	FIO1SET = LED_PICKUP;
 	FIO1SET = BACKLIT;
+	unset_selenoid(1);
 }
 
 void init_task_alarm(void)

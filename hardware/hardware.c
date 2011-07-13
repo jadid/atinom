@@ -12,6 +12,10 @@ void setup_hardware() {
 	PCONP |= 0x80000000;
 	FIO1DIR = 0xFFFFFFFF;
 	
+	#ifdef PAKAI_RELAY
+		setup_relay();
+	#endif
+	
 	#ifdef PAKAI_LED_UTAMA
 		setup_led_utama();
 	#endif
@@ -128,6 +132,7 @@ void init_hardware()	{
 	#ifdef PAKAI_TIMER2
 		init_timer2();
 	#endif
+	
 //***************************************************************/
 /*
  *						APLIKASI ada di sini 

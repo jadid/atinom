@@ -469,6 +469,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					tiapKirim=950/jmlsumbernya;
 					if (tiapKirim<200)
 						tiapKirim = 205;
+						//tiapKirim = 410;
 					//tiapKirim=2000/jmlsumbernya;
 				}
 				//*/

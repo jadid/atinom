@@ -292,7 +292,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 //*		
 		#ifdef PAKAI_HTTP
 		if (strncmp(s->filename, "/about", 6) == 0) {
-			//printf(" Buat file about\r\n");
+			printf(" Buat file about\r\n");
 			
 			buat_file_about();
 			
@@ -304,7 +304,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 		}
 
 		else if (strncmp(s->filename, "/setting", 8) == 0) {
-			//printf(" str: %s\r\n", s->filename);
+			printf(" str: %s\r\n", s->filename);
 			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
 				ganti_setting(s->filename);
 				buat_file_setting(1, s->filename);
@@ -328,9 +328,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			s->file.data = tot_buf;
 			portEXIT_CRITICAL();
 
-		} 
+		}
 		#ifdef PAKAI_PM
 		else if (strncmp(s->filename, "/index.html?sbr=1", 17) == 0) {
+			printf("buat file index\r\n di PAKAI PM\r\n");
 			buat_file_index(1, s->filename);
 			s->file.len = strlen(tot_buf);
 			portENTER_CRITICAL();
@@ -343,13 +344,16 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			
 		}
 		else {
-			//printf(" Buat file index\r\n");
+			printf(" Buat file index @else, strlen(tot_buf): %d\r\n", strlen(tot_buf));
 			//buat_file_index(0, "");
 			buat_file_index(0, s->filename);
+			printf("isi tot_buf:\r\n%s\r\n%s", tot_buf, s->filename);
+			/*
 			s->file.len = strlen(tot_buf);
 			portENTER_CRITICAL();
 			s->file.data = tot_buf;
 			portEXIT_CRITICAL();
+			//*/
 		}
 		#endif
 	
@@ -357,11 +361,11 @@ PT_THREAD(handle_output(struct httpd_state *s))
 		ptr = strchr(s->filename, ISO_period);
 		
 		if(ptr != NULL && strncmp(ptr, http_shtml, 6) == 0) {
-			//printf(" script !\n");
+			printf(" script !\n");
 			PT_INIT(&s->scriptpt);
 			PT_WAIT_THREAD(&s->outputpt, handle_script(s));
 		} else {
-			//printf(" biasa !\n");
+			printf(" biasa !\n");
 			PT_WAIT_THREAD(&s->outputpt, send_file(s));
 		}
 	}

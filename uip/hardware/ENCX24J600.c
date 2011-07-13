@@ -653,8 +653,7 @@ int Enc64MACInit(void)
 	
 	//BFSReg(ERXFCON, ERXFCON_CRCEN | ERXFCON_RUNTEN | ERXFCON_UCEN | ERXFCON_BCEN | ERXFCON_MCEN);	//  | ERXFCON_MCEN  | ERXFCON_MPEN
 	//				CRC	valid ??	paket>64byte	 unicast ??		
-	//BFCReg(ERXFCON, ERXFCON_BCEN | ERXFCON_NOTPM);	//  
-	//BFCReg(ERXFCON, ERXFCON_UCEN);	// 
+	//BFCReg(ERXFCON, ERXFCON_BCEN);	//  
 	
 	#if 0
 	//printf("\r\n");

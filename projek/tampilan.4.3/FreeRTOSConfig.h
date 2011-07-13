@@ -109,7 +109,7 @@
 #endif
 
 #define PAKAI_TAMPILAN
-#define BOARD_TAMPILAN 
+#define BOARD_TAMPILAN
 #define VERSI_KONFIG	2
 #define TAMPILAN_LPC_43
 #define PAKAI_FONT_KOMIK	1
@@ -118,7 +118,7 @@
 #define BANYAK_SUMBER
 #define UNTUK_PLTD_LOPANA
 #define PAKAI_TSC
-
+#define PAKAI_RELAY
 #define PAKAI_RTC
 
 #define PAKAI_ALARM

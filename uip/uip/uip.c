@@ -729,6 +729,9 @@ uip_process(u8_t flag)
      particular connection. */
   if(flag == UIP_POLL_REQUEST)		// (1 == 3)
   {
+	  #ifdef DEBUG_UIPNYA
+	  printf("UIP_POLL_REQUEST !!!\r\n");
+	  #endif
     if((uip_connr->tcpstateflags & UIP_TS_MASK) == UIP_ESTABLISHED && !uip_outstanding(uip_connr))
     {
       uip_flags = UIP_POLL;
@@ -768,6 +771,9 @@ uip_process(u8_t flag)
        out. */
     if(uip_connr->tcpstateflags == UIP_TIME_WAIT || uip_connr->tcpstateflags == UIP_FIN_WAIT_2)
     {
+		#ifdef DEBUG_UIPNYA
+		printf("  UIP_TIME_WAIT || UIP_FIN_WAIT_2 !!!\r\n");
+		#endif
       ++(uip_connr->timer);
       if(uip_connr->timer == UIP_TIME_WAIT_TIMEOUT)
       {
@@ -776,6 +782,9 @@ uip_process(u8_t flag)
     }
     else if(uip_connr->tcpstateflags != UIP_CLOSED)
     {
+		#ifdef DEBUG_UIPNYA
+		printf("  !UIP_CLOSED !!!\r\n");
+		#endif
       /* If the connection has outstanding data, we increase the
          connection's timer and see if it has reached the RTO value
          in which case we retransmit. */
@@ -2036,9 +2045,13 @@ void uip_send (const void *data, int len)
 {
   uip_slen = len;
 
-  if (len > 0)
-    if (data != uip_sappdata)
-      memcpy (uip_sappdata, (data), uip_slen);
+	if (len > 0)	{
+		if (data != uip_sappdata) {
+			//portENTER_CRITICAL();
+			memcpy (uip_sappdata, (data), uip_slen);
+			//portEXIT_CRITICAL();
+		}
+  }
 }
 /** @} */
 

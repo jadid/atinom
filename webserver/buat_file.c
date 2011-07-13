@@ -16,22 +16,25 @@
 #include "hardware.h"
 
 #ifdef BOARD_TAMPILAN
-	#define BESAR_BUF_HTTP	256		//8192
+	#define BESAR_BUF_HTTP	8192
 #else
 	#define BESAR_BUF_HTTP	8192		//8192
 #endif
 
 #ifdef PAKAI_HTTP
 
-#include "../tinysh/enviro.h"
-#include "../modul/adc/ad7708.h"
+	#include "../tinysh/enviro.h"
 
-#ifdef CENDOL
-//	#include "../tinysh/setting_eth.c" 
-#endif
+	#ifdef PAKAI_ADC
+		#include "../modul/adc/ad7708.h"
+	#endif
+
+	#ifdef CENDOL
+	//	#include "../tinysh/setting_eth.c" 
+	#endif
 
 
-	unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
+	volatile unsigned char tot_buf[BESAR_BUF_HTTP] 		__attribute__ ((section (".index_text")));
 //#endif
 char ket[30];
 
@@ -657,6 +660,13 @@ int ganti_setting(char *str) {
 	return 1;
 }
 
+#if 1
+void buat_file_index(unsigned int flag, char *kata) {
+	printf("%s() .... masuk !!!\r\n");
+	
+}
+#endif
+
 #if 0
 void buat_file_index(unsigned int flag, char *kata) {
 	buat_head(1);
@@ -664,7 +674,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 }
 #endif
 
-#if 1
+#if 0
 	void buat_file_index(unsigned int flag, char *kata) {
 
 	int i, no=-1;

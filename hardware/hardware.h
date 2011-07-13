@@ -261,6 +261,45 @@ void dele(int dd);
 		#define BAUD_RATE_SHELL	( ( unsigned portLONG ) 115200 )
 	#endif
 	
+	#ifdef PAKAI_RELAY
+		#define RLY_1	BIT(26)			/* P3 */
+		#define RLY_2	BIT(25)
+
+		#define RLY_3	BIT(23)			/* P1 */
+		#define RLY_4	BIT(21)	
+		#define RLY_5	BIT(15)
+
+		#define RLY_6	BIT(29)			/* P4 */
+		#define RLY_7	BIT(28)
+
+		#define RLY_8	BIT(7)			/* P2 */
+		
+		#define cRelay1()		FIO3CLR = RLY_1
+		#define cRelay2()		FIO3CLR = RLY_2
+		#define cRelay3()		FIO1CLR = RLY_3
+		#define cRelay4()		FIO1CLR = RLY_4
+		#define cRelay5()		FIO1CLR = RLY_5
+		#define cRelay6()		FIO4CLR = RLY_6
+		#define cRelay7()		FIO4CLR = RLY_7
+		#define cRelay8()		FIO2CLR = RLY_8
+		
+		#define sRelay1()		FIO3SET = RLY_1
+		#define sRelay2()		FIO3SET = RLY_2
+		#define sRelay3()		FIO1SET = RLY_3
+		#define sRelay4()		FIO1SET = RLY_4
+		#define sRelay5()		FIO1SET = RLY_5
+		#define sRelay6()		FIO4SET = RLY_6
+		#define sRelay7()		FIO4SET = RLY_7
+		#define sRelay8()		FIO2SET = RLY_8
+
+		#define setup_relay()		do {	\
+										FIO3DIR = FIO3DIR | RLY_1 | RLY_2;				\
+										FIO1DIR = FIO1DIR | RLY_3 | RLY_4 | RLY_5;		\
+										FIO4DIR = FIO4DIR | RLY_6 | RLY_7;				\
+										FIO2DIR = FIO2DIR | RLY_8;						\
+									} while(0)
+	#endif
+	
 	#ifdef PAKAI_I2C
 		#ifdef I2C_GPIO
 			#define GPIO_SCL	BIT(17)		// P1.17

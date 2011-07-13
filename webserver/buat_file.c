@@ -660,7 +660,7 @@ int ganti_setting(char *str) {
 	return 1;
 }
 
-#if 1
+#if 0
 void buat_file_index(unsigned int flag, char *kata) {
 	printf("%s() .... masuk !!!\r\n");
 	
@@ -674,8 +674,8 @@ void buat_file_index(unsigned int flag, char *kata) {
 }
 #endif
 
-#if 0
-	void buat_file_index(unsigned int flag, char *kata) {
+#if 1
+void buat_file_index(unsigned int flag, char *kata) {
 
 	int i, no=-1;
 	unsigned int cek_mesin;

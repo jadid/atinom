@@ -304,7 +304,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 		}
 
 		else if (strncmp(s->filename, "/setting", 8) == 0) {
-			printf(" str: %s\r\n", s->filename);
+			//printf(" str: %s\r\n", s->filename);
 			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
 				ganti_setting(s->filename);
 				buat_file_setting(1, s->filename);
@@ -421,7 +421,7 @@ handle_connection(struct httpd_state *s)
 {
 
 	handle_input(s);
-	if(s->state == STATE_OUTPUT) {
+	if(s->state == STATE_OUTPUT && strcmp(s->filename, "/favicon.ico")) {
 		handle_output(s);
   }	
 }

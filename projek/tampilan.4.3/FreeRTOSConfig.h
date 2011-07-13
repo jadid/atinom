@@ -50,7 +50,7 @@
 #define VERSI_KOMON		"1.70"
 
 
-//#define BANYAK_SUMBER
+#define BANYAK_SUMBER
 
 #define _printf	printf2
 #define printf	printf2
@@ -79,7 +79,7 @@
 #define NAMA_BOARD	"Babelan Tampilan-4.2"
 
 #define PAKAI_LED_UTAMA
-#define CEK_BLINK
+//#define CEK_BLINK
 
 //#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
@@ -93,6 +93,7 @@
 #define PAKAI_I2C
 #ifdef PAKAI_I2C
 	#define I2C_GPIO
+	#define PAKAI_TSC
 #endif
 
 #define PAKAI_ETH
@@ -117,7 +118,7 @@
 
 #define BANYAK_SUMBER
 #define UNTUK_PLTD_LOPANA
-#define PAKAI_TSC
+
 #define PAKAI_RELAY
 #define PAKAI_RTC
 

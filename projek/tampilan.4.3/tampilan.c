@@ -42,8 +42,9 @@ extern xTaskHandle *hdl_tampilan;
 void set_awal_mesin(void);
 void set_awal_sumber(void);
 void set_awal_titik(void);
+#ifdef PAKAI_TSC
 int cek_keypad(void);
-
+#endif
 unsigned char tek[64];	
 unsigned char daytime[32];
 
@@ -248,12 +249,14 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 					case 2:
 						key_press = OK;
 						break;
+					#ifdef PAKAI_TSC
 					case 4:
 						key_press = TANYA;
 						break;
 					case 8:
 						key_press = KIRI;
 						break;
+					#endif
 					case 16:
 						key_press = ATAS;
 						break;
@@ -292,6 +295,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 					mesin_index++;
 					if (mesin_index > 9) mesin_index = 0;
 				}
+				#ifdef PAKAI_TSC
 				else if ( key_press == KIRI )
 				{
 					mesin_index--;
@@ -303,6 +307,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 					ACK = 0;
 					#endif
 				}
+				#endif
 				else if ( key_press == OK)
 				{
 					jum_OK++;
@@ -384,7 +389,6 @@ void init_task_tampilan(void)
 		NULL, tskIDLE_PRIORITY - 1, (xTaskHandle *) &hdl_tampilan);	
 }
 
-#ifdef PAKAI_KEYPAD_BARITO_32
 int cek_keypad(void)
 {
 	//portENTER_CRITICAL();
@@ -399,7 +403,7 @@ int cek_keypad(void)
 		return 0;	
 	}
 }
-#endif
+
 /* 
 	menghitung konsumsi bahan bakar per menit,
 	fungsi ini akan dipanggil 1 kali per detik jika sedang dipilih

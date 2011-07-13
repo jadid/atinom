@@ -20,6 +20,8 @@
 
 #include "hardware.h"
 
+#ifdef PAKAI_I2C
+
 #if 0
 #define GPIO_SCL	BIT(15)		// P0.15 (SCK)
 #define GPIO_SDA	BIT(18)		// P0.18 (MOSI)
@@ -408,3 +410,5 @@ int i2c_read_register(char addr, char reg, char *val)
 	//*val = data;
 	return 0;
 }
+
+#endif

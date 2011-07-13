@@ -39,6 +39,10 @@
 char ket[30];
 
 
+void buat_file_about();
+void buat_head(unsigned int flag);
+void buat_bottom(void);
+
 //#define		tot_buf	buffer
 
 
@@ -111,11 +115,10 @@ static unsigned int nomer_mesin=0;
       <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
       <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
       <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
-      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
-      <td bgcolor=\"lightGray\" width=\"200\">.</td>\n \
     </tr>\n \
   </tbody>\n \
 </table>\n"
+
 #endif
 
 #ifdef BOARD_KOMON_WEB
@@ -207,6 +210,7 @@ void buat_bottom(void) {
 	
 	/* data uptime */
 	uptime(&sec, &menit, &jam, &hari, &tahun);
+	
 	strcat(tot_buf, "<h4>Uptime = ");
 	if (tahun !=0)	{
 		sprintf(head_buf, "%d thn ", tahun);
@@ -228,18 +232,19 @@ void buat_bottom(void) {
 	sprintf(head_buf, "%d dtk</h4>\n", sec);
 	strcat(tot_buf, head_buf);		
 	
-	sprintf(head_buf, "%s<br>", LINK_BAWAH);
-	strcat(tot_buf, head_buf);
-	
+	//sprintf(head_buf, "%s", LINK_BAWAH);
+	//strcat(tot_buf, head_buf);
+
 	/* sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__); */
 	sprintf(head_buf,"<h4>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);
-	strcat(tot_buf, "<br>NXP LPC2387, 60 MHz, FreeRTOS 5.1.1</h4>\n");
-	
+	sprintf(head_buf, "<br>%s, 60 MHz, FreeRTOS 5.1.1</h4>\n", uC);
+	strcat(tot_buf, head_buf);
 	
 	// close html
     sprintf(head_buf, "\n</body>\n</html>\n");
     strcat(tot_buf, head_buf);
+
 }
 
 #define DIGANTI 5
@@ -664,6 +669,12 @@ int ganti_setting(char *str) {
 void buat_file_index(unsigned int flag, char *kata) {
 	printf("%s() .... masuk !!!\r\n");
 	
+}
+#endif
+
+#if 0
+void buat_file_index(unsigned int flag, char *kata) {
+	sprintf(tot_buf, "<html><body><h1>index index index</h1></body></html>");
 }
 #endif
 
@@ -1657,6 +1668,44 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 }
 #endif
 
+#if 0
+void buat_file_about1(void)	{
+	sprintf(tot_buf, "<html><body><h1> \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		about about about about about about about about about about \
+		</h1></body></html>");
+}
+#endif
+
+#if 0
+void buat_file_about() {
+	buat_head(0);
+	buat_bottom();
+}
+#endif
+
 #if 1
 void buat_file_about(void)	{
 	/* 
@@ -1669,6 +1718,8 @@ void buat_file_about(void)	{
 		idle loop
 		
 		*/
+		
+	//printf("%s() ... masuk\r\n", __FUNCTION__);
 	
 	int i;
 	extern unsigned int tot_idle;
@@ -1676,7 +1727,7 @@ void buat_file_about(void)	{
 	env2 = (char *) ALMT_ENV;
 	char head_buf[512];
 	buat_head(0);
-	
+#if 1
 	strcat(tot_buf, "<h4>Operating System FreeRTOS 5.1.1");
 	sprintf(head_buf, "<br>Modul %s versi %s", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
@@ -1725,8 +1776,9 @@ void buat_file_about(void)	{
 	strcat(tot_buf, "<br>&nbsp;&nbsp; (021) 4892155, fax (021) 47881750");
 		
 	strcat(tot_buf,"</h4>");
+#endif
 	buat_bottom();
-	//printf("pjg status = %d\r\n", strlen(tot_buf));
+	printf("pjg status = %d\r\n", strlen(tot_buf));
 	
 	return;
 }

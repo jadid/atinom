@@ -18,6 +18,7 @@
 
 #define ADDR_FMA1	0x68
 
+#ifdef PAKAI_TSC
 
 #define TSC_FILTER_EN    0x01   // Mode selection register values
 #define TSC_APIS_1       0x02   // Mode 1 / only strongest sensor output is signaled
@@ -374,3 +375,5 @@ char read_key(void)
 	}
 	#endif
 }
+
+#endif

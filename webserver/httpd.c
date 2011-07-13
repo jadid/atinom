@@ -68,7 +68,7 @@
 
 #include <string.h>
 
-#ifdef PAKAI_ETH
+#if defined(PAKAI_ETH) && defined(PAKAI_HTTP)
 #include "buat_file.c"
 
 #define STATE_WAITING 0
@@ -277,7 +277,7 @@ PT_THREAD(handle_output(struct httpd_state *s))
 	char *ptr;
   
 	PT_BEGIN(&s->outputpt);
- 
+
 	if(!httpd_fs_open(s->filename, &s->file)) {
 		//printf(" HTTP file %s tidak ada\n", s->filename);
 		httpd_fs_open(http_404_html, &s->file);
@@ -289,13 +289,29 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			   send_file(s));
 
 	} else {
-//*		
+		//printf("%s() ... else %d\r\n", s->filename, strlen(tot_buf));
+#if 0
+		if (strncmp(s->filename, "/about", 6) == 0) {
+			printf(" Buat file about\r\n");
+			
+			buat_file_about();
+			//printf("isi: %s\r\n", tot_buf);
+			//buat_file_about1();
+			
+			s->file.len = strlen(tot_buf);
+			
+			portENTER_CRITICAL();
+			s->file.data = tot_buf;
+			portEXIT_CRITICAL();
+		}
+#endif
+
+//*	
 		#ifdef PAKAI_HTTP
 		if (strncmp(s->filename, "/about", 6) == 0) {
 			//printf(" Buat file about\r\n");
 			
 			buat_file_about();
-			
 			s->file.len = strlen(tot_buf);
 			
 			portENTER_CRITICAL();
@@ -350,10 +366,12 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			portENTER_CRITICAL();
 			s->file.data = tot_buf;
 			portEXIT_CRITICAL();
-			//*/
+
 		}
 		#endif
+			//*/
 	
+		//printf("sampai sini ...");
 		PT_WAIT_THREAD(&s->outputpt, send_headers(s, http_header_200));
 		ptr = strchr(s->filename, ISO_period);
 		
@@ -365,9 +383,13 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			//printf(" biasa !\n");
 			PT_WAIT_THREAD(&s->outputpt, send_file(s));
 		}
+		
 	}
+	
+	//printf("sock close ...");
 	PSOCK_CLOSE(&s->sout);
 	PT_END(&s->outputpt);
+	//printf("pt end\r\n");
 }
 /*---------------------------------------------------------------------------*/
 static

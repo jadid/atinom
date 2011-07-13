@@ -28,7 +28,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		printf(" Monita : Ambil cepat init !!\r\n");
   	#endif
   	
-  	#ifdef PAKAI_I2C
+  	#if defined(PAKAI_I2C) && defined(PAKAI_TSC)
 		unsigned char st_tsc=0;
 		char a;
 		int i;

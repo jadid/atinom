@@ -184,18 +184,24 @@ void lampu_mati() {
 
 void lampu_hijau() {
 	FIO1SET = BACKLIT;
+	#ifdef PAKAI_RELAY
 	unset_selenoid(1);
+	#endif
 }
 
 void lampu_merah() {
 	FIO1SET = LED_PICKUP;	
+	#ifdef PAKAI_RELAY
 	set_selenoid(1);
+	#endif
 }
 
 void lampu_kuning() {
 	FIO1SET = LED_PICKUP;
 	FIO1SET = BACKLIT;
+	#ifdef PAKAI_RELAY
 	unset_selenoid(1);
+	#endif
 }
 
 void init_task_alarm(void)

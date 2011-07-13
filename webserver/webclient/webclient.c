@@ -127,7 +127,7 @@ void webclient_init(void) {
 static void init_connection(void) {
   s.state = WEBCLIENT_STATE_STATUSLINE;
 
-	#if 1
+	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
 
@@ -533,18 +533,18 @@ webclient_appcall(void)
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    printf("%s(): Closed\r\n", __FUNCTION__);
+    //printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	printf("%s(): Aborted\r\n", __FUNCTION__);
+	//printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	 printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	 //printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   
@@ -565,7 +565,7 @@ webclient_appcall(void)
     ++s.timer;
     if(s.timer == WEBCLIENT_TIMEOUT) {
       //webclient_timedout();
-	  printf("%s(): Timeout 2\r\n", __FUNCTION__);
+	 // printf("%s(): Timeout 2\r\n", __FUNCTION__);
       uip_abort();
       return;
     }
@@ -598,7 +598,7 @@ void webclient_connected() {
 
 void webclient_datahandler(char *data, u16_t len)
 {
-	#if 1
+	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
 	//printf("%s", __FUNCTION__);

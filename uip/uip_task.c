@@ -657,7 +657,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              #if defined(PAKAI_ENC28J60)
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
-		    	              //printf("______kirim balek ARP !!!___\r\n");
+		    	              //printf("______kirim balek ARP !!!___\r\n");\\
+		    	              
 		    	              Enc624Kirim();
 		    	              #endif
 						  }

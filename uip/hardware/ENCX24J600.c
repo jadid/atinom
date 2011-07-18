@@ -344,11 +344,12 @@ int Enc624Terima(void) {
 	if (nextPaketRx > ENC100_RAM_SIZE)	{
     	awalkahRx = 0;
     	printf("paket overload .... !!!\r\n");
+    	Enc64MACInit();
 	}
 	
 	// perbaiki read memory ketika sampe 0x5FFFh
 	if (nextPaketRx < almtSkrg) {
-		fff = 0x5fff - almtSkrg - 8;
+		fff = 0x5fff - almtSkrg - 8;		// -8 ini bahaya !!!!
 		ReadMemory(almtSkrg+8, &uip_buf[0], fff);
 		ReadMemory(RXSTART, &uip_buf[fff], nextPaketRx);
 	} else {

@@ -42,7 +42,7 @@ void cek_sumber(void)
 	struct t_sumber *sumber;
 	
 	sumber = (char *) ALMT_SUMBER;
-	printf("  No :    Nama    :      IPaddr     : Stack : Almt :   Tipe   :    Status\r\n");
+	printf("  No :    Nama    :      IPaddr     : Stack : Almt :    Tipe    :    Status\r\n");
 
 	for (i=0; i<67; i++)
 		printf("-");
@@ -60,13 +60,13 @@ void cek_sumber(void)
 		
 		/* tipe */
 		if (sumber[i].tipe==0 && sumber[i].alamat>0) {
-			printf("%-4s :","710");
+			printf("%-6s :","710");
 		} else if(sumber[i].tipe==1 && sumber[i].alamat>0) {
-			printf("%-4s :","810");
+			printf("%-6s :","810");
 		} else if(sumber[i].tipe==2 && sumber[i].alamat>0) {
-			printf("%-4s :","KTA");
+			printf("%-6s :","MICOM");
 		} else {
-			printf("%-4s :","-");
+			printf("%-6s :","-");
 		}
 		
 		/* status */
@@ -253,7 +253,7 @@ void set_sumber(int argc, char **argv)
 				p_sbr[sumb-1].tipe = 0;
 			} else if ( strcmp(argv[3], "810")==0 || strcmp(argv[3], "1")==0) 	{
 				p_sbr[sumb-1].tipe = 1;
-			} else if ( strcmp(argv[3], "KTA")==0 || strcmp(argv[3], "2")==0) 	{
+			} else if ( strcmp(argv[3], "MICOM")==0 || strcmp(argv[3], "2")==0) 	{
 				p_sbr[sumb-1].tipe = 2;
 			} else {
 				p_sbr[sumb-1].tipe = 0;

@@ -57,6 +57,7 @@ int jmlPM=0,k=0;
 unsigned char jml_sequen(char tipe) {
 	if 		(tipe==0) return 6;
 	else if (tipe==1) return 8;
+	else if (tipe==2) return 5;
 }
 
 int sedot_pm() {
@@ -165,6 +166,26 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
    		   jum_balik = get_PM710(alamatPM, meter_energi2_810, 8);
    		} else if (urut_PM710==7)		{
    		   jum_balik = get_PM710(alamatPM, meter_energi_vah_810, 8);
+   		}
+	}
+	#endif
+	
+	#ifdef TIPE_MICOM_M300
+	if (tipe==2) {
+	#ifdef LIAT
+	printf("___MICOM .. edit disini ....");
+	#endif
+		if (urut_PM710==0)    {
+   	    	jum_balik = get_PM710(alamatPM, meter_voltage_micom, 11);		// 
+   	    } else if (urut_PM710==1)		{
+     		jum_balik = get_PM710(alamatPM, meter_power_each_micom, 9);  //
+   		} else if (urut_PM710==2)		{
+     	    jum_balik = get_PM710(alamatPM, meter_power_micom, 4);  //
+   		} else if (urut_PM710==3)		{
+     	    jum_balik = get_PM710(alamatPM, meter_energi_micom, 2); //
+   			#ifdef LIAT
+   			//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+   			#endif
    		}
 	}
 	#endif
@@ -301,6 +322,12 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 		#ifdef TIPE_PM810
 			portENTER_CRITICAL();
 			taruh_data_810(no, i);
+			portEXIT_CRITICAL();
+		#endif
+		} else if (tipe==2 && pm_sukses==1) {
+		#ifdef TIPE_MICOM_M300
+			portENTER_CRITICAL();
+			taruh_data_301(no, i);
 			portEXIT_CRITICAL();
 		#endif
 		}

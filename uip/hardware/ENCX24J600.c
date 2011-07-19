@@ -305,7 +305,7 @@ int Enc624Terima(void) {
 	int nPaket=0, lenPaket=0;
 	WORD almtSkrg=0;
 	BYTE aP[8];
-	int fff;
+	int fff,gg,hh;
 	
 	if (!MACIsLinked()) {
 		//printf("tak nyambung %d..", jmlTuris++);
@@ -330,6 +330,15 @@ int Enc624Terima(void) {
 	}
 	WriteReg(ERXRDPT, wCurrentPacketPointer);
 	
+	#if 0
+		printf("paket batas atas\r\n");
+	
+		printf("baca: 0x%04Xh, Next: 0x%04Xh, lenPaket: 0x%04Xh = %d\r\n", almtSkrg, nextPaketRx, lenPaket, lenPaket);
+		printf("Isi 8: %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx %02hhx \r\n", \ 
+			aP[0], aP[1], aP[2], aP[3], aP[4], aP[5], aP[6], aP[7]);
+		printf("___paket_______%d\r\n", lenPaket);
+	#endif
+	
 	ReadMemory(almtSkrg, aP, 8);
 	wNextPacketPointer = nextPaketRx = (aP[1]<<8)+aP[0];
 	lenPaket  	= (aP[3]<<8)+aP[2];
@@ -341,6 +350,10 @@ int Enc624Terima(void) {
 	printf("___paket_______%d\r\n", lenPaket);
 	#endif
 	
+	if (almtSkrg>0x5f00) {
+		
+	}
+	
 	if (nextPaketRx > ENC100_RAM_SIZE)	{
     	awalkahRx = 0;
     	printf("paket overload .... !!!\r\n");
@@ -348,10 +361,27 @@ int Enc624Terima(void) {
 	}
 	
 	// perbaiki read memory ketika sampe 0x5FFFh
+	//if (almtSkrg>0x5000) {
+
+	//}
+	
 	if (nextPaketRx < almtSkrg) {
-		fff = 0x5fff - almtSkrg - 8;		// -8 ini bahaya !!!!
-		ReadMemory(almtSkrg+8, &uip_buf[0], fff);
-		ReadMemory(RXSTART, &uip_buf[fff], nextPaketRx);
+		fff = 0x6000 - almtSkrg - 8;		// -8 ini bahaya !!!!
+		if (fff<=0) {
+			#if 0
+			printf("___ANOMALI__\r\n");
+			#endif
+			gg = 0x6000 - almtSkrg;		// 7
+			hh = 8 - gg;				// 1
+			fff = nextPaketRx - hh;
+			#if 0
+			printf("nP: 0x%04X, fff: %d, gg: %d, hh: %d\r\n", nextPaketRx, fff, gg, hh);
+			#endif
+			ReadMemory(RXSTART+hh, &uip_buf[0], lenPaket);
+		} else {
+			ReadMemory(almtSkrg+8, &uip_buf[0], fff);
+			ReadMemory(RXSTART, &uip_buf[fff], nextPaketRx);
+		}
 	} else {
 		ReadMemory(almtSkrg+8, &uip_buf[0], lenPaket);
 	}

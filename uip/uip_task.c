@@ -624,7 +624,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
 		    	              //printf("______kirim balek UIP !!!___\r\n");
+		    	              portENTER_CRITICAL();
 		    	              Enc624Kirim();
+		    	              portEXIT_CRITICAL();
 		    	              #endif
 							  paket_kita++;
 		    	            }
@@ -658,8 +660,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		    	              enc28j60Send ();
 		    	              #elif defined(PAKAI_ENCX24J600)
 		    	              //printf("______kirim balek ARP !!!___\r\n");\\
-		    	              
+		    	              portENTER_CRITICAL();
 		    	              Enc624Kirim();
+		    	              portEXIT_CRITICAL();
 		    	              #endif
 						  }
 		    	     }

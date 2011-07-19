@@ -139,7 +139,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	#ifdef TIPE_PM810
 	if (tipe==1) {
 	#ifdef LIAT
-	printf("___810 ....");
+	printf("___810 ....\r\n");
 	#endif
 		if (urut_PM710==0)    {
    	    	jum_balik = get_PM710(alamatPM, reg_satuan_810, 5);		// 
@@ -171,23 +171,23 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	#endif
 	
 	#ifdef TIPE_MICOM_M300
-	if (tipe==2) {
-	#ifdef LIAT
-	printf("___MICOM .. edit disini ....");
-	#endif
-		if (urut_PM710==0)    {
-   	    	jum_balik = get_PM710(alamatPM, meter_voltage_micom, 11);		// 
-   	    } else if (urut_PM710==1)		{
-     		jum_balik = get_PM710(alamatPM, meter_power_each_micom, 9);  //
-   		} else if (urut_PM710==2)		{
-     	    jum_balik = get_PM710(alamatPM, meter_power_micom, 4);  //
-   		} else if (urut_PM710==3)		{
-     	    jum_balik = get_PM710(alamatPM, meter_energi_micom, 2); //
-   			#ifdef LIAT
-   			//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
-   			#endif
-   		}
-	}
+		if (tipe==2) {
+		#ifdef LIAT
+		printf("___MICOM .. edit disini ....");
+		#endif
+			if (urut_PM710==0)    {
+				jum_balik = get_PM710(alamatPM, meter_voltage_micom, 11);		// 
+			} else if (urut_PM710==1)		{
+				jum_balik = get_PM710(alamatPM, meter_power_each_micom, 9);  //
+			} else if (urut_PM710==2)		{
+				jum_balik = get_PM710(alamatPM, meter_power_micom, 4);  //
+			} else if (urut_PM710==3)		{
+				jum_balik = get_PM710(alamatPM, meter_energi_micom, 2); //
+				#ifdef LIAT
+				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+				#endif
+			}
+		}
 	#endif
 	
 	#ifdef LIAT_TX
@@ -206,8 +206,9 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	
 	#ifdef LIAT_TX
 	printf("\r\n");
+	printf("  Terima data .. \r\n");
 	#endif
-
+	
 	i=0;
 	#if 1
 	while(1)	{
@@ -225,6 +226,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 			#endif
 	
 			i++;
+			pm_sukses = 1;
 			#ifdef PAKAI_MAX485
 				if (i == jum_balik+lenpmod) break;
 			#else
@@ -247,6 +249,11 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		
 	}
 	#endif
+	
+	#ifdef LIAT
+	printf("\r\n");
+	#endif
+	
 	vTaskDelay(1);
 	FIO0SET = RXDE;
 	if (pm_sukses) {
@@ -276,6 +283,11 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 		#endif
 
 		hasil_pm = proses_pm(no, alamat, tipe, i);		// i: PM810: 8 request (0-7), k:
+		
+		#ifdef LIAT
+		printf("hasil proses_pm: %d\r\n", hasil_pm);
+		#endif
+		
 		if (hasil_pm==0) {
 			return 0;
 		}

@@ -6,6 +6,8 @@
 //#define 	JUMLAH_PM		1
 //#define		TIPE_PM710
 
+//#define CEK_PM
+
 #include 	"FreeRTOS.h"
 
 

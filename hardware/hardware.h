@@ -135,6 +135,19 @@ void dele(int dd);
 									} while(0)
 	#endif
 	
+	#ifdef PAKAI_SERIAL_3_P0
+		#define setup_serial3_P0()	do 	{	\
+										PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));		\
+										PINSEL1 |= (BIT(18) | BIT(19));								\
+										PINSEL1 |= (BIT(20) | BIT(21));								\
+										PINSEL1 &= ~(BIT(16) | BIT(17));							\
+										FIO0DIR |= TXDE;					\
+										FIO0SET = TXDE;						\
+										FIO0DIR |= RXDE;					\
+										FIO0SET  = RXDE;					\
+									} while(0)
+	#endif
+	
 	#ifdef PAKAI_MODBUS_RTU
 		#define TXDE	BIT(24)
 		#define RXDE	BIT(23)

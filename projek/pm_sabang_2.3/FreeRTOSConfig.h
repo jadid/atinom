@@ -75,7 +75,7 @@
 	#ifdef PAKAI_PM
 		#define TIPE_PM810
 		//#define TIPE_PM710
-		//#define TIPE_MICOM_M300
+		#define TIPE_MICOM_M300
 	#endif
 #endif
 

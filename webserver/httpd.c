@@ -334,6 +334,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			} else if (strncmp(s->filename,"/setting.html?smb=5",19)==0) {
 				buat_file_setting(5, s->filename);
 			#endif
+			#ifdef BOARD_TAMPILAN
+			} else if (strncmp(s->filename,"/setting.html?smb=6",19)==0) {
+				buat_file_setting(6, s->filename);
+			#endif
 			} else {
 				buat_file_setting(0,"");
 			}

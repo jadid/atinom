@@ -55,9 +55,9 @@ struct t_kontrol_PM kontrol_PM[JML_SUMBER];
 int jmlPM=0,k=0;
 
 unsigned char jml_sequen(char tipe) {
-	if 		(tipe==0) return 6;
-	else if (tipe==1) return 8;
-	else if (tipe==2) return 5;
+	if 		(tipe==0) return 6;		// PM710
+	else if (tipe==1) return 8;		// PM810
+	else if (tipe==2) return 5;		// MICOM
 }
 
 int sedot_pm() {

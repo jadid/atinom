@@ -171,8 +171,7 @@ void set_sumber(int argc, char **argv)
 	memcpy((char *) p_sbr, (char *) ALMT_SUMBER, (JML_SUMBER * sizeof (struct t_sumber)));
 	
 	
-	if (strcmp(argv[2], "ipaddr") == 0)
-	{
+	if (strcmp(argv[2], "ipaddr") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{
@@ -213,8 +212,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "status") == 0)
-	{
+	else if (strcmp(argv[2], "status") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{
@@ -242,8 +240,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "tipe") == 0)
-	{
+	else if (strcmp(argv[2], "tipe") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{
@@ -283,8 +280,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}
 	}
-	else if (strcmp(argv[2], "stack") == 0)
-	{
+	else if (strcmp(argv[2], "stack") == 0)		{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{

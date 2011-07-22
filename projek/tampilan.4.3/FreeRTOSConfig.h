@@ -44,6 +44,7 @@
 
 #define BOARD_KOMON
 
+#define BOARD_TAMPILAN
 //#define BOARD_TAMPILAN_4_2
 #define BOARD_TAMPILAN_4_3
 //#define BOARD_KOMON_420_SABANG_2_3

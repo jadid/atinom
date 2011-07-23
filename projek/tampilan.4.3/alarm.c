@@ -14,6 +14,7 @@
 #include "hardware.h"
 
 #include "monita/monita_uip.h"
+//#include "LCD/menu_monita.c"
 
 
 
@@ -35,6 +36,19 @@ void ack_invert(unsigned char group, unsigned char pilih) {
 	stAlarmDisplay[group*10+pilih] = 0;
 }
 
+unsigned char cek_batas_alarm(float nilainya, float batasA, float batasB) {
+	unsigned char balik=0;
+	if (nilainya < batasB) {
+		balik = 1;		//	kabel pelitur lepas = -50
+	} else if (nilainya < 0) {
+		balik = 2;		//  kabel sensor B lepas = -34
+	} else if (nilainya > batasA) {
+		balik = 3;		//	kabel sensor A lepas = 261
+	} else {
+		balik = 0;
+	}
+	return balik;
+}
 
 static portTASK_FUNCTION(alarm_task, pvParameters )	{	
 	unsigned char muter=0, dd=0, ja=0;
@@ -98,7 +112,7 @@ void lampukan(unsigned char q, unsigned char w) {
 }
 
 unsigned char cek_alarmkan() {
-	unsigned char qwe=0;
+	unsigned char qwe=0, cek_kon=0;
 	
 	struct t_dt_set *p_dtq;
 	struct t_sumber *p_smbrq;
@@ -118,7 +132,7 @@ unsigned char cek_alarmkan() {
 		#if 1
 		kk = p_grpq[mesin_index].no_data[ii];
 		//if (kk) {
-		if (p_dtq[kk-1].aktif == 1) {
+		if (p_dtq[kk-1].aktif == 1) {			//
 			if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
 				stAlarmDisplay[mesin_index*10+jj]=1;
 				//printf("%d: %d   ", jj, kk);
@@ -130,6 +144,7 @@ unsigned char cek_alarmkan() {
 		#endif
 	}
 	#endif
+	
 	#if 1
 	jj=0;
 	// cek tiap group, aktifkan alarm !!
@@ -139,9 +154,13 @@ unsigned char cek_alarmkan() {
 		for (jj=0; jj<10; jj++) {
 			kk = p_grpq[ii].no_data[jj];
 			if (p_dtq[kk-1].aktif == 1) {
-				if (data_f[kk-1]> p_dtq[kk-1].alarm_H) {
+				cek_kon = cek_batas_alarm(data_f[kk-1], p_dtq[kk-1].batas_atas, p_dtq[kk-1].batas_bawah);
+
+				//printf("%d. %-10s : %6.1f, st: %d, A: %.0f, B: %.0f\r\n", \
+				//	jj, p_dtq[kk-1].nama, data_f[kk-1], cek_kon, p_dtq[kk-1].batas_atas, p_dtq[kk-1].batas_bawah);
+				if ((data_f[kk-1]>p_dtq[kk-1].alarm_H) && !cek_kon) {
 					stAlarmDisplay[ii*10+jj]=1;
-					//printf("%d: %d   ", jj, kk);
+				//	printf("%d: %d : %d  \r\n", jj, kk, stAlarmDisplay[ii*10+jj]);
 				}
 			}
 		}
@@ -159,10 +178,15 @@ unsigned char cek_alarmkan() {
 			for (ii=0; ii<PER_SUMBER; ii++) {
 				kk = PER_SUMBER*jj+ii;
 				if (p_dtq[kk].aktif == 1) {
-					if (data_f[kk] > p_dtq[kk].alarm_HH) {
+					cek_kon = cek_batas_alarm(data_f[kk], p_dtq[kk].batas_atas, p_dtq[kk].batas_bawah);
+					#ifdef DEBUG_ALARM
+					printf("%d. %-10s : %6.1f, st: %d, A: %.0f, B: %.0f\r\n", \
+						ii, p_dtq[kk].nama, data_f[kk], cek_kon, p_dtq[kk].batas_atas, p_dtq[kk].batas_bawah);
+					#endif
+					if ((data_f[kk]>p_dtq[kk].alarm_HH) && !cek_kon){
 						qwe = 2;		// 2: merah
 						break;
-					} else if (data_f[kk] > p_dtq[kk].alarm_H) {
+					} else if ((data_f[kk]>p_dtq[kk].alarm_H) && !cek_kon) {
 						if (qwe<2)		// < 2 : merah
 							qwe = 1;		// 2: kuning, loop, cek lagi !!
 					}

@@ -348,6 +348,34 @@ void cetak_data( unsigned char grop, int idx )
 	teks_komik( DATA_KIRI_KOMIK, DATA_ATAS_KOMIK + ( 14 * idx ), tek);
 }
 
+unsigned char cek_batas(float nilainya, float batasA, float batasB) {
+	unsigned char balik=0;
+	if (nilainya < batasB) {
+		balik = 1;		//	kabel pelitur lepas = -50
+	} else if (nilainya < 0) {
+		balik = 2;		//  kabel sensor B lepas = -34
+	} else if (nilainya > batasA) {
+		balik = 3;		//	kabel sensor A lepas = 261
+	} else {
+		balik = 0;
+	}
+	return balik;
+}
+
+#if 0
+char * komen_kondisi(unsigned char kondisi) {
+	char katakata[30];
+	if (kondisi==1) {
+		sprintf(katakata, "Kabel board pelitur lepas/rusak");
+	} else if (kondisi==2) {
+		sprintf(katakata, "Kabel sensor B lepas/rusak");
+	} else if (kondisi==3) {
+		sprintf(katakata, "Kabel sensor A lepas/rusak");
+	}
+	return katakata;
+}
+#endif
+
 void menu_group(unsigned char pilih, unsigned char grop)
 {
 	int i;
@@ -355,6 +383,8 @@ void menu_group(unsigned char pilih, unsigned char grop)
 	struct t_dt_set *p_dt;
 	int jml=0;
 	int temp;
+	int cek_kondisi=0;
+	char katakata[30];
 	
 	/*
 	move_ke( DATA_KIRI, 36);
@@ -394,6 +424,10 @@ void menu_group(unsigned char pilih, unsigned char grop)
 				data_f[ temp - 1 ] = (float) ((rand() % 100));
 			#endif
 			
+			#ifdef UNTUK_PLTD_LOPANA
+				cek_kondisi = cek_batas(data_f[temp-1], p_dt[temp-1].batas_atas, p_dt[temp-1].batas_bawah);
+			#endif
+			
 			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
 				#ifdef UNTUK_PLTD_LOPANA
 				sprintf(tek, "%6.1f", data_f[ temp - 1] );
@@ -403,13 +437,29 @@ void menu_group(unsigned char pilih, unsigned char grop)
 			} else {
 				sprintf(tek, "%s", (int) data_f[temp-1]?"Aktif":"Mati" );
 			}
-			teks_komik( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek); 
+						
+			if (cek_kondisi)	{ // kondisi error
+				if (cek_kondisi==1) {
+					sprintf(katakata, "Pelitur kabel lepas/rusak");
+				} else if (cek_kondisi==2) {
+					sprintf(katakata, "Sensor kabel B lepas/rusak");
+				} else if (cek_kondisi==3) {
+					sprintf(katakata, "Sensor kabel A lepas/rusak");
+				}
+				sprintf(tek, "%s", katakata);
+				teks_layar( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK+5 + ( DATA_TINGGI * jml ), tek); 
+			} else {
+				teks_komik( DATA_KIRI_KOMIK + 115, DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek); 
+			}
+			
 			
 			if ((temp-1)< JML_SUMBER*PER_SUMBER) {
-				sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
-				teks_layar( DATA_KIRI_KOMIK + 180, 6 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				if (!cek_kondisi) {
+					sprintf(tek, "(%s)", p_dt[ temp - 1].satuan );
+					teks_layar( DATA_KIRI_KOMIK + 180, 6 + DATA_ATAS_KOMIK + ( DATA_TINGGI * jml ), tek);
+				}
 				
-				if (p_dt[ temp - 1].aktif) {
+				if (p_dt[ temp - 1].aktif && !cek_kondisi) {	// tambahi disini
 					// Batas ALARM //
 					//sprintf(tek, "%2.2f", p_dt[ temp - 1].alarm_L );
 					sprintf(tek, "%2.1f", p_dt[ temp - 1].alarm_H );
@@ -425,13 +475,16 @@ void menu_group(unsigned char pilih, unsigned char grop)
 		}
 	}
 	
-	#ifdef PAKAI_ALARM
+	#ifdef PAKAI_ALARM		// highlight klo warning dan alarm
 	for (i=0; i<10; i++) {
-		if (stAlarmDisplay[grop*10+i]==1) {
+		cek_kondisi = cek_batas(data_f[i], p_dt[i].batas_atas, p_dt[i].batas_bawah);
+		if (!cek_kondisi) {
+			if (stAlarmDisplay[grop*10+i]==1) {
 			//printf("garis: %d\r\n", DATA_ATAS+17+(stAlarmDisplay[i]*DATA_TINGGI)+temp);
-			for (temp=0; temp<16; temp++) {
-				move_ke(menu_kiri+10, DATA_ATAS+17+(i*DATA_TINGGI)+temp);
-				line_ke(menu_besar_kanan-10, DATA_ATAS+17+(i*DATA_TINGGI)+temp, 1);
+				for (temp=0; temp<16; temp++) {
+					move_ke(menu_kiri+10, DATA_ATAS+17+(i*DATA_TINGGI)+temp);
+					line_ke(menu_besar_kanan-10, DATA_ATAS+17+(i*DATA_TINGGI)+temp, 1);
+				}
 			}
 		}
 	}

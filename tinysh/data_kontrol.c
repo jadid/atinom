@@ -40,6 +40,7 @@
 	*/
 //#include "monita_uip.h"
 //#include "../monita/monita_uip.h"
+#include "FreeRTOS.h"
 #include "../../app/monita/monita_uip.h"
 
 #include "uip.h"
@@ -91,6 +92,11 @@ int cek_data(int argc, char **argv)
 			printf(": Alr_H : Alr_HH");
 			printf("Rly : ");
 		#endif
+		#ifdef UNTUK_PLTD_LOPANA
+			printf(": Bawah  :  Atas ");
+			printf("Rly : ");
+		#endif
+		
 		printf(" : &Memory\r\n");
 		garis_bawah();
 		
@@ -102,10 +108,15 @@ int cek_data(int argc, char **argv)
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#endif
 			
-			printf(" (%3d): %-16s : % 8.2f : %-6s : (%X)\r\n", (i+1), \
-			p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
-			//printf(" (%3d): %-10s :  %10.2f : %5s: %-6s : (%X)\r\n", (i+1), \
-			//	p_dt[i].nama, 6,data_f[i], (p_dt[i].aktif==1)?"aktif":"mati", p_dt[i].satuan, &p_dt[i]);	
+			#ifdef UNTUK_PLTD_LOPANA
+				printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : (%X)\r\n", (i+1), \
+				p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].batas_atas, &p_dt[i]);	
+			#else
+				printf(" (%3d): %-16s : % 8.2f : %-6s : (%X)\r\n", (i+1), \
+				p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
+				//printf(" (%3d): %-10s :  %10.2f : %5s: %-6s : (%X)\r\n", (i+1), \
+				//	p_dt[i].nama, 6,data_f[i], (p_dt[i].aktif==1)?"aktif":"mati", p_dt[i].satuan, &p_dt[i]);	
+			#endif
 		}
 		//*/
 		return;
@@ -136,14 +147,32 @@ int cek_data(int argc, char **argv)
 				p_dt = (char *) ALMT_DT_SET;
 				
 				//judul(" Data Setting\r\n");
-				printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
-				garis_bawah();
+				#ifdef UNTUK_PLTD_LOPANA
+					printf(" No : ID.  :       Nama       :    Data    : Satuan : alarmH : alarmHH : Bawah :  Atas\r\n");
+					for (i=0; i<85; i++) {
+						printf("-");
+					}
+					printf("\r\n");
+				#else
+					printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
+					garis_bawah();
+				#endif
+				
 
 				if (sumber[sumb-1].alamat==0) {		// Modul Monita
+					#ifdef UNTUK_PLTD_LOPANA
+					for (i=0; i<PER_SUMBER; i++) {
+						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : %6.1f : %6.1f : %6.1f : %6.1f\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
+							p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, \
+							p_dt[(sumb-1)*PER_SUMBER+i].alarm_H, p_dt[(sumb-1)*PER_SUMBER+i].alarm_HH, \
+							p_dt[(sumb-1)*PER_SUMBER+i].batas_bawah, p_dt[(sumb-1)*PER_SUMBER+i].batas_atas);	
+					}					
+					#else
 					for (i=0; i<PER_SUMBER; i++) {
 						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
 						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
+					#endif
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
 					#ifdef PAKAI_PM
 					if (sumber[sumb-1].tipe==0 || sumber[sumb-1].tipe==1) {		// Power Meter
@@ -196,6 +225,8 @@ int set_data_default(void) {
 		p_gr[i].alarm_HH = 90.0;
 		p_gr[i].alarm_H = 80.0;
 		p_gr[i].aktif = 0;
+		p_gr[i].batas_bawah = -40;
+		p_gr[i].batas_atas = 200;
 	}
 	
 	for (i=JML_SUMBER*PER_SUMBER; i< (sizeof(data_f)/sizeof(float)) ; i++)
@@ -340,6 +371,28 @@ int set_data(int argc, char **argv)
 		if (sumb > 0)		{
 			printf(" Data %d : Alarm high : %s\r\n", sumb, argv[3]);			
 			p_dt[sumb-1].alarm_H = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
+	else if (strcmp(argv[2], "atas") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
+			printf(" Data %d : Batas atas : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].batas_atas = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
+	else if (strcmp(argv[2], "bawah") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
+			printf(" Data %d : Batas bawah : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].batas_bawah = atof(argv[3]);
 		} else {
 			vPortFree( p_dt );
 			return;

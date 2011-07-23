@@ -982,7 +982,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 	#endif
 	
 #ifdef PAKAI_PM
-	else if (pmx[no].tipe==0 || pmx[no].tipe==1) {		// Power Meter
+	else if (pmx[no].tipe==0 || pmx[no].tipe==1 || pmx[no].tipe==2) {		// Power Meter
 		for (i=0; i< PER_SUMBER; i++)	{
 			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
 			strcat(tot_buf, head_buf);

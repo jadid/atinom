@@ -365,6 +365,10 @@ struct t_dt_set  {
 	char 	satuan[8];
 	float 	alarm_H;
 	//float 	alarm_L;
+	//#ifdef UNTUK_PLTD_LOPANA
+		float batas_bawah;
+		float batas_atas;
+	//#endif
 };
 
 #ifdef PAKAI_FILE_SIMPAN

@@ -754,7 +754,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 
 #ifdef BOARD_TAMPILAN
 	void start_ether(void)	{	//8
-		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 10), \
+		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 20), \
 			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
 	}
 #else

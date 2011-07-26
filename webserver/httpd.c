@@ -318,6 +318,16 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			s->file.data = tot_buf;
 			portEXIT_CRITICAL();
 		}
+		#ifdef UNTUK_PLTD_LOPANA
+		else if (strncmp(s->filename,"/keserver.html",14)==0) {
+			buat_file_setting_server(s->filename);
+			s->file.len = strlen(tot_buf);
+			
+			portENTER_CRITICAL();
+			s->file.data = tot_buf;
+			portEXIT_CRITICAL();
+		}
+		#endif
 
 		else if (strncmp(s->filename, "/setting", 8) == 0) {
 			//printf(" str: %s\r\n", s->filename);
@@ -337,6 +347,8 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			#ifdef BOARD_TAMPILAN
 			} else if (strncmp(s->filename,"/setting.html?smb=6",19)==0) {
 				buat_file_setting(6, s->filename);
+			} else if (strncmp(s->filename,"/setting.html?smb=7",19)==0) {
+				buat_file_setting(7, s->filename);
 			#endif
 			} else {
 				buat_file_setting(0,"");

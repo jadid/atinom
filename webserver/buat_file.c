@@ -392,7 +392,7 @@ int ubah_setting() {
 
 int ganti_setting(char *str) {
 //#ifndef BANYAK_SUMBER
-	printf(" str: %s\r\n", str);
+	//printf(" str: %s\r\n", str);
 	char tmp[30], kets[60], keta[30], ketb[30], ketc[30], ketd[30], ketaz[60];
 	char ketip[30];
 	unsigned int ret_ip;
@@ -425,7 +425,7 @@ int ganti_setting(char *str) {
 			
 			ids = strchr(tmp,'=');
 			titik = atoi(ids+1);
-			printf("  id: %d\r\n", titik);
+			//printf("  id: %d\r\n", titik);
 		} 
 		else if (strncmp(tmp, "k", 1)==0) {		// s, nama board
 			ket = strchr(tmp,'=');
@@ -437,7 +437,7 @@ int ganti_setting(char *str) {
 			}
 			else
 				strcpy(kets, ketaz);
-			printf("  board, len: %d ket: %s, kets: %s\r\n", strlen(kets), ket+1, kets);
+			//printf("  board, len: %d ket: %s, kets: %s\r\n", strlen(kets), ket+1, kets);
 		}
 		else if (strncmp(tmp, "f", 1)==0) {		// s, file webclient
 			ket = strchr(tmp,'=');
@@ -446,7 +446,7 @@ int ganti_setting(char *str) {
 				strncpy(keta, ketaz, 30);
 			else
 				strcpy(keta, ketaz);
-			printf("  file  ket: %s, keta: %s\r\n", ket+1, keta);
+			//printf("  file  ket: %s, keta: %s\r\n", ket+1, keta);
 		}
 		else if (strncmp(tmp, "q", 1)==0) {		// s, no serial
 			ket = strchr(tmp,'=');
@@ -460,7 +460,7 @@ int ganti_setting(char *str) {
 				//printf("strlen: %d : %d\r\n", strlen(ketb), strlen(ketaz));
 			}
 			ketb[15] = '\0';
-			printf("  seri  ket: %s, ketb: %s\r\n", ket+1, ketb);
+			//printf("  seri  ket: %s, ketb: %s\r\n", ket+1, ketb);
 		}
 		else if (strncmp(tmp, "p", 1)==0) {		// s, ip
 			ket = strchr(tmp,'=');
@@ -469,17 +469,17 @@ int ganti_setting(char *str) {
 			//printf("  IP    ket: %s, ketc : %s\r\n", ket+1, ketc);
 			
 			ganti_karakter(ketip, ketc);
-			printf("  IP    ket: %s, ketip: %s\r\n", ket+1, ketip);
+			//printf("  IP    ket: %s, ketip: %s\r\n", ket+1, ketip);
 		}
 		else if (strncmp(tmp, "t", 1)==0) {		// s, gateway
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketd, ket+1);
-			printf("  gatew ket: %s, ketd: %s\r\n", ket+1, ketd);
+			//printf("  gatew ket: %s, ketd: %s\r\n", ket+1, ketd);
 		}
 		else if (strncmp(tmp, "z", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
 			z = atoi(ids+1);
-			printf("  z: %d, ids: %s\r\n", z, ids+1);
+			//printf("  z: %d, ids: %s\r\n", z, ids+1);
 		}
 		else if (strncmp(tmp, "a", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
@@ -506,7 +506,7 @@ int ganti_setting(char *str) {
 			
 			ket = strchr(tmp,'=');
 			m = stof(ket+1);
-			printf(" ket:%s,  m: %.2f, kanal: %d\r\n", ket+1, m, kanal);
+			//printf(" ket:%s,  m: %.2f, kanal: %d\r\n", ket+1, m, kanal);
 		}
 		else if (strncmp(tmp, "c", 1)==0) {		// f,
 			ket = strchr(tmp,'=');
@@ -517,26 +517,26 @@ int ganti_setting(char *str) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(keta, ket+1);
 			y = stof(keta);
-			printf(" ket:%s, keta:%s,  y: %.1f\r\n", ket+1, keta, y);
+			//printf(" ket:%s, keta:%s,  y: %.1f\r\n", ket+1, keta, y);
 		}
 		//*
 		else if (strncmp(tmp, "n", 1)==0) {		// f,
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketb, ket+1);
 			n = stof(ketb);
-			printf(" ket:%s, ketb:%s,  n: %.1f\r\n", ket+1, ketb, n);
+			//printf(" ket:%s, ketb:%s,  n: %.1f\r\n", ket+1, ketb, n);
 		}
 		else if (strncmp(tmp, "r", 1)==0) {		// f,
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketc, ket+1);
 			r = stof(ketc);
-			printf(" ket:%s, ketc:%s,  r: %.1f\r\n", ket+1, ketc, r);
+			//printf(" ket:%s, ketc:%s,  r: %.1f\r\n", ket+1, ketc, r);
 		}
 		else if (strncmp(tmp, "e", 1)==0) {		// f,
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketd, ket+1);
 			t = stof(ketd);
-			printf(" ket:%s, ketd:%s,  t: %.1f\r\n", ket+1, ketd, t);
+			//printf(" ket:%s, ketd:%s,  t: %.1f\r\n", ket+1, ketd, t);
 		}
 		//*/
 		pch=strchr(pch+1, '&');
@@ -649,7 +649,7 @@ int ganti_setting(char *str) {
 			}
 		#endif
 	} else if (z==7) {	// alarm
-		printf("%s(): str: %s\r\n", __FUNCTION__, str);
+		//printf("%s(): str: %s\r\n", __FUNCTION__, str);
 		
 #if 1
 		int jmlData=0;
@@ -672,8 +672,9 @@ int ganti_setting(char *str) {
 		p_dtw[no-1].alarm_H		= n;
 		p_dtw[no-1].alarm_HH	= r;
 		p_dtw[no-1].batas_atas	= t;
+		p_dtw[no-1].aktif		= atoi(stat)?1:0;
 		
-		printf("bawah: %.1f\r\natas: %.1f\r\n", p_dtw[no-1].batas_bawah, p_dtw[no-1]. batas_atas);
+		//printf("bawah: %.1f\r\natas: %.1f\r\n", p_dtw[no-1].batas_bawah, p_dtw[no-1]. batas_atas);
 
 
 		if (simpan_data(p_dtw) < 0)	{
@@ -685,7 +686,7 @@ int ganti_setting(char *str) {
 #endif
 	#ifdef BOARD_TAMPILAN
 	} else {
-		printf("str: %s, no: %d\r\n", str);
+		//printf("str: %s, no: %d\r\n", str);
 		int jmlData=0;
 		jmlData = (sizeof(data_f)/sizeof(float));
 		
@@ -1884,8 +1885,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 		
 		#ifdef BANYAK_SUMBER	
 //*
-			printf("flag: %d, kata: %s\r\n", flag, kata);
-			if(flag==2) {
+			//printf("flag: %d, kata: %s\r\n", flag, kata);
+			if(flag==2 || flag==7) {
 				pch=strchr(kata,'&');
 				pch=strchr(pch,'=');
 				pch2=strchr(pch+1, '\0');
@@ -1896,15 +1897,18 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				nk = atoi(tmp);
 			}
 				
-			if (flag==1 || flag==7) {		// cari z
+			if (flag==1) {		// cari z
 //*
-				printf("masuk sini!!: %d\r\n", flag);
+				//printf("masuk sini!!: %d\r\n", flag);
 				pch=strchr(kata,'&');
 				if (pch!=NULL) {
 					pch=strchr(pch,'=');
+					//printf("pch: %s\r\n", pch);
 					if (pch!=NULL) {
+						//printf("pch: %s\r\n", pch+1);
 						pch2=strchr(pch+1, '&');
 						if (pch2!=NULL) {
+							//printf("pch2: %s\r\n", pch2);
 							nk=pch2-pch-1;
 										
 							strncpy(tmp, pch+1, nk);
@@ -1915,7 +1919,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				}
 //*/
 			}
-			#if 1
+			#if 0
 			printf("nk: %d\r\n", nk);
 			//flag = 7;
 			#endif
@@ -1925,9 +1929,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			ganti_karakter(ket, kata);
 			sprintf(head_buf, "<font color=\"red\">Data telah diubah: %s</font><br/>", ket);
 			strcat(tot_buf, head_buf);
-			printf("kata: %s\r\n", kata);
+			//printf("kata: %s\r\n", kata);
 			pch=strchr(kata,'z');
-			printf("cek pch\r\n");
+			//printf("cek pch\r\n");
 			
 			if (pch!=NULL) {
 				i = atoi(pch+2);
@@ -1944,7 +1948,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					flag=7;
 				}
 			}
-			#if 1
+			#if 0
 			else {
 				
 				printf("flag: %d\r\n", flag);
@@ -2120,7 +2124,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			strcat(tot_buf, "</tbody></table>\n");
 		} else if (flag==7) {	// info alarm
-			printf("setting alarm !!\r\n");
+			//printf("setting alarm !!\r\n");
 			
 			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
 					"<!--\r\n" \
@@ -2161,7 +2165,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				}
 
 			}
-			printf("setting alarm lagi !!\r\n");
+			//printf("setting alarm lagi !!\r\n");
 			if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 			
 			struct t_dt_set *p_dt;
@@ -2179,9 +2183,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				strcat(tot_buf, "<th width=\"150px\">Keterangan</th>\n" \
 								"<th width=\"60px\">Range Min</th>\n<th width=\"60px\">Alarm High</th>\n" \
 								"<th width=\"60px\">Trip High</th>\n<th width=\"60px\">Range Max</th>\n" \
+								"<th width=\"120px\">Status</th>\n" \
 								"<th width=\"55px\">Ganti</th>\n</tr>\n");
-
-/*								"<th width=\"120px\">Status</th>\n" \		*/								
 
 				//*
 				for (i=0; i<PER_SUMBER; i++)	{
@@ -2200,9 +2203,12 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						"<td><input type=\"text\" size=\"3\" name=\"n\" value=\"%.1f\"></td>\n"	\
 						"<td><input type=\"text\" size=\"3\" name=\"r\" value=\"%.1f\"></td>\n"	\
 						"<td><input type=\"text\" size=\"3\" name=\"e\" value=\"%.1f\"</td>\n"	\
+						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+						"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n"	\
 						"<td><input type=\"Submit\" value=\"Ganti\"  onClick=\"gantiTitik(mF%d)\"></td>\n</form></tr>\n",	\
 						p_dt[no*PER_SUMBER+i].batas_bawah, p_dt[no*PER_SUMBER+i].alarm_H,	\
 						p_dt[no*PER_SUMBER+i].alarm_HH, p_dt[no*PER_SUMBER+i].batas_atas,	\
+						((p_dt[no*PER_SUMBER+i].aktif)?"checked":" "), ((p_dt[no*PER_SUMBER+i].aktif==0)?"checked":" "), \
 						(no*PER_SUMBER+i+1));
 					strcat(tot_buf, head_buf);
 						

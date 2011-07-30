@@ -94,7 +94,7 @@ int cek_data(int argc, char **argv)
 			printf("Rly : ");
 		#endif
 		#ifdef UNTUK_PLTD_LOPANA
-			printf(": Bawah  :  Atas ");
+			printf(": Bawah  :  Atas   : Status :");
 			printf("Rly : ");
 		#endif
 		
@@ -149,8 +149,8 @@ int cek_data(int argc, char **argv)
 				
 				//judul(" Data Setting\r\n");
 				#ifdef UNTUK_PLTD_LOPANA
-					printf(" No : ID.  :       Nama       :    Data    : Satuan : alarmH : alarmHH : Bawah :  Atas\r\n");
-					for (i=0; i<85; i++) {
+					printf(" No : ID.  :       Nama       :    Data    : Satuan : alarmH : alarmHH : Bawah :  Atas  : Status\r\n");
+					for (i=0; i<98; i++) {
 						printf("-");
 					}
 					printf("\r\n");
@@ -163,10 +163,10 @@ int cek_data(int argc, char **argv)
 				if (sumber[sumb-1].alamat==0) {		// Modul Monita
 					#ifdef UNTUK_PLTD_LOPANA
 					for (i=0; i<PER_SUMBER; i++) {
-						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : %6.1f : %6.1f : %6.1f : %6.1f\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
+						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : %6.1f : %6.1f : %6.1f : %6.1f : %s\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
 							p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, \
 							p_dt[(sumb-1)*PER_SUMBER+i].alarm_H, p_dt[(sumb-1)*PER_SUMBER+i].alarm_HH, \
-							p_dt[(sumb-1)*PER_SUMBER+i].batas_bawah, p_dt[(sumb-1)*PER_SUMBER+i].batas_atas);	
+							p_dt[(sumb-1)*PER_SUMBER+i].batas_bawah, p_dt[(sumb-1)*PER_SUMBER+i].batas_atas, (p_dt[(sumb-1)*PER_SUMBER+i].aktif==1)?"aktif":"mati");	
 					}					
 					#else
 					for (i=0; i<PER_SUMBER; i++) {

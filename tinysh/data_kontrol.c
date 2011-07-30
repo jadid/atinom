@@ -60,6 +60,7 @@ extern char * satuannya_pm[];
 
 
 static int simpan_data( struct t_dt_set *pgr);
+
 /*	
 int reset_data_sumber(void)
 {

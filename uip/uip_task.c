@@ -448,7 +448,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				#endif
 
 				// cek datanya PM ?? // <--- ternyata gak cuma PM, modul lain juga bisa
-				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
+				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==2 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
 					jmlData=kirimModul(0, nos-1, noawal, il, dl);
 					if (jmlData==12) {
 						flag_nos=1;

@@ -210,6 +210,7 @@ void lampu_hijau() {
 	FIO1SET = BACKLIT;
 	#ifdef PAKAI_RELAY
 	unset_selenoid(1);
+	unset_selenoid(2);
 	#endif
 }
 
@@ -217,6 +218,7 @@ void lampu_merah() {
 	FIO1SET = LED_PICKUP;	
 	#ifdef PAKAI_RELAY
 	set_selenoid(1);
+	unset_selenoid(2);
 	#endif
 }
 
@@ -225,6 +227,7 @@ void lampu_kuning() {
 	FIO1SET = BACKLIT;
 	#ifdef PAKAI_RELAY
 	unset_selenoid(1);
+	set_selenoid(2);
 	#endif
 }
 

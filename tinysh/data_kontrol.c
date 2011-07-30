@@ -59,7 +59,7 @@ extern char * satuannya_pm[];
 #endif
 
 
-static int simpan_data( struct t_dt_set *pgr);
+//static int simpan_data( struct t_dt_set *pgr);
 
 /*	
 int reset_data_sumber(void)
@@ -521,7 +521,8 @@ int set_data(int argc, char **argv)
 static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin",
 		"help default nama satuan alarmH alarmL",set_data,0,0,0};
 
-static int simpan_data( struct t_dt_set *pgr)
+//static 
+int simpan_data( struct t_dt_set *pgr)
 {
 	printf(" Save struct DATA_SET ke flash ..");
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;

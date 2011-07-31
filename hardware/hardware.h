@@ -275,6 +275,7 @@ void dele(int dd);
 	#endif
 	
 	#ifdef PAKAI_RELAY
+		
 		#define RLY_1	BIT(26)			/* P3 */
 		#define RLY_2	BIT(25)
 

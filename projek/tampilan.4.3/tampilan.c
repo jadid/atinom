@@ -321,7 +321,7 @@ portTASK_FUNCTION( tampilan_task, pvParameters )	{
 					if (dipencetdeh==0) {
 						dipencetdeh = lama_kursor;
 					} else {
-						dipencetdeh = 0;
+						//dipencetdeh = 0;
 					}
 					//printf("dipencet deh: %d\r\n", dipencetdeh);
 					//vTaskDelay(300);

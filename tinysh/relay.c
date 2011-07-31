@@ -12,6 +12,29 @@
 
 #ifdef PAKAI_RELAY
 
+int cek_relays(int argc, char **argv)	{
+	if (argc == 1)	{	// cek_relay
+		printf("Salah asuhan, arg = 1 !!\r\n  cek_relay [no_relay]");
+		
+		return 0;
+	}
+	else if (argc > 2)	{
+		printf("Salah asuhan, arg > 2 !!\r\n  cek_relay [no_relay]");
+		return 0;
+	}
+	
+	int sumb=0;
+	unsigned char str_relay[24];
+	
+	sprintf(str_relay, "%s", argv[1]);	
+	sumb = cek_nomer_valid(str_relay, 8);
+	printf("  Relay %d : %s\r\n", sumb, (data_f[(JML_SUMBER*PER_SUMBER)+sumb-1]==1)?"Aktif":"Mati");
+}
+
+
+static tinysh_cmd_t cek_relay_cmd={0,"cek_relay","menampilkan status relay","[] nomer", cek_relays,0,0,0};
+
+#if 0
 void set_selenoid( unsigned int no )	{
 	if (no>0 && no<=JML_RELAY) {		// 1-8 
 		data_f[JML_SUMBER*PER_SUMBER+no-1] = 1;
@@ -43,8 +66,6 @@ void set_selenoid( unsigned int no )	{
 		//FIO2SET = RLY_8;
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
-		
-	
 }
 
 
@@ -80,9 +101,9 @@ void unset_selenoid(unsigned int no )	{
 	else
 		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);	
 }
+#endif
 
-
-void set_relay(int argc, char **argv) {
+void set_relays(int argc, char **argv) {
 	int sumb=0;
 	unsigned char str_selenoid[24];
 	
@@ -105,6 +126,8 @@ void set_relay(int argc, char **argv) {
 		}
 	}
 }
+
+static tinysh_cmd_t set_relay_cmd={0,"set_relay","setting relay", "help default ",set_relays,0,0,0};
 
 #endif
 

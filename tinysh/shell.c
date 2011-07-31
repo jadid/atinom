@@ -136,6 +136,10 @@ int status_MMC=0;
 #include "../GPIO/selenoid.c"
 #endif
 
+#ifdef PAKAI_RELAY
+	#include "relay.c"
+#endif
+
 #ifdef PAKAI_MULTI_SERIAL
 	#define TXDE	BIT(24)
 #endif
@@ -981,10 +985,15 @@ vTaskDelay(100);
   	#endif
 
 	#ifdef PAKAI_SELENOID
-		static tinysh_cmd_t set_relay_cmd={0,"set_relay","setting relay", "help default ",set_relay,0,0,0};
+		
 		tinysh_add_command(&set_relay_cmd);
+		tinysh_add_command(&cek_relay_cmd);
 	#endif
 	
+	#ifdef PAKAI_RELAY
+		tinysh_add_command(&set_relay_cmd);
+		tinysh_add_command(&cek_relay_cmd);
+	#endif
 	
 //#ifdef BOARD_TAMPILAN	
 	#ifdef CARI_SUMBERx	

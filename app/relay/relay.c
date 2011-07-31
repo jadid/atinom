@@ -7,6 +7,7 @@
 
 #include "FreeRTOS.h"
 #include "hardware.h"
+#include "../monita/monita_uip.h"
 
 #ifndef __APP_RELAY__
 #define __APP_RELAY__
@@ -14,7 +15,7 @@
 #ifdef PAKAI_RELAY
 
 void set_selenoid( unsigned int no )	{
-	#if 0
+	#if 1
 	if (no>0 && no<=JML_RELAY) {		// 1-8 
 		data_f[JML_SUMBER*PER_SUMBER+no-1] = 1;
 	}
@@ -42,7 +43,7 @@ void set_selenoid( unsigned int no )	{
 
 
 void unset_selenoid(unsigned int no )	{
-	#if 0
+	#if 1
 	if (no>0 && no<=JML_RELAY) {
 		data_f[JML_SUMBER*PER_SUMBER+no-1] = 0;
 	}

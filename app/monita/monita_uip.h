@@ -112,7 +112,8 @@
 	#define ALMT_CRON	0x68000
 #endif
 
-#ifdef PAKAI_SELENOID
+//#ifdef PAKAI_SELENOID
+#ifdef PAKAI_RELAY
 	#define JML_RELAY 8
 #endif
 
@@ -209,7 +210,8 @@
 #endif
 
 
-#ifdef  PAKAI_SELENOID
+//#ifdef  PAKAI_SELENOID
+#ifdef PAKAI_RELAY
 float data_f [ (JML_SUMBER * PER_SUMBER)+JML_RELAY ];
 //*
 #else

@@ -58,6 +58,20 @@ static portTASK_FUNCTION(alarm_task, pvParameters )	{
 	printf("Init Task Alarm .............!!!\r\n");
 	vTaskDelay(200);
 
+#if 0	
+	set_selenoid(1);
+	set_selenoid(2);
+	set_selenoid(3);
+	set_selenoid(4);
+	set_selenoid(5);
+	set_selenoid(6);
+	set_selenoid(7);
+	set_selenoid(8);
+	
+	for (;;)	{
+		vTaskDelay(1000);
+	}
+#endif
 
 	for (;;)	{
 		muter++;
@@ -210,14 +224,15 @@ void lampu_hijau() {
 	FIO1SET = BACKLIT;
 	#ifdef PAKAI_RELAY
 	unset_selenoid(1);
-	unset_selenoid(2);
+	unset_selenoid(3);
 	#endif
 }
 
 void lampu_merah() {
 	FIO1SET = LED_PICKUP;	
 	#ifdef PAKAI_RELAY
-	set_selenoid(2);
+	set_selenoid(3);
+	//vTaskDelay(1000);
 	unset_selenoid(1);
 	#endif
 }
@@ -227,7 +242,9 @@ void lampu_kuning() {
 	FIO1SET = BACKLIT;
 	#ifdef PAKAI_RELAY
 	set_selenoid(1);
-	unset_selenoid(2);
+	//vTaskDelay(1000);
+	//unset_selenoid(1);
+	//unset_selenoid(2);
 	
 	#endif
 }

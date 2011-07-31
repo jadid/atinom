@@ -105,10 +105,10 @@ void init_hardware()	{
 	#endif
 	
 	#ifdef PAKAI_TAMPILAN
-		//init_port_lcd();
-		//init_lcd();
-		//init_task_lcd();		// 1, +1
-		//init_task_tampilan();
+		init_port_lcd();
+		init_lcd();
+		init_task_lcd();		// 1, +1
+		init_task_tampilan();
 	#endif
 	
 	#if 0

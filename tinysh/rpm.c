@@ -37,6 +37,10 @@ void reset_konter(void)
 		konter.t_konter[i].beda = 0;
 		konter.t_konter[i].hit = 0;
 		konter.t_konter[i].hit_lama = 0;
+		
+		#ifdef PAKAI_MEM_RTC
+			*(&MEM_RTC0+i) = 0;
+		#endif
 	}
 
 }

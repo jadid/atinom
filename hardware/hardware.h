@@ -434,7 +434,6 @@ void dele(int dd);
 	#endif
 #endif
 
-
 #ifdef BOARD_KOMON_KONTER_3_1
 
 

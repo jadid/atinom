@@ -29,7 +29,7 @@
 #	***************************************************************************
 
 
-RTOS_SOURCE_DIR=../FreeRTOS_Source
+RTOS_SOURCE_DIR=../../modul/FreeRTOS_Source
 
 
 #CC=arm-elf-gcc
@@ -37,29 +37,32 @@ RTOS_SOURCE_DIR=../FreeRTOS_Source
 LDSCRIPT=lpc2368.ld
 
 #PAT =/usr/local/arm_gc2/bin/./
-PAT =../TOOLCHAIN/bin/./
+PAT =../../modul/TOOLCHAIN/bin/./
 CC=$(PAT)arm-elf-gcc
 OBJCOPY=$(PAT)arm-elf-objcopy
 DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
-PENULIS= ../Penulis/./lpc_dbe
+PENULIS= ../../modul/Penulis/./lpc_dbe
 
-NAMA_FILE=konter_1
+NAMA_FILE=konter
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 
 OPTIM=-O1
 
-
 CFLAGS= $(DEBUG) \
 		$(OPTIM) \
-		-I../TOOLCHAIN/arm-elf/include/ \
+		-I../../modul/TOOLCHAIN/arm-elf/include/ \
 		-T$(LDSCRIPT) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx \
-		-I ../uip/uip \
+		-I ../../hardware/ \
+		-I ../../modul/ \
+		-I ../../modul/nmealib/include/ \
+		-I ../../uip/uip/ \
+		-I ../../app/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -68,64 +71,83 @@ CFLAGS= $(DEBUG) \
 		-fomit-frame-pointer \
 		-mthumb-interwork \
 
-								
 THUMB_SOURCE= \
 		main.c \
-		../system/setup_cpu.c \
-		../system/syscall.c \
-		../system/reset_cpu.c \
-		../serial/serial.c \
+		../../hardware/hardware.c \
+		../../hardware/system/setup_cpu.c \
+		../../hardware/system/syscall.c \
+		../../hardware/system/reset_cpu.c \
+		../../hardware/system/idle_hook.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/port.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
-		../tinysh/tinysh.c \
-		../tinysh/shell.c \
-		../tinysh/enviro.c \
-		../GPIO/gpio.c \
-		../spi/spi.c \
-		../uip/hardware/enc28j60.c	\
-		../uip/clock.c \
-		../uip/lib/memb.c \
-		../uip/uip/uip.c \
-		../uip/uip/uip_arch.c \
-		../uip/uip/uip_arp.c \
-		../uip/uip/uip_timer.c \
-		../uip/uip/uip-fw.c \
-		../uip/uip/psock.c \
-		../uip/uip/uiplib.c \
-		../uip/uip_task.c \
-		../monita/monita_uip.c \
-		../webserver/httpd.c \
-		../webserver/httpd-fs.c \
-		../webserver/http-strings.c \
-		../webserver/httpd-cgi.c \
-		../system/idle_hook.c \
-		../uip/apps/telnetd/telnetd.c	\
-		../system/rtc.c			\
-#		LCD/lcd_320.c \
-#		tampilan.c \
-#		LCD/menu_monita.c \
-#		LCD/menu_popup.c \
+		../../modul/spi/spi.c \
+		../../modul/serial/serial.c \
+		../../modul/spi/low_ss1.c	\
+		../../tinysh/tinysh.c \
+		../../tinysh/shell.c \
+		../../tinysh/enviro.c \
+		../../modul/GPIO/gpio.c \
+		../../app/ambilcepat.c	\
 
+UIP_SOURCE = \
+		../../app/monita/monita_uip.c \
+		../../uip/clock.c \
+		../../uip/lib/memb.c \
+		../../uip/uip/uip.c \
+		../../uip/uip/uip_arch.c \
+		../../uip/uip/uip_arp.c \
+		../../uip/uip/uip_timer.c \
+		../../uip/uip/uip-fw.c \
+		../../uip/uip/psock.c \
+		../../uip/uip/uiplib.c \
+		../../uip/uip_task.c \
+		../../uip/apps/telnetd/telnetd.c	\
+		../../webserver/httpd.c \
+		../../webserver/httpd-fs.c \
+		../../webserver/http-strings.c \
+		../../webserver/httpd-cgi.c \
+		
+ETH_SOURCE = \
+		../../uip/hardware/enc28j60.c	\
+		../../uip/hardware/ENCX24J600.c	\
 
 WEBCLIENT_SOURCE = \
-		../webserver/webclient/webclient.c			\
-		../webserver/webclient/webclient-strings.c	\
+		../../webserver/webclient/webclient.c			\
+		../../webserver/webclient/webclient-strings.c	\
 
-	
+GPS_SOURCE = \
+		../../modul/nmealib/src/parse.c \
+		../../modul/nmealib/src/parser.c \
+		../../modul/nmealib/src/context.c \
+		../../modul/nmealib/src/info.c \
+		../../modul/nmealib/src/gmath.c \
+		../../modul/nmealib/src/timegps.c \
+		../../modul/nmealib/src/tok.c \
+		../../app/gps/gps.c		\
+
+PM_SOURCE = \
+		../../app/powermeter/pm.c	\
+
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
-		../serial/serialISR.c \
-		../GPIO/gpio_ISR.c 
-		
+		../../modul/serial/serialISR.c \
+		../../modul/GPIO/gpio_ISR.c 
+
+
+#THUMB_SOURCE += $(GPS_SOURCE)
+THUMB_SOURCE += $(UIP_SOURCE)
+#THUMB_SOURCE += $(ADC_SOURCE)
+#THUMB_SOURCE += $(PM_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
+THUMB_SOURCE += $(ETH_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)
 
-LIBS = -lc -lgcc -lm
+LIBS = -lc -lgcc -lm -Llib
 
 
 
@@ -137,8 +159,8 @@ RTOSDemo.bin : RTOSDemo.hex
 RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) $(NAMA_FILE).elf -O ihex $(NAMA_FILE).hex
 
-RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../system/boot.s Makefile 
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../system/boot.s $(LINKER_FLAGS) 
+RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) ../../hardware/system/boot.s Makefile 
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) ../../hardware/system/boot.s $(LINKER_FLAGS) 
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) -mthumb $< -o $@

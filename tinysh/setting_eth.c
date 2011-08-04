@@ -133,9 +133,10 @@ void cek_konfig(int argc, char **argv)	{
 			//ganti_karakter(ket, konfig[i].ket);
 			if (p_sbr[j].tipe==100) 							// modul monita
 				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, konfig[j*PER_SUMBER+i].ket);
+			#ifdef PAKAI_PM	
 			else if (p_sbr[j].tipe==0 || p_sbr[j].tipe==1)		// modbus
 				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
-			
+			#endif
 			// status //
 			if (konfig[j*PER_SUMBER+i].status == 0)				printf("%-16s","Tidak Aktif");
 			else if (konfig[j*PER_SUMBER+i].status == 1)		printf("%-16s","Aktif / Normal");

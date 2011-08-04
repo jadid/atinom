@@ -37,30 +37,42 @@
 #include "lpc23xx.h"
 
 
-#define CENDOL
-
 #define BOARD_KOMON
 #define BOARD_KOMON_KONTER
 #define BOARD_KOMON_KONTER_3_1
 #define VERSI_KOMON		"1.50"
-//#define KONTER_MALINGPING	1
 
-//#define DEBUG_KONTER	0
-#define BANYAK_SUMBER
 
-#define INCLUDE_uxTaskGetStackHighWaterMark 	1
 #define _printf	printf2
 #define printf	printf2
 
-#define PAKE_TELNETD
-#define PAKAI_HTTP
-#define PAKAI_WEBCLIENT
 
-#define PAKAI_PM
-#define PAKAI_RTC
+#define PAKAI_SHELL
+#define PAKAI_LED_UTAMA
+#define BANYAK_SUMBER
+#define CENDOL
 
-#define SAMPURASUN_CLIENT
-#define SAMPURASUN_SERVER
+
+#define PAKAI_ETH
+#ifdef PAKAI_ETH
+	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
+//	#define PAKAI_ENCX24J600
+
+//	#define PAKAI_MODBUSTCP
+	#define SAMPURASUN_CLIENT
+//	#define SAMPURASUN_SERVER
+//	#define PAKAI_WEBCLIENT
+	#define PAKE_TELNETD
+	#define PAKAI_HTTP
+	
+	#ifdef PAKAI_WEBCLIENT
+		#define WEBCLIENT_DATA
+		#ifdef PAKAI_GPS
+			#define WEBCLIENT_GPS
+		#endif
+	#endif
+#endif
+
 
 #define PROMPT 		"Konter@"
 #define NAMA_BOARD	"Babelan Komon Konter"
@@ -81,6 +93,9 @@
 //#define configPINSEL2_VALUE	0x50151105
 
 /* Value to use on rev 'A' and newer devices. */
+
+#define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 #define configPINSEL2_VALUE 	0x50150105
 
 #ifndef configPINSEL2_VALUE

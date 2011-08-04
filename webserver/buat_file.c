@@ -2419,7 +2419,7 @@ void buat_file_about(void)	{
 	strcat(tot_buf,"</h4>");
 #endif
 	buat_bottom();
-	printf("pjg status = %d\r\n", strlen(tot_buf));
+	//printf("pjg status = %d\r\n", strlen(tot_buf));
 	
 	return;
 }

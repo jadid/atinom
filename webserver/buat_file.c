@@ -998,10 +998,14 @@ void buat_file_index(unsigned int flag, char *kata) {
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
-#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0) || defined(BOARD_KOMON_KONTER_3_1)
 	if (pertamax>0) {
+		if (nk==0) nk=1;
+		no = nk-1;
+
+
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
-		//printf("env2->IP3: %d, pmx[no].IP3: %d", env2->IP3, pmx[no].IP3);
+		//printf("env2->IP3: %d, pmx[no].IP3: %d, status: %d, no: %d\r\n", env2->IP3, pmx[no].IP3, pmx[no].status, no);
 		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
 			strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
 			strcat(tot_buf, "<th width=\"100px\">Pulsa</th>\n");	

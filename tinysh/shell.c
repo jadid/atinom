@@ -118,6 +118,7 @@ int status_MMC=0;
 
 #ifdef PAKAI_RTC
 #include "../modul/system/rtc.h"
+#include "mem_rtc.c"
 #endif
 
 #ifdef PAKAI_GSM_FTP
@@ -362,7 +363,7 @@ void set_date(int argc, char **argv)
 	tmku.tm_mon  = tmku.tm_mon - 1;
 	tmku.tm_sec = 0;
 		
-	debug_printf(" OK : %d-%d-%d %d:%d\r\n",  tmku.tm_year, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
+	debug_printf(" OK : %d-%d-%d %d:%d\r\n",  tmku.tm_year+1900, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
 	/*
 	if (rtc_valid_tm(&tmku)) 
 	{
@@ -994,6 +995,14 @@ vTaskDelay(100);
 		tinysh_add_command(&set_relay_cmd);
 		tinysh_add_command(&cek_relay_cmd);
 	#endif
+
+	#ifdef PAKAI_RTC	
+		tinysh_add_command(&set_date_cmd);
+		tinysh_add_command(&set_mem_cmd);
+		#ifdef TES_MEM_RTC
+			tinysh_add_command(&tes_mem_cmd);
+		#endif
+	#endif
 	
 //#ifdef BOARD_TAMPILAN	
 	#ifdef CARI_SUMBERx	
@@ -1035,11 +1044,12 @@ vTaskDelay(100);
 		#endif
 	#endif
 	
-	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0) || defined(BOARD_KOMON_KONTER_3_1)
 		#ifdef PAKAI_RTC
 		rtc_init();
 		vTaskDelay(100);
-		//baca_rtc_mem();
+		rtc_start();
+		baca_rtc_mem();
 		#endif
 	#endif
 	
@@ -1094,9 +1104,7 @@ vTaskDelay(100);
 	sprintf(abs_path, "%s", "");
 	#endif
 	
-	#ifdef PAKAI_RTC	
-	tinysh_add_command(&set_date_cmd);
-	#endif
+
 	
 	vTaskDelay(1000);
 	

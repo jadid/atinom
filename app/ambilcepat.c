@@ -206,8 +206,14 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#endif
 
 		#endif
-
-		if (loopambil>30000) {
+		
+		//printf("isi memRTC0: %d, loopambil: %d\r\n", MEM_RTC0, loopambil);
+		if (loopambil>300) {
+			#ifdef TES_MEM_RTC
+			//MEM_RTC0++;
+			//MEM_RTC1++;
+			printf("isi memRTC0: %d\r\n", MEM_RTC0);
+			#endif
 			loopambil=0;
 		}
 		

@@ -51,7 +51,12 @@
 #define PAKAI_LED_UTAMA
 #define BANYAK_SUMBER
 #define CENDOL
+#define PAKAI_RTC
 
+#ifdef PAKAI_RTC
+	#define PAKAI_MEM_RTC
+	//#define TES_MEM_RTC
+#endif
 
 #define PAKAI_ETH
 #ifdef PAKAI_ETH

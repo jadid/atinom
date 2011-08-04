@@ -67,7 +67,9 @@ void togle_led_utama(void)	{
 		/* kalkulasi idle loop */
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
-
+		
+		//printf("isi: %x: %d\r\n", &MEM_RTC0+1, *(&MEM_RTC0+1));
+		
 		/* reset wdog setiap detik */
 		tendang_wdog();
 	}	else	{

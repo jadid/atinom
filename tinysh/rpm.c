@@ -18,7 +18,7 @@ unsigned int data_putaran[KANALNYA];
 unsigned int data_hit[KANALNYA];	
 struct t2_konter konter;
 
-int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
+//int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 extern float data_f[];
 
 unsigned int giliran;
@@ -85,7 +85,7 @@ void hitung_rpm(void)
 void baca_rtc_mem() {
 	int i;
 	for (i=0; i<KANALNYA; i++) {
-		konter.t_konter[i].hit = rtcRate[i];
+		konter.t_konter[i].hit = *(&MEM_RTC0+i);
 	}
 }
 
@@ -136,7 +136,8 @@ void data_frek_rpm() {
 				data_f[(i*2)+1] = 0;
 				konter.t_konter[i].hit = 0;
 			}
-			rtcRate[i] = (int) konter.t_konter[i].hit;
+			//rtcRate[i] = (int) konter.t_konter[i].hit;
+			*(&MEM_RTC0+i) = data_f[(i*2)+1];
 		}
 	}	
 }

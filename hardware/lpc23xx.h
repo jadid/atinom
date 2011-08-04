@@ -912,6 +912,28 @@ Reset, and Code Security/Debugging */
 #define CAN2TDA3 	(*(volatile unsigned int *)(CAN2_BASE_ADDR + 0x58))
 #define CAN2TDB3 	(*(volatile unsigned int *)(CAN2_BASE_ADDR + 0x5C))
 
+#define MEM_RTC_BASE_ADDR		0xE0084000
+#define MEM_RTC0	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x00))
+#define MEM_RTC1	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x04))
+#define MEM_RTC2	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x08))
+#define MEM_RTC3	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x0C))
+#define MEM_RTC4	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x10))
+#define MEM_RTC5	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x14))
+#define MEM_RTC6	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x18))
+#define MEM_RTC7	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x1C))
+#define MEM_RTC8	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x20))
+#define MEM_RTC9	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x24))
+#define MEM_RTC10	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x28))
+#define MEM_RTC11	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x2C))
+#define MEM_RTC12	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x30))
+#define MEM_RTC13	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x34))
+#define MEM_RTC14	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x38))
+#define MEM_RTC15	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x3C))
+#define MEM_RTC16	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x40))
+#define MEM_RTC17	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x44))
+#define MEM_RTC18	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x48))
+#define MEM_RTC19	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x4C))
+
 
 /* MultiMedia Card Interface(MCI) Controller */
 #define MCI_BASE_ADDR		0xE008C000

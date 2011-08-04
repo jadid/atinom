@@ -131,6 +131,9 @@ GPS_SOURCE = \
 PM_SOURCE = \
 		../../app/powermeter/pm.c	\
 
+RTC_SOURCE = \
+		../../modul/system/rtc.c			\
+
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../modul/serial/serialISR.c \
@@ -143,6 +146,8 @@ THUMB_SOURCE += $(UIP_SOURCE)
 #THUMB_SOURCE += $(PM_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 THUMB_SOURCE += $(ETH_SOURCE)
+THUMB_SOURCE += $(RTC_SOURCE)
+
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

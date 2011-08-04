@@ -370,7 +370,8 @@ void dele(int dd);
 										PINSEL0 |= (BIT(20) | BIT(22));	\
 									} while(0)
 	#endif
-	
+
+/*
 	#ifdef PAKAI_ETH
 		#define CS_ENC	BIT(18)
 		#define INT_ENC	BIT(17)
@@ -388,6 +389,7 @@ void dele(int dd);
 										FIO1DIR = FIO1DIR | CS_ENC;	\
 									} while(0)
 	#endif
+//*/
 #endif
 
 #ifdef BOARD_KOMON_KONTER_3_0

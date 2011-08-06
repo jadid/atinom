@@ -39,13 +39,16 @@
 
 
 #define PAKAI_ID
-#define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
+//#define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
 					// cendol memungkinkan client mengakses file php di server untuk menyimpan datanya
 
 #define BOARD_KOMON
-//#define BOARD_KOMON_420_SABANG
-#define BOARD_KOMON_420_SABANG_2_3
-#define VERSI_KOMON		"1.90"
+
+#define BOARD_TAMPILAN
+//#define BOARD_TAMPILAN_4_2
+#define BOARD_TAMPILAN_4_3
+//#define BOARD_KOMON_420_SABANG_2_3
+#define VERSI_KOMON		"1.70"
 
 
 #define BANYAK_SUMBER
@@ -56,69 +59,73 @@
 //#define PAKAI_MULTI_SERIAL
 //#define PAKAI_ADC
 
+//#define PAKAI_SERIAL_2			// mendefinisikan aktif serial 1
+//#define PAKAI_PM			2		// nyambung ke SERIAL 3
 
-#define PAKAI_SERIAL_3
-#ifdef PAKAI_SERIAL_3
-//	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
-	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
+//#define AMBIL_PM
+//#define PAKAI_MAX485		1
+//#define PAKAI_SERIAL_3				// mendefinisikan aktif serial 1
+//#define PAKAI_PM			3		// nyambung ke SERIAL 3
 
-	#define PAKAI_MODBUS
-	#define PAKAI_MODBUS_RTU
-	#define PAKAI_MAX485		1
-	
-	#define AMBIL_PM
-	#define PAKAI_PM			3
-
-	#ifdef AMBIL_PM
-	
-	#endif
-
-	#ifdef PAKAI_PM
-		#define TIPE_PM810
-		//#define TIPE_PM710
-		#define TIPE_MICOM_M300
-		#define TIPE_MICOM_P127
-	#endif
+#ifdef PAKAI_PM
+	#define BAUD_PM			19200
+	#define TIPE_PM810
+	#define TIPE_PM710
 #endif
 
 
 //#define TES_GET_WEB
 
-#define PROMPT 		"Power@"
-#define NAMA_BOARD	"Babelan Komon-420"
+#define PROMPT 		"Tampil@"
+#define NAMA_BOARD	"Babelan Tampilan-4.2"
 
 #define PAKAI_LED_UTAMA
+//#define CEK_BLINK
 
 //#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		4800
-	#define PAKAI_GPS				2
+//	#define PAKAI_GPS				2
 //	#define DEBUG_GPS
 #endif
 
 #define PAKAI_SHELL
+#define PAKAI_PM
+
+#define PAKAI_I2C
+#ifdef PAKAI_I2C
+	#define I2C_GPIO
+	#define PAKAI_TSC
+#endif
 
 #define PAKAI_ETH
 #ifdef PAKAI_ETH
-//	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
-	#define PAKAI_ENCX24J600
+	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
+//	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
-	#define SAMPURASUN_CLIENT
-//	#define SAMPURASUN_SERVER
-	#define PAKAI_WEBCLIENT
+//	#define SAMPURASUN_CLIENT
+	#define SAMPURASUN_SERVER
+//	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
-	
-	#ifdef PAKAI_WEBCLIENT
-		#define WEBCLIENT_DATA
-		#ifdef PAKAI_GPS
-			#define WEBCLIENT_GPS
-		#endif
-	#endif
 #endif
 
-//#define PAKAI_ADC
+#define PAKAI_TAMPILAN
+#define BOARD_TAMPILAN
+#define VERSI_KONFIG	2
+#define TAMPILAN_LPC_43
+#define PAKAI_FONT_KOMIK	1
+#define PAKAI_BACKLIT
+
+#define BANYAK_SUMBER
+#define UNTUK_PLTD_AMPENAN
+#define SUMBER_BANYAK_SEKALI
+
+//#define PAKAI_RELAY
+#define PAKAI_RTC
+
+//#define PAKAI_ALARM
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -168,11 +175,11 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#define INCLUDE_vTaskPrioritySet            1
+#define INCLUDE_vTaskPrioritySet            0
 #define INCLUDE_uxTaskPriorityGet           0
 #define INCLUDE_vTaskDelete                 0
 #define INCLUDE_vTaskCleanUpResources       0
-#define INCLUDE_vTaskSuspend                0
+#define INCLUDE_vTaskSuspend                1
 #define INCLUDE_vTaskDelayUntil             0
 #define INCLUDE_vTaskDelay                  1
 #define INCLUDE_xTaskGetCurrentTaskHandle	0

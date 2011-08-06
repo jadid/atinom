@@ -36,89 +36,14 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-
-
-#define PAKAI_ID
-#define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
-					// cendol memungkinkan client mengakses file php di server untuk menyimpan datanya
-
-#define BOARD_KOMON
-//#define BOARD_KOMON_420_SABANG
-#define BOARD_KOMON_420_SABANG_2_3
-#define VERSI_KOMON		"1.90"
-
-
-#define BANYAK_SUMBER
+#define INCLUDE_uxTaskGetStackHighWaterMark 	1
 
 #define _printf	printf2
 #define printf	printf2
 
-//#define PAKAI_MULTI_SERIAL
-//#define PAKAI_ADC
-
-
-#define PAKAI_SERIAL_3
-#ifdef PAKAI_SERIAL_3
-//	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
-	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
-
-	#define PAKAI_MODBUS
-	#define PAKAI_MODBUS_RTU
-	#define PAKAI_MAX485		1
-	
-	#define AMBIL_PM
-	#define PAKAI_PM			3
-
-	#ifdef AMBIL_PM
-	
-	#endif
-
-	#ifdef PAKAI_PM
-		#define TIPE_PM810
-		//#define TIPE_PM710
-		#define TIPE_MICOM_M300
-		#define TIPE_MICOM_P127
-	#endif
-#endif
-
-
-//#define TES_GET_WEB
-
-#define PROMPT 		"Power@"
-#define NAMA_BOARD	"Babelan Komon-420"
-
-#define PAKAI_LED_UTAMA
-
-//#define PAKAI_SERIAL_2
-#ifdef PAKAI_SERIAL_2
-	#define PAKAI_SERIAL_2_P0		4800
-	#define PAKAI_GPS				2
-//	#define DEBUG_GPS
-#endif
-
-#define PAKAI_SHELL
-
-#define PAKAI_ETH
-#ifdef PAKAI_ETH
-//	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
-	#define PAKAI_ENCX24J600
-
-//	#define PAKAI_MODBUSTCP
-	#define SAMPURASUN_CLIENT
-//	#define SAMPURASUN_SERVER
-	#define PAKAI_WEBCLIENT
-	#define PAKE_TELNETD
-	#define PAKAI_HTTP
-	
-	#ifdef PAKAI_WEBCLIENT
-		#define WEBCLIENT_DATA
-		#ifdef PAKAI_GPS
-			#define WEBCLIENT_GPS
-		#endif
-	#endif
-#endif
-
-//#define PAKAI_ADC
+#define PROMPT		"Arm_CNC $"
+#define NAMA_BOARD 	"Arm CNC Driver"
+#define VERSI_BOARD "1.0"
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -136,9 +61,6 @@
 //#define configPINSEL2_VALUE	0x50151105
 
 /* Value to use on rev 'A' and newer devices. */
-
-#define INCLUDE_uxTaskGetStackHighWaterMark 	1
-
 #define configPINSEL2_VALUE 	0x50150105
 
 #ifndef configPINSEL2_VALUE
@@ -146,14 +68,13 @@
 #endif
 
 #define configUSE_PREEMPTION		0
-#define configUSE_IDLE_HOOK         1
+#define configUSE_IDLE_HOOK         0
 #define configUSE_TICK_HOOK         0
-//#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */
 #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 60000000 )
 #define configTICK_RATE_HZ          ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned portSHORT ) 104 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 30 * configMINIMAL_STACK_SIZE * 12) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 30 * configMINIMAL_STACK_SIZE * 4) )
 #define configMAX_TASK_NAME_LEN		( 10 )
 #define configUSE_TRACE_FACILITY	0		// 1
 #define configUSE_16_BIT_TICKS		0
@@ -168,7 +89,7 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#define INCLUDE_vTaskPrioritySet            1
+#define INCLUDE_vTaskPrioritySet            0
 #define INCLUDE_uxTaskPriorityGet           0
 #define INCLUDE_vTaskDelete                 0
 #define INCLUDE_vTaskCleanUpResources       0
@@ -199,5 +120,26 @@ to exclude the API function. */
 
 #ifndef BIT
 #define BIT(x)	(1 << (x))
+
+struct t_LongPoint {
+	long x;
+	long y;
+ 	long z;
+};
+
+struct t_FloatPoint {
+	float x;
+	float y;
+ 	float z;
+};
+
+typedef struct t_FloatPoint FloatPoint;
+typedef struct t_LongPoint LongPoint;
+
+struct t_step {
+	FloatPoint * current_steps;
+	FloatPoint * target_steps;
+	long * max_delta;
+};
 
 #endif

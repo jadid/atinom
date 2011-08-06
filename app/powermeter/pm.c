@@ -57,7 +57,8 @@ int jmlPM=0,k=0;
 unsigned char jml_sequen(char tipe) {
 	if 		(tipe==0) return 6;		// PM710
 	else if (tipe==1) return 8;		// PM810
-	else if (tipe==2) return 5;		// MICOM
+	else if (tipe==2) return 5;		// MICOM M300 <--- nilai return disesuaikan
+	else if (tipe==3) return 5;		// MICOM P127 <--- nilai return disesuaikan
 }
 
 int sedot_pm() {
@@ -169,11 +170,39 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
    		}
 	}
 	#endif
-	
+
 	#ifdef TIPE_MICOM_M300
 		if (tipe==2) {
 		#ifdef LIAT
-		printf("___MICOM .. edit disini ....");
+		printf("___MICOM .. edit disini ....\n");
+		#endif
+			if (urut_PM710==0)    {
+				jum_balik = get_M300(alamatPM, meter_voltage_micom, 12);		// 
+			} else if (urut_PM710==1)		{
+				jum_balik = get_M300(alamatPM, meter_current_micom, 8);  //
+			} else if (urut_PM710==2)		{
+				jum_balik = get_M300(alamatPM, meter_frek_micom, 2);  //
+			} else if (urut_PM710==3)		{
+				jum_balik = get_M300(alamatPM, meter_power_micom, 6); //
+			}
+			else if (urut_PM710==4)		
+			{
+				jum_balik = get_M300(alamatPM, meter_energi_micom, 6);
+			} 
+			else
+			{
+				#ifdef LIAT
+				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+				#endif
+			}
+		}
+	#endif
+
+#if 0	
+	#ifdef TIPE_MICOM_M300
+		if (tipe==2) {
+		#ifdef LIAT
+		printf("___MICOM M300.. edit disini ....");
 		#endif
 			if (urut_PM710==0)    {
 				jum_balik = get_PM710(alamatPM, meter_voltage_micom, 11);		// 
@@ -183,6 +212,27 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 				jum_balik = get_PM710(alamatPM, meter_power_micom, 4);  //
 			} else if (urut_PM710==3)		{
 				jum_balik = get_PM710(alamatPM, meter_energi_micom, 2); //
+				#ifdef LIAT
+				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+				#endif
+			}
+		}
+	#endif
+#endif
+
+	#ifdef TIPE_MICOM_P127
+		if (tipe==3) {
+		#ifdef LIAT
+		printf("___MICOM P127.. edit disini ....");
+		#endif
+			if (urut_PM710==0)    {
+				jum_balik = get_PM710(alamatPM, meter_voltage_p127, 11);		// 
+			} else if (urut_PM710==1)		{
+				jum_balik = get_PM710(alamatPM, meter_power_each_p127, 9);  //
+			} else if (urut_PM710==2)		{
+				jum_balik = get_PM710(alamatPM, meter_power_p127, 4);  //
+			} else if (urut_PM710==3)		{
+				jum_balik = get_PM710(alamatPM, meter_energi_p127, 2); //
 				#ifdef LIAT
 				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
 				#endif
@@ -340,6 +390,12 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 		#ifdef TIPE_MICOM_M300
 			portENTER_CRITICAL();
 			taruh_data_301(no, i);
+			portEXIT_CRITICAL();
+		#endif
+		} else if (tipe==3 && pm_sukses==1) {
+		#ifdef TIPE_MICOM_P127
+			portENTER_CRITICAL();
+			taruh_data_127(no, i);
 			portEXIT_CRITICAL();
 		#endif
 		}

@@ -1545,7 +1545,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"3\"></td>\r\n" \
-						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 <input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 <input type=\"radio\" name=\"g\" value=\"2\" %s/>MICOM 300 <input type=\"radio\" name=\"g\" value=\"100\" %s/>Modul Monita &nbsp;</td>\r\n" \
+						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 <input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 "	\
+						"<input type=\"radio\" name=\"g\" value=\"2\" %s/>MICOM 300 "	\
+						"<input type=\"radio\" name=\"g\" value=\"3\" %s/>MICOM 127 "	\
+						"<input type=\"radio\" name=\"g\" value=\"100\" %s/>Modul Monita &nbsp;</td>\r\n" \
 						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif <input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td></td>\r\n" \
 						"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"/>\r\n</td>" \
 						"</form></tr>\r\n", \
@@ -1554,7 +1557,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						ketr, \
 						p_sbrw[i].stack, \
 						p_sbrw[i].alamat, \
-						(p_sbrw[i].tipe==0?"checked":" "), (p_sbrw[i].tipe==1?"checked":" "), (p_sbrw[i].tipe==2?"checked":" "), (p_sbrw[i].tipe==100?"checked":" "), \
+						(p_sbrw[i].tipe==0?"checked":" "), (p_sbrw[i].tipe==1?"checked":" "), (p_sbrw[i].tipe==2?"checked":" "), \
+						(p_sbrw[i].tipe==3?"checked":" "), (p_sbrw[i].tipe==100?"checked":" "), \
 						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked"), \
 						i+1 );
 					strcat(tot_buf, head_buf);
@@ -1999,7 +2003,11 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"3\"></td>\r\n" \
-						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 <input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 <input type=\"radio\" name=\"g\" value=\"2\" %s/>MICOM 300 <input type=\"radio\" name=\"g\" value=\"100\" %s/>Modul Monita &nbsp;</td>\r\n" \
+						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 "	\
+						"<input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 "		\
+						"<input type=\"radio\" name=\"g\" value=\"2\" %s/>MICOM M300 "	\
+						"<input type=\"radio\" name=\"g\" value=\"3\" %s/>MICOM P127 "	\
+						"<input type=\"radio\" name=\"g\" value=\"100\" %s/>Modul Monita &nbsp;</td>\r\n" \
 						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif <input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td></td>\r\n" \
 						"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"/>\r\n</td>" \
 						"</form></tr>\r\n", \
@@ -2008,7 +2016,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						ketr, \
 						p_sbrw[i].stack, \
 						p_sbrw[i].alamat, \
-						(p_sbrw[i].tipe==0?"checked":" "), (p_sbrw[i].tipe==1?"checked":" "), (p_sbrw[i].tipe==2?"checked":" "), (p_sbrw[i].tipe==100?"checked":" "), \
+						(p_sbrw[i].tipe==0?"checked":" "), (p_sbrw[i].tipe==1?"checked":" "), \
+						(p_sbrw[i].tipe==2?"checked":" "), (p_sbrw[i].tipe==3?"checked":" "), \
+						(p_sbrw[i].tipe==100?"checked":" "), \
 						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked"), \
 						i+1 );
 					strcat(tot_buf, head_buf);

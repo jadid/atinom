@@ -998,9 +998,11 @@ vTaskDelay(100);
 
 	#ifdef PAKAI_RTC	
 		tinysh_add_command(&set_date_cmd);
-		tinysh_add_command(&set_mem_cmd);
-		#ifdef TES_MEM_RTC
-			tinysh_add_command(&tes_mem_cmd);
+		#ifdef PAKAI_MEM_RTC
+			tinysh_add_command(&set_mem_cmd);		
+			#ifdef TES_MEM_RTC
+				tinysh_add_command(&tes_mem_cmd);
+			#endif
 		#endif
 	#endif
 	

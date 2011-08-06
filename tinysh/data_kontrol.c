@@ -205,11 +205,12 @@ int set_data_default(void) {
 	
 	judul(" Set Data ke Default\r\n");
 	
-	p_gr = pvPortMalloc( (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set) );
+	j = (sizeof(data_f)/sizeof(float));
+	p_gr = pvPortMalloc( j * sizeof (struct t_dt_set) );
 	//p_gr = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
 	if (p_gr == NULL)
 	{
-		printf("%s(): Err allok memory gagal !\r\n", __FUNCTION__);
+		printf("%s(): Err allok memory gagal ! : %d\r\n", __FUNCTION__, j);
 		return;
 	}
 	

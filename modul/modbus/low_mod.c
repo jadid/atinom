@@ -78,6 +78,45 @@ unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk)	{
    	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
 }
 
+unsigned int get_M300(int alamatPM, unsigned short reg, unsigned char uk)	{
+   unsigned short dcrc;
+   int i;
+	
+   reg_flag = reg;
+
+   //if (reg != reg_kwh)
+   //reg = reg - 1;
+
+   //pmod.addr = (unsigned char)   addr_PM710;
+   pmod.addr = (unsigned char)   alamatPM;
+   pmod.command = (unsigned char) command_baca_micom;
+   pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
+   pmod.reg_lo = (unsigned char) (reg & 0x00FF);
+   pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
+
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
+   pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
+
+	#ifdef LIAT   
+	printf("Kirim: %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X  \n",
+			pmod.addr,
+			pmod.command,
+			pmod.reg_hi,
+			pmod.reg_lo,
+			pmod.jum_hi,
+			pmod.jum_lo,
+			pmod.crc_hi,
+			pmod.crc_lo);
+	
+	#endif		
+			
+   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
+}
+
+
+
 unsigned short cek_PM(int alamatPM) {
 	unsigned short dcrc;
    	unsigned char *p;
@@ -1003,13 +1042,226 @@ void taruh_data_710(int no_slave, int urt)	{
 	}
 #endif
 
+
 #ifdef TIPE_MICOM_M300
-	#define T10_des2		0.01
-	#define T11_des3		0.001
-	#define T12_des4		0.0001
 	
-	void taruh_data_301(int pm_dibaca, int urut) {
-		if (urut==0) {
+void taruh_data_301(int pm_dibaca, int urut) 
+{	
+	#ifdef LIAT
+	printf("taruh_data_301: urut:%d\n", urut); 
+	printf("-- RESPONSE ANALYSIS---\n");
+	#endif
+	
+	pm_dibaca=1;
+   
+	short satuan_t;
+	int i;
+	unsigned int temp;
+   	unsigned int temp1,temp2,temp3,temp4,temp5,temp6;
+    
+    int shift;
+    shift=8;
+    int itemp;
+   
+    float ftemp;
+    
+	if(urut==0)	{
+		#ifdef LIAT
+		printf(">Voltage dalam Long\n");
+		#endif
+		
+		for(i=0;i<6;i++)
+		{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(temp1<<16) + temp2;
+			ftemp=2*((float) temp3)/10;
+			
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f =>\n",meter_voltage_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+			{
+				asli_PM710[pm_dibaca].voltA_N = ftemp;
+				data_PM710[pm_dibaca].voltA_N = ftemp;
+			}
+			if(i==1)
+			{
+				asli_PM710[pm_dibaca].voltB_N = ftemp;
+				data_PM710[pm_dibaca].voltB_N = ftemp;
+			}
+			if(i==2)
+			{
+				asli_PM710[pm_dibaca].voltC_N = ftemp;
+				data_PM710[pm_dibaca].voltC_N = ftemp;
+			}
+			if(i==3)
+			{
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			}
+			if(i==4)
+			{
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			}
+			if(i==5)
+			{
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+			}
+		}
+	}
+	else if(urut==1)
+	{
+		#ifdef LIAT
+		printf(">DATA CURRENT dalam Long\n");
+		#endif
+		for(i=0;i<4;i++)
+		{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(temp1<<16) + temp2;
+			ftemp=4*((float) temp3)/500; //harusnya di scaled dengan data CT 
+									//Untuk CT 100/5 -> 1000
+									//Untuk CD 200/5 -> 500
+			//printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_current_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
+			
+			if(i==0)
+			{
+				asli_PM710[pm_dibaca].ampA = ftemp;
+				data_PM710[pm_dibaca].ampA = ftemp;
+			}
+			if(i==1)
+			{
+				asli_PM710[pm_dibaca].ampB = ftemp;
+				data_PM710[pm_dibaca].ampB = ftemp;
+			}
+			if(i==2)
+			{
+				asli_PM710[pm_dibaca].ampC = ftemp;
+				data_PM710[pm_dibaca].ampC = ftemp;
+			}
+			if(i==3)
+			{
+				asli_PM710[pm_dibaca].ampN = ftemp;
+				data_PM710[pm_dibaca].ampN = ftemp;
+			}
+		}
+	}
+	else if(urut==2)
+	{
+		temp1=(buf[shift+3]<< 8)+buf[shift+4];
+		temp2=(buf[shift+5]<< 8)+buf[shift+6];
+		
+		ftemp=(float) temp2/1000;
+		
+		#ifdef LIAT
+			printf(">DATA Frekuensi (3%0.4d)\n",meter_frek_micom);		
+			printf(" Frekuensi: %0.3f\n",ftemp);
+		#endif
+		
+		asli_PM710[pm_dibaca].frek = ftemp;
+		data_PM710[pm_dibaca].frek = ftemp;
+		
+		#ifdef CEK_PM
+			printf(" --->Frek : %d - %.2f : %f\r\n", data_PM710[pm_dibaca].frek, asli_PM710[pm_dibaca].frek, satuan_kw[pm_dibaca]);
+		#endif
+
+	}
+	else if(urut==3)
+	{
+		int i,j;
+		
+		#ifdef LIAT
+			printf(">DATA POWER \n");
+		#endif
+		
+		for(i=0;i<3;i++)
+		{
+			j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			itemp=(int) ((temp1<<16) + temp2);
+			ftemp=8*((float) itemp)/10000;
+			
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+			{
+				
+				asli_PM710[pm_dibaca].kw = ftemp;
+				data_PM710[pm_dibaca].kw=ftemp;
+				#ifdef CEK_PM
+					printf(" --->KW : %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+				#endif
+			}
+			else if(i==1)
+				asli_PM710[pm_dibaca].kvar = (int) ftemp;
+			else if(i==2)
+				asli_PM710[pm_dibaca].kva = (int) ftemp;
+				
+		}
+		
+		i=3;
+		j=i*2;
+		temp1=(buf[3+j*2]<<8)+buf[4+j*2];
+			
+		ftemp= ((float) temp1/1000);
+		
+		#ifdef LIAT
+			printf("\n - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
+		#endif
+		asli_PM710[pm_dibaca].pf = ftemp;
+			
+	}
+	else if(urut==4)
+	{
+		#ifdef LIAT
+		printf(">DATA ENERGY \n");
+		#endif
+		
+		for(i=0;i<4;i++)
+		{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(temp1<<16) + temp2;
+			ftemp=(float) temp3;///1000; //harusnya di scaled dengan data CT 
+			ftemp=ftemp/125;
+			
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_energi_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+				asli_PM710[pm_dibaca].kvarh = ftemp;//3*ftemp/125;
+			else if(i==1)
+				asli_PM710[pm_dibaca].kwh =ftemp;// 3*ftemp/125; //Imported energy
+			else if(i==2)
+				asli_PM710[pm_dibaca].kvah =ftemp;// 3*ftemp/125;
+			else if(i==3)
+				asli_PM710[pm_dibaca].kvah =ftemp;// 3*ftemp/125;
+		}	
+			
+	}
+	/*
+		else if (urut==10) { //VOLTAGE
+		
+			
 			data_PM710[pm_dibaca].voltA_N = buf[3+HD];
 			data_PM710[pm_dibaca].voltA_N = (data_PM710[pm_dibaca].voltA_N << 8) + buf[4+HD];		
 			if (data_PM710[pm_dibaca].voltA_N == 32768)
@@ -1019,11 +1271,34 @@ void taruh_data_710(int no_slave, int urt)	{
 			#ifdef CEK_PM
 			printf("ampA: %d - %.2f, satuan amp: %f\r\n", data_PM710[pm_dibaca].voltA_N, asli_PM710[pm_dibaca].voltA_N, satuan_amp[pm_dibaca]);
 			#endif
-		}
-		else if (urut==1) {
+		}*/
+	else 
+	{
+		#ifdef LIAT
+		printf(">DATA lain-lain (urut: %d \n",urut);
+		#endif
 			
-		}
+		temp1=(buf[3]<< 8)+buf[4];
+		temp2=(buf[5]<< 8)+buf[6];
+		temp3=(buf[7]<< 8)+buf[8];
+		temp4=(buf[9]<< 8)+buf[10];
+			
+		#ifdef LIAT
+		printf(" - Data 1: %d (0x%0.4X)\n",temp1,temp1);
+		printf(" - Data 2: %d (0x%0.4X)\n",temp2,temp2); //(buf[3]<< 8) + buf[4]
+		
+		printf(" - Data 3: %d (0x%0.4X)\n",temp3,temp3);
+		printf(" - Data 4: %d (0x%0.4X)\n",temp4,temp4); //(buf[5]<< 8) + 	
+		#endif
 	}
+}
+#endif
+
+#ifdef TIPE_MICOM_P127
+	
+void taruh_data_127(int pm_dibaca, int urut) {
+	
+}
 #endif
 
 //---------------------------------------------------------------------------

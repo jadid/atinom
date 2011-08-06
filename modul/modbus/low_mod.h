@@ -18,11 +18,16 @@
 
 
 //---------------------------------------------------------------------------
+
+#include "FreeRTOS.h"
+#include "hardware.h"
+
 #ifndef PM710H
 #define PM710H
 
 //#define addr_PM710      2
 #define command_baca    0x03	//4
+#define command_baca_micom 0x04
 
 #ifdef PAKAI_KTA
 #define reg_KTA			1
@@ -79,6 +84,7 @@
 	#define reg_satuan_810      3210		//3209 x
 #endif //TIPE_PM810
 
+#if 0
 #ifdef TIPE_MICOM_M300
 	#define info_micom				30001		//
 	#define meter_voltage_micom		30454		// 11 data: VA, VB, VC, VAB, VBC, VCA, IA, IB, IC, IN, frek
@@ -86,6 +92,35 @@
 	#define meter_power_micom		30501		//  4 data: Tot P, Q, S, pf 
 	#define meter_energi_micom		30508		//    data: wh, varh
 #endif	// TIPE_MICOM_M300
+#endif
+
+#ifdef TIPE_MICOM_M300
+
+	#define comand_baca_micom 0x04
+	#define model_number 1
+	#define meter_voltage_micom 454
+	#define meter_current_micom 466
+	#define meter_frek_micom 474
+
+	#define meter_power_micom     501
+	#define meter_pf_micom    507
+
+	#define meter_energi_micom   508 
+
+	//pembacaan skaal VT/CT
+	#define reg_ct	42	//4044
+	#define reg_vt	44	//4042
+
+#endif //TIPE_MICOM_300
+
+#ifdef TIPE_MICOM_P127
+	#define info_micom				30001		//
+	#define meter_voltage_p127		30454		// 11 data: VA, VB, VC, VAB, VBC, VCA, IA, IB, IC, IN, frek
+	#define meter_power_each_p127	30483		//  9 data: kwA, kwB, kwC, kvarA, kvarB, kvarC, kvaA, kvaB, kvaC
+	#define meter_power_p127		30501		//  4 data: Tot P, Q, S, pf 
+	#define meter_energi_p127		30508		//    data: wh, varh
+#endif	// TIPE_MICOM_M300
+
 
 struct d_pmod {
       unsigned char addr;

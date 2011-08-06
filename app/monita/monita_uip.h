@@ -25,6 +25,8 @@
 	// di sektor 26, harusnya bisa nyampe 120 sumber		--> masalahnya jml datanya terbatas
 	#if defined(TAMPILAN_MONITA_STD)
 		#define JML_SUMBER	15
+	#elif defined(UNTUK_PLTD_AMPENAN)
+		#define JML_SUMBER 10
 	#else
 		#define JML_SUMBER	5
 	#endif

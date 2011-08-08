@@ -144,7 +144,7 @@
 
 /* Value to use on rev 'A' and newer devices. */
 
-#define INCLUDE_uxTaskGetStackHighWaterMark 	1
+
 
 #define configPINSEL2_VALUE 	0x50150105
 
@@ -183,7 +183,7 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelayUntil             0
 #define INCLUDE_vTaskDelay                  1
 #define INCLUDE_xTaskGetCurrentTaskHandle	0
-
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 
 #endif /* FREERTOS_CONFIG_H */
 

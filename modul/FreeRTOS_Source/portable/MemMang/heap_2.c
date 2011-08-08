@@ -174,6 +174,7 @@ void *pvReturn = NULL;
 		structure in addition to the requested amount of bytes. */
 		if( xWantedSize > 0 )
 		{
+			//printf("sampe sini 1  !!\r\n");
 			xWantedSize += heapSTRUCT_SIZE;
 
 			/* Ensure that blocks are always aligned to the required number of bytes. */
@@ -186,6 +187,7 @@ void *pvReturn = NULL;
 
 		if( ( xWantedSize > 0 ) && ( xWantedSize < configTOTAL_HEAP_SIZE ) )
 		{
+			//printf("sampe sini 2  !!\r\n");
 			/* Blocks are stored in byte order - traverse the list from the start
 			(smallest) block until one of adequate size is found. */
 			pxPreviousBlock = &xStart;
@@ -199,6 +201,7 @@ void *pvReturn = NULL;
 			/* If we found the end marker then a block of adequate size was not found. */
 			if( pxBlock != &xEnd )
 			{
+				//printf("sampe sini 3  !!\r\n");
 				/* Return the memory space - jumping over the xBlockLink structure
 				at its start. */
 				pvReturn = ( void * ) ( ( ( unsigned portCHAR * ) pxPreviousBlock->pxNextFreeBlock ) + heapSTRUCT_SIZE );
@@ -210,6 +213,7 @@ void *pvReturn = NULL;
 				/* If the block is larger than required it can be split into two. */
 				if( ( pxBlock->xBlockSize - xWantedSize ) > heapMINIMUM_BLOCK_SIZE )
 				{
+					//printf("sampe sini 4  !!\r\n");
 					/* This block is to be split into two.  Create a new block
 					following the number of bytes requested. The void cast is
 					used to prevent byte alignment warnings from the compiler. */

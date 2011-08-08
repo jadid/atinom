@@ -386,6 +386,7 @@ static tinysh_cmd_t set_date_cmd={0,"set_date","Mengeset waktu","thn bulan tgl j
 							  
 void cek_stack(void)
 {
+	printf("Jml task: %d\r\n", uxTaskGetNumberOfTasks);
 	printf("Sisa stack masing2 task (bytes)\r\n");
 	garis_bawah();
 	printf(     " Shell      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
@@ -769,6 +770,8 @@ portTASK_FUNCTION(shell, pvParameters )
 		printf("NON Preemptive kernel digunakan !\r\n"); 
 	else
 		printf("Preemptive kernel digunakan !\r\n");
+	
+	printf("configTOTAL_HEAP_SIZE: %d\r\n", configTOTAL_HEAP_SIZE);
 	
 	#ifdef USB_TEST
 	Host_Init();               /* Initialize the lpc2468 host controller                                    */

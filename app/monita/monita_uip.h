@@ -26,7 +26,7 @@
 	#if defined(TAMPILAN_MONITA_STD)
 		#define JML_SUMBER	15
 	#elif defined(UNTUK_PLTD_AMPENAN)
-		#define JML_SUMBER 9
+		#define JML_SUMBER 10
 	#else
 		#define JML_SUMBER	5
 	#endif
@@ -98,7 +98,7 @@
 #define ALMT_KONFIG		0x70000
 //------------------------------------------------------------//
 
-#define SEKTOR_DT_SET	21
+#define SEKTOR_DT_SET	21			// 32 kB
 #define ALMT_DT_SET		0x70000
 
 #ifdef PAKAI_GSM_FTP
@@ -360,7 +360,7 @@ struct t_group {
 };
 
 struct t_dt_set  {
-	float 	alarm_HH;
+	float 	alarm_HH;			// 4
 	//float 	alarm_LL;
 	char	relay;
 	char 	aktif;

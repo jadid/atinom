@@ -196,8 +196,7 @@ int cek_data(int argc, char **argv)
 	
 }
 
-static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer",
-                              cek_data,0,0,0};
+static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer", cek_data,0,0,0};
 
 int set_data_default(void) {
 	int i,j=0;
@@ -210,7 +209,7 @@ int set_data_default(void) {
 	//p_gr = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
 	if (p_gr == NULL)
 	{
-		printf("%s(): Err allok memory gagal ! : %d\r\n", __FUNCTION__, j);
+		printf("%s(): Err allok memory gagal ! : %d, %d\r\n", __FUNCTION__, j, (j*sizeof(struct t_dt_set)) );
 		return;
 	}
 	

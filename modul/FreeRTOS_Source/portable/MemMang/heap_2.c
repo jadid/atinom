@@ -160,6 +160,7 @@ xBlockLink *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
 static portBASE_TYPE xHeapHasBeenInitialised = pdFALSE;
 void *pvReturn = NULL;
 
+	//printf("%s()\r\n", __FUNCTION__);
 	vTaskSuspendAll();
 	{
 		/* If this is the first call to malloc then the heap will require
@@ -231,7 +232,8 @@ void *pvReturn = NULL;
 		}
 	}
 	xTaskResumeAll();
-
+	//printf("%s()\r\n", __FUNCTION__);
+	
 	return pvReturn;
 }
 /*-----------------------------------------------------------*/

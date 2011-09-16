@@ -38,8 +38,9 @@
 
 #define JML_MESIN	10
 #define TIAP_MESIN	100
-#define JML_KANAL	20
+//#define JML_KANAL	20
 
+#define KANALNYA 10
 
 // PER_SUMBER itu menujukkan jml data untuk 10 kanal.
 #define SUMBER_420		10
@@ -61,8 +62,11 @@
 	int status_modem;
 #endif
 
-//#define SEKTOR_ENV	24
-//#define ALMT_ENV	0x7A000
+#ifdef BOARD_KOMON_KONTER
+	
+	char status_konter[KANALNYA];
+#endif
+
 
 #ifdef PAKAI_FILE_SIMPAN
 	//#define SEKTOR_SFILE	16
@@ -72,6 +76,9 @@
 	//
 #endif
 
+
+#define SEKTOR_ENV	24
+#define ALMT_ENV	0x7A000
 
 // pengakses: tinysh/setting_pm.c dipakai PM di board 420_SABANG
 #define SEKTOR_SUMBER	25

@@ -215,7 +215,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	vTaskDelay(300);
 	
 	/* baca environtment (dapat IP dll dulu) */
-	baca_env(0);
+//	baca_env(0);
 	printf("Init Application ......\r\n");
 	printf(" UIP : uip_init\r\n");
 

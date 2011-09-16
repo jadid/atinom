@@ -28,7 +28,7 @@
 //unsigned int result[2]; 	// For Result Table
 //IAP iap_entry;
 
-#define MAGIC_1	0x12
+#define MAGIC_1	0x11
 #define MAGIC_2	0xEF
 
 void tulis_env_flash(struct t_env *ev);
@@ -185,6 +185,8 @@ int baca_env(char tampil)
 			#endif
 
 			#ifdef BOARD_KOMON_KONTER
+			printf("");
+			
 			int z=0;
 			//printf("KANALNYA: %d, i: %d\r\n", KANALNYA, 7*2-1);
 			if (tampil == 1)	{
@@ -195,8 +197,8 @@ int baca_env(char tampil)
 					#endif
 					{
 						z++;
-						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\r\n", \ 
-							z, env2->kalib[i].m, env2->kalib[i].C, i+1);
+						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\t\t%d\r\n", \ 
+							z, env2->kalib[i].m, env2->kalib[i].C, i+1, env2->kalib[i].status);
 					}
 				}
 			}

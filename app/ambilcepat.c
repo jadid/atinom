@@ -19,9 +19,16 @@ xTaskHandle hdl_ambilcepat;
 	extern float data_f[];
 #endif
 
+#ifdef BOARD_KOMON_KONTER
+	#include "../tinysh/enviro.h"
+	extern char status_konter[KANALNYA];
+#endif
+
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(500);
+  	baca_env(0);	
   	
+  	vTaskDelay(50);
   	int loopambil=0;
 	
 	#ifdef PAKAI_SHELL
@@ -62,6 +69,17 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
 			vTaskDelay(3000);
 		#endif
+  	#endif
+  	
+	#ifdef BOARD_KOMON_KONTER
+		struct t_env *penv;
+		penv = (char *) ALMT_ENV;
+	
+		for (loopambil=0; loopambil<KANALNYA; loopambil++)	{
+			status_konter[loopambil] = penv->kalib[loopambil].status;
+			printf("status %d: %d : %d\r\n", loopambil+1, penv->kalib[loopambil].status, status_konter[loopambil]);
+		}
+		loopambil=0;
   	#endif
   	
   	vTaskDelay(50);

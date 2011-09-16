@@ -5,6 +5,10 @@
 #include "FreeRTOS.h"
 #include "hardware.h"
 
+/*
+ * dipanggil pertama kali ketika booting 
+ * 
+ */
 void setup_hardware() {
 	sysInit();
 	

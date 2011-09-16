@@ -6,16 +6,19 @@
 #define IAP_LOCATION 0x7FFFFFF1
 typedef void (*IAP)(unsigned int [],unsigned int[]);
 
+#include "../app/monita/monita_uip.h"
+
+/*
 #ifdef BOARD_KOMON_KONTER
 	#define KANALNYA 10
 #else
 	#define KANALNYA 10
 #endif
-
+//*/
 struct t_kalib {
 	float m;
 	float C;
-	char status;		// 0: adc tegangan		1: sensor pintu
+	char status;		// [sabang 0: adc tegangan,	1: sensor pintu] [konter 0: rpm/counting, 1: OnOff]
 	char ket[32];
 };
 
@@ -59,8 +62,8 @@ struct t_env {
 	#endif
 };
 
-#define SEKTOR_ENV	24
-#define ALMT_ENV	0x7A000
+//#define SEKTOR_ENV	24
+//#define ALMT_ENV	0x7A000
 
 void save_env(int argc, char **argv);
 void print_env(int argc, char **argv);

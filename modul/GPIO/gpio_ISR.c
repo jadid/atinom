@@ -18,6 +18,8 @@
 #include "semphr.h"
 #include "gpio.h"
 
+#include "../../app/monita/monita_uip.h"
+
 #ifdef BOARD_TAMPILAN
 //#include "../tampilan/tampilan.h"
 #endif
@@ -125,6 +127,8 @@ void timer1_ISR_Wrapper( void )
 	portRESTORE_CONTEXT();
 }
 
+extern unsigned char status_konter[KANALNYA];
+
 void gpio_ISR_Handler( void )
 {
 	int t=0;
@@ -133,34 +137,125 @@ void gpio_ISR_Handler( void )
 
 	new_period = T1TC;
 	//cek sumber
+	
+	/*
 	if (IO2_INT_STAT_F & kont_10)
 	{
 		t = 9;
 		set_konter(t, new_period);
 		IO2_INT_CLR = kont_10;
 	}
+	//*/
+	if (IO2_INT_STAT_F & kont_10) {
+		t = 9;
+		if (status_konter[t]==0) {
+			set_konter(t, new_period);
+		} else if (status_konter[t]==1) {
+			set_konter_onoff(t, 1);
+		}
+		IO2_INT_CLR = kont_10;
+	} 
+	if (IO2_INT_STAT_R & kont_10)	{
+		t = 9;
+		if (status_konter[t]==1) {
+			set_konter_onoff(t, 0);
+		}
+		IO2_INT_CLR = kont_10;
+	}
+
+	/*
 	if (IO2_INT_STAT_F & kont_9)
 	{
 		t = 8;
 		set_konter(t, new_period);
 		IO2_INT_CLR = kont_9;
 	}
+	//*/
+	if (IO2_INT_STAT_F & kont_9) {
+		t = 8;
+		if (status_konter[t]==0) {
+			set_konter(t, new_period);
+		} else if (status_konter[t]==1) {
+			set_konter_onoff(t, 1);
+		}
+		IO2_INT_CLR = kont_9;
+	} 
+	if (IO2_INT_STAT_R & kont_9)	{
+		t = 8;
+		if (status_konter[t]==1) {
+			set_konter_onoff(t, 0);
+		}
+		IO2_INT_CLR = kont_9;
+	}
+	
+	/*
 	if (IO2_INT_STAT_F & kont_8)
 	{
 		t = 7;
 		set_konter(t, new_period);
 		IO2_INT_CLR = kont_8;
 	}
-	if (IO2_INT_STAT_F & kont_7)
-	{
+	//*/
+	if (IO2_INT_STAT_F & kont_8) {
+		t = 7;
+		if (status_konter[t]==0) {
+			set_konter(t, new_period);
+		} else if (status_konter[t]==1) {
+			set_konter_onoff(t, 1);
+		}
+		IO2_INT_CLR = kont_8;
+	} 
+	if (IO2_INT_STAT_R & kont_8)	{
+		t = 7;
+		if (status_konter[t]==1) {
+			set_konter_onoff(t, 0);
+		}
+		IO2_INT_CLR = kont_8;
+	}
+	
+	
+	if (IO2_INT_STAT_F & kont_7) {
 		t = 6;
-		set_konter(t, new_period);
+		if (status_konter[t]==0) {
+			set_konter(t, new_period);
+			//IO2_INT_CLR = kont_7;
+		} else if (status_konter[t]==1) {
+			set_konter_onoff(t, 1);
+			//IO2_INT_CLR = kont_7;
+		}
+		IO2_INT_CLR = kont_7;
+	} 
+	if (IO2_INT_STAT_R & kont_7)	{
+		t = 6;
+		if (status_konter[t]==1) {
+			set_konter_onoff(t, 0);
+		}
 		IO2_INT_CLR = kont_7;
 	}
+	
+	/*
 	if (IO2_INT_STAT_F & kont_6)
 	{
 		t = 5;
 		set_konter(t, new_period);
+		IO2_INT_CLR = kont_6;
+	}
+	//*/
+	
+	if (IO2_INT_STAT_F & kont_6) {
+		t = 5;
+		if (status_konter[t]==0) {
+			set_konter(t, new_period);
+		} else if (status_konter[t]==1) {
+			set_konter_onoff(t, 1);
+		}
+		IO2_INT_CLR = kont_6;
+	} 
+	if (IO2_INT_STAT_R & kont_6)	{
+		t = 5;
+		if (status_konter[t]==1) {
+			set_konter_onoff(t, 0);
+		}
 		IO2_INT_CLR = kont_6;
 	}
 	

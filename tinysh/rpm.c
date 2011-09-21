@@ -37,6 +37,7 @@ void reset_konter(void)
 		konter.t_konter[i].beda = 0;
 		konter.t_konter[i].hit = 0;
 		konter.t_konter[i].hit_lama = 0;
+		konter.t_konter[i].onoff = 0;		// 
 		
 		#ifdef PAKAI_MEM_RTC
 			*(&MEM_RTC0+i) = 0;
@@ -111,6 +112,11 @@ void set_konter(int st, unsigned int period)
 	konter.t_konter[st].last_period = period;
 }
 
+void set_konter_onoff(int st, int isi_input) {
+	konter.t_konter[st].onoff = isi_input;
+	konter.t_konter[st].hit++;
+}
+
 void data_frek_rpm() {
 	unsigned int i;
 	float temp_f;
@@ -120,6 +126,7 @@ void data_frek_rpm() {
 	env2 = (char *) ALMT_ENV;
 	
 	for (i=0; i<KANALNYA; i++)	{
+		if (env2->kalib[i].status==0) 
 //		if (i>6) 
 		{
 			if (data_putaran[i])	{
@@ -143,6 +150,9 @@ void data_frek_rpm() {
 			//rtcRate[i] = (int) konter.t_konter[i].hit;
 			*(&MEM_RTC0+i) = data_f[(i*2)+1];
 		}
+		else if (env2->kalib[i].status==1) {		// OnOff
+			data_f[i*2] = (float) konter.t_konter[i].onoff;
+		}
 	}	
 }
 
@@ -153,25 +163,38 @@ void cek_rpm()	{
 	
 	printf("Global hit = %d\n", konter.global_hit);
 	printf("Ov flow = %d\n", konter.ovflow);
+	
+	struct t_env *penv;
+	penv = (char *) ALMT_ENV;
 
 	for (i=0; i<10; i++)	{
-		#ifndef BOARD_KOMON_KONTER_3_1
-		if (i>6) 
-		#endif
-		{
-			if (data_putaran[i])	{
-				// cari frekuensi
-				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
-				// rpm
-				temp_rpm = temp_f * 60;
+		if (penv->kalib[i].status==0) {		// pulsa
+			#ifndef BOARD_KOMON_KONTER_3_1
+			if (i>6) 
+			#endif
+			{
+				if (data_putaran[i])	{
+					// cari frekuensi
+					temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
+					// rpm
+					temp_rpm = temp_f * 60;
+				}
+				else	{
+					temp_f = 0;
+					temp_rpm = 0;
+				}	
+		
+				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
+					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
 			}
-			else	{
-				temp_f = 0;
-				temp_rpm = 0;
-			}	
-	
-			printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
-				(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
+		} else if (penv->kalib[i].status==1) {		// onoff
+			#ifndef BOARD_KOMON_KONTER_3_1
+			if (i>6) 
+			#endif
+			{
+				printf(" %2d : Status: %d [%s], Nilai: %d : %s\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==1)?"OnOff":"Pulsa/RPM", konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off");
+			}
 		}
 	}
 	

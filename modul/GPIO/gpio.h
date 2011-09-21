@@ -34,6 +34,7 @@ typedef struct {
 	unsigned int beda;			// kali 10
 	unsigned int hit;
 	unsigned int hit_lama;		// untuk mengetahui mati atau enggak
+	unsigned char onoff;
 } ts_konter;
 
 struct t2_konter{
@@ -43,6 +44,8 @@ struct t2_konter{
 };
 
 void init_gpio(void);
+
+int setup_konter_onoff(unsigned int kanale, unsigned char statk);
 
 #endif
 #endif /* GPIO_H_ */

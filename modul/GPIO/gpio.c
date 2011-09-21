@@ -106,6 +106,38 @@ static void reset_konter(void)
 }
 //*/
 
+//*
+int setup_konter_onoff(unsigned int aaa, unsigned char statk) {
+	//printf("\r\n aaa: %d\r\n", aaa);
+	int bbb = 0;
+	if (statk==1) {
+		if (aaa==0) {	IO2_INT_EN_R |= kont_1;		bbb = 1;	}
+		if (aaa==1) {	IO2_INT_EN_R |= kont_2;		bbb = 2;	}
+		if (aaa==2) {	IO2_INT_EN_R |= kont_3;		bbb = 3;	}
+		if (aaa==3) {	IO2_INT_EN_R |= kont_4;		bbb = 4;	}
+		if (aaa==4) {	IO2_INT_EN_R |= kont_5;		bbb = 5;	}
+		if (aaa==5) {	IO2_INT_EN_R |= kont_6;		bbb = 6;	}
+		if (aaa==6) {	IO2_INT_EN_R |= kont_7;		bbb = 7;	}
+		if (aaa==7) {	IO2_INT_EN_R |= kont_8;		bbb = 8;	}
+		if (aaa==8) {	IO2_INT_EN_R |= kont_9;		bbb = 9;	}
+		if (aaa==9) {	IO2_INT_EN_R |= kont_10;	bbb = 10;	}
+	} else {
+		if (aaa==0) {	IO2_INT_EN_R &= ~kont_1;	bbb = 1;	}
+		if (aaa==1) {	IO2_INT_EN_R &= ~kont_2;	bbb = 2;	}
+		if (aaa==2) {	IO2_INT_EN_R &= ~kont_3;	bbb = 3;	}
+		if (aaa==3) {	IO2_INT_EN_R &= ~kont_4;	bbb = 4;	}
+		if (aaa==4) {	IO2_INT_EN_R &= ~kont_5;	bbb = 5;	}
+		if (aaa==5) {	IO2_INT_EN_R &= ~kont_6;	bbb = 6;	}
+		if (aaa==6) {	IO2_INT_EN_R &= ~kont_7;	bbb = 7;	}
+		if (aaa==7) {	IO2_INT_EN_R &= ~kont_8;	bbb = 8;	}
+		if (aaa==8) {	IO2_INT_EN_R &= ~kont_9;	bbb = 9;	}
+		if (aaa==9) {	IO2_INT_EN_R &= ~kont_10;	bbb = 10;	}
+		
+	}
+	return bbb;
+}
+//*/
+
 void init_gpio(void)
 {
 	extern void ( gpio_ISR_Wrapper )( void );
@@ -156,6 +188,7 @@ void init_gpio(void)
 	#endif
 	
 	// enable falling edge interrupt
+	// inverse input
 	IO2_INT_EN_F = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
 	
 	#ifdef BOARD_KOMON_KONTER_3_1

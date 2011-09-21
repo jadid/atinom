@@ -15,13 +15,18 @@ xTaskHandle hdl_ambilcepat;
 	#include "../modul/GPIO/gpio.h"
 #endif
 
+#ifdef BOARD_KOMON_KONTER_3_1
+	#include "../modul/GPIO/gpio.h"
+#endif
+
+
 #ifdef DATA_RANDOM
 	extern float data_f[];
 #endif
 
 #ifdef BOARD_KOMON_KONTER
 	#include "../tinysh/enviro.h"
-	extern char status_konter[KANALNYA];
+	extern unsigned char status_konter[KANALNYA];
 #endif
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
@@ -29,7 +34,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	baca_env(0);	
   	
   	vTaskDelay(50);
-  	int loopambil=0;
+  	unsigned int loopambil=0;
 	
 	#ifdef PAKAI_SHELL
 		printf(" Monita : Ambil cepat init !!\r\n");
@@ -77,7 +82,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	
 		for (loopambil=0; loopambil<KANALNYA; loopambil++)	{
 			status_konter[loopambil] = penv->kalib[loopambil].status;
-			printf("status %d: %d : %d\r\n", loopambil+1, penv->kalib[loopambil].status, status_konter[loopambil]);
+			
+			printf("status %d: %d : %d : %d\r\n", \
+				loopambil+1, penv->kalib[loopambil].status, status_konter[loopambil], setup_konter_onoff(loopambil, status_konter[loopambil]));
+			
 		}
 		loopambil=0;
   	#endif

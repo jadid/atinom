@@ -64,7 +64,7 @@
 
 #ifdef BOARD_KOMON_KONTER
 	
-	char status_konter[KANALNYA];
+	unsigned char status_konter[KANALNYA];
 #endif
 
 

@@ -21,7 +21,8 @@
  * Macros and definitions for the ARP module.
  * \author Adam Dunkels <adam@dunkels.com>
  */
-  
+ 
+ #include "FreeRTOS.h"
 
 /*
  * Copyright (c) 2001-2003, Adam Dunkels.
@@ -115,6 +116,10 @@ void uip_arp_out(void);
    is responsible for flushing old entries in the ARP table. */
 void uip_arp_timer(void);
 
+
+// ditambahi untuk cmd di tinysh
+void uip_arp_table_list(void);
+
 /** @} */
 
 /**
@@ -139,7 +144,8 @@ void uip_arp_timer(void);
  *
  * \hideinitializer
  */
-#define uip_setethaddr(eaddr) do {uip_ethaddr.addr[0] = eaddr.addr[0]; \
+#define uip_setethaddr(eaddr) do {	\
+							  uip_ethaddr.addr[0] = eaddr.addr[0]; \
                               uip_ethaddr.addr[1] = eaddr.addr[1];\
                               uip_ethaddr.addr[2] = eaddr.addr[2];\
                               uip_ethaddr.addr[3] = eaddr.addr[3];\

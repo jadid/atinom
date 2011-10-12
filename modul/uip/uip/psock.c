@@ -41,6 +41,8 @@
  * $Id: psock.c 192 2008-10-19 14:39:27Z jcw $
  */
 
+//#if 1
+
 #include <stdlib.h>
 #include <stdio.h> 
 #include <string.h>
@@ -51,6 +53,8 @@
 #include "uipopt.h"
 #include "psock.h"
 #include "uip.h"
+
+#ifdef PAKAI_ETH
 
 #define STATE_NONE 0
 #define STATE_ACKED 1
@@ -352,3 +356,4 @@ psock_init(register struct psock *psock, char *buffer, unsigned int buffersize)
   PT_INIT(&psock->psockpt);
 }
 /*---------------------------------------------------------------------------*/
+#endif

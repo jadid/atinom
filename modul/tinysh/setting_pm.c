@@ -6,7 +6,8 @@
 	Setting pm di modul monita
 */
 
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
+#include "monita/monita_uip.h"
 
 #ifdef PAKAI_PM
 

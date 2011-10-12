@@ -63,6 +63,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+
+#if defined(PAKAI_ETH) && defined(PAKAI_ENC28J60)
+
 #include "../uip/uip.h"
 #include "../uip/uip_arp.h"
 #include "../uip/uipopt.h"
@@ -81,9 +84,9 @@
 #define RXSIZE        (RXSTOP - RXSTART + 1)
 */
 #define TX_BUFFER_SIZE  2040 //4096
-#define TXSTART			(RAMSIZE - (TX_BUFFER_SIZE + 8ul))
+#define TXSTART			(RAMSIZE - (TX_BUFFER_SIZE + 8ul))		// 0x2000 - (2040+8) = 8192-2048=6144
 #define RXSTART			0x0000ul
-#define	RXEND			((TXSTART -2ul) | 0x0001ul)
+#define	RXEND			((TXSTART -2ul) | 0x0001ul)		// 6144-2 = 
 //#define RXSIZE			(RXSTOP-(RXSTART+1ul))
 
 //
@@ -243,6 +246,9 @@ int enc28j60Init (void)
   //  ENC28J60 is present.
   //
   xTicks = xTaskGetTickCount ();
+  
+  
+  
 
   while (((encReadEthReg (ESTAT) & (ESTAT_UNIMP | ESTAT_CLKRDY)) != ESTAT_CLKRDY))
     if ((xTaskGetTickCount () - xTicks) > (1000 / portTICK_RATE_MS))
@@ -266,11 +272,16 @@ int enc28j60Init (void)
   //encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_BCEN);
 	// set filter
 	encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN);
-	encWriteReg(EPMM0, 0x3f);
-	encWriteReg(EPMM1, 0x30);
+	printf("\r\nERXFCON: 0x%02x\r\n", ERXFCON);
+	
+//#define UIP_ETHADDR0 0x00
+//#define UIP_ETHADDR1 0xbd
+//#define UIP_ETHADDR2 0x3b
+
+	encWriteReg(EPMM0, 0x3f);		// 0011 1111
+	encWriteReg(EPMM1, 0x30);		// 0011 0000
 	encWriteReg(EPMCSL, 0xf9);
 	encWriteReg(EPMCSH, 0xf7);
-
 
   encBankSelect (BANK2);
   encWriteReg (MACON2, 0);  // Remove all reset conditions
@@ -292,8 +303,8 @@ int enc28j60Init (void)
   encBankSelect (BANK3);
 
 	#if 1
-	printf("MAC address : ");
-	printf("  (%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X) ", \
+	printf("   MAC address : ");
+	printf("%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X", \
 		uip_ethaddr.addr [0], uip_ethaddr.addr [1],	\
 		uip_ethaddr.addr [2], uip_ethaddr.addr [3], \
 		uip_ethaddr.addr [4], uip_ethaddr.addr [5]);
@@ -460,8 +471,9 @@ u16_t enc28j60Receive (void)
   //  Set read Pointer
   //
   encBankSelect (BANK0);
-  encWriteReg16 (ERDPTL, ethRxPointer);
+  encWriteReg16 (ERDPTL, ethRxPointer);	// selalu baca awal memori RX
 
+	// alamat paket berikutnya
   ethRxPointer = encMACread ();
   ethRxPointer += encMACread () << 8;
 
@@ -537,7 +549,7 @@ signed portBASE_TYPE enc28j60WaitForData (portTickType delay)
 
 #ifdef USE_INTERRUPTS
   encBFCReg (EIR, EIR_PKTIF);
-  encWriteReg (EIE, EIE_INTIE | EIE_PKTIE);
+  encWriteReg(EIE, EIE_INTIE | EIE_PKTIE);
 #endif
 
 #ifdef GUNA_SEMA
@@ -888,3 +900,4 @@ static void encMACreadBulk (u8_t *buffer, u16_t length)
   ENC28J60_Deselect ();
 }
 
+#endif

@@ -46,6 +46,8 @@
 #define BUF ((struct __attribute__((packed))uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 #define IP_PROTO_TCP    6
 
+#ifdef PAKAI_ETH
+
 /*-----------------------------------------------------------------------------------*/
 void uip_add32(u8_t *op32, u16_t op16)
 {
@@ -199,3 +201,4 @@ u16_t uip_udpchksum(void)
 
   return (sum == 0) ? 0xffff : htons(sum);
 }
+#endif

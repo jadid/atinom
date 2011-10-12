@@ -6,6 +6,8 @@
 //  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/uip/uip/uip.c $
 //
 
+
+
 #define DEBUG_PRINTF(...) /*printf(__VA_ARGS__)*/
 
 /**
@@ -111,7 +113,7 @@
 
 
 
-
+#ifdef PAKAI_ETH
 
 
 // hardcoded IP disini
@@ -421,9 +423,11 @@ void uip_init(void)
 
   /* IPv4 initialization. */
 #if UIP_FIXEDADDR == 0
+	//printf("UIP_FIXEDADDR == 0: %d.%d.%d.%d.%d.%d\r\n", \
+	//	UIP_ETHADDR0,UIP_ETHADDR1,UIP_ETHADDR2,UIP_ETHADDR3,UIP_ETHADDR4,UIP_ETHADDR5);
   /*  uip_hostaddr[0] = uip_hostaddr[1] = 0;*/
 #endif /* UIP_FIXEDADDR */
-
+	
 }
 /*---------------------------------------------------------------------------*/
 #if UIP_ACTIVE_OPEN
@@ -465,10 +469,13 @@ again:
     }
   }
 
+	//printf("conn: %d\r\n", conn);
   if(conn == 0) {
+	  //printf("%s() return 0\r\n", conn);
     return 0;
   }
-
+	
+	
   conn->tcpstateflags = UIP_SYN_SENT;
 
   conn->snd_nxt[0] = iss[0];
@@ -580,7 +587,9 @@ uip_reass(void)
 {
   u16_t offset, len;
   u16_t i;
-
+	
+	//printf("%s() masuk\r\n", __FUNCTION__);
+	
   /* If ip_reasstmr is zero, no packet is present in the buffer, so we
      write the IP header of the fragment into the reassembly
      buffer. The timer is updated with the maximum age. */
@@ -706,8 +715,9 @@ uip_add_rcv_nxt(u16_t n)
 uip_process(u8_t flag)
 {
   register struct uip_conn *uip_connr = uip_conn;
-
+	//printf("%s() ... masuk flag: %d\r\n", __FUNCTION__, flag);
 #if UIP_UDP
+	//printf("%s() UIP_UDP\r\n");
   if(flag == UIP_UDP_SEND_CONN) {
     goto udp_send;
   }
@@ -717,8 +727,11 @@ uip_process(u8_t flag)
 
   /* Check if we were invoked because of a poll request for a
      particular connection. */
-  if(flag == UIP_POLL_REQUEST)
+  if(flag == UIP_POLL_REQUEST)		// (1 == 3)
   {
+	  #ifdef DEBUG_UIPNYA
+	  printf("UIP_POLL_REQUEST !!!\r\n");
+	  #endif
     if((uip_connr->tcpstateflags & UIP_TS_MASK) == UIP_ESTABLISHED && !uip_outstanding(uip_connr))
     {
       uip_flags = UIP_POLL;
@@ -729,7 +742,7 @@ uip_process(u8_t flag)
 
     /* Check if we were invoked because of the perodic timer fireing. */
   }
-  else if(flag == UIP_TIMER)
+  else if(flag == UIP_TIMER)		// (1 == 2)
   {
 #if UIP_REASSEMBLY
     if(uip_reasstmr != 0) {
@@ -758,6 +771,9 @@ uip_process(u8_t flag)
        out. */
     if(uip_connr->tcpstateflags == UIP_TIME_WAIT || uip_connr->tcpstateflags == UIP_FIN_WAIT_2)
     {
+		#ifdef DEBUG_UIPNYA
+		printf("  UIP_TIME_WAIT || UIP_FIN_WAIT_2 !!!\r\n");
+		#endif
       ++(uip_connr->timer);
       if(uip_connr->timer == UIP_TIME_WAIT_TIMEOUT)
       {
@@ -766,6 +782,9 @@ uip_process(u8_t flag)
     }
     else if(uip_connr->tcpstateflags != UIP_CLOSED)
     {
+		#ifdef DEBUG_UIPNYA
+		printf("  !UIP_CLOSED !!!\r\n");
+		#endif
       /* If the connection has outstanding data, we increase the
          connection's timer and see if it has reached the RTO value
          in which case we retransmit. */
@@ -914,6 +933,7 @@ uip_process(u8_t flag)
   if((BUF->ipoffset[0] & 0x3f) != 0 || BUF->ipoffset[1] != 0)
   {
 #if UIP_REASSEMBLY
+	//printf("UIP_REASSEMBLY: %s\r\n", __FUNCTION__);
     uip_len = uip_reass();
     if(uip_len == 0) {
       goto drop;
@@ -2025,8 +2045,14 @@ void uip_send (const void *data, int len)
 {
   uip_slen = len;
 
-  if (len > 0)
-    if (data != uip_sappdata)
-      memcpy (uip_sappdata, (data), uip_slen);
+	if (len > 0)	{
+		if (data != uip_sappdata) {
+			//portENTER_CRITICAL();
+			memcpy (uip_sappdata, (data), uip_slen);
+			//portEXIT_CRITICAL();
+		}
+  }
 }
 /** @} */
+
+#endif

@@ -360,7 +360,11 @@
 #ifdef UIP_CONF_ARPTAB_SIZE
 #define UIP_ARPTAB_SIZE UIP_CONF_ARPTAB_SIZE
 #else
-#define UIP_ARPTAB_SIZE 8
+	#if defined(PAKAI_ENCX24J600)
+		#define  UIP_ARPTAB_SIZE 20
+	#else
+		#define UIP_ARPTAB_SIZE 8
+	#endif
 #endif
 
 /**
@@ -584,8 +588,8 @@ typedef uip_ip4addr_t uip_ipaddr_t;
 
 
 
-#include "../../monita/monita_uip.h"
-
+//#include "../../monita/monita_uip.h"
+#include "../../app/monita/monita_uip.h"
 
 //typedef struct httpd_state uip_tcp_appstate_httpd;
 

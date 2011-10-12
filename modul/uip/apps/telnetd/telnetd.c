@@ -44,6 +44,8 @@
 #include "task.h"
 #include "queue.h"
 
+
+#if defined(PAKAI_ETH) && defined(PAKE_TELNETD)
 #include <string.h>
 
 #define MIN(x,y) ((x)<(y)?(x):(y))
@@ -270,6 +272,7 @@ static void telnetdClose (void)
 // fungsi sederhana untuk cek passwd
 static int  jum=0;
 static char pas[32];
+static char bintang = '*';
 
 void cek_passwd(char *cc)
 {
@@ -299,9 +302,9 @@ static void telnetdNewRxChar (u8_t c)
 
 	poll_no_komand = 0;
 	
-	if ( passwd_benar == 1)
+	if ( passwd_benar == 1) {
   		xQueueSend (consoleQueue, &c, portMAX_DELAY);
-  	else
+	} else
   	{
   		pas[jum] = c;
   		jum++;
@@ -568,3 +571,4 @@ void telnetd_appcall (void)
     	telnetdSendData ();
   	}
 }
+#endif

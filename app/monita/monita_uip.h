@@ -13,9 +13,10 @@
 	
  */
 
-#include "../uip/uip/psock.h"
-#include "../uip/uip/uipopt.h"
-
+//#include "../uip/uip/psock.h"
+//#include "../uip/uip/uipopt.h"
+#include "../modul/uip/uip/psock.h"
+#include "../modul/uip/uip/uipopt.h"
 
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_

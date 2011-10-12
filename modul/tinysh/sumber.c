@@ -24,13 +24,14 @@
 */
 
 //#include <regex.h>
-//#include "../monita/monita_uip.h"
-#include "../../app/monita/monita_uip.h"
+//#include "../app/monita/monita_uip.h"
+
+#include "FreeRTOS.h"
 
 #ifndef __SUMBER__
 #define __SUMBER__
 
-struct t_sumber *sumber;
+//struct t_sumber *sumber;
 //int cek_nomer_sumber(char *arg, int maks);
 //void set_awal_sumber(void);
 //static int simpan_sumber( struct t_sumber *pgr);
@@ -41,7 +42,7 @@ void cek_sumber(void)
 	struct t_sumber *sumber;
 	
 	sumber = (char *) ALMT_SUMBER;
-	printf("  No :    Nama    :      IPaddr     : Stack : Almt :   Tipe   :    Status\r\n");
+	printf("  No :    Nama    :      IPaddr     : Stack : Almt :    Tipe    :    Status\r\n");
 
 	for (i=0; i<67; i++)
 		printf("-");
@@ -59,13 +60,13 @@ void cek_sumber(void)
 		
 		/* tipe */
 		if (sumber[i].tipe==0 && sumber[i].alamat>0) {
-			printf("%-4s :","710");
+			printf("%-6s :","710");
 		} else if(sumber[i].tipe==1 && sumber[i].alamat>0) {
-			printf("%-4s :","810");
+			printf("%-6s :","810");
 		} else if(sumber[i].tipe==2 && sumber[i].alamat>0) {
-			printf("%-4s :","KTA");
+			printf("%-6s :","MICOM");
 		} else {
-			printf("%-4s :","-");
+			printf("%-6s :","-");
 		}
 		
 		/* status */
@@ -170,8 +171,7 @@ void set_sumber(int argc, char **argv)
 	memcpy((char *) p_sbr, (char *) ALMT_SUMBER, (JML_SUMBER * sizeof (struct t_sumber)));
 	
 	
-	if (strcmp(argv[2], "ipaddr") == 0)
-	{
+	if (strcmp(argv[2], "ipaddr") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{
@@ -212,8 +212,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "status") == 0)
-	{
+	else if (strcmp(argv[2], "status") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{
@@ -241,8 +240,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}	
 	}
-	else if (strcmp(argv[2], "tipe") == 0)
-	{
+	else if (strcmp(argv[2], "tipe") == 0)	{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{
@@ -252,8 +250,10 @@ void set_sumber(int argc, char **argv)
 				p_sbr[sumb-1].tipe = 0;
 			} else if ( strcmp(argv[3], "810")==0 || strcmp(argv[3], "1")==0) 	{
 				p_sbr[sumb-1].tipe = 1;
-			} else if ( strcmp(argv[3], "KTA")==0 || strcmp(argv[3], "2")==0) 	{
+			} else if ( strcmp(argv[3], "M300")==0 || strcmp(argv[3], "2")==0) 	{
 				p_sbr[sumb-1].tipe = 2;
+			} else if ( strcmp(argv[3], "P127")==0 || strcmp(argv[3], "3")==0) 	{
+				p_sbr[sumb-1].tipe = 3;
 			} else {
 				p_sbr[sumb-1].tipe = 0;
 			}
@@ -282,8 +282,7 @@ void set_sumber(int argc, char **argv)
 			return;
 		}
 	}
-	else if (strcmp(argv[2], "stack") == 0)
-	{
+	else if (strcmp(argv[2], "stack") == 0)		{
 		sprintf(str_sumber, "%s", argv[1]);	
 		sumb = cek_nomer_sumber(str_sumber, JML_SUMBER);
 		if (sumb > 0)		{

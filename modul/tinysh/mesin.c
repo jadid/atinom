@@ -5,7 +5,7 @@
 	daun biru engineering
 	*/
 
-#include "../monita/monita_uip.h"
+#include "../app/monita/monita_uip.h"
 void cek_titik(int no_mes);
 
 extern struct t_mesin mesin[JML_MESIN];

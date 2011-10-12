@@ -39,8 +39,11 @@
 	
 	*/
 //#include "monita_uip.h"
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
+#include "FreeRTOS.h"
+#include "../../app/monita/monita_uip.h"
 
+#include "uip.h"
 #include "uip.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +60,8 @@ extern char * satuannya_pm[];
 #endif
 
 
-static int simpan_data( struct t_dt_set *pgr);
+//static int simpan_data( struct t_dt_set *pgr);
+
 /*	
 int reset_data_sumber(void)
 {
@@ -90,6 +94,11 @@ int cek_data(int argc, char **argv)
 			printf(": Alr_H : Alr_HH");
 			printf("Rly : ");
 		#endif
+		#ifdef UNTUK_PLTD_LOPANA
+			printf(": Bawah  :  Atas   : Status :");
+			printf("Rly : ");
+		#endif
+		
 		printf(" : &Memory\r\n");
 		garis_bawah();
 		
@@ -101,10 +110,15 @@ int cek_data(int argc, char **argv)
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#endif
 			
-			printf(" (%3d): %-16s : % 8.2f : %-6s : (%X)\r\n", (i+1), \
-			p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
-			//printf(" (%3d): %-10s :  %10.2f : %5s: %-6s : (%X)\r\n", (i+1), \
-			//	p_dt[i].nama, 6,data_f[i], (p_dt[i].aktif==1)?"aktif":"mati", p_dt[i].satuan, &p_dt[i]);	
+			#ifdef UNTUK_PLTD_LOPANA
+				printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : (%X)\r\n", (i+1), \
+				p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].batas_atas, &p_dt[i]);	
+			#else
+				printf(" (%3d): %-16s : % 8.2f : %-6s : (%X)\r\n", (i+1), \
+				p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
+				//printf(" (%3d): %-10s :  %10.2f : %5s: %-6s : (%X)\r\n", (i+1), \
+				//	p_dt[i].nama, 6,data_f[i], (p_dt[i].aktif==1)?"aktif":"mati", p_dt[i].satuan, &p_dt[i]);	
+			#endif
 		}
 		//*/
 		return;
@@ -135,14 +149,32 @@ int cek_data(int argc, char **argv)
 				p_dt = (char *) ALMT_DT_SET;
 				
 				//judul(" Data Setting\r\n");
-				printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
-				garis_bawah();
+				#ifdef UNTUK_PLTD_LOPANA
+					printf(" No : ID.  :       Nama       :    Data    : Satuan : alarmH : alarmHH : Bawah :  Atas  : Status\r\n");
+					for (i=0; i<98; i++) {
+						printf("-");
+					}
+					printf("\r\n");
+				#else
+					printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
+					garis_bawah();
+				#endif
+				
 
 				if (sumber[sumb-1].alamat==0) {		// Modul Monita
+					#ifdef UNTUK_PLTD_LOPANA
+					for (i=0; i<PER_SUMBER; i++) {
+						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : %6.1f : %6.1f : %6.1f : %6.1f : %s\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
+							p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, \
+							p_dt[(sumb-1)*PER_SUMBER+i].alarm_H, p_dt[(sumb-1)*PER_SUMBER+i].alarm_HH, \
+							p_dt[(sumb-1)*PER_SUMBER+i].batas_bawah, p_dt[(sumb-1)*PER_SUMBER+i].batas_atas, (p_dt[(sumb-1)*PER_SUMBER+i].aktif==1)?"aktif":"mati");	
+					}					
+					#else
 					for (i=0; i<PER_SUMBER; i++) {
 						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
 						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
+					#endif
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
 					#ifdef PAKAI_PM
 					if (sumber[sumb-1].tipe==0 || sumber[sumb-1].tipe==1) {		// Power Meter
@@ -165,8 +197,7 @@ int cek_data(int argc, char **argv)
 	
 }
 
-static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer",
-                              cek_data,0,0,0};
+static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer", cek_data,0,0,0};
 
 int set_data_default(void) {
 	int i,j=0;
@@ -174,11 +205,12 @@ int set_data_default(void) {
 	
 	judul(" Set Data ke Default\r\n");
 	
-	p_gr = pvPortMalloc( (sizeof(data_f)/sizeof(float)) * sizeof (struct t_dt_set) );
+	j = (sizeof(data_f)/sizeof(float));
+	p_gr = pvPortMalloc( j * sizeof (struct t_dt_set) );
 	//p_gr = pvPortMalloc( (PER_SUMBER) * sizeof (struct t_dt_set) );
 	if (p_gr == NULL)
 	{
-		printf("%s(): Err allok memory gagal !\r\n", __FUNCTION__);
+		printf("%s(): Err allok memory gagal ! : %d, %d\r\n", __FUNCTION__, j, (j*sizeof(struct t_dt_set)) );
 		return;
 	}
 	
@@ -192,9 +224,11 @@ int set_data_default(void) {
 		p_gr[i].relay = 0;
 		//p_gr[i].alarm_LL = 0;
 		//p_gr[i].alarm_L = 0;
-		p_gr[i].alarm_HH = 10.0;
-		p_gr[i].alarm_H = 9.0;
+		p_gr[i].alarm_HH = 90.0;
+		p_gr[i].alarm_H = 80.0;
 		p_gr[i].aktif = 0;
+		p_gr[i].batas_bawah = -40;
+		p_gr[i].batas_atas = 200;
 	}
 	
 	for (i=JML_SUMBER*PER_SUMBER; i< (sizeof(data_f)/sizeof(float)) ; i++)
@@ -208,8 +242,8 @@ int set_data_default(void) {
 		p_gr[i].relay = 0;
 		//p_gr[i].alarm_LL = 0;
 		//p_gr[i].alarm_L = 0;
-		p_gr[i].alarm_HH = 10.0;
-		p_gr[i].alarm_H = 9.0;
+		p_gr[i].alarm_HH = 90.0;
+		p_gr[i].alarm_H = 80.0;
 		p_gr[i].aktif = 0;
 		j++;
 	}
@@ -344,6 +378,28 @@ int set_data(int argc, char **argv)
 			return;
 		}
 	}
+	else if (strcmp(argv[2], "atas") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
+			printf(" Data %d : Batas atas : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].batas_atas = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
+	else if (strcmp(argv[2], "bawah") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
+			printf(" Data %d : Batas bawah : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].batas_bawah = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
 	/*
 	else if (strcmp(argv[2], "alarmL") == 0)
 	{
@@ -372,7 +428,7 @@ int set_data(int argc, char **argv)
 		}
 	}
 	//*/
-	else if (strcmp(argv[2], "relay") == 0)		// 	set_data 4 relay [1|aktif] 7
+	else if (strcmp(argv[2], "alarm") == 0)		// 	set_data 4 relay [1|aktif] 7
 	{
 		int slot=0;
 		sprintf(str_data, "%s", argv[1]);	
@@ -466,7 +522,8 @@ int set_data(int argc, char **argv)
 static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin",
 		"help default nama satuan alarmH alarmL",set_data,0,0,0};
 
-static int simpan_data( struct t_dt_set *pgr)
+//static 
+int simpan_data( struct t_dt_set *pgr)
 {
 	printf(" Save struct DATA_SET ke flash ..");
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;

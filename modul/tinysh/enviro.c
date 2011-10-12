@@ -14,7 +14,8 @@
 
 #include "enviro.h"
 
-#include "../monita/monita_uip.h"
+//#include "../monita/monita_uip.h"
+#include "../app/monita/monita_uip.h"
 
 #ifdef BOARD_TAMPILAN
 	//#include "group.c"
@@ -27,7 +28,7 @@
 //unsigned int result[2]; 	// For Result Table
 //IAP iap_entry;
 
-#define MAGIC_1	0x10
+#define MAGIC_1	0x11
 #define MAGIC_2	0xEF
 
 void tulis_env_flash(struct t_env *ev);
@@ -138,7 +139,7 @@ int baca_env(char tampil)
 	
 	if (tampil == 1)
 	{
-		printf(" Data Environtment \r\n");
+		printf(" Data Environment\r\n");
 		garis_bawah();
 	}
 	else
@@ -148,7 +149,7 @@ int baca_env(char tampil)
 		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
-	printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
+	//printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
 	
 	if (ev->magic1 == MAGIC_1)	{
 		if (ev->magic2 == MAGIC_2)		{			
@@ -184,6 +185,8 @@ int baca_env(char tampil)
 			#endif
 
 			#ifdef BOARD_KOMON_KONTER
+			printf("");
+			
 			int z=0;
 			//printf("KANALNYA: %d, i: %d\r\n", KANALNYA, 7*2-1);
 			if (tampil == 1)	{
@@ -194,8 +197,8 @@ int baca_env(char tampil)
 					#endif
 					{
 						z++;
-						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\r\n", \ 
-							z, env2->kalib[i].m, env2->kalib[i].C, i+1);
+						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\t\t%d\r\n", \ 
+							z, env2->kalib[i].m, env2->kalib[i].C, i+1, env2->kalib[i].status);
 					}
 				}
 			}
@@ -222,7 +225,8 @@ int baca_env(char tampil)
 			#endif
 			
 			#ifdef BANYAK_SUMBER
-				#ifndef BOARD_TAMPILAN 
+				#if defined(PAKAI_SHELL)
+				#if !defined(BOARD_TAMPILAN)
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
 				#endif
@@ -230,6 +234,7 @@ int baca_env(char tampil)
 				printf("set sumber menjadi default\r\n");
 				set_awal_sumber();
 				set_data_default();
+				#endif
 			#endif
 
 			return -1;
@@ -245,6 +250,7 @@ int baca_env(char tampil)
 		#endif
 		
 		#ifdef BANYAK_SUMBER
+			#ifdef PAKAI_SHELL
 			#ifndef BOARD_TAMPILAN 
 				printf("set konfig menjadi default\r\n");
 				set_awal_konfig();
@@ -263,6 +269,7 @@ int baca_env(char tampil)
 			set_awal_sumber();
 			set_data_default();
 			//set_magic_no();
+			#endif
 		#endif
 		
 		return -1;
@@ -366,6 +373,16 @@ void set_env_default() {
 	env2->GW1 = 168;
 	env2->GW2 = 1;
 	env2->GW3 = 140;
+	
+	env2->wIP0 = 192;
+	env2->wIP1 = 168;
+	env2->wIP2 = 1;
+	env2->wIP3 = 1;
+	
+	#ifdef PAKAI_TSC
+		env2->k1 = 255;
+		env2->k2 = 255;
+	#endif
 	
 	env2->statusWebClient = 0;
 	env2->banyak_sumber=0;

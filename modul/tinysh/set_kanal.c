@@ -92,10 +92,14 @@ void set_kanal(int argc, char **argv)	{
 		} 
 		else if ( strcmp(argv[3], "onoff")==0) {
 			p_sbr->kalib[kanal-1].status = 1;
+		} 
+		else if ( strcmp(argv[3], "rpm")==0) {
+			p_sbr->kalib[kanal-1].status = 0;
 		} else {
 			p_sbr->kalib[kanal-1].status = 0;
 		}
-		//*/
+		
+		//(int) setup_konter_onoff((unsigned int) 2, (unsigned char)0);
   	}
   	else  	{
 		sprintf(str_kanal, "%s", argv[2]);

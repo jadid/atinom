@@ -11,10 +11,15 @@
 #include "rw_flash.c"
 #include "set_ipaddr.c"
 
+#include "../hardware/hardware.h"
+#include "utils.c"
+
 #define debug_printf printf
 
+#ifdef PAKAI_SHELL
+
 #if (VERSI_KONFIG == 2)
-#include "utils.c"
+
 #include "group.c"
 #include "sumber.c"
 //#include "../monita/monita_kontrol_2.c"
@@ -24,6 +29,14 @@
 
 #ifdef PAKAI_FILE_SIMPAN
 	#include "sfile.c"
+#endif
+
+#ifdef PAKAI_GPS
+	#include "gps.c"
+#endif
+
+#ifdef PAKAI_TSC
+	#include "tsc.c"
 #endif
 
 /*
@@ -54,7 +67,7 @@
 #endif
 
 #ifdef PAKAI_ADC
-	#include "../adc/command_adc.c"
+	#include "../modul/adc/command_adc.c"
 	#include "set_kanal.c"
 #endif
 
@@ -63,6 +76,11 @@
 #include "set_kanal.c"
 #include "utils.c"
 #endif
+
+#ifdef  BOARD_KOMON_420_SABANG_2_3
+	#include "utils.c"
+//	#define TXDE	BIT(24)
+#endif 
 
 #ifdef  BOARD_KOMON_420_SABANG
 	#include "utils.c"
@@ -79,15 +97,17 @@
 #include "set_kanal.c"
 #endif
 
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+//#include "GPIO/gpio.c"
 #include "utils.c"
 #include "set_kanal.c"
+#include "rpm.c"
 
-int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
+//int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 #endif
 
 #ifdef PAKAI_PM
-#include "pm_server.c"
+//#include "pm_server.c"
 #include "sumber.c"
 #endif
 
@@ -97,7 +117,8 @@ int status_MMC=0;
 #endif
 
 #ifdef PAKAI_RTC
-#include "../system/rtc.h"
+#include "../modul/system/rtc.h"
+#include "mem_rtc.c"
 #endif
 
 #ifdef PAKAI_GSM_FTP
@@ -116,14 +137,22 @@ int status_MMC=0;
 #include "../GPIO/selenoid.c"
 #endif
 
+#ifdef PAKAI_RELAY
+	#include "relay.c"
+#endif
+
 #ifdef PAKAI_MULTI_SERIAL
 	#define TXDE	BIT(24)
 #endif
 
+#ifdef PAKAI_GPIO_DIMMER
+	#include "dimmer.c"
+#endif
+
 #include "enviro.h"
-#include "../GPIO/gpio.h"
+//#include "GPIO/gpio.h"
 //#include "../monita/monita_uip.h"
-#include "../app/monita/monita_uip.h"
+#include "monita/monita_uip.h"
 
 #include <stdlib.h>
 
@@ -135,11 +164,37 @@ void reset_cpu(void);
 
 extern struct sambungan_state samb;
 
+#ifdef PAKAI_SHELL
 extern xTaskHandle *hdl_shell;
+#endif
+
 extern xTaskHandle *hdl_lcd;
-extern xTaskHandle *hdl_led;
+
+#ifdef PAKAI_LED_UTAMA 
+	extern xTaskHandle *hdl_led;
+#endif
+
+#ifdef PAKAI_TAMPILAN
 extern xTaskHandle *hdl_tampilan;
-extern xTaskHandle *hdl_ether;
+#endif
+
+#ifdef PAKAI_ALARM
+extern xTaskHandle *hdl_alarm;
+#endif
+
+#ifdef PAKAI_ETH
+	extern xTaskHandle *hdl_ether;
+	#include "uipcmd.c"
+#endif
+extern xTaskHandle *hdl_ambilcepat;
+
+#ifdef PAKAI_GPS
+	extern xTaskHandle *hdl_gps;
+#endif
+
+#ifdef BOARD_CNC 
+	extern xTaskHandle *hdl_cnc;
+#endif
 
 #ifdef PAKAI_CRON
 	//extern xTaskHandle *hdl_cron;
@@ -157,6 +212,9 @@ extern xTaskHandle *hdl_ether;
 #endif
 
 char str[20];
+
+#if 1
+//#ifdef PAKAI_SHELL
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -305,7 +363,7 @@ void set_date(int argc, char **argv)
 	tmku.tm_mon  = tmku.tm_mon - 1;
 	tmku.tm_sec = 0;
 		
-	debug_printf(" OK : %d-%d-%d %d:%d\r\n",  tmku.tm_year, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
+	debug_printf(" OK : %d-%d-%d %d:%d\r\n",  tmku.tm_year+1900, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
 	/*
 	if (rtc_valid_tm(&tmku)) 
 	{
@@ -328,40 +386,54 @@ static tinysh_cmd_t set_date_cmd={0,"set_date","Mengeset waktu","thn bulan tgl j
 							  
 void cek_stack(void)
 {
+	printf("Jml task: %d\r\n", uxTaskGetNumberOfTasks);
 	printf("Sisa stack masing2 task (bytes)\r\n");
 	garis_bawah();
-	printf(" Shell    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
-	printf(" Led      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
+	printf(     " Shell      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_shell));
+	printf(     " Led        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_led));
 	
 	#ifdef BOARD_TAMPILAN
 	//#ifdef CARI_SUMBERNYA
-	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
-	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(     " Tampilan   : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(     " LCD        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	#endif
+	
+	#ifdef PAKAI_ALARM
+	printf(     " ALarm      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_alarm));
 	#endif
 	
 	#if (TAMPILAN_MALINGPING == 1)
 	//extern xTaskHandle hdl_proses_pm;  matikan dulu, pm belum diaktifkan
 	
-	printf(" Tampilan : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
-	printf(" LCD      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
+	printf(	   " Tampilan    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_tampilan));
+	printf(	   " LCD         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_lcd));
 	#endif
 	
-	printf(" Ether    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#ifdef PAKAI_ETH
+	printf(    " Ether      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
+	#endif
+	
 	#ifdef PAKAI_SELENOID
-		printf(" Relay    : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
+		printf(" Relay       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
 		
 	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
-		printf(" GSM      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
+		printf(" GSM         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
 	#endif
 	
 	#ifdef PAKAI_CRON
-		printf(" CRON     : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cron));
+		printf(" CRON        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cron));
 	#endif
 	
 	#ifdef AMBIL_PM
 //		printf(" Proses PM: %d\r\n", uxTaskGetStackHighWaterMark(hdl_proses_pm));
 	#endif
+	
+	#ifdef BOARD_CNC
+		printf(" CNC         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
+	#endif
+	
+	printf(    " AmbilCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
 }							 
 
 //static 
@@ -498,7 +570,7 @@ static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
 
 #endif
 
-#if defined(BOARD_KOMON_420_SABANG)
+#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 void hitung_datanya() {
 	#ifdef PAKAI_ADC
 	struct t_env *env2;
@@ -542,95 +614,14 @@ static tinysh_cmd_t lihat_data_cmd={0,"cek_data","data ","[args]",
 #endif
 
 
-#ifdef BOARD_KOMON_KONTER
-extern unsigned int data_putaran[];
-extern unsigned int data_hit[];	
-extern struct t2_konter konter;
-				
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+
+/*		
 unsigned int is_angka(float a)	{
 	return (a == a);
 }
+//*/
 
-void baca_rtc_mem() {
-	int i;
-	for (i=0; i<KANALNYA; i++) {
-		konter.t_konter[i].hit = rtcRate[i];
-	}
-}
-
-void data_frek_rpm() {
-	unsigned int i;
-	float temp_f;
-	float temp_rpm;
-	
-	struct t_env *env2;
-	env2 = (char *) ALMT_ENV;
-	
-	for (i=0; i<KANALNYA; i++)	{
-//		if (i>6) 
-		{
-			if (data_putaran[i])	{
-				// cari frekuensi
-				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
-				// rpm
-				temp_rpm = temp_f * 60;
-			}
-			else	{
-				temp_f = 0;
-				temp_rpm = 0;
-			}
-			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
-			data_f[i*2] = (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
-			
-			if (data_f[(i*2)+1]>10000000) {		// reset setelah 10juta, 7 digit
-			//if (data_f[(i*2)+1]>1000) {		// tes saja, reset setelah 10juta, 7 digit
-				data_f[(i*2)+1] = 0;
-				konter.t_konter[i].hit = 0;
-			}
-			rtcRate[i] = (int) konter.t_konter[i].hit;
-		}
-	}	
-}
-
-//static void cek_rpm(int argc, char **argv)
-void cek_rpm()	{
-	unsigned int i;
-	float temp_f;
-	float temp_rpm;
-	
-	printf("Global hit = %d\n", konter.global_hit);
-	printf("Ov flow = %d\n", konter.ovflow);
-
-	for (i=0; i<10; i++)	{
-		#ifndef BOARD_KOMON_KONTER_3_1
-		if (i>6) 
-		#endif
-		{
-			if (data_putaran[i])	{
-				// cari frekuensi
-				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
-				// rpm
-				temp_rpm = temp_f * 60;
-			}
-			else	{
-				temp_f = 0;
-				temp_rpm = 0;
-			}	
-	
-			printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
-				(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
-		}
-	}
-	
-	#if (KONTER_MALINGPING == 1)
-	/* data kanal 1 adalah adc1 (adc0 internal) */
-	extern float volt_supply;
-	printf("\r\nADC 1 = %.3f\r\n", volt_supply );						
-	#endif
-}
-
-//static 
-tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]", cek_rpm,0,0,0};
 
 #endif
 /*****************************************************************************/
@@ -758,7 +749,9 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp_exe","proses gsm_ftp","[args]",
                               mulai_gsm_ftp,0,0,0};
 #endif
 
- 
+#ifdef PAKAI_ADC
+	unsigned char status_adcnya=0; 
+#endif 
 
 extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )
@@ -777,6 +770,8 @@ portTASK_FUNCTION(shell, pvParameters )
 		printf("NON Preemptive kernel digunakan !\r\n"); 
 	else
 		printf("Preemptive kernel digunakan !\r\n");
+	
+	printf("configTOTAL_HEAP_SIZE: %d\r\n", configTOTAL_HEAP_SIZE);
 	
 	#ifdef USB_TEST
 	Host_Init();               /* Initialize the lpc2468 host controller                                    */
@@ -805,7 +800,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
-#ifdef BOARD_KOMON_KONTER
+#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 	tinysh_add_command(&cek_rpm_cmd);
 	tinysh_add_command(&set_kanal_cmd);
 #endif
@@ -838,7 +833,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&set_kanal_cmd);
 #endif
 
-#ifdef BOARD_KOMON_420_SABANG
+#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 #ifdef PAKAI_ADC
 	tinysh_add_command(&cek_adc_cmd);
 	//tinysh_add_command(&lihat_data_cmd);
@@ -930,6 +925,9 @@ vTaskDelay(100);
 	tinysh_add_command(&hapus_filenya_cmd);
 #endif
 
+#ifdef PAKAI_ETH
+	tinysh_add_command(&cek_mac_cmd);
+#endif
 
 #ifdef CENDOL
 	tinysh_add_command(&cek_konfig_cmd);
@@ -941,6 +939,23 @@ vTaskDelay(100);
 		tinysh_add_command(&kirim_serial_cmd);
 	#endif
 #endif
+
+#ifdef PAKAI_GPS
+	tinysh_add_command(&cek_gps_cmd);
+#endif
+
+#ifdef PAKAI_TSC
+	tinysh_add_command(&setting_fma_cmd);
+	tinysh_add_command(&set_fma_cmd);
+	tinysh_add_command(&read_fma_cmd);
+	tinysh_add_command(&baca_register_tsc_cmd);
+#endif
+
+#ifdef PAKAI_GPIO_DIMMER
+	tinysh_add_command(&set_dimmer_cmd);
+	tinysh_add_command(&cek_dimmer_cmd);
+#endif
+
 	/* add sub commands
  	*/
   	//tinysh_add_command(&ctxcmd);
@@ -970,14 +985,29 @@ vTaskDelay(100);
 	#ifdef PAKAI_MMC
   	vTaskDelay(340);
   	#else
-  	vTaskDelay(450);
+  	vTaskDelay(50);
   	#endif
 
 	#ifdef PAKAI_SELENOID
-		static tinysh_cmd_t set_relay_cmd={0,"set_relay","setting relay", "help default ",set_relay,0,0,0};
+		
 		tinysh_add_command(&set_relay_cmd);
+		tinysh_add_command(&cek_relay_cmd);
 	#endif
 	
+	#ifdef PAKAI_RELAY
+		tinysh_add_command(&set_relay_cmd);
+		tinysh_add_command(&cek_relay_cmd);
+	#endif
+
+	#ifdef PAKAI_RTC	
+		tinysh_add_command(&set_date_cmd);
+		#ifdef PAKAI_MEM_RTC
+			tinysh_add_command(&set_mem_cmd);		
+			#ifdef TES_MEM_RTC
+				tinysh_add_command(&tes_mem_cmd);
+			#endif
+		#endif
+	#endif
 	
 //#ifdef BOARD_TAMPILAN	
 	#ifdef CARI_SUMBERx	
@@ -987,39 +1017,44 @@ vTaskDelay(100);
 	printf("size struct Titik  = %d\r\n", sizeof (struct t_titik) * JML_MESIN * TIAP_MESIN);
 	//printf("size struct sambungan = %d\r\n", sizeof (samb));
 	#endif
-	
-	#ifdef BOARD_KOMON_420_SAJA
-	kalibrasi_adc1();
-	vTaskDelay(100);
-	start_adc_1();
-	#endif
-	
-	#ifdef BOARD_KOMON_420_SABANG
-		#ifdef PAKAI_ADC
+
+	#ifdef PAKAI_ADC	
+		#ifdef BOARD_KOMON_420_SAJA
 			kalibrasi_adc1();
 			vTaskDelay(100);
 			start_adc_1();
 		#endif
-		vTaskDelay(100);
+		
+		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
+			//status_adcnya = kalib_adc();
+			status_adcnya = kalibrasi_adc1();
+			vTaskDelay(100);
+			if (status_adcnya)
+				start_adc_1();
+			else {
+				printf("gak start adc 1\r\n");
+			}
+		#endif
+		
+		#ifdef BOARD_KOMON_A_RTD
+			kalibrasi_adc1();
+			vTaskDelay(100);
+			start_adc_1();
+		#endif
+	
+		#ifdef BOARD_KOMON_B_THERMO
+			kalibrasi_adc1();
+			vTaskDelay(100);
+			start_adc_1();
+		#endif
 	#endif
 	
-	#ifdef BOARD_KOMON_A_RTD
-	kalibrasi_adc1();
-	vTaskDelay(100);
-	start_adc_1();
-	#endif
-	
-	#ifdef BOARD_KOMON_B_THERMO
-	kalibrasi_adc1();
-	vTaskDelay(100);
-	start_adc_1();
-	#endif
-	
-	#ifdef BOARD_KOMON_KONTER
+	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0) || defined(BOARD_KOMON_KONTER_3_1)
 		#ifdef PAKAI_RTC
 		rtc_init();
 		vTaskDelay(100);
-		//baca_rtc_mem();
+		rtc_start();
+		baca_rtc_mem();
 		#endif
 	#endif
 	
@@ -1074,10 +1109,9 @@ vTaskDelay(100);
 	sprintf(abs_path, "%s", "");
 	#endif
 	
-	#ifdef PAKAI_RTC	
-	tinysh_add_command(&set_date_cmd);
-	#endif
+
 	
+	vTaskDelay(1000);
 	
 	struct t_env *envx;
 	envx = (char *) ALMT_ENV;
@@ -1103,20 +1137,20 @@ vTaskDelay(100);
     {
 		vTaskDelay(1);
 	  lop++;
-	  if (xSerialGetChar(1, &c, 100 ) == pdTRUE)
+	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)
 	  {
 			lop = 0;
 			tinysh_char_in((unsigned char)c);
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 6000)
+	  if (lop > 60)
 	  {
 			lop = 0;
 			printf("\r\nPasswd lock!\r\n");
 			while(1)
 			{
-				if (xSerialGetChar(1, &c, 100) == pdTRUE)	{
+				if (xSerialGetChar(1, &c, 1000) == pdTRUE)	{
 					if (proses_passwd( &c ) == 1) break;
 				}
 				#ifdef PAKAI_MMC
@@ -1128,58 +1162,12 @@ vTaskDelay(100);
 						}
 					#endif
 				#endif
-				
-				#ifdef PAKAI_ADC
-					#ifdef BOARD_KOMON_A_RTD
-					proses_data_adc();
-					#endif
-					 
-					#ifdef BOARD_KOMON_B_THERMO
-					proses_data_adc();
-					#endif
-					
-					#ifdef BOARD_KOMON_420_SABANG
-					proses_data_adc();
-					#endif
-					
-					#ifdef BOARD_KOMON_420_SAJA
-					proses_data_adc();
-					hitung_datanya();
-					#endif
-					
-					simpan_ke_data_f();
-				#endif
-				
-				#ifdef BOARD_KOMON_KONTER
-					data_frek_rpm();
-				#endif
+
 			}
 	  }
-	  
-		// pembacaaan ADC dipindah dari task eth ke shell 1 Okt 2010.
-		#ifdef PAKAI_ADC
-			#ifdef BOARD_KOMON_A_RTD
-				proses_data_adc();
-			#endif
-		 
-			#ifdef BOARD_KOMON_B_THERMO
-				proses_data_adc();
-			#endif
-				 
-			#ifdef BOARD_KOMON_420_SAJA
-				proses_data_adc();
-				hitung_datanya();
-			#endif
-			
-			#ifdef BOARD_KOMON_420_SABANG
-				proses_data_adc();
-			#endif
-			
-			simpan_ke_data_f();
-		#endif
 		
-		#ifdef BOARD_KOMON_KONTER
-			data_frek_rpm();
+		#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
+		//	data_frek_rpm();
 		#endif
 	  
 		#ifdef PAKAI_MMC
@@ -1209,6 +1197,8 @@ vTaskDelay(100);
 
 void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY+2, ( xTaskHandle * ) &hdl_shell);
 }
+#endif
 
+#endif

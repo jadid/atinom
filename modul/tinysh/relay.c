@@ -1,108 +1,134 @@
 /*
+	Afrendy Bayu
+	13 Juli 2011
 
-	data 
-	3 Feb 2010, furkan jadid, daun biru engineering
-	
-	hal-hal yang berkaitan dengan data
-	
-	data diperoleh dari bacaan dari sumber.
-	semua data dari sumber disimpan.
-	
-	tetapi data ada yang dimonitor (diaktifkan) atau tidak (pasif).
-	
-	data dapat disambungkan untuk mengaktifkan relay atau mematikan
-	relay.
-	
-	satu buah data dapat menyambung ke 2 relay ?
-	
-	Sumber 1 : slot data 1 - 20
-	Sumber 2 : slot data 21 - 40
-	
-	set_data x nama aaabbbccc
-			: memberikan nama pada data, ini akan ditampilkan di LCD
-	
-	set_data x alarm 2.43	
-			: batas alarm, sehingga pada display dapat
-			  memunculkan blink2 atau bintang2.
-			
-	set_data x ONR	A	
-			: jika batas alarm dilewati, data akan trigger ON relay A 
-	
-	set_data x OFFR B
-			: jika batas alarm dilewati, data akan trigger OFF relay B
-	
-	set_data x set/aktif 0/1
-			: mengaktifkan sistem relay
+*/
 
-	struct t_dt_set adalah setting yang disimpan pada flash
-	
-	
-	*/
-//#include "monita_uip.h"
-#include "../monita/monita_uip.h"
-//#include "uip.h"
-#include "../GPIO/selenoid.c";
-#include <stdio.h>
-#include <stdlib.h>
 
-#define debug		printf
-//#define debug(...)	do{} while(0)
+#include "FreeRTOS.h"
 
-//static int simpan_data( struct t_dt_set *pgr);
+#ifndef __SHELL_RELAY__
+#define __SHELL_RELAY__
 
-int set_relay(int argc, char **argv)
-{
-	int i;
-	unsigned char str_relay[24];
-	int sumb=0;
-	
-	/* jika hanya cek_data
-	 * maka akam ditampilkan semua 
-	 * sekitar 400 items
-	 */
-	if (argc == 1)	{
-		judul(" Data Setting\r\n");
-	  //printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-		printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
-		garis_bawah();
-	
+#ifdef PAKAI_RELAY
 
-	}
-	else if (argc > 1)	{
-		if (strcmp(argv[1], "help") == 0)	{
-				printf(" Perintah untuk menampilkan setting data !\r\n");
-				printf("    cek_data help  : untuk menampilkan ini.\r\n");
-				printf("    cek_data       : menampilkan seluruh setting data.\r\n");
-				printf("    cek_data 10    : manampikan data ke 10 sampai 30 (20 data saja).\r\n"); 
-		}		
-		else	{
-			sprintf(str_relay, "%s", argv[1]);	
-			sumb = cek_nomer_valid(str_relay, 400);
-			if (sumb > 0 && sumb < 400)		{
-				judul(" Data Setting\r\n");
-				//printf(" no.  : Nama       : Stat : Satuan : Alarm : Rly : &Memory\r\n");
-				printf(" no.  : Nama       : Stat : Satuan : Alr_L : Alr_H : Rly : &Memory\r\n");
-				garis_bawah();
-				
-				sumb--;
+int cek_relays(int argc, char **argv)	{
+	if (argc == 1)	{	// cek_relay
+		printf("Salah asuhan, arg = 1 !!\r\n  cek_relay [no_relay]");
 		
-				for (i = sumb; i< (sumb + 20); i++)
-				{
-					if (i >= (JML_SUMBER * PER_SUMBER)) break;
-					
-					printf(" (%3d): %10s :  %d   : %6s : %4.2f : %4.2f : %2d : (%X)\r\n", (i+1), \
-						p_dt[i].nama, p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_L, \
-						p_dt[i].alarm_H, p_dt[i].relay, &p_dt[i]);	
-					
-				}
-			}
-			else
-				printf(" ERR: Perintah tidak dikenali !\r\n");
+		return 0;
+	}
+	else if (argc > 2)	{
+		printf("Salah asuhan, arg > 2 !!\r\n  cek_relay [no_relay]");
+		return 0;
+	}
+	
+	int sumb=0;
+	unsigned char str_relay[24];
+	
+	sprintf(str_relay, "%s", argv[1]);	
+	sumb = cek_nomer_valid(str_relay, 8);
+	printf("  Relay %d : %s\r\n", sumb, (data_f[(JML_SUMBER*PER_SUMBER)+sumb-1]==1)?"Aktif":"Mati");
+}
+
+
+static tinysh_cmd_t cek_relay_cmd={0,"cek_relay","menampilkan status relay","[] nomer", cek_relays,0,0,0};
+
+#if 0
+void set_selenoid( unsigned int no )	{
+	if (no>0 && no<=JML_RELAY) {		// 1-8 
+		data_f[JML_SUMBER*PER_SUMBER+no-1] = 1;
+	}
+	
+	if (no == 1)
+		sRelay1();
+		//FIO3SET = RLY_1;
+	else if (no == 2)
+		sRelay2();
+		//FIO3SET = RLY_2;
+	else if (no == 3)
+		sRelay3();
+		//FIO1SET = RLY_3;
+	else if (no == 4)
+		sRelay4();
+		//FIO1SET = RLY_4;
+	else if (no == 5)
+		sRelay5();
+		//FIO1SET = RLY_5;
+	else if (no == 6)
+		sRelay6();
+		//FIO4SET = RLY_6;
+	else if (no == 7)
+		sRelay7();
+		//FIO4SET = RLY_7;
+	else if (no == 8)
+		sRelay8();
+		//FIO2SET = RLY_8;
+	else
+		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);
+}
+
+
+void unset_selenoid(unsigned int no )	{
+	if (no>0 && no<=JML_RELAY) {
+		data_f[JML_SUMBER*PER_SUMBER+no-1] = 0;
+	}
+	
+	if (no == 1)
+		//FIO3CLR = RLY_1;
+		cRelay1();
+	else if (no == 2)
+		//FIO3CLR = RLY_2;
+		cRelay2();
+	else if (no == 3)
+		//FIO1CLR = RLY_3;
+		cRelay3();
+	else if (no == 4)
+		//FIO1CLR = RLY_4;
+		cRelay4();
+	else if (no == 5)
+		//FIO1CLR = RLY_5;
+		cRelay5();
+	else if (no == 6)
+		//FIO4CLR = RLY_6;
+		cRelay6();
+	else if (no == 7)
+		//FIO4CLR = RLY_7;
+		cRelay7();
+	else if (no == 8)
+		//FIO2CLR = RLY_8;
+		cRelay8();
+	else
+		printf("%s(): ERR tidak ada !\r\n", __FUNCTION__);	
+}
+#endif
+
+void set_relays(int argc, char **argv) {
+	int sumb=0;
+	unsigned char str_selenoid[24];
+	
+	if (argc < 3) {
+		printf("Perintah salah atau Parameter kurang !!\r\n");
+		return;
+	} else {
+		sprintf(str_selenoid, "%s", argv[1]);			// no cron
+		sumb = cek_nomer_valid(str_selenoid, JML_RELAY);
+		if (sumb <= 0)	{
+			printf("No relay salah !\r\n");
+			return;	
+		}
+		
+		sprintf(str_selenoid, "%s", argv[2]);
+		if ( (strcmp(str_selenoid, "aktif") == 0) || (str_selenoid[0]=='1') || (strcmp(str_selenoid, "hidup") == 0) )	{
+			set_selenoid(sumb);
+		} else if ( (strcmp(str_selenoid, "mati")  == 0) || (str_selenoid[0]=='0') ) {
+			unset_selenoid(sumb);
 		}
 	}
-	
 }
-/*
-static tinysh_cmd_t cek_data_cmd={0,"cek_data","menampilkan konfigurasi mesin","[] nomer",
-                              cek_data,0,0,0};
-//*/
+
+static tinysh_cmd_t set_relay_cmd={0,"set_relay","setting relay", "help default ",set_relays,0,0,0};
+
+#endif
+
+#endif

@@ -62,7 +62,7 @@ extern struct t_adc st_adc;
 #endif
 
 #ifdef BOARD_KOMON_KONTER
-#include "../tinysh/enviro.h"
+#include "../modul/tinysh/enviro.h"
 //extern struct t_env env2;
 #endif
 

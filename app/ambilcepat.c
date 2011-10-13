@@ -25,7 +25,7 @@ xTaskHandle hdl_ambilcepat;
 #endif
 
 #ifdef BOARD_KOMON_KONTER
-	#include "../tinysh/enviro.h"
+	#include "../modul/tinysh/enviro.h"
 	extern unsigned char status_konter[KANALNYA];
 #endif
 

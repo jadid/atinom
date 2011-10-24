@@ -54,10 +54,8 @@
 #define printf	printf2
 
 //#define PAKAI_MULTI_SERIAL
-//#define PAKAI_ADC
 
-
-//#define PAKAI_SERIAL_3
+#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
 //	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
@@ -82,7 +80,7 @@
 //#define TES_GET_WEB
 
 #define PROMPT 		"420PT@"
-#define NAMA_BOARD	"Babelan Komon-420"
+#define NAMA_BOARD	"Babelan Sabang_2.X"
 
 #define PAKAI_LED_UTAMA
 

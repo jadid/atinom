@@ -114,4 +114,12 @@ TAMPILAN
 - coba menggunakan MAX485 untuk protokol modbus
 - buat direktori modbus
 
+13 OKt 2011, Bayu, jakarta
+=======================================
+Arsitektur :
+	- hardware	: konfigurasi board
+	- modul		: driver fitur-fitur dari ic dan microcontroller
+	- app		: applikasi untuk user interface
+	- projek	: macam-macam projek dan kompilasi
+
 

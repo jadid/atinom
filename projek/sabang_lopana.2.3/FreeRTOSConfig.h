@@ -81,7 +81,7 @@
 
 //#define TES_GET_WEB
 
-#define PROMPT 		"Bearing@"
+#define PROMPT 		"420PT@"
 #define NAMA_BOARD	"Babelan Komon-420"
 
 #define PAKAI_LED_UTAMA

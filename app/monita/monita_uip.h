@@ -27,9 +27,9 @@
 	#if defined(TAMPILAN_MONITA_STD)
 		#define JML_SUMBER	15
 	#elif defined(UNTUK_PLTD_AMPENAN)
-		#define JML_SUMBER 10
+		#define JML_SUMBER 9
 	#else
-		#define JML_SUMBER	5
+		#define JML_SUMBER	7
 	#endif
 	//#define JML_SUMBER	5
 	//#define JML_SUMBER	10

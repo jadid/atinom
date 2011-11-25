@@ -356,7 +356,7 @@ void set_env_default() {
 	env2->magic2 = MAGIC_2;
 	sprintf(env2->SN, "-");
 	sprintf(env2->berkas, "/");
-	printf("KANALNYA enviro.c : %d\r\n", KANALNYA);
+	//printf("KANALNYA enviro.c : %d\r\n", KANALNYA);
 	for (i=0; i<KANALNYA; i++) {
 		env2->kalib[i].m = 1.00;
 		env2->kalib[i].C = 0.00;

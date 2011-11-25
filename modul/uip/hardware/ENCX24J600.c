@@ -292,7 +292,10 @@ int Enc624Init() {
 	
 }
 
-//#define DEBUG_ETHRX
+#define DEBUG_ETHRX
+	#ifdef DEBUG_ETHRX
+		unsigned int jmlTuris=0;
+	#endif
 
 // 00:04:A3:10:49:71
 int Enc624Terima(void) {
@@ -308,9 +311,10 @@ int Enc624Terima(void) {
 	int fff,gg,hh;
 	
 	if (!MACIsLinked()) {
-		//printf("tak nyambung %d..", jmlTuris++);
+		printf("TAK nyambung %d..", jmlTuris++);
 		return 0;
 	}
+	printf("eth nyambung %d..", jmlTuris++);
 
 	if(!(ReadReg(EIR) & EIR_PKTIF)) {
 		//printf("EIR_PKTIF ...");
@@ -652,8 +656,11 @@ int Enc64MACInit(void)
 
 
 	// Perform a reliable reset
-	SendSystemReset();
-	//printf("SendSystemReset sukses !!\r\n");
+	if (SendSystemReset() == 0) {
+		printf("Init ENC624 GAGAL !!!\r\n");
+		return 0;
+	}
+	printf("SendSystemReset sukses !!\r\n");
 
 	// Initialize RX tracking variables and other control state flags
 	wNextPacketPointer = RXSTART;

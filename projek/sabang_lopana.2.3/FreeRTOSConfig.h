@@ -80,7 +80,7 @@
 //#define TES_GET_WEB
 
 #define PROMPT 		"420PT@"
-#define NAMA_BOARD	"Babelan Sabang_2.X"
+#define NAMA_BOARD	"Babelan Sabang_2.x"
 
 #define PAKAI_LED_UTAMA
 

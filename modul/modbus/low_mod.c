@@ -905,13 +905,16 @@ void taruh_data_710(int no_slave, int urt)	{
 			//pfA, pfB, pfC, pf
 			data_PM710[pm_dibaca].pfA = buf[3+HD];
 			data_PM710[pm_dibaca].pfA = (data_PM710[pm_dibaca].pfA << 8) + buf[4+HD];
-			if (data_PM710[pm_dibaca].pfA == 0x8000) asli_PM710[pm_dibaca].pfA = 1.00;
+			if (data_PM710[pm_dibaca].pfA == 0x8000) 
+				asli_PM710[pm_dibaca].pfA = 1.00;
 			else
 			{
-			   if (data_PM710[pm_dibaca].pfA > 0x8000)
-					data_PM710[pm_dibaca].pfA = data_PM710[pm_dibaca].pfA + 0x8000;
-
-			   asli_PM710[pm_dibaca].pfA = data_PM710[pm_dibaca].pfA * 0.001;
+				if (data_PM710[pm_dibaca].pfA > 0x8000) {
+					data_PM710[pm_dibaca].pfA = (data_PM710[pm_dibaca].pfA + 0x8000);
+					asli_PM710[pm_dibaca].pfA = data_PM710[pm_dibaca].pfA * -0.001;
+				}
+				else
+					asli_PM710[pm_dibaca].pfA = data_PM710[pm_dibaca].pfA * 0.001;
 			}
 			#ifdef CEK_PM
 			printf("pfA: %d - %.2f\r\n", data_PM710[pm_dibaca].pfA, asli_PM710[pm_dibaca].pfB);
@@ -921,10 +924,12 @@ void taruh_data_710(int no_slave, int urt)	{
 			if (data_PM710[pm_dibaca].pfB == 0x8000) asli_PM710[pm_dibaca].pfB = 1.00;
 			else
 			{
-			   if (data_PM710[pm_dibaca].pfB > 0x8000)
+				if (data_PM710[pm_dibaca].pfB > 0x8000) {
 					data_PM710[pm_dibaca].pfB = data_PM710[pm_dibaca].pfB + 0x8000;
-
-			   asli_PM710[pm_dibaca].pfB = data_PM710[pm_dibaca].pfB * 0.001;
+					asli_PM710[pm_dibaca].pfB = data_PM710[pm_dibaca].pfB * -0.001;
+				}
+				else 
+					asli_PM710[pm_dibaca].pfB = data_PM710[pm_dibaca].pfB * 0.001;
 			}
 			#ifdef CEK_PM
 			printf("pfB: %d - %.2f\r\n", data_PM710[pm_dibaca].pfB, asli_PM710[pm_dibaca].pfB);
@@ -935,10 +940,12 @@ void taruh_data_710(int no_slave, int urt)	{
 			if (data_PM710[pm_dibaca].pfC == 0x8000) asli_PM710[pm_dibaca].pfC = 1.00;
 			else
 			{
-			   if (data_PM710[pm_dibaca].pfC > 0x8000)
+			   if (data_PM710[pm_dibaca].pfC > 0x8000) {
 					data_PM710[pm_dibaca].pfC = data_PM710[pm_dibaca].pfC + 0x8000;
-			   
-			   asli_PM710[pm_dibaca].pfC = data_PM710[pm_dibaca].pfC * 0.001;
+					asli_PM710[pm_dibaca].pfC = data_PM710[pm_dibaca].pfC * -0.001;
+			   }
+			   else
+					asli_PM710[pm_dibaca].pfC = data_PM710[pm_dibaca].pfC * 0.001;
 			}
 			#ifdef CEK_PM
 			printf("pfC: %d - %.2f\r\n", data_PM710[pm_dibaca].pfC, asli_PM710[pm_dibaca].pfC);
@@ -949,10 +956,12 @@ void taruh_data_710(int no_slave, int urt)	{
 			if (data_PM710[pm_dibaca].pf == 0x8000) asli_PM710[pm_dibaca].pf = 1.00;
 			else
 			{
-			   if (data_PM710[pm_dibaca].pf > 0x8000)
+				if (data_PM710[pm_dibaca].pf > 0x8000) {
 					data_PM710[pm_dibaca].pf = data_PM710[pm_dibaca].pf + 0x8000;
-
-			   asli_PM710[pm_dibaca].pf = data_PM710[pm_dibaca].pf * 0.001;
+					asli_PM710[pm_dibaca].pf = data_PM710[pm_dibaca].pf * -0.001;
+				} 
+				else
+					asli_PM710[pm_dibaca].pf = data_PM710[pm_dibaca].pf * 0.001;
 			}
 			#ifdef CEK_PM
 			printf("pf : %d - %.2f\r\n", data_PM710[pm_dibaca].pf, asli_PM710[pm_dibaca].pf);

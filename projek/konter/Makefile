@@ -61,7 +61,7 @@ CFLAGS= $(DEBUG) \
 		-I ../../hardware/ \
 		-I ../../modul/ \
 		-I ../../modul/nmealib/include/ \
-		-I ../../uip/uip/ \
+		-I ../../modul/uip/uip/ \
 		-I ../../app/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
@@ -86,37 +86,37 @@ THUMB_SOURCE= \
 		../../modul/spi/spi.c \
 		../../modul/serial/serial.c \
 		../../modul/spi/low_ss1.c	\
-		../../tinysh/tinysh.c \
-		../../tinysh/shell.c \
-		../../tinysh/enviro.c \
+		../../modul/tinysh/tinysh.c \
+		../../modul/tinysh/shell.c \
+		../../modul/tinysh/enviro.c \
 		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
 
 UIP_SOURCE = \
 		../../app/monita/monita_uip.c \
-		../../uip/clock.c \
-		../../uip/lib/memb.c \
-		../../uip/uip/uip.c \
-		../../uip/uip/uip_arch.c \
-		../../uip/uip/uip_arp.c \
-		../../uip/uip/uip_timer.c \
-		../../uip/uip/uip-fw.c \
-		../../uip/uip/psock.c \
-		../../uip/uip/uiplib.c \
-		../../uip/uip_task.c \
-		../../uip/apps/telnetd/telnetd.c	\
-		../../webserver/httpd.c \
-		../../webserver/httpd-fs.c \
-		../../webserver/http-strings.c \
-		../../webserver/httpd-cgi.c \
+		../../modul/uip/clock.c \
+		../../modul/uip/lib/memb.c \
+		../../modul/uip/uip/uip.c \
+		../../modul/uip/uip/uip_arch.c \
+		../../modul/uip/uip/uip_arp.c \
+		../../modul/uip/uip/uip_timer.c \
+		../../modul/uip/uip/uip-fw.c \
+		../../modul/uip/uip/psock.c \
+		../../modul/uip/uip/uiplib.c \
+		../../modul/uip/uip_task.c \
+		../../modul/uip/apps/telnetd/telnetd.c	\
+		../../app/webserver/httpd.c \
+		../../app/webserver/httpd-fs.c \
+		../../app/webserver/http-strings.c \
+		../../app/webserver/httpd-cgi.c \
 		
 ETH_SOURCE = \
-		../../uip/hardware/enc28j60.c	\
-		../../uip/hardware/ENCX24J600.c	\
+		../../modul/uip/hardware/enc28j60.c	\
+		../../modul/uip/hardware/ENCX24J600.c	\
 
 WEBCLIENT_SOURCE = \
-		../../webserver/webclient/webclient.c			\
-		../../webserver/webclient/webclient-strings.c	\
+		../../app/webserver/webclient/webclient.c			\
+		../../app/webserver/webclient/webclient-strings.c	\
 
 GPS_SOURCE = \
 		../../modul/nmealib/src/parse.c \
@@ -140,13 +140,6 @@ ARM_SOURCE= \
 		../../modul/GPIO/gpio_ISR.c 
 
 
-#THUMB_SOURCE += $(GPS_SOURCE)
-THUMB_SOURCE += $(UIP_SOURCE)
-#THUMB_SOURCE += $(ADC_SOURCE)
-#THUMB_SOURCE += $(PM_SOURCE)
-THUMB_SOURCE += $(WEBCLIENT_SOURCE)
-THUMB_SOURCE += $(ETH_SOURCE)
-THUMB_SOURCE += $(RTC_SOURCE)
 
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)

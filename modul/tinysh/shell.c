@@ -765,6 +765,15 @@ portTASK_FUNCTION(shell, pvParameters )
   	printf("ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
   	printf("CPU = LPC 2387, %d MHz,", configCPU_CLOCK_HZ/1000000);
   	printf(" FreeRTOS 5.1.1\r\n");
+  	
+  	#if 0
+		unsigned short qws=33742, wws;
+		unsigned int   qwi=0x8000;
+		printf("ukuran u short: %d - %d - %d - %d - %d\r\n", sizeof(unsigned short), qws, 0xFFFF);
+		printf("%d+%d=%d\r\n", qws, 0x8000, wws=qws+0x8000);
+		printf("ukuran u int  : %d - %d\r\n", sizeof(unsigned int),   qwi);
+		printf("ukuran u float: %d\r\n", sizeof(unsigned int));
+  	#endif
 
 	if (configUSE_PREEMPTION == 0)
 		printf("NON Preemptive kernel digunakan !\r\n"); 

@@ -573,6 +573,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		
 		//if (enc28j60WaitForData (uipMAX_BLOCK_TIME) == pdTRUE)
 		//#if defined(PAKAI_ENC28J60) || defined(PAKAI_ENCX24J600)
+		
+		//printf("  cek paket   %d\r\n", gg++);
+		
 		if (cek_paket())	{
 		//#else
 		//if (0) {

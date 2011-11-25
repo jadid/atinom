@@ -62,7 +62,7 @@ OPTIM=-O1
 
 CFLAGS= $(DEBUG) \
 		$(OPTIM) \
-		-I../../TOOLCHAIN/arm-elf/include/ \
+		-I../../modul/TOOLCHAIN/arm-elf/include/ \
 		-T$(LDSCRIPT) \
 		-I . \
 		-I $(RTOS_SOURCE_DIR)/include \
@@ -71,7 +71,7 @@ CFLAGS= $(DEBUG) \
 		-I ../../modul/ \
 		-I ../../app/ \
 		-I ../../modul/nmealib/include/ \
-		-I ../../uip/uip/ \
+		-I ../../modul/uip/uip/ \
 		-D ROWLEY_LPC23xx \
 		-D THUMB_INTERWORK \
 		-mcpu=arm7tdmi \
@@ -96,9 +96,9 @@ THUMB_SOURCE= \
 		../../modul/spi/spi.c \
 		../../modul/serial/serial.c \
 		../../modul/spi/low_ss1.c	\
-		../../tinysh/tinysh.c \
-		../../tinysh/shell.c \
-		../../tinysh/enviro.c \
+		../../modul/tinysh/tinysh.c \
+		../../modul/tinysh/shell.c \
+		../../modul/tinysh/enviro.c \
 		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
 		
@@ -113,30 +113,30 @@ LCD_SOURCE = \
 
 UIP_SOURCE = \
 		../../app/monita/monita_uip.c \
-		../../uip/clock.c \
-		../../uip/lib/memb.c \
-		../../uip/uip/uip.c \
-		../../uip/uip/uip_arch.c \
-		../../uip/uip/uip_arp.c \
-		../../uip/uip/uip_timer.c \
-		../../uip/uip/uip-fw.c \
-		../../uip/uip/psock.c \
-		../../uip/uip/uiplib.c \
-		../../uip/uip_task.c \
-		../../uip/apps/telnetd/telnetd.c	\
-		../../webserver/httpd.c \
-		../../webserver/httpd-fs.c \
-		../../webserver/http-strings.c \
-		../../webserver/httpd-cgi.c \
+		../../modul/uip/clock.c \
+		../../modul/uip/lib/memb.c \
+		../../modul/uip/uip/uip.c \
+		../../modul/uip/uip/uip_arch.c \
+		../../modul/uip/uip/uip_arp.c \
+		../../modul/uip/uip/uip_timer.c \
+		../../modul/uip/uip/uip-fw.c \
+		../../modul/uip/uip/psock.c \
+		../../modul/uip/uip/uiplib.c \
+		../../modul/uip/uip_task.c \
+		../../modul/uip/apps/telnetd/telnetd.c	\
+		../../app/webserver/httpd.c \
+		../../app/webserver/httpd-fs.c \
+		../../app/webserver/http-strings.c \
+		../../app/webserver/httpd-cgi.c \
 		
 ETH_SOURCE = \
-		../../uip/hardware/enc28j60.c	\
-		../../uip/hardware/ENCX24J600.c	\
+		../../modul/uip/hardware/enc28j60.c	\
+		../../modul/uip/hardware/ENCX24J600.c	\
 
 
 WEBCLIENT_SOURCE = \
-		../../webserver/webclient/webclient.c			\
-		../../webserver/webclient/webclient-strings.c	\
+		../../app/webserver/webclient/webclient.c			\
+		../../app/webserver/webclient/webclient-strings.c	\
 
 #MODULES_GPS = parse parser tok context time info gmath  
 GPS_SOURCE = \

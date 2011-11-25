@@ -109,7 +109,7 @@ int prepare_flash(int sektor_start, int sektor_end)
 
 	iap_entry = (IAP)IAP_LOCATION; // Set Function Pointer
 
-	command[0] = 50; 	// Prepare sector(s) for a Erase/Write Operation
+	command[0] = 50; 	// Prepare sector(s) for a Erase/Write Operation - P = 50
 	command[1] = sektor_start;	// start sector
 	command[2] = sektor_end;	// end sector
 
@@ -133,7 +133,7 @@ int hapus_flash(int sektor_start, int sektor_end)
 	
 	iap_entry = (IAP)IAP_LOCATION; // Set Function Pointer
 	
-	command[0] = 52; 	// Hapus dulu
+	command[0] = 52; 	// Hapus dulu		// 
 	command[1] = sektor_start;	// start sector
 	command[2] = sektor_end;	// end sector
 	command[3] = 60000;	// PCLK
@@ -173,7 +173,7 @@ int tulis_flash(int dst, unsigned short *data, int pjg)
 		
 		//printf(" uk=%d ", uk);
 		
-		command[0] = 51;
+		command[0] = 51;		// Q
 		command[1] = dst+(posisi * 2);	// tujuan flash (seuai dengan sektor flash)
 		command[2] = (unsigned short *) &data[posisi];		// source ram
 		command[3] = uk;
@@ -182,7 +182,9 @@ int tulis_flash(int dst, unsigned short *data, int pjg)
 		taskENTER_CRITICAL();
 		iap_entry(command,result);
 		taskEXIT_CRITICAL();
-
+		
+//		printf("result");
+		
 		if (result[0]) {
 			printf(" flash write error %d!\r\n", result[0]);
 			return result[0];

@@ -21,3 +21,8 @@ Pembagian folder ini berdasarkan
 	- konter_penyulang : board versi 3.1
 
 	
+catatan :
+- NXP
+	float	: 4 bit
+	short	: 2 bit
+	int		: 4 bit

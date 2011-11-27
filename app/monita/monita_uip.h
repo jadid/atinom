@@ -29,7 +29,7 @@
 	#elif defined(UNTUK_PLTD_AMPENAN)
 		#define JML_SUMBER 9
 	#else
-		#define JML_SUMBER	7
+		#define JML_SUMBER	5
 	#endif
 	//#define JML_SUMBER	5
 	//#define JML_SUMBER	10
@@ -77,6 +77,31 @@
 	//
 #endif
 
+// 32 KB
+#define ALMT_SEKTOR_8	0x08000
+#define ALMT_SEKTOR_9	0x10000
+#define ALMT_SEKTOR_10	0x18000
+#define ALMT_SEKTOR_11	0x20000
+#define ALMT_SEKTOR_12	0x28000
+#define ALMT_SEKTOR_13	0x30000
+#define ALMT_SEKTOR_14	0x38000
+#define ALMT_SEKTOR_15	0x40000
+#define ALMT_SEKTOR_16	0x48000
+#define ALMT_SEKTOR_17	0x50000
+#define ALMT_SEKTOR_18	0x58000
+#define ALMT_SEKTOR_19	0x60000
+#define ALMT_SEKTOR_20	0x68000
+#define ALMT_SEKTOR_21	0x70000
+
+// 4 KB
+#define ALMT_SEKTOR_22	0x78000
+#define ALMT_SEKTOR_23	0x79000
+#define ALMT_SEKTOR_24	0x7A000
+#define ALMT_SEKTOR_25	0x7B000
+#define ALMT_SEKTOR_26	0x7C000
+#define ALMT_SEKTOR_27	0x7D000
+
+
 
 #define SEKTOR_ENV	24
 #define ALMT_ENV	0x7A000
@@ -99,15 +124,16 @@
 
 //------------------------------------------------------------//
 #define SEKTOR_TITIK	21
-#define ALMT_TITIK		0x70000
+#define ALMT_TITIK		ALMT_SEKTOR_21
 
 // pengakses: tinysh/setting_eth.c, dipindah dari sektor 26 ke 21
 #define SEKTOR_KONFIG	21			// konfig id titik ukur
-#define ALMT_KONFIG		0x70000
+#define ALMT_KONFIG		ALMT_SEKTOR_21
 //------------------------------------------------------------//
 
-#define SEKTOR_DT_SET	21			// 32 kB
-#define ALMT_DT_SET		0x70000
+#define SEKTOR_DT_SET	20			// 32 kB
+//#define ALMT_DT_SET		ALMT_SEKTOR_20
+#define ALMT_DT_SET		0x00068000 
 
 #ifdef PAKAI_GSM_FTP
 	#define SEKTOR_GSM_FTP	27

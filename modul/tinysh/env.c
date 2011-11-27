@@ -61,7 +61,7 @@ static int simpan_env( struct t_env *pgr)
 	if(prepare_flash(SEKTOR_ENV, SEKTOR_ENV)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_ENV, (unsigned short *) pgr, (sizeof (struct t_group)))) return -1;
+	if(tulis_flash(ALMT_ENV, SEKTOR_ENV, SEKTOR_ENV, (unsigned short *) pgr, (sizeof (struct t_group)))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

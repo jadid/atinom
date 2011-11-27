@@ -269,9 +269,37 @@ int ganti_karakter(char *dest, char *src) {
 			pch = strstr (dest,asli[k]);
 			
 			if (pch) {
+				portENTER_CRITICAL();
 				strncpy (pch,pengganti[k],strlen(pengganti[k]));
 				strcat(dest, pengganti[k]);
 				i += strlen(pengganti[k])-strlen(asli[k]);
+				portEXIT_CRITICAL();
+			}
+		}
+		++i;
+	}
+	dest[i] = '\0';
+}
+
+int ganti_karakter_C(char *dest, char *src) {
+	char *asli[] = {"C"};
+	char *pengganti[] = {"."};
+	char * pch;
+
+	int i=0, j=0, k=0;
+	//for (j=0; src[j] != '\0'; ++j) {
+	for (j=0; src[j] != '\0'; j++) {
+		dest[i] = src[j];
+
+		for (k=0; k<1; k++) {
+			pch = strstr (dest,asli[k]);
+			
+			if (pch) {
+				portENTER_CRITICAL();
+				strncpy (pch,pengganti[k],strlen(pengganti[k]));
+				strcat(dest, pengganti[k]);
+				i += strlen(pengganti[k])-strlen(asli[k]);
+				portEXIT_CRITICAL();
 			}
 		}
 		++i;
@@ -394,7 +422,7 @@ int ganti_setting(char *str) {
 //#ifndef BANYAK_SUMBER
 	//printf(" str: %s\r\n", str);
 	char tmp[30], kets[60], keta[30], ketb[30], ketc[30], ketd[30], ketaz[60];
-	char ketip[30];
+	char ketip[30], ketgate[30];
 	unsigned int ret_ip;
 	
 	int nk=0, no=0, titik=0, z=0;
@@ -437,7 +465,7 @@ int ganti_setting(char *str) {
 			}
 			else
 				strcpy(kets, ketaz);
-			//printf("  board, len: %d ket: %s, kets: %s\r\n", strlen(kets), ket+1, kets);
+			//printf("  board, len: %d ket: %s, kets: %s, ket: %s, ketaz: %s\r\n", strlen(kets), ket+1, kets, ket, ketaz);
 		}
 		else if (strncmp(tmp, "f", 1)==0) {		// s, file webclient
 			ket = strchr(tmp,'=');
@@ -466,15 +494,18 @@ int ganti_setting(char *str) {
 			ket = strchr(tmp,'=');
 			strcpy(ketip, "");
 			ganti_karakter(ketc, ket+1);
-			//printf("  IP    ket: %s, ketc : %s\r\n", ket+1, ketc);
-			
-			ganti_karakter(ketip, ketc);
-			//printf("  IP    ket: %s, ketip: %s\r\n", ket+1, ketip);
+			printf("  IP    ket: %s, ketc : %s\r\n", ket+1, ketc);
+				
+			ganti_karakter_C(ketip, ketc);
+			printf("  IP    ket: %s, ketip: %s\r\n", ket+1, ketip);
 		}
 		else if (strncmp(tmp, "t", 1)==0) {		// s, gateway
 			ket = strchr(tmp,'=');
+			
 			ganti_karakter(ketd, ket+1);
-			//printf("  gatew ket: %s, ketd: %s\r\n", ket+1, ketd);
+			printf("  gatew ket: %s, ketd   : %s\r\n", ket+1, ketd);
+			ganti_karakter_C(ketgate, ketd);
+			printf("  gatew ket: %s, ketgate: %s\r\n", ket+1, ketgate);
 		}
 		else if (strncmp(tmp, "z", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
@@ -517,14 +548,14 @@ int ganti_setting(char *str) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(keta, ket+1);
 			y = stof(keta);
-			//printf(" ket:%s, keta:%s,  y: %.1f\r\n", ket+1, keta, y);
+			//printf(" ket:%s, keta:%s,  y: %.3f\r\n", ket+1, keta, y);
 		}
 		//*
 		else if (strncmp(tmp, "n", 1)==0) {		// f,
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketb, ket+1);
 			n = stof(ketb);
-			//printf(" ket:%s, ketb:%s,  n: %.1f\r\n", ket+1, ketb, n);
+			//printf(" ket:%s, ketb:%s,  n: %.3f\r\n", ket+1, ketb, n);
 		}
 		else if (strncmp(tmp, "r", 1)==0) {		// f,
 			ket = strchr(tmp,'=');
@@ -598,18 +629,20 @@ int ganti_setting(char *str) {
 		sprintf(p_sbr->berkas,"%s", keta);
 		
 		//printf("ketb: %s, SN: %s\r\n", ketb, p_sbr->SN);
-		//printf("ip: %s\r\n", ketip);
+		printf("ip: %s\r\n", ketip);
+		#if 1
 		ret_ip = baca_ip(ketip);	
 		p_sbr->IP0 = (unsigned char)(ret_ip >> 24);
 		p_sbr->IP1 = (unsigned char)(ret_ip >> 16);
 		p_sbr->IP2 = (unsigned char)(ret_ip >> 8);
 		p_sbr->IP3 = (unsigned char)(ret_ip);
 		
-		ret_ip = baca_ip(ketd);	
+		ret_ip = baca_ip(ketgate);	
 		p_sbr->GW0 = (unsigned char)(ret_ip >> 24);
 		p_sbr->GW1 = (unsigned char)(ret_ip >> 16);
 		p_sbr->GW2 = (unsigned char)(ret_ip >> 8);
 		p_sbr->GW3 = (unsigned char)(ret_ip);
+		#endif
 		//*/
 		
 		p_sbr->statusWebClient = aa;
@@ -648,6 +681,34 @@ int ganti_setting(char *str) {
 				
 			}
 		#endif
+	} else if (z==8) {	// kalibrasi
+		#if 1
+		struct t_env *p_sbr;
+		
+		p_sbr = pvPortMalloc( sizeof (struct t_env) );
+		
+		portENTER_CRITICAL();
+		memcpy((char *) p_sbr, (char *) ALMT_ENV, (sizeof (struct t_env)));
+		portEXIT_CRITICAL();
+		
+		//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+		//*
+		
+		p_sbr->kalib[no-1].m = y;
+		p_sbr->kalib[no-1].C = n;
+		
+		if (p_sbr == NULL) {
+			vPortFree(p_sbr);
+			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			return -1;
+		}
+		if (simpan_env(p_sbr) < 0) {
+			vPortFree(p_sbr);
+			return -1;
+		}		
+		vPortFree(p_sbr);
+		#endif
+		return 1;
 	} else if (z==7) {	// alarm
 		//printf("%s(): str: %s\r\n", __FUNCTION__, str);
 		
@@ -741,16 +802,43 @@ int ganti_setting(char *str) {
 			portEXIT_CRITICAL();
 			
 			p_sbr[no-1].id = titik;
-			sprintf(p_sbr[no-1].ket, kets);
+			//sprintf(p_sbr[no-1].ket, kets);
 			p_sbr[no-1].status = (atoi(stat))?1:0;
-			//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
-
+			printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
+			
 			#ifndef BOARD_TAMPILAN
 			if (simpan_konfignya( p_sbr ) < 0)	{
 				vPortFree( p_sbr );
 				return;
 			}
 			vPortFree( p_sbr );
+			#endif
+			
+			struct t_dt_set *p_dt;
+			p_dt = pvPortMalloc( jmlData * sizeof (struct t_dt_set) );
+						
+			if (p_dt == NULL)
+			{
+				printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+				vPortFree( p_dt );
+				return;	// -1
+			}
+			//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+
+			portENTER_CRITICAL();
+			memcpy((char *) p_dt, (char *) ALMT_DT_SET, (jmlData * sizeof (struct t_dt_set)));
+			portEXIT_CRITICAL();
+			
+			sprintf(p_dt[no-1].nama, kets);
+			//sprintf(p_sbr[no-1].ket, kets);
+			printf("Isi kanal:%d, nama: %s\r\n", no, p_dt[no-1].nama);
+			
+			#ifndef BOARD_TAMPILAN
+			if (simpan_data( p_dt ) < 0)	{
+				vPortFree( p_dt );
+				return;
+			}
+			vPortFree( p_dt );
 			#endif
 		}
 	#endif
@@ -1396,7 +1484,12 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			strcat(tot_buf, ": <a href=\"setting.html\">Info Data Sumber</a> :: <a href=\"setting.html?smb=7\">Info Alarm</a> :");
 		#else
 			strcat(tot_buf, ": <a href=\"setting.html\">Info Titik Ukur</a> :");
+			#ifndef PAKAI_PM
+				strcat(tot_buf, ": <a href=\"setting.html?smb=8\">Info Kalibrasi</a> :");
+			#endif
 		#endif
+		
+		
 		strcat(tot_buf, ": <a href=\"setting.html?smb=4\">Info Modul</a> :");
 	#ifdef BANYAK_SUMBER
 		strcat(tot_buf, ": <a href=\"setting.html?smb=3\">Info Sumber</a> :");
@@ -1499,6 +1592,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					flag=3;
 				} else if (i==4) {		// setting modul
 					flag=4;
+				} else if (i==8) {		// setting kalibrasi
+					flag=8;
 				#ifdef TES_GET_WEB
 				} else if (i==5) {		// tes web
 					flag=5;
@@ -1526,10 +1621,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				
 				strcat(tot_buf, "<h3>Info Modul Sumber</h3>\n");				
 				strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\r\n" \
-						"<tr><th width=\"40\">No</th>\r\n<th width=\"150\">Nama Modul</th>\r\n" \
-						"<th width=\"100\">IP</th>\r\n<th width=\"50\">Stack</th>\r\n<th width=\"60\">Alamat</th>\r\n" \
-						"<th width=\"400\">Tipe</th>\r\n" \
-						"<th width=\"150\">Status</th>\r\n<th width=\"50\">Ganti</th></tr>\r\n");
+						"<tr><th width=\"40\">No</th>\r\n<th width=\"100\">Nama Modul</th>\r\n" \
+						"<th width=\"100\">IP</th>\r\n<th width=\"40\">Stack</th>\r\n<th width=\"50\">Alamat</th>\r\n" \
+						"<th width=\"550\">Tipe</th>\r\n" \
+						"<th width=\"130\">Status</th>\r\n<th width=\"50\">Ganti</th></tr>\r\n");
 
 				for (i=0; i<JML_SUMBER; i++) {					
 					ganti_karakter(ket, p_sbrw[i].nama);
@@ -1541,10 +1636,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
 						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
 						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
-						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\"></td>\r\n" \
-						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
-						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\"></td>\r\n" \
-						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"3\"></td>\r\n" \
+						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"7\"></td>\r\n" \
+						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"6\"></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"2\"></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"2\"></td>\r\n" \
 						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 <input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 "	\
 						"<input type=\"radio\" name=\"g\" value=\"2\" %s/>MICOM 300 "	\
 						"<input type=\"radio\" name=\"g\" value=\"3\" %s/>MICOM 127 "	\
@@ -1567,7 +1662,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				strcat(tot_buf, "</tbody></table>\r\n");
 			#endif
 		#ifdef TES_GET_WEB
-		} else if (flag==5) {
+		} else if (flag==5) {	// tes web
 			struct t_env *env2ww;
 			env2ww = (char *) ALMT_ENV;
 			
@@ -1588,6 +1683,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				"   document.mF.t.value=Titik(strx);\r\n" \
 				"	strx=document.mF.k.value;\r\n" \
 				"   document.mF.k.value=Titik(strx);\r\n" \
+				"}\r\n" \
+				"function reset(){\r\n" \
+				"   document.mF.u.value=6;\r\n" \
 				"}\r\n" \
 				"-->\r\n" \
 				"</script>\r\n");
@@ -1649,10 +1747,67 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			strcat(tot_buf, "</tbody></table>\r\n");
 			strcat(tot_buf, "<input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik()\"/>\r\n</form>\r\n");
 			
+			strcat(tot_buf, "<form action=\"setting.html\">\r\n" \
+					"<input type=\"hidden\" name=\"r\" value=\"1\" />\r\n");
+			strcat(tot_buf, "<input type=\"submit\" value=\"Restart\" />\r\n</form>\r\n");
+			
 			#ifdef PAKAI_ADC
 			
 			#endif
 			
+		#ifdef PAKAI_ADC
+		} else if (flag==8) {	// info kalibrasi
+			printf("setting kalibrasi !!\r\n");
+			
+			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+					"<!--\r\n" \
+					"function gantiTitik(F){\r\n" \
+					"   var str;\r\n" \
+					"   var Fx=F;\r\n" \
+					"	str=Titik(Fx.y.value);\r\n" \
+					"	Fx.y.value = str;\r\n"	\
+					"	str=Titik(Fx.n.value);\r\n" \
+					"	Fx.n.value = str;\r\n" \
+					"}\r\n" \
+					"-->\r\n" \
+					"</script>\r\n");
+			
+			// "	Alert(\"m:\"+Fx.y.value+\" C:\"+Fx.n.value);\r\n" \
+
+			
+			strcat(tot_buf, "<h3>Info Kalibrasi</h3>\n");
+						
+			strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
+			strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+			strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
+			//strcat(tot_buf, "<th width=\"220px\">Nama</th>\n");		// klo pake input 40 aja
+			strcat(tot_buf, "<th width=\"60px\">m</th>\n");		// klo pake input 40 aja
+			strcat(tot_buf, "<th width=\"60px\">C</th>\n");		// klo pake input 40 aja
+			strcat(tot_buf, "<th width=\"60px\">Ganti</th>\n");
+			strcat(tot_buf, "</tr>\n");
+			
+			for (i=0; i<KANALNYA; i++)	{
+				//ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+				sprintf(head_buf, "\n<tr>\n<form action=\"setting.html\" name=\"mF%d\">" \
+					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+					"<input type=\"hidden\" name=\"z\" value=\"8\" />\r\n" \ 
+					"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
+					"<th>%d</th>",	\
+					(i+1), (i+1), (i+1), (i+1));
+				strcat(tot_buf, head_buf);
+
+				// <td  align=\"left\">%s</td>	, "Nantidulu"
+
+				sprintf(head_buf,	"<td><input type=\"text\" size=\"3\" name=\"y\" value=\"%.3f\">\n" \
+							"<td><input type=\"text\" size=\"3\" name=\"n\" value=\"%.3f\"></td>\n" \
+							"<td><input type=\"Submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"></td>\n</form></tr>\n",	\
+					env2->kalib[i].m, env2->kalib[i].C, \
+					i+1);
+				strcat(tot_buf, head_buf);
+			}
+			
+			strcat(tot_buf, "</tbody></table>\n");
+		#endif
 		} else {
 			strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
 			int pertamax=0, nk=0, no=0;

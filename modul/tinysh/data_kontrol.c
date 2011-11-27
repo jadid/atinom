@@ -44,7 +44,6 @@
 #include "../../app/monita/monita_uip.h"
 
 #include "uip.h"
-#include "uip.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -89,7 +88,7 @@ int cek_data(int argc, char **argv)
 		p_dt = (char *) ALMT_DT_SET;
 
 		judul(" Data Setting\r\n");
-		printf("  No  : ID.  :       Nama       :    Data    : Satuan");
+		printf("  No  : Kanal  :       Nama       :    Data    : Satuan");
 		#ifdef PAKAI_SELENOID
 			printf(": Alr_H : Alr_HH");
 			printf("Rly : ");
@@ -105,7 +104,7 @@ int cek_data(int argc, char **argv)
 		//*
 		for (i=0; i<(sizeof(data_f)/sizeof(float)); i++)	{
 			#if 0
-			printf("%3d : (%3d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", i+1, (i+1), \
+			printf("%3d : (%5d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", i+1, (i+1), \
 				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#endif
@@ -530,14 +529,14 @@ int simpan_data( struct t_dt_set *pgr)
 	printf("..");
 	
 	if(hapus_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
-	printf("..");
+	printf("++");
 	
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
-	printf("..");
+	printf("==");
 	
-	if(tulis_flash(ALMT_DT_SET, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
+	if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
 	
-	printf(".. OK\r\n");
+	printf("## OK\r\n");
 	return 0;
 }
 

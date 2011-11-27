@@ -120,7 +120,7 @@
 	#endif
 #endif
 
-//#define PAKAI_ADC
+#define PAKAI_ADC
 
 /*-----------------------------------------------------------
  * Application specific definitions.

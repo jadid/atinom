@@ -392,26 +392,26 @@ int ganti_setting(char *str) {
 		if (strncmp(tmp, "i", 1)==0) {
 			ids = strchr(tmp,'i');
 			no = atoi(ids+1);
-			//printf("  no: %d\r\n", no);
+			printf("  no: %d\r\n", no);
 			
 			ids = strchr(tmp,'=');
 			titik = atoi(ids+1);
-			//printf("  id: %d\r\n", titik);
+			printf("  id: %d\r\n", titik);
 		} 
 		else if (strncmp(tmp, "k", 1)==0) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(kets, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			printf("  ket: %s, kets: %s\r\n", ket+1, kets);
 		}
 		else if (strncmp(tmp, "f", 1)==0) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(keta, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			printf("  ket: %s, kets: %s\r\n", ket+1, kets);
 		}
 		else if (strncmp(tmp, "q", 1)==0) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketb, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			printf("  ket: %s, kets: %s\r\n", ket+1, kets);
 		}
 		else if (strncmp(tmp, "p", 1)==0) {
 			ket = strchr(tmp,'=');
@@ -421,31 +421,31 @@ int ganti_setting(char *str) {
 		else if (strncmp(tmp, "t", 1)==0) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(ketd, ket+1);
-			//printf("  ket: %s, kets: %s\r\n", ket+1, kets);
+			printf("  ket: %s, kets: %s\r\n", ket+1, kets);
 		}
 		else if (strncmp(tmp, "z", 1)==0) {
 			ids = strchr(tmp,'=');
 			z = atoi(ids+1);
-			//printf("  z: %d, ids: %s\r\n", z, ids+1);
+			printf("  z: %d, ids: %s\r\n", z, ids+1);
 		}
 		else if (strncmp(tmp, "a", 1)==0) {
 			ids = strchr(tmp,'=');
 			aa = atoi(ids+1);
-			//printf("  a: %d, ids: %s\r\n", aa, ids+1);
+			printf("  a: %d, ids: %s\r\n", aa, ids+1);
 		}
 		else if (strncmp(tmp, "b", 1)==0) {
 			ids = strchr(tmp,'=');
 			bb = atoi(ids+1);
-			//printf("  b: %d, ids: %s\r\n", bb, ids+1);
+			printf("  b: %d, ids: %s\r\n", bb, ids+1);
 		}
 		else if (strncmp(tmp, "g", 1)==0) {
 			ids = strchr(tmp,'=');
 			gg = atoi(ids+1);
-			//printf("  gg : %d, ids: %s\r\n", gg, ids+1);
+			printf("  gg : %d, ids: %s\r\n", gg, ids+1);
 		}
 		else if (strncmp(tmp, "s", 1)==0) {
 			stat = strchr(tmp,'=')+1;
-			//printf("  stat: %s\r\n", stat);
+			printf("  stat: %s\r\n", stat);
 		}
 		else if (strncmp(tmp, "m", 1)==0) {
 			ids = strchr(tmp,'m');
@@ -453,12 +453,12 @@ int ganti_setting(char *str) {
 			
 			ket = strchr(tmp,'=');
 			m = stof(ket+1);
-			//printf(" ket:%s,  m: %f\r\n", ket+1, m);
+			printf(" ket:%s,  m: %f\r\n", ket+1, m);
 		}
 		if (strncmp(tmp, "c", 1)==0) {
 			ket = strchr(tmp,'=');
 			c = stof(ket+1);
-			//printf(" ket:%s,  c: %f\r\n", ket+1, c);
+			printf(" ket:%s,  c: %f\r\n", ket+1, c);
 		}
 		pch=strchr(pch+1, '&');
 	}

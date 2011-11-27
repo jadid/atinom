@@ -334,6 +334,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
 				ganti_setting(s->filename);
 				buat_file_setting(1, s->filename);
+			} else if (strncmp(s->filename,"/setting.html?r=1",19)==0) {
+				buat_file_setting(1, "/setting.html");
+				vTaskDelay(1000);
+				reset_cpu();
 			} else if (strncmp(s->filename,"/setting.html?smb=1",19)==0) {
 				buat_file_setting(2, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=3",19)==0) {	// sumber
@@ -349,6 +353,9 @@ PT_THREAD(handle_output(struct httpd_state *s))
 				buat_file_setting(6, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=7",19)==0) {	// alarm trip
 				buat_file_setting(7, s->filename);
+			#else
+			} else if (strncmp(s->filename,"/setting.html?smb=8",19)==0) {	// kalibrasi
+				buat_file_setting(8, s->filename);
 			#endif
 			} else {
 				buat_file_setting(0,"");

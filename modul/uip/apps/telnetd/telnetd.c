@@ -276,7 +276,7 @@ static char bintang = '*';
 
 void cek_passwd(char *cc)
 {
-	if (strncmp(cc, "diesel", 6) == 0)
+	if (strncmp(cc, "monita", 6) == 0)
 	{
 		passwd_benar = 1;
 		telnetdBufferAppend (&telnetdBuf, PROMPT, strlen (PROMPT));

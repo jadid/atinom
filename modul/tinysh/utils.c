@@ -93,7 +93,7 @@ int proses_passwd(char *c)	{
 		//printf("dicocokkan %s !\r\n", passin);
 		passc = 0;
 				
-		if (strncmp(passin, "diesel", 6) == 0)
+		if (strncmp(passin, "monita", 6) == 0)
 		{
 			printf("\r\n%s(): OK\r\n", __FUNCTION__);
 			passc = 0;

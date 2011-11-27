@@ -11,6 +11,7 @@
 //#include "../app/monita/monita_uip.h"
 
 #include "FreeRTOS.h"
+#include "../../app/monita/monita_uip.h"
 
 #ifndef __SETTING_ETH__
 #define __SETTING_ETH__
@@ -162,7 +163,7 @@ void cek_konfig(int argc, char **argv)	{
 						printf("%-16s","TimeOut");
 					else
 						printf("%-16s"," ");
-					printf("\r\n");
+					printf(" : (%X)\r\n", &p_sbr[j*PER_SUMBER+i]);
 				}
 			}
 		#endif
@@ -180,7 +181,7 @@ void cek_konfig(int argc, char **argv)	{
 					printf("%-16s","TimeOut");
 				else
 					printf("%-16s"," ");
-				printf("\r\n");
+				printf(" : (%X)\r\n", &p_sbr[j*PER_SUMBER+i]);
 			}
 		} else if (p_sbr[j-1].alamat>0) {	// Modul Modbus
 			#ifdef PAKAI_PM
@@ -196,7 +197,7 @@ void cek_konfig(int argc, char **argv)	{
 						printf("%-16s","TimeOut");
 					else
 						printf("%-16s"," ");
-					printf("\r\n");
+					printf(" : (%X)\r\n", &p_sbr[j*PER_SUMBER+i]);
 				}
 			}
 			#endif
@@ -412,14 +413,14 @@ void set_awal_konfig(void)	{
 	printf("..");
 	
 	if(hapus_flash(SEKTOR_KONFIG, SEKTOR_KONFIG)) return -1;
-	printf("..");
+	printf("++");
 	
 	if(prepare_flash(SEKTOR_KONFIG, SEKTOR_KONFIG)) return -1;
-	printf("..");
+	printf("==");
 	
-	if(tulis_flash(ALMT_KONFIG, (unsigned short *) p_stg, (sizeof (struct t_setting) * (sizeof(data_f)/sizeof(float))))) return -1;
+	if(tulis_flash(ALMT_KONFIG, SEKTOR_KONFIG, SEKTOR_KONFIG, (unsigned short *) p_stg, (sizeof (struct t_setting) * (sizeof(data_f)/sizeof(float))))) return -1;
 	
-	printf(".. OK\r\n");
+	printf("## OK\r\n");
 	return 0;
 }
 

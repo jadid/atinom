@@ -268,9 +268,9 @@ unsigned char webclient_get(char *host, u16_t port, char *file)
 
 	//printf("___%s(): %s, host %s, port %d, file: %s, pjg: %d, sizeof(s.file): %d\r\n", __FUNCTION__,host, port, s.file, strlen(s.file), sizeof(s.file));
   
-	//printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d, len: %d\r\n", __FUNCTION__,host, port, file, strlen(s.file), uip_len);
-	
-	
+	printf("___%s(): host: %s, port %d, %s, strlen(s.file): %d, len: %d\r\n", __FUNCTION__,host, port, file, strlen(s.file), uip_len);
+
+	/*
 	for (gg=0; gg<40; gg++) {
 		if (gg%16==0) { 
 			printf("\r\n");
@@ -280,6 +280,8 @@ unsigned char webclient_get(char *host, u16_t port, char *file)
 		printf("%02x ", uip_buf[gg]);
 	}
 	printf("\r\n\r\n");
+	//*/
+	
 	#endif 
 	
 	return 1;

@@ -292,7 +292,7 @@ int Enc624Init() {
 	
 }
 
-#define DEBUG_ETHRX
+//#define DEBUG_ETHRX
 	#ifdef DEBUG_ETHRX
 		unsigned int jmlTuris=0;
 	#endif
@@ -311,10 +311,15 @@ int Enc624Terima(void) {
 	int fff,gg,hh;
 	
 	if (!MACIsLinked()) {
+		#ifdef DEBUG_ETHRX
 		printf("TAK nyambung %d..", jmlTuris++);
+		#endif
 		return 0;
 	}
+	
+	#ifdef DEBUG_ETHRX
 	printf("eth nyambung %d..", jmlTuris++);
+	#endif
 
 	if(!(ReadReg(EIR) & EIR_PKTIF)) {
 		//printf("EIR_PKTIF ...");

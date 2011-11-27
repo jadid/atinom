@@ -372,7 +372,7 @@ void set_env_default() {
 	env2->GW0 = 192;
 	env2->GW1 = 168;
 	env2->GW2 = 1;
-	env2->GW3 = 140;
+	env2->GW3 = 100;
 	
 	env2->wIP0 = 192;
 	env2->wIP1 = 168;
@@ -408,7 +408,7 @@ int simpan_env( struct t_env *pgr) {
 	if(prepare_flash(SEKTOR_ENV, SEKTOR_ENV)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_ENV, (unsigned short *) pgr, (sizeof (struct t_env) * 1))) return -1;
+	if(tulis_flash(ALMT_ENV, SEKTOR_ENV, SEKTOR_ENV,  (unsigned short *) pgr, (sizeof (struct t_env) * 1))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

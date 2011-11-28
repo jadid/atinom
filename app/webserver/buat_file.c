@@ -899,6 +899,26 @@ void buat_file_index(unsigned int flag, char *kata) {
 }
 #endif
 
+void buat_file_reset(char *kata) {
+	//printf(".... masuk %s\r\n", __FUNCTION__);
+	char head_buf[512];
+	
+	strcpy(tot_buf,"");
+	strcat(tot_buf, "<html><head>");
+	sprintf(head_buf, "\r\n<script type=\"text/javaScript\">\r\n" \
+				"<!--\r\n" \
+				"function reset(){\r\n" \
+				"	window.location=\"/index.html\";\r\n" \
+				"}\r\n" \
+				"-->\r\n" \
+				"</script>\r\n");
+	strcat(tot_buf, head_buf);
+	strcat(tot_buf, "</head><body onLoad=\"setTimeout('reset()', 15000)\";>\r\n");
+	strcat(tot_buf, "<h3>Restart Modul Monita dulu ....</h3>\r\n");
+	strcat(tot_buf, "<h2>Tunggu 15 detik</h2>\r\n");
+	strcat(tot_buf, "</body></html>");
+}
+
 #if 1
 void buat_file_index(unsigned int flag, char *kata) {
 
@@ -1669,7 +1689,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 		#endif
 		} else if (flag==4) {	// info modul
-			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+			sprintf(head_buf, "\r\n<script type=\"text/javaScript\">\r\n" \
 				"<!--\r\n" \
 				"function gantiTitik(){\r\n" \
 				"	var strx;\r\n" \
@@ -1685,10 +1705,31 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				"   document.mF.k.value=Titik(strx);\r\n" \
 				"}\r\n" \
 				"function reset(){\r\n" \
-				"   document.mF.u.value=6;\r\n" \
+				"	window.location=\"/index.html\";\r\n" \
 				"}\r\n" \
 				"-->\r\n" \
 				"</script>\r\n");
+			strcat(tot_buf, head_buf);
+			
+			#if 0
+			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+				"<!--\r\n" \
+				"function gantiTitik(){\r\n" \
+				"	var strx;\r\n" \
+				"	strx=document.mF.q.value;\r\n" \
+				"   document.mF.q.value=Titik(strx);\r\n" \
+				"	strx=document.mF.f.value;\r\n" \
+				"   document.mF.f.value=Titik(strx);\r\n" \
+				"	strx=document.mF.p.value;\r\n" \
+				"   document.mF.p.value=Titik(strx);\r\n" \
+				"	strx=document.mF.t.value;\r\n" \
+				"   document.mF.t.value=Titik(strx);\r\n" \
+				"	strx=document.mF.k.value;\r\n" \
+				"   document.mF.k.value=Titik(strx);\r\n" \
+				"}\r\n" \
+				"-->\r\n" \
+				"</script>\r\n");
+			#endif
 			
 			struct t_env *env2ww;
 			env2ww = (char *) ALMT_ENV;
@@ -1747,9 +1788,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			strcat(tot_buf, "</tbody></table>\r\n");
 			strcat(tot_buf, "<input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik()\"/>\r\n</form>\r\n");
 			
+			//strcat(tot_buf, "<form action=\"setting.html\">\r\n");
 			strcat(tot_buf, "<form action=\"setting.html\">\r\n" \
 					"<input type=\"hidden\" name=\"r\" value=\"1\" />\r\n");
-			strcat(tot_buf, "<input type=\"submit\" value=\"Restart\" />\r\n</form>\r\n");
+			strcat(tot_buf, "<input type=\"submit\" value=\"Restart Modul\" onClick=\"setTimeout('reset()',5000);\"/>\r\n</form>\r\n");
 			
 			#ifdef PAKAI_ADC
 			
@@ -1757,7 +1799,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 		#ifdef PAKAI_ADC
 		} else if (flag==8) {	// info kalibrasi
-			printf("setting kalibrasi !!\r\n");
+			//printf("setting kalibrasi !!\r\n");
 			
 			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
 					"<!--\r\n" \
@@ -1775,7 +1817,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			// "	Alert(\"m:\"+Fx.y.value+\" C:\"+Fx.n.value);\r\n" \
 
 			
-			strcat(tot_buf, "<h3>Info Kalibrasi</h3>\n");
+			strcat(tot_buf, "<h3>Info Kalibrasi (Y = mx+C)</h3>\n");
 						
 			strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
 			strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");

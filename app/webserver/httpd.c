@@ -271,11 +271,13 @@ PT_THREAD(send_headers(struct httpd_state *s, const char *statushdr))
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
+unsigned int rst = 0;
+
 static
 PT_THREAD(handle_output(struct httpd_state *s))
 {
 	char *ptr;
-  
+
 	PT_BEGIN(&s->outputpt);
 
 	if(!httpd_fs_open(s->filename, &s->file)) {
@@ -334,10 +336,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			if (strncmp(s->filename,"/setting.html?u=1",17)==0) {
 				ganti_setting(s->filename);
 				buat_file_setting(1, s->filename);
-			} else if (strncmp(s->filename,"/setting.html?r=1",19)==0) {
-				buat_file_setting(1, "/setting.html");
-				vTaskDelay(1000);
-				reset_cpu();
+			} else if (strncmp(s->filename,"/setting.html?r=1",17)==0) {
+				rst = 1;
+				//printf(" rst: %d\r\n", rst);
+				buat_file_reset(s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=1",19)==0) {
 				buat_file_setting(2, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=3",19)==0) {	// sumber
@@ -409,10 +411,20 @@ PT_THREAD(handle_output(struct httpd_state *s))
 		
 	}
 	
-	//printf("sock close ...");
+
+	
+	//printf("sock close ...%d\r\n", rst);
 	PSOCK_CLOSE(&s->sout);
+
+	if (rst) {
+		//printf("Reset CPU web command %d !\r\n", rst);
+		rst = 0;
+		reset_cpu();
+	}
+
 	PT_END(&s->outputpt);
 	//printf("pt end\r\n");
+	
 }
 /*---------------------------------------------------------------------------*/
 static

@@ -1797,7 +1797,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			#endif
 			
-		#ifdef PAKAI_ADC
+		#if defined(PAKAI_ADC) || defined(BOARD_KOMON_KONTER)
 		} else if (flag==8) {	// info kalibrasi
 			//printf("setting kalibrasi !!\r\n");
 			

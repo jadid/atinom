@@ -48,7 +48,7 @@
 
 //#include "../app/monita/monita_uip.h"
 
-int tulis_flash(int dst, unsigned short *data, int pjg);
+//int tulis_flash(int dst, unsigned short *data, int pjg);
 void judul(char *s);
 static int set_group_default(void);
 static int simpan_group( struct t_group *pgr);
@@ -346,7 +346,7 @@ static int simpan_group( struct t_group *pgr)	{
 	if(prepare_flash(SEKTOR_GROUP, SEKTOR_GROUP)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_GROUP, (unsigned short *) pgr, (sizeof (struct t_group) * 10))) return -1;
+	if(tulis_flash(ALMT_GROUP, SEKTOR_GROUP, SEKTOR_GROUP, (unsigned short *) pgr, (sizeof (struct t_group) * 10))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

@@ -24,7 +24,7 @@
 */
 
 //#include <regex.h>
-//#include "../app/monita/monita_uip.h"
+#include "../app/monita/monita_uip.h"
 
 #include "FreeRTOS.h"
 
@@ -405,7 +405,9 @@ int simpan_sumber( struct t_sumber *pgr)	{
 	if(prepare_flash(SEKTOR_SUMBER, SEKTOR_SUMBER)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_SUMBER, SEKTOR_SUMBER, SEKTOR_SUMBER, (unsigned short *) pgr, (sizeof (struct t_sumber) * JML_SUMBER))) return -1;
+	if (tulis_flash(ALMT_SUMBER, SEKTOR_SUMBER, SEKTOR_SUMBER, (unsigned short *) pgr, (sizeof (struct t_sumber) * JML_SUMBER))) 
+	//if (tulis_flash(ALMT_SUMBER, (unsigned short *) pgr, (sizeof (struct t_sumber) * JML_SUMBER))) 
+		return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

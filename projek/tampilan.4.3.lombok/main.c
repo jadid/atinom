@@ -69,6 +69,9 @@ int main( void )	{
 void togle_led_utama(void)	{
 	if (tog)	{
 		FIO0SET = LED_UTAMA;
+		//#ifndef (PAKAI_ALARM)
+			FIO1SET = BACKLIT;
+		//#endif
 		tog = 0;
 		
 		/* kalkulasi idle loop */
@@ -79,6 +82,9 @@ void togle_led_utama(void)	{
 		tendang_wdog();
 	}	else	{
 		FIO0CLR = LED_UTAMA;
+		//#ifndef (PAKAI_ALARM)
+			FIO1CLR = BACKLIT;
+		//#endif
 		tog = 1;
 		//ser2_putstring("masuk ...\r\n");	
 	}

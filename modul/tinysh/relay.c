@@ -13,9 +13,12 @@
 #ifdef PAKAI_RELAY
 
 int cek_relays(int argc, char **argv)	{
+	int sumb=0;
 	if (argc == 1)	{	// cek_relay
-		printf("Salah asuhan, arg = 1 !!\r\n  cek_relay [no_relay]");
-		
+		//printf("Salah asuhan, arg = 1 !!\r\n  cek_relay [no_relay]");
+		for (sumb=0; sumb<JML_RELAY; sumb++) {
+			printf("  Relay %d : %s\r\n", sumb, (data_f[(JML_SUMBER*PER_SUMBER)+sumb]==1)?"Aktif":"Mati");
+		}
 		return 0;
 	}
 	else if (argc > 2)	{
@@ -23,7 +26,7 @@ int cek_relays(int argc, char **argv)	{
 		return 0;
 	}
 	
-	int sumb=0;
+	
 	unsigned char str_relay[24];
 	
 	sprintf(str_relay, "%s", argv[1]);	

@@ -129,6 +129,10 @@ void timer1_ISR_Wrapper( void )
 
 extern unsigned char status_konter[KANALNYA];
 
+#ifdef PAKAI_PUSHBUTTON
+	extern unsigned int debound[KANALNYA];
+#endif
+
 void gpio_ISR_Handler( void )
 {
 	int t=0;
@@ -137,7 +141,7 @@ void gpio_ISR_Handler( void )
 
 	new_period = T1TC;
 	//cek sumber
-	
+
 	/*
 	if (IO2_INT_STAT_F & kont_10)
 	{
@@ -158,7 +162,7 @@ void gpio_ISR_Handler( void )
 	if (IO2_INT_STAT_R & kont_10)	{
 		t = 9;
 		if (status_konter[t]==1) {
-			set_konter_onoff(t, 0);
+			set_konter_onoff(t, 1);
 		}
 		IO2_INT_CLR = kont_10;
 	}
@@ -196,12 +200,21 @@ void gpio_ISR_Handler( void )
 		IO2_INT_CLR = kont_8;
 	}
 	//*/
-	if (IO2_INT_STAT_F & kont_8) {
+	if (IO2_INT_STAT_F & kont_8) {		// buat pulsa
 		t = 7;
 		if (status_konter[t]==0) {
 			set_konter(t, new_period);
 		} else if (status_konter[t]==1) {
 			set_konter_onoff(t, 1);
+		#ifdef PAKAI_PUSHBUTTON
+		} else if (status_konter[t]==2) {
+			if (debound[t]==0) {
+				debound[t] = DELAY_DEBOUND;
+				#ifdef PAKAI_RELAY
+					toogle_selenoid(t+1);
+				#endif
+			}
+		#endif
 		}
 		IO2_INT_CLR = kont_8;
 	} 
@@ -218,10 +231,17 @@ void gpio_ISR_Handler( void )
 		t = 6;
 		if (status_konter[t]==0) {
 			set_konter(t, new_period);
-			//IO2_INT_CLR = kont_7;
 		} else if (status_konter[t]==1) {
 			set_konter_onoff(t, 1);
-			//IO2_INT_CLR = kont_7;
+		#ifdef PAKAI_PUSHBUTTON
+		} else if (status_konter[t]==2) {
+			if (debound[t]==0) {
+				debound[t] = DELAY_DEBOUND;
+				#ifdef PAKAI_RELAY
+					toogle_selenoid(t+1);
+				#endif
+			}
+		#endif
 		}
 		IO2_INT_CLR = kont_7;
 	} 
@@ -248,6 +268,15 @@ void gpio_ISR_Handler( void )
 			set_konter(t, new_period);
 		} else if (status_konter[t]==1) {
 			set_konter_onoff(t, 1);
+		#ifdef PAKAI_PUSHBUTTON
+		} else if (status_konter[t]==2) {
+			if (debound[t]==0) {
+				debound[t] = DELAY_DEBOUND;
+				#ifdef PAKAI_RELAY
+					toogle_selenoid(t+1);
+				#endif
+			}
+		#endif
 		}
 		IO2_INT_CLR = kont_6;
 	} 
@@ -262,31 +291,101 @@ void gpio_ISR_Handler( void )
 	#ifdef BOARD_KOMON_KONTER_3_1
 		if (IO2_INT_STAT_F & kont_5)	{
 			t = 4;
-			set_konter(t, new_period);
+			if (status_konter[t]==0) {
+				set_konter(t, new_period);
+			} else if (status_konter[t]==1) {
+				set_konter_onoff(t, 1);
+			#ifdef PAKAI_PUSHBUTTON
+			} else if (status_konter[t]==2) {
+				if (debound[t]==0) {
+					debound[t] = DELAY_DEBOUND;
+					#ifdef PAKAI_RELAY
+						toogle_selenoid(t+1);
+					#endif
+				}
+			#endif
+			}
+			//set_konter(t, new_period);
 			IO2_INT_CLR = kont_5;
 		}
 		
 		if (IO2_INT_STAT_F & kont_4)	{
 			t = 3;
-			set_konter(t, new_period);
+			//set_konter(t, new_period);
+			if (status_konter[t]==0) {
+				set_konter(t, new_period);
+			} else if (status_konter[t]==1) {
+				set_konter_onoff(t, 1);
+			#ifdef PAKAI_PUSHBUTTON
+			} else if (status_konter[t]==2) {
+				if (debound[t]==0) {
+					debound[t] = DELAY_DEBOUND;
+					#ifdef PAKAI_RELAY
+						toogle_selenoid(t+1);
+					#endif
+				}
+			#endif
+			}		
 			IO2_INT_CLR = kont_4;
 		}
 		
 		if (IO2_INT_STAT_F & kont_3)	{
 			t = 2;
-			set_konter(t, new_period);
+			//set_konter(t, new_period);
+			if (status_konter[t]==0) {
+				set_konter(t, new_period);
+			} else if (status_konter[t]==1) {
+				set_konter_onoff(t, 1);
+			#ifdef PAKAI_PUSHBUTTON
+			} else if (status_konter[t]==2) {
+				if (debound[t]==0) {
+					debound[t] = DELAY_DEBOUND;
+					#ifdef PAKAI_RELAY
+						toogle_selenoid(t+1);
+					#endif
+				}
+			#endif
+			}
 			IO2_INT_CLR = kont_3;
 		}
 		
 		if (IO2_INT_STAT_F & kont_2)	{
 			t = 1;
-			set_konter(t, new_period);
+			//set_konter(t, new_period);
+			if (status_konter[t]==0) {
+				set_konter(t, new_period);
+			} else if (status_konter[t]==1) {
+				set_konter_onoff(t, 1);
+			#ifdef PAKAI_PUSHBUTTON
+			} else if (status_konter[t]==2) {
+				if (debound[t]==0) {
+					debound[t] = DELAY_DEBOUND;
+					#ifdef PAKAI_RELAY
+						toogle_selenoid(t+1);
+					#endif
+				}
+			#endif
+			}
 			IO2_INT_CLR = kont_2;
 		}
 		
 		if (IO2_INT_STAT_F & kont_1)	{
 			t = 0;
-			set_konter(t, new_period);
+			//set_konter(t, new_period);
+			if (status_konter[t]==0) {
+				set_konter(t, new_period);
+			} else if (status_konter[t]==1) {
+				set_konter_onoff(t, 1);
+			#ifdef PAKAI_PUSHBUTTON
+			} else if (status_konter[t]==2) {
+				if (debound[t]==0) {
+					debound[t] = DELAY_DEBOUND;
+					#ifdef PAKAI_RELAY
+						toogle_selenoid(t+1);
+					#endif
+				}
+			#endif
+			}
 			IO2_INT_CLR = kont_1;
 		}
 	#endif

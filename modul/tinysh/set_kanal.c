@@ -87,12 +87,17 @@ void set_kanal(int argc, char **argv)	{
   	else if (strcmp(argv[2], "status") == 0)  	{
   		printf(" Setting status kanal %d :\r\n", kanal);
   		//*
-  		if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
+  		if (( argv[3][0] == '2') || ( argv[3][0] == '1') || (argv[3][0] == '0')) {
 			p_sbr->kalib[kanal-1].status = (argv[3][0] - '0');
 		} 
 		else if ( strcmp(argv[3], "onoff")==0) {
 			p_sbr->kalib[kanal-1].status = 1;
-		} 
+		}
+		#ifdef PAKAI_PUSHBUTTON
+		else if ( strcmp(argv[3], "toogle")==0) {
+			p_sbr->kalib[kanal-1].status = 2;
+		}
+		#endif
 		else if ( strcmp(argv[3], "rpm")==0) {
 			p_sbr->kalib[kanal-1].status = 0;
 		} else {

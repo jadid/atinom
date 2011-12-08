@@ -69,6 +69,15 @@ void unset_selenoid(unsigned int no )	{
 		printf("%s(): ERR tidak ada Relay !\r\n", __FUNCTION__);	
 }
 
+unsigned char toogle_selenoid(unsigned int no) {
+	if (no<1 && no>JML_RELAY) {
+		return 0;
+	}
+
+	(data_f[(JML_SUMBER*PER_SUMBER)+no-1])?unset_selenoid(no):set_selenoid(no);
+	return no;
+}
+
 #endif
 
 #endif

@@ -68,6 +68,10 @@
 	unsigned char status_konter[KANALNYA];
 #endif
 
+#ifdef PAKAI_PUSHBUTTON
+	#define DELAY_DEBOUND	2		// 2 * 500 ms
+	unsigned int debound[KANALNYA];
+#endif
 
 #ifdef PAKAI_FILE_SIMPAN
 	//#define SEKTOR_SFILE	16

@@ -29,6 +29,12 @@ xTaskHandle hdl_ambilcepat;
 	extern unsigned char status_konter[KANALNYA];
 #endif
 
+
+#ifdef PAKAI_PUSHBUTTON
+	extern unsigned int debound[KANALNYA];
+#endif
+
+
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(500);
   	baca_env(0);	
@@ -66,6 +72,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		//init_remang();
   	#endif
   	
+  	#ifdef PAKAI_PUSHBUTTON
+		for (loopambil=0; loopambil<KANALNYA; loopambil++) {
+			debound[0] = 0;
+		}
+	#endif
+	
   	#ifdef PAKAI_PM
 		int almtSumber=0;
 		int sPM=0;

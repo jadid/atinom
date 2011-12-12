@@ -370,7 +370,28 @@ void dele(int dd);
 										PINSEL0 |= (BIT(20) | BIT(22));	\
 									} while(0)
 	#endif
-
+	
+	#ifdef PAKAI_SERIAL_3_P0
+		#define setup_serial3_P0()	do 	{	\
+										PCONP |= BIT(25);	\
+										PCLKSEL1 &= ~(BIT(18) | BIT(19));	\
+										PCLKSEL1 |= BIT(18);				\
+										PINSEL0 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));		\
+										PINSEL0 |= (BIT(1));								\
+										PINSEL0 |= (BIT(3));								\
+										FIO0DIR |= TXDE;					\
+										FIO0SET = TXDE;						\
+										FIO0DIR |= RXDE;					\
+										FIO0SET  = RXDE;					\
+									} while(0)
+	#endif
+	
+	#ifdef PAKAI_MODBUS_RTU
+		#define TXDE	BIT(5)
+		#define RXDE	BIT(4)
+	#endif
+	
+	
 /*
 	#ifdef PAKAI_ETH
 		#define CS_ENC	BIT(18)
@@ -458,7 +479,7 @@ void dele(int dd);
 									FIO1DIR = FIO1DIR | CS_ENC;
 	#endif
 	
-		#ifdef PAKAI_RELAY
+	#ifdef PAKAI_RELAY
 		
 		#define RLY_1	BIT(0)			/* P1 */
 		#define RLY_2	BIT(1)

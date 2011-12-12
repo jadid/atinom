@@ -17,6 +17,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "modem.c"
 #include "../monita/monita_uip.h" 
 
 #define DEBUG_SMS
@@ -55,17 +56,17 @@ void flush_modem() {
 	
 	for (i=0; i<50; i++)
 		#ifdef PAKAI_SERIAL_1
-			if (PAKAI_SMS==1) {
+			if (PAKAI_MODEM_SERIAL==1) {
 				ser1_getchar(1, &loop, 20 );
 			}
 		#endif
 		#ifdef PAKAI_SERIAL_2
-			if (PAKAI_SMS==2) {
+			if (PAKAI_MODEM_SERIAL==2) {
 				ser2_getchar(1, &loop, 20 );
 			}
 		#endif
 		#ifdef PAKAI_SERIAL_3
-			if (PAKAI_SMS==3)	{
+			if (PAKAI_MODEM_SERIAL==3)	{
 				ser3_getchar(1, &loop, 20 );
 			}
 		#endif
@@ -78,13 +79,16 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	vTaskDelay(100);
 	//flush_modem();
 	
+	#ifdef PAKAI_CEK_AWAL_MODEM
 	cek_awal();
+	#endif
+	
 	strcpy(str_sms, "");
 	strcpy(pesan, isiSMS);
 	strcpy(tuj, dest);
 	//printf("Isi Pesan: %s\r\n", str_sms);
 	sprintf((char *) str_sms, "AT+CMGF=1\r\n");		//printf("cmd: %s", str_sms);
-	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
 	strcpy((char *) str_sms, "");
 	baca_serial(str_sms, 20, 100);
 	//printf("isi: %s\r\n", str_sms);
@@ -106,7 +110,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 		sprintf(str_sms, "AT+CMGW=\"%s\"\r\n", tuj);
 	}
 	printf("cmd: %s", str_sms);
-	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
 	strcpy(str_sms, "");
 	baca_serial(str_sms, 128, 100);
 	
@@ -127,10 +131,10 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	// isi Pesan SMS
 	strcpy(str_sms, pesan);				printf("isi SMS: %s\r\n", str_sms);
 	//sprintf(str_sms, "%s", pesan);		printf("isi SMS: %s\r\n", str_sms);
-	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
 	
 	sprintf(str_sms, "%c", CTRL_Z);		//printf("___kirim CTRL-Z___\r\n");
-	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
 	int qq=0;
 	while(1) {
 		strcpy(str_sms, "");
@@ -175,7 +179,7 @@ int kirim_sms_ascii(char * dest, char * isiSMS) {
 	// Kirimkan SMS !!!
 	if (antri>0) {
 		sprintf(str_sms, "AT+CMSS=%d\r\n", antri);		printf("cmd: %s", str_sms);
-		serX_putstring(PAKAI_GSM_FTP, str_sms);
+		serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
 		
 		strcpy(str_sms, "");
 		baca_serial(str_sms, 120, 20);
@@ -233,6 +237,8 @@ int kirim_data_monita_exe(int argc, char **argv) {
 	
 	char cmd_monita[130];
 	toLower(cmd_monita, argv[1]);
+	
+	#if defined(KIRIM_DATA_TITIK_UKUR) && defined(PAKAI_FILE_SIMPAN)
 	if (strncmp(cmd_monita,"info", 4)==0) {
 		data_titik_ukur(cmd_monita, 1);			// di file utils.c
 		printf("%s", cmd_monita);
@@ -250,12 +256,15 @@ int kirim_data_monita_exe(int argc, char **argv) {
 		printf(" Perintah: monita [info|data]\r\n");
 		return 0;
 	}
+	#endif
 }
 
 int kirim_data_monita(char *no_tuj, int pilih) {
 	char cmd_monita[200];
 	status_modem = 1;
 	printf("Kirim SMS ");
+	
+	#ifdef KIRIM_DATA_TITIK_UKUR
 	if (pilih==1) {
 		printf("info");
 		data_titik_ukur(cmd_monita, 1);		// di file utils.c
@@ -266,6 +275,7 @@ int kirim_data_monita(char *no_tuj, int pilih) {
 		printf("satuan");
 		data_titik_ukur(cmd_monita, 3);
 	}
+	#endif
 	
 	printf("\r\n--------------------------\r\n");
 	#ifdef DEBUG_SMS
@@ -282,7 +292,10 @@ int kirim_sms_exe(int argc, char **argv) {
 	status_modem=1;
 	
 	//flush_modem();
+	#ifdef PAKAI_CEK_AWAL_MODEM
 	cek_awal();
+	#endif
+	
 	#ifdef DEBUG_SMS
 	printf("kirim sms\r\n");
 	#endif
@@ -363,11 +376,13 @@ int baca_sms_semua() {
 	char fff=0;
 	
 	//flush_modem();
+	#ifdef PAKAI_CEK_AWAL_MODEM
 	cek_awal();
+	#endif
 	vTaskDelay(50);
 
 	sprintf(hasilx, "AT+CMGL=\"ALL\"\r\n");		//printf("cmd: %s", hasilx);	
-	serX_putstring(PAKAI_GSM_FTP, hasilx);
+	serX_putstring(PAKAI_MODEM_SERIAL, hasilx);
 
 	while (1) {
 		baca_serial(hasilx, 250, 10);
@@ -439,7 +454,7 @@ int baca_sms(int indexnya) {
 	strcpy(str_sms, "");
 	vTaskDelay(5);
 	sprintf(hasilx, "AT+CMGR=%d\r\n", indexnya);		//printf("cmd: %s", hasilx);	
-	serX_putstring(PAKAI_GSM_FTP, hasilx);
+	serX_putstring(PAKAI_MODEM_SERIAL, hasilx);
 	
 	baca_serial(hasilx, 128, 5);
 	//printf("isi: %s\r\n", hasilx);
@@ -646,7 +661,7 @@ int hapus_sms(int no) {
 	flush_modem();
 	strcpy(str_sms,"");
 	sprintf(str_sms, "AT+CMGD=%d\r\n", no);	//printf("cmd: %s\r\n", str_sms);
-	serX_putstring(PAKAI_GSM_FTP, str_sms);
+	serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
 	
 	baca_serial(str_sms, 20, 50);
 	//printf("1.hasil: %s\r\n", str_sms);
@@ -744,18 +759,20 @@ int isiSMSnya(char *hasil, char *str) {
 int cek_pulsa(void)	{	
 	char strpls[255];
 	//flush_modem();
+	#ifdef PAKAI_CEK_AWAL_MODEM
 	cek_awal();
+	#endif
 	
 	sprintf(strpls, "AT+CUSD=1,%s\r\n", PULSA_SIMPATI);
 	//serX_putstring(PAKAI_SMS, "AT+CUSD=1,*888#\r\n");
-	serX_putstring(PAKAI_SMS, strpls);
+	serX_putstring(PAKAI_MODEM_SERIAL, strpls);
 	baca_serial(strpls, 200, 5);
 	
 	//printf("isi: %s\r\n", str_sms);
 	if (strncmp(strpls, "+CUSD: 4", 8) == 0)	{
 		//printf("Respon: +CUSD: 4\r\n");
 		strcpy(strpls, "AT+CUSD=1\r\n");
-		serX_putstring(PAKAI_SMS, strpls);
+		serX_putstring(PAKAI_MODEM_SERIAL, strpls);
 		
 		strcpy(strpls, "");
 		baca_serial(strpls, 200, 5);
@@ -769,7 +786,7 @@ int cek_pulsa(void)	{
 			//printf("CUSD: OK !!\r\n");
 			//printf("AT+CUSD=1,*888#\r\n");
 			sprintf(strpls, "AT+CUSD=1,%s\r\n", PULSA_SIMPATI);
-			serX_putstring(PAKAI_SMS, strpls);
+			serX_putstring(PAKAI_MODEM_SERIAL, strpls);
 			baca_serial(strpls, 20, 5);
 		}
 		//printf("RESPON: %s\r\n", str_sms);

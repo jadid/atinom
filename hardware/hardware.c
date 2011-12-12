@@ -51,7 +51,6 @@ void setup_hardware() {
 	
 	#ifdef PAKAI_SERIAL_3
 		/* PCONP enable UART3 */
-		PCONP |= BIT(25);
 		
 		#ifdef PAKAI_SERIAL_3_P0
 			setup_serial3_P0();
@@ -61,12 +60,11 @@ void setup_hardware() {
 		PCLKSEL1 &= ~(BIT(18) | BIT(19));
 		PCLKSEL1 |= BIT(18);
 		
-		
 	#endif
 
 	#ifdef PAKAI_SERIAL_2			
 		/* PCONP enable UART2 */
-		PCONP |= BIT(24);
+
 		
 		#ifdef PAKAI_SERIAL_2_P0
 			setup_serial2_P0();
@@ -116,9 +114,9 @@ void init_hardware()	{
 	#endif
 	
 	#if 0
-	#if (defined(PAKAI_PM) && defined(AMBIL_PM))
-		init_task_pm();
-	#endif
+		#if (defined(PAKAI_PM) && defined(AMBIL_PM))
+			init_task_pm();
+		#endif
 	#endif
 	
 	#ifdef PAKAI_SERIAL_2_P0

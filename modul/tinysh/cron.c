@@ -201,7 +201,7 @@ void baca_cron() {
 		if (cekCron(p_dt[hitung])==1) {	
 			
 			if (p_dt[hitung].set) {
-				printf(" %d:%d %d-%d ",timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
+				printf(" %d:%02d:%02d %d-%d ",timeinfo.tm_hour,timeinfo.tm_min, timeinfo.tm_sec,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
 				/*
 				//printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
 				//		p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
@@ -289,6 +289,7 @@ void baca_cron() {
 		hitung++;
 	}
 	hitung_lagi++;
+	//printf("hitung lagi : %d\r\n", hitung_lagi);
 }
 
 /*
@@ -580,13 +581,13 @@ static int simpan_cron( struct t_cron *pgr)
 	if(prepare_flash(SEKTOR_CRON, SEKTOR_CRON)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_CRON, (unsigned short *) pgr, (sizeof (struct t_cron) * (JML_CRON) ))) return -1;
+	if(tulis_flash(ALMT_CRON, SEKTOR_CRON, SEKTOR_CRON, (unsigned short *) pgr, (sizeof (struct t_cron) * (JML_CRON) ))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;
 }
 
-
+#if 0
 portTASK_FUNCTION(cron_task, pvParameters)	{
 	int i=0, j=0;
 	vTaskDelay(500);
@@ -640,7 +641,7 @@ void init_task_cron(void)	{
 	xTaskCreate( cron_task, ( signed portCHAR * ) "CRON", (configMINIMAL_STACK_SIZE * 4), \
 		NULL, tskIDLE_PRIORITY + 1, (xTaskHandle *) &hdl_cron );	
 }
-
+#endif
 #endif
 
 #endif

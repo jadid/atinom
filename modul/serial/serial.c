@@ -545,6 +545,66 @@ signed portBASE_TYPE xReturn;
 	return xReturn;
 }#endif
 
+#ifdef PAKAI_MODEM_SERIAL
+int fd = 0;
+
+int baca_serial(char *buf, int len, int timeout)
+{
+	int res;
+	int c;
+	int tout=0;
+	int masuk = 0;
+	
+	while(len--)
+	{
+		//res = read( fd, &c, 1);
+		#if (PAKAI_MODEM_SERIAL == 1) 
+			res = ser1_getchar(fd, &c, 1 );
+		#elif (PAKAI_MODEM_SERIAL == 2) 			
+			res = ser2_getchar(fd, &c, 1 );
+		#elif (PAKAI_MODEM_SERIAL == 3)
+			res = ser3_getchar(fd, &c, 1 );
+		#endif 
+		if (res != 0)
+		{
+			if ( (char) c == 0x0A || (char) c == 0x0D )
+			{
+				if (masuk > 0) 
+				{	
+					/* supaya buffer lama tidak ikut di printout */
+					buf[masuk] = 0;
+					return 0;
+				}
+			}
+			else
+			{
+				buf[ masuk ] = (char ) c;								
+				masuk++;
+				
+				#if (DEBUG == 1)
+				printf(" %s(): res=%d : msk=%02d : 0x%02X : %c\r\n", __FUNCTION__, res, masuk, (char) c, (char) c);
+				#endif
+				/*
+				if ( (char) c == 0x0A && masuk > 2)
+				{
+					if (buf[ masuk - 2 ] == 0x0D)
+					return 0;
+				}*/
+			}
+		}
+		else
+		{
+			printf(" %s(): %d :timeout\r\n", __FUNCTION__, tout);
+			len++;
+			tout++;
+			if ( tout > timeout) 
+				return 0;
+				//return -1;
+		}
+	}
+}
+#endif
+
 #ifdef PAKAI_SERIAL_2
 /* UART 2, untuk PM server */
 static xQueueHandle Qrx2;

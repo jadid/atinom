@@ -11,6 +11,10 @@
 #include "monita/monita_uip.h"
 xTaskHandle hdl_ambilcepat;
 
+#ifdef PAKAI_MODEM_SERIAL
+	
+#endif
+
 #ifdef BOARD_KOMON_KONTER_3_0
 	#include "../modul/GPIO/gpio.h"
 #endif
@@ -57,6 +61,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			printf("Init TSC OK ack !!!\r\n");
 			st_tsc = 1;
 		}
+  	#endif
+  	
+  	#ifdef PAKAI_CRON
+		printf("Init CRON OK !!!\r\n");
   	#endif
   	
   	#ifdef PAKAI_GPS
@@ -106,6 +114,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	for(;;) {
 		vTaskDelay(5);
 		
+		#ifdef PAKAI_CRON
+			//if (loopambil%60==0)	//	30 detik
+			if (loopambil%120==0)	//	60 detik
+				baca_cron();
+		#endif
+		
 		#ifdef DATA_RANDOM
 			data_f[loopambil%10] = (float) ((rand() % 100));
 			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
@@ -153,6 +167,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				hitung_rpm();
 				data_frek_rpm();
 			}
+		#endif
+	
+		#ifdef PAKAI_MODEM_SERIAL
+		
 		#endif
 	
 		#ifdef PAKAI_I2C

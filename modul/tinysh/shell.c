@@ -125,8 +125,9 @@ int status_MMC=0;
 #include "smodem.c"
 #endif
 
+
 #ifdef PAKAI_SMS
-#include "../gsm/sms.c"
+	#include "../../app/gsm/sms.c"
 #endif
 
 #ifdef PAKAI_CRON
@@ -418,7 +419,7 @@ void cek_stack(void)
 	#endif
 		
 	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
-		printf(" GSM         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
+//		printf(" GSM         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
 	#endif
 	
 	#ifdef PAKAI_CRON

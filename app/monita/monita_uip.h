@@ -63,13 +63,18 @@
 	int status_modem;
 #endif
 
+#ifdef PAKAI_MODEM_SERIAL
+	int saat_gsm_aksi;
+	int status_modem;
+#endif
+
 #ifdef BOARD_KOMON_KONTER
 	
 	unsigned char status_konter[KANALNYA];
 #endif
 
 #ifdef PAKAI_PUSHBUTTON
-	#define DELAY_DEBOUND	2		// 2 * 500 ms
+	#define DELAY_DEBOUND	3		// 2 * 500 ms
 	unsigned int debound[KANALNYA];
 #endif
 

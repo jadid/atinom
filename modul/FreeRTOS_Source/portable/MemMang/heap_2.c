@@ -153,14 +153,17 @@ xBlockLink *pxFirstFreeBlock;														\
 	pxFirstFreeBlock->pxNextFreeBlock = &xEnd;										\
 }
 /*-----------------------------------------------------------*/
-
+//#define DEBUG_PORTMALLOC
 void *pvPortMalloc( size_t xWantedSize )
 {
 xBlockLink *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
 static portBASE_TYPE xHeapHasBeenInitialised = pdFALSE;
 void *pvReturn = NULL;
 
-	//printf("%s()\r\n", __FUNCTION__);
+	#ifdef DEBUG_PORTMALLOC
+	printf("%s()\r\n", __FUNCTION__);
+	#endif
+	
 	vTaskSuspendAll();
 	{
 		/* If this is the first call to malloc then the heap will require
@@ -175,7 +178,10 @@ void *pvReturn = NULL;
 		structure in addition to the requested amount of bytes. */
 		if( xWantedSize > 0 )
 		{
-			//printf("sampe sini 1  !!\r\n");
+			#ifdef DEBUG_PORTMALLOC
+			printf("sampe sini 1  !!\r\n");
+			#endif
+			
 			xWantedSize += heapSTRUCT_SIZE;
 
 			/* Ensure that blocks are always aligned to the required number of bytes. */
@@ -188,7 +194,10 @@ void *pvReturn = NULL;
 
 		if( ( xWantedSize > 0 ) && ( xWantedSize < configTOTAL_HEAP_SIZE ) )
 		{
-			//printf("sampe sini 2  !!\r\n");
+			#ifdef DEBUG_PORTMALLOC
+			printf("sampe sini 2  !!\r\n");
+			#endif
+			
 			/* Blocks are stored in byte order - traverse the list from the start
 			(smallest) block until one of adequate size is found. */
 			pxPreviousBlock = &xStart;
@@ -214,7 +223,9 @@ void *pvReturn = NULL;
 				/* If the block is larger than required it can be split into two. */
 				if( ( pxBlock->xBlockSize - xWantedSize ) > heapMINIMUM_BLOCK_SIZE )
 				{
-					//printf("sampe sini 4  !!\r\n");
+					#ifdef DEBUG_PORTMALLOC
+					printf("sampe sini 4  !!\r\n");
+					#endif
 					/* This block is to be split into two.  Create a new block
 					following the number of bytes requested. The void cast is
 					used to prevent byte alignment warnings from the compiler. */
@@ -232,7 +243,9 @@ void *pvReturn = NULL;
 		}
 	}
 	xTaskResumeAll();
-	//printf("%s()\r\n", __FUNCTION__);
+	#ifdef DEBUG_PORTMALLOC
+	printf("%s()\r\n", __FUNCTION__);
+	#endif
 	
 	return pvReturn;
 }

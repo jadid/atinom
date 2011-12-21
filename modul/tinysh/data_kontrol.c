@@ -534,7 +534,7 @@ int simpan_data( struct t_dt_set *pgr)
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
 	printf("==");
 	
-	if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
+	if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET+1, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
 	
 	printf("## OK\r\n");
 	return 0;

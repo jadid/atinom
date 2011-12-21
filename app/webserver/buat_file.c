@@ -1106,6 +1106,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
+#if 0
 #if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0) || defined(BOARD_KOMON_KONTER_3_1)
 	if (pertamax>0) {
 		if (nk==0) nk=1;
@@ -1145,24 +1146,23 @@ void buat_file_index(unsigned int flag, char *kata) {
 			}
 		} 
 		//*
-		else if (pmx[no].status==1) {
-			if (pmx[no].alamat==0) {			// Modul Monita
-				for (i=0; i<PER_SUMBER; i++)	{
-					ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-					sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"center\">%d</td>\n<td align=\"right\">%.2f</td>\n", i+1, (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
-					strcat(tot_buf, head_buf);
-					sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", strlen(p_dt[no*PER_SUMBER+i].satuan)?p_dt[no*PER_SUMBER+i].satuan:"-", strlen(ket)>0?ket:"-");		
-					strcat(tot_buf, head_buf);
-				}
-			}
-		}
-		//*/
+		//else if (pmx[no].status==1) {
+		//	if (pmx[no].alamat==0) {			// Modul Monita
+		//		for (i=0; i<PER_SUMBER; i++)	{
+		//			ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+		//			sprintf(head_buf, "<tr>\n<td align=\"center\">%d</td><td align=\"center\">%d</td>\n<td align=\"right\">%.2f</td>\n", i+1, (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
+		//			strcat(tot_buf, head_buf);
+		//			sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", strlen(p_dt[no*PER_SUMBER+i].satuan)?p_dt[no*PER_SUMBER+i].satuan:"-", strlen(ket)>0?ket:"-");		
+		//			strcat(tot_buf, head_buf);
+		//		}
+		//	}
+		//}
+
 	}
 	strcat(tot_buf, "</table>\n");
-
-
 #endif
-
+#endif
+//*/
 #ifdef BOARD_KOMON_A_RTD
 	for (i=0; i< 5; i++)
 	{		
@@ -1198,33 +1198,42 @@ void buat_file_index(unsigned int flag, char *kata) {
 	}
 #endif
 //*
-
-#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3) || defined(BOARD_TAMPILAN)
+//#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3) || defined(BOARD_TAMPILAN)
+#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3) || defined(BOARD_TAMPILAN) || defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0) || defined(BOARD_KOMON_KONTER_3_1)
 	struct t_dt_set *p_dt;
 	p_dt = (char *) ALMT_DT_SET;
 	
 	#ifdef BANYAK_SUMBER
-	if (nk==0) nk=1;
-	no = nk-1;
-	
-	//printf("no: %d, alamat: %d, nk: %d\r\n", no, pmx[i].alamat, nk);
+		if (nk==0) nk=1;
+		no = nk-1;
+		
+		printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[i].alamat, nk, pmx[i].tipe, pertamax);
 
-	if (pmx[no].alamat==0) {			// Modul Monita
-		for (i=0; i<PER_SUMBER; i++)	{
-			ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
-			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
-			strcat(tot_buf, head_buf);
-			sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", p_dt[no*PER_SUMBER+i].satuan, ket);		
-			strcat(tot_buf, head_buf);
-		}
-		//strcat(tot_buf, "</table>\n");
-	}
+		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
+			if (pmx[no].alamat==0) {			// Modul Monita
+				for (i=0; i<PER_SUMBER; i++)	{
+					ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
+					sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
+					strcat(tot_buf, head_buf);
+					sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", p_dt[no*PER_SUMBER+i].satuan, ket);		
+					strcat(tot_buf, head_buf);
+				}
+				//strcat(tot_buf, "</table>\n");
+			}
+		#endif
+		
+		#if defined(BOARD_KOMON_KONTER)
+			if (pmx[no].alamat==0) {			// Modul Monita
+			
+			}
+		#endif
 	#else
-	
+
 	#endif
 	
 #ifdef PAKAI_PM
-	else if (pmx[no].tipe==0 || pmx[no].tipe==1 || pmx[no].tipe==2) {		// Power Meter
+	if ((pmx[no].tipe==0 || pmx[no].tipe==1 || pmx[no].tipe==2) && (pertamax) && (pmx[no].alamat>0)) {		// Power Meter
+		
 		for (i=0; i< PER_SUMBER; i++)	{
 			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
 			strcat(tot_buf, head_buf);

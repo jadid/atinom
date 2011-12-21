@@ -27,7 +27,7 @@
 	#if defined(TAMPILAN_MONITA_STD)
 		#define JML_SUMBER	15
 	#elif defined(UNTUK_PLTD_AMPENAN)
-		#define JML_SUMBER 10
+		#define JML_SUMBER 12		// max 11 sumber tampilan bisa
 	#else
 		#define JML_SUMBER	5
 	#endif

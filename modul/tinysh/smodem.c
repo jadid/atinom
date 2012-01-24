@@ -27,13 +27,13 @@
 */
 
 
-#include "../monita/monita_uip.h"
+#include "../../app/monita/monita_uip.h"
 #include "../gsm/system_ftp.c"
 //#include "../gsm/kirim_ftp.c"
 
 int fd = 0;
 //char serGSM[128];
-
+	
 
 //#define read(a, b, c) serX_getchar(PAKAI_GSM_FTP, a, b, 1000);	\ 
 //				tendang_wdog();
@@ -459,7 +459,7 @@ static int simpan_data_gsm_ftp( struct t_gsm_ftp *pgr)
 	if(prepare_flash(SEKTOR_GSM_FTP, SEKTOR_GSM_FTP)) return -1;
 	printf("..");
 	
-	if(tulis_flash(ALMT_GSM_FTP, (unsigned short *) pgr, (sizeof (struct t_gsm_ftp) ))) return -1;
+	if(tulis_flash(ALMT_GSM_FTP, SEKTOR_GSM_FTP, SEKTOR_GSM_FTP, (unsigned short *) pgr, (sizeof (struct t_gsm_ftp) ))) return -1;
 	
 	printf(".. OK\r\n");
 	return 0;

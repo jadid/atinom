@@ -69,6 +69,10 @@ struct webclient_state {
   u16_t httpheaderlineptr;
 
   char mimetype[32];
+  
+  // tambahan suatu saat kali aja dipakai
+  u16_t nHeader;
+  u16_t nData;
 };
 
 //typedef struct webclient_state uip_tcp_appstate_t;

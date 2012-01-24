@@ -11,10 +11,10 @@
 #include "hardware.h"
 
 //#define LIAT
-//#define LIAT_TX
-//#define LIAT_RX
-//#define CEK_PM
-//#define TIMEOUT
+#define LIAT_TX
+#define LIAT_RX
+#define CEK_PM
+#define TIMEOUT
 
 #ifdef AMBIL_PM
 
@@ -285,10 +285,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		}	else	{
 			timeout++;
 			if (timeout > 20)	{
-				#ifdef LIAT_RX
-				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
-				#endif
-				#ifdef TIMEOUT
+				#if defined (LIAT_RX) || defined(TIMEOUT)
 				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				#endif
 				

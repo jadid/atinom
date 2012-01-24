@@ -82,7 +82,7 @@
 #endif
 
 
-#define PROMPT 		"Konter@"
+#define PROMPT 		"PushButton@"
 #define NAMA_BOARD	"Babelan Komon Konter"
 
 /*-----------------------------------------------------------

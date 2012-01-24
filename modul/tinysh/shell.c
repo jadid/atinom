@@ -121,8 +121,9 @@ int status_MMC=0;
 #include "mem_rtc.c"
 #endif
 
-#ifdef PAKAI_GSM_FTP
-#include "smodem.c"
+//#ifdef PAKAI_GSM_FTP
+#ifdef PAKAI_MODEM_SERIAL
+#include "modem.c"
 #endif
 
 
@@ -143,7 +144,7 @@ int status_MMC=0;
 #endif
 
 #ifdef PAKAI_MULTI_SERIAL
-	#define TXDE	BIT(24)
+//	#define TXDE	BIT(24)
 #endif
 
 #ifdef PAKAI_GPIO_DIMMER
@@ -271,16 +272,21 @@ void kirim_serial (int argc, char **argv) {
 	#endif
 
 	#ifdef PAKAI_SERIAL_2
+	
 	if (2 == sumb) {
 		for (i=0; i<10; i++)
 			ser2_getchar(1, &lope, 20 );
 		
 		ganti_kata(kirim_ser, argv[2]);
+		printf("kirim %s: %s\r\n", "Serial 2", kirim_ser);
 		serX_putstring(2, kirim_ser);
 		//*
-		#ifdef PAKAI_GSM_FTP
-		if	(PAKAI_GSM_FTP==2)
+		#ifdef BACA_BALASAN
+		if	(BACA_BALASAN==2)	{
+			printf("baca balasan ....\r\n");
 			baca_hasil();			// fitur yang perlu jawaban
+			//diwoco();
+		}
 		#endif
 		//*/
 		return;
@@ -288,6 +294,7 @@ void kirim_serial (int argc, char **argv) {
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3
+	printf("kirim %s: %s\r\n", "Serial 3", argv[2]);
 	if (3 == sumb) {
 		ganti_kata(kirim_ser, argv[2]);
 		
@@ -445,7 +452,7 @@ void cek_versi(void)	{
 	
   	printf(" ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
   	printf(" CPU = LPC 2387, %d MHz,", configCPU_CLOCK_HZ/1000000);
-  	printf(" FreeRTOS 5.1.1\r\n");	
+  	printf(" FreeRTOS %s\r\n", tskKERNEL_VERSION_NUMBER);	
 }							 
 
 //static
@@ -759,14 +766,19 @@ portTASK_FUNCTION(shell, pvParameters )
 {
   	int c;
   	xTaskHandle xHandle;
-  	printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
-
+  	//printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
+  	//vTaskDelay(1000);
   	printf("Daun Biru Engineering, Des 2008\r\n");
+  	//vTaskDelay(1000);
   	printf("=========================================\r\n");
+  	//vTaskDelay(1000);
   	printf("ARM-GCC %s : %s : %s\r\n", __VERSION__, __DATE__, __TIME__);
-  	printf("CPU = LPC 2387, %d MHz,", configCPU_CLOCK_HZ/1000000);
-  	printf(" FreeRTOS 5.1.1\r\n");
-  	
+  	//vTaskDelay(1000);
+  	printf("CPU : LPC 2387, %d MHz,", configCPU_CLOCK_HZ/1000000);
+  	//vTaskDelay(1000);
+  	printf(" FreeRTOS versinya: %s\r\n", tskKERNEL_VERSION_NUMBER);
+  	//vTaskDelay(2000);
+
   	#if 0
 		unsigned short qws=33742, wws;
 		unsigned int   qwi=0x8000;
@@ -793,7 +805,7 @@ portTASK_FUNCTION(shell, pvParameters )
    	{
    		printf("------------ Init error \r\n");
    	}
-   	
+   	vTaskDelay(1000);
    	//install_usb_interrupt();
    	#endif
 	#endif
@@ -937,6 +949,10 @@ vTaskDelay(100);
 
 #ifdef PAKAI_ETH
 	tinysh_add_command(&cek_mac_cmd);
+	#ifdef PAKAI_WEBCLIENT_INTERNET
+		tinysh_add_command(&cek_webcc_cmd);
+		tinysh_add_command(&cek_server_cmd);
+	#endif
 #endif
 
 #ifdef CENDOL

@@ -120,13 +120,13 @@
 #define UIP_IPADDR0 192
 #define UIP_IPADDR1 168
 #define UIP_IPADDR2	1
-#define UIP_IPADDR3	1
+#define UIP_IPADDR3	250
 
 // hardcoded gateway
 #define UIP_DRIPADDR0	192
 #define UIP_DRIPADDR1	168
 #define UIP_DRIPADDR2	1
-#define UIP_DRIPADDR3	13
+#define UIP_DRIPADDR3	1
 
 // hardcoded netmask
 #define UIP_NETMASK0	255

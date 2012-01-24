@@ -43,7 +43,7 @@ void dele(int dd);
 										PINSEL1 |= (BIT(20) | BIT(21));								\
 										PINSEL1 &= ~(BIT(16) | BIT(17));							\
 										FIO0DIR |= TXDE;					\
-										FIO0SET = TXDE;						\
+										FIO0SET  = TXDE;					\
 										FIO0DIR |= RXDE;					\
 										FIO0SET  = RXDE;					\
 									} while(0)
@@ -371,26 +371,25 @@ void dele(int dd);
 									} while(0)
 	#endif
 	
-	#ifdef PAKAI_SERIAL_3_P0
-		#define setup_serial3_P0()	do 	{	\
-										PCONP |= BIT(25);	\
-										PCLKSEL1 &= ~(BIT(18) | BIT(19));	\
-										PCLKSEL1 |= BIT(18);				\
-										PINSEL0 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));		\
-										PINSEL0 |= (BIT(1));								\
-										PINSEL0 |= (BIT(3));								\
-										FIO0DIR |= TXDE;					\
-										FIO0SET = TXDE;						\
-										FIO0DIR |= RXDE;					\
-										FIO0SET  = RXDE;					\
-									} while(0)
-	#endif
-	
 	#ifdef PAKAI_MODBUS_RTU
 		#define TXDE	BIT(5)
 		#define RXDE	BIT(4)
 	#endif
 	
+	#ifdef PAKAI_SERIAL_3_P0
+		#define setup_serial3_P0()	do 	{	\
+										PCONP |= BIT(25);	\
+										PCLKSEL1 &= ~(BIT(18) | BIT(19));	\
+										PCLKSEL1 |= BIT(18);				\
+										PINSEL0 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));	\
+										PINSEL0 |= (BIT(1));								\
+										PINSEL0 |= (BIT(3));								\
+										FIO0DIR |= TXDE;					\
+										FIO0SET  = TXDE;						\
+										FIO0DIR |= RXDE;					\
+										FIO0SET  = RXDE;					\
+									} while(0)
+	#endif	
 	
 /*
 	#ifdef PAKAI_ETH

@@ -14,6 +14,32 @@
 
 #ifdef PAKAI_RELAY
 
+#ifdef PAKAI_WEBCLIENT_INTERNET
+	void set_semuaRelay(char * rel)	{
+		char r;
+		for (r=0; r<JML_RELAY; r++) {
+			(rel[r]-'0')?set_selenoid(r+1):unset_selenoid(r+1);
+		}
+	}
+
+	void parsing_cmd(char * cmd)	{
+		printf("cmdnya: %s\r\n", cmd);
+		char status[20], rel[30];
+		int inc;
+		
+		sscanf (cmd,"<html><body>%s %d %s", status, &inc, rel);
+		rel[8] = '0';
+		
+		printf("status: %s, n: %d\r\n", status, inc);
+		printf("cmd   : %s\r\n", rel);
+
+		printf("1: %d\r\n", (int)(rel[0]-'0'));
+		printf("2: %d\r\n", (int)(rel[1]-'0'));
+		printf("3: %d\r\n", (int)(rel[2]-'0'));
+		set_semuaRelay(rel);
+	}
+#endif
+
 void set_selenoid( unsigned int no )	{
 	#if 1
 	if (no>0 && no<=JML_RELAY) {		// 1-8 
@@ -66,7 +92,7 @@ void unset_selenoid(unsigned int no )	{
 	else if (no == 8)
 		cRelay8();
 	else
-		printf("%s(): ERR tidak ada Relay !\r\n", __FUNCTION__);	
+		printf("%s(): ERR tidak ada Relay %d !\r\n", __FUNCTION__, no);	
 }
 
 unsigned char toogle_selenoid(unsigned int no) {

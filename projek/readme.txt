@@ -26,3 +26,7 @@ catatan :
 	float	: 4 bit
 	short	: 2 bit
 	int		: 4 bit
+
+
+coba porting ke FreeRTOS v7.1.0
+- http://linux.softpedia.com/progChangelog/FreeRTOS-Changelog-45191.html

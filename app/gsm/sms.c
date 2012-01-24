@@ -662,16 +662,16 @@ int hapus_sms(int no) {
 	strcpy(str_sms,"");
 	sprintf(str_sms, "AT+CMGD=%d\r\n", no);	//printf("cmd: %s\r\n", str_sms);
 	serX_putstring(PAKAI_MODEM_SERIAL, str_sms);
-	
+
 	baca_serial(str_sms, 20, 50);
 	//printf("1.hasil: %s\r\n", str_sms);
-	
+
 	if (strncmp(str_sms, "AT+CMGD", 7) == 0)	{
 		strcpy(str_sms, "");
 		baca_serial(str_sms, 20, 50);
 		//printf("2.hasil: %s\r\n", str_sms);
 	}
-	
+
 	if (strncmp(str_sms, "OK", 2) == 0)	{
 		printf("SMS no %d dihapus\r\n", no);
 	} else {
@@ -707,7 +707,7 @@ int cek_pulsa_exe()	{
 	cek_pulsa();
 
 	status_modem=0;
-	
+
 	return 1;
 }
 
@@ -719,7 +719,7 @@ int duit_pulsa(char * dpls) {
 	if (pd1!=NULL)	{
   		a1 = pd1-dpls+1;
   	}
-  	
+
   	pd2=strstr(pd1+1,".");
 	if (pd2!=NULL)	{
   		b2 = pd2-dpls+20;
@@ -727,7 +727,7 @@ int duit_pulsa(char * dpls) {
   	strcpy(dpls, pd1+1);
   	dpls[a1-b2-1]='\0';
 	//duit = atoi(dpls);
-	
+
 	return atoi(dpls);
 }
 
@@ -762,7 +762,7 @@ int cek_pulsa(void)	{
 	#ifdef PAKAI_CEK_AWAL_MODEM
 	cek_awal();
 	#endif
-	
+
 	sprintf(strpls, "AT+CUSD=1,%s\r\n", PULSA_SIMPATI);
 	//serX_putstring(PAKAI_SMS, "AT+CUSD=1,*888#\r\n");
 	serX_putstring(PAKAI_MODEM_SERIAL, strpls);

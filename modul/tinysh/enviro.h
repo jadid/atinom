@@ -56,6 +56,7 @@ struct t_env {
 	unsigned char wIP1;
 	unsigned char wIP2;
 	unsigned char wIP3;
+	char statusWebClientI;
 	#ifdef PAKAI_TSC
 	unsigned char k1;
 	unsigned char k2;

@@ -97,6 +97,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#endif
   	
 	#ifdef BOARD_KOMON_KONTER
+		#ifndef BLINK
 		struct t_env *penv;
 		penv = (char *) ALMT_ENV;
 	
@@ -108,6 +109,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			
 		}
 		loopambil=0;
+		#endif
   	#endif
   	
   	vTaskDelay(50);
@@ -156,17 +158,21 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		#ifdef BOARD_KOMON_KONTER
-			if (loopambil%20==0) {		// 5x20 = 100
-				hitung_rpm();
-			}
-			data_frek_rpm();
+			#ifdef HITUNG_RPM
+				if (loopambil%20==0) {		// 5x20 = 100
+					hitung_rpm();
+				}
+				data_frek_rpm();
+			#endif
 		#endif
 
 		#ifdef BOARD_KOMON_KONTER_3_0
-			if (loopambil%20==0) {		// 5x20 = 100
-				hitung_rpm();
-				data_frek_rpm();
-			}
+			#ifdef HITUNG_RPM
+				if (loopambil%20==0) {		// 5x20 = 100
+					hitung_rpm();
+					data_frek_rpm();
+				}
+			#endif
 		#endif
 	
 		#ifdef PAKAI_MODEM_SERIAL

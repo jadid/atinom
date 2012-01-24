@@ -347,6 +347,7 @@ acked(void)
   }
 }
 /*-----------------------------------------------------------------------------------*/
+#if 0
 static u16_t
 parse_statusline(u16_t len)
 {
@@ -400,6 +401,70 @@ parse_statusline(u16_t len)
   }
   return len;
 }
+#endif
+
+#if 1
+static u16_t
+parse_statusline(u16_t len)
+{
+  char *cptr;
+  char *ku = (char *) uip_appdata;
+  
+  #if 1
+  int potong=0;
+  #endif
+  
+  while(len > 0 && s.httpheaderlineptr < sizeof(s.httpheaderline)) {
+    //s.httpheaderline[s.httpheaderlineptr] = *(char *)uip_appdata;
+    //++((char *)uip_appdata);
+    //--len;
+    //printf("%02x ", *ku);
+    s.httpheaderline[s.httpheaderlineptr] = *ku;
+	++(char *)ku;		
+    --len;
+    potong++;
+    
+    
+    if(s.httpheaderline[s.httpheaderlineptr] == ISO_nl) {
+		s.nHeader = potong;
+		//printf("\r\n potong: %d, ISO_NL: len: %d, snHeader: %d\r\n", potong, len, s.nHeader);
+      if((strncmp(s.httpheaderline, http_10,
+		  sizeof(http_10) - 1) == 0) ||
+	 (strncmp(s.httpheaderline, http_11,
+		  sizeof(http_11) - 1) == 0)) {
+	cptr = &(s.httpheaderline[9]);
+	s.httpflag = HTTPFLAG_NONE;
+	if(strncmp(cptr, http_200, sizeof(http_200) - 1) == 0) {
+	  /* 200 OK */
+	  s.httpflag = HTTPFLAG_OK;
+	} else if(strncmp(cptr, http_301, sizeof(http_301) - 1) == 0 ||
+		  strncmp(cptr, http_302, sizeof(http_302) - 1) == 0) {
+	  /* 301 Moved permanently or 302 Found. Location: header line
+	     will contain thw new location. */
+	  s.httpflag = HTTPFLAG_MOVED;
+	} else {
+	  s.httpheaderline[s.httpheaderlineptr - 1] = 0;
+	}
+      } else {
+	uip_abort();
+	//webclient_aborted();
+	return 0;
+      }
+      
+      /* We're done parsing the status line, so we reset the pointer
+	 and start parsing the HTTP headers.*/
+      s.httpheaderlineptr = 0;
+      s.state = WEBCLIENT_STATE_HEADERS;
+      break;
+    } else {
+      ++s.httpheaderlineptr;
+    }
+  }
+  //printf("len akhir: %d, state: %d\r\n", len, s.state);
+  return len;
+}
+
+#endif
 /*-----------------------------------------------------------------------------------*/
 static char
 casecmp(char *str1, const char *str2, char len)
@@ -426,20 +491,31 @@ static u16_t
 parse_headers(u16_t len)
 {
 	#if 0
-		printf("%s() masuk\r\n", __FUNCTION__);
+		printf("%s() masuk: %d\r\n", __FUNCTION__, len);
+		
 	#endif
   char *cptr;
   char *ku = (char *) uip_appdata;
   static unsigned char i;
+  int potong=0;
   
   while(len > 0 && s.httpheaderlineptr < sizeof(s.httpheaderline)) {
+	  
+	  //printf("%02x ", *ku);
+	  
     //s.httpheaderline[s.httpheaderlineptr] = *(char *)uip_appdata;
     //++((char *)uip_appdata);
 	//++uip_appdata;
 	s.httpheaderline[s.httpheaderlineptr] = *ku;
 	++(char *)ku;	
     --len;
+    potong++;
+    
+    
     if(s.httpheaderline[s.httpheaderlineptr] == ISO_nl) {
+		s.nData = potong;
+		//printf("potong: %d, ISO_NL: len: %d, snData: %d", potong, len, s.nData);
+		
       /* We have an entire HTTP header line in s.httpheaderline, so
 	 we parse it. */
       if(s.httpheaderline[0] == ISO_cr) {
@@ -503,20 +579,23 @@ newdata(void)
   len = uip_datalen();
 
 	#if 0
-		printf("____________________________%s() masuk, s.state: %d\r\n", __FUNCTION__, s.state);
+		printf("____________________________%s() masuk, s.state: %d, len: %d : %d\r\n", __FUNCTION__, s.state, len, uip_datalen());
 	#endif
 
-  if(s.state == WEBCLIENT_STATE_STATUSLINE) {
+  if(s.state == WEBCLIENT_STATE_STATUSLINE) {				// 0
     len = parse_statusline(len);
+	//printf("len : %d : WEBCLIENT_STATE_STATUSLINE\r\n", len);
   }
   
-  if(s.state == WEBCLIENT_STATE_HEADERS && len > 0) {
+  if(s.state == WEBCLIENT_STATE_HEADERS && len > 0) {		// 1
     len = parse_headers(len);
+    //printf("len : %d : WEBCLIENT_STATE_HEADERS\r\n", len);
   }
 
   if(len > 0 && s.state == WEBCLIENT_STATE_DATA &&
      s.httpflag != HTTPFLAG_MOVED) {
-    webclient_datahandler((char *)uip_appdata, len);
+    webclient_datahandler((char *)uip_appdata, len);		// 2
+    //printf("len : %d : WEBCLIENT_STATE_DATA\r\n", len);
   }
 }
 /*-----------------------------------------------------------------------------------*/
@@ -535,7 +614,7 @@ webclient_appcall(void)
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    //printf("%s(): Closed\r\n", __FUNCTION__);
+   // printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
@@ -546,7 +625,7 @@ webclient_appcall(void)
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	 //printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	//printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   
@@ -575,6 +654,7 @@ webclient_appcall(void)
   }
 
   if(uip_closed()) {
+	//printf("%s(): uip closed\r\n", __FUNCTION__);
     if(s.httpflag != HTTPFLAG_MOVED) {
       /* Send NULL data to signal EOF. */
       webclient_datahandler(NULL, 0);
@@ -609,6 +689,61 @@ void webclient_datahandler(char *data, u16_t len)
 	
 	//if (len == 0)
 	//	printf("\r\n");
+	#ifdef PAKAI_WEBCLIENT_INTERNET
+	
+	if (len>0)	{
+
+		char *isi = &data[s.nData];
+		isi[uip_len-s.nData]='\0';
+		//printf("isinya: %s\r\n", isi);
+		#ifdef PAKAI_RELAY
+		parsing_cmd(isi);		// file @ app/relay/relay.c
+		#endif
 		
+	#if 0
+		int wli=0, eqe=64, awal, akhir;
+		awal  = len;
+		akhir = uip_len - len - 54;
+
+		printf("ada data masuk : %d : %d\r\n", len, uip_len);
+		for (wli=0; wli<s.nHeader; wli++) {
+			printf("%c", data[wli]);
+		}
+		printf("-------------------------------------------------\r\n");
+		printf("Ganti ......!!! Header !!\r\n");
+		for (wli=s.nHeader; wli<s.nData; wli++) {
+			printf("%c", data[wli]);
+		}
+		/*
+		for (wli=s.nHeader; wli<s.nData; wli++) {
+			printf("%02x ", data[wli]);
+		}
+		//*/
+		printf("-------------------------------------------------\r\n");		
+		for (wli=s.nData; wli<uip_len; wli++) {
+			printf("%c", data[wli]);
+		}
+	#endif
+	
+	#if 0	
+		//ldata = uip_len-len;
+		printf("ada data masuk : %d : %d\r\n", len, uip_len);
+		for (wli=0; wli<len; wli++) {
+			printf("%02x ", data[wli]);
+			printf("%c", data[wli]);
+//*
+			eqe--;
+			if ((eqe%7)==0)
+				printf(" ");
+			if (eqe==0)		{
+				eqe = 16;
+				printf("\r\n");
+			}
+//*/
+		}
+	#endif
+	}
+	printf("\r\n");
+	#endif	
 }
 #endif

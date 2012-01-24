@@ -28,7 +28,7 @@
 //unsigned int result[2]; 	// For Result Table
 //IAP iap_entry;
 
-#define MAGIC_1	0x24
+#define MAGIC_1	0x25
 #define MAGIC_2	0xEF
 
 void tulis_env_flash(struct t_env *ev);
@@ -131,6 +131,17 @@ void tulis_env_flash(struct t_env *ev)
 
 }
 
+char * ket_kanal(char kanal) {
+	char ketk[15];
+	if (0==kanal)
+		strcpy(ketk, "RPM/Frek");
+	else if (1==kanal)
+		strcpy(ketk, "OnOff");
+	else if (2==kanal)
+		strcpy(ketk, "PushButton");
+	return ketk;
+}
+
 int baca_env(char tampil)
 {
 	struct t_env *ev;
@@ -160,11 +171,15 @@ int baca_env(char tampil)
 			printf(" No Seri    = ");	printf("%s\r\n", env2->SN);
 			printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
+			printf(" Webclient  = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
 			
 			#ifdef PAKAI_WEBCLIENT
-				printf(" WebClient  = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 
-				printf(" File       = %s\r\n", env2->berkas); 
-				printf(" Mode Burst = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
+				printf(" WebClient   = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 
+				#ifdef PAKAI_WEBCLIENT_INTERNET
+				printf(" WebInternet = %s\r\n", (env2->statusWebClientI==1)?"Aktif":"mati"); 
+				#endif
+				printf(" File        = %s\r\n", env2->berkas); 
+				printf(" Mode Burst  = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
 			#endif
 			garis_bawah();
 			
@@ -197,8 +212,8 @@ int baca_env(char tampil)
 					#endif
 					{
 						z++;
-						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\t\t%d\r\n", \ 
-							z, env2->kalib[i].m, env2->kalib[i].C, i+1, env2->kalib[i].status);
+						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\t\t%d\t\r\n", \ 
+							z, env2->kalib[i].m, env2->kalib[i].C, i+1, env2->kalib[i].status);		// , ket_kanal(env2->kalib[i].status)
 					}
 				}
 			}
@@ -372,7 +387,7 @@ void set_env_default() {
 	env2->GW0 = 192;
 	env2->GW1 = 168;
 	env2->GW2 = 1;
-	env2->GW3 = 100;
+	env2->GW3 = 10;
 	
 	env2->wIP0 = 192;
 	env2->wIP1 = 168;

@@ -22,16 +22,22 @@
 
 
 #ifdef PAKAI_WEBCLIENT
-	#include "../webserver/webclient/webclient.h"
+	//#include "../webserver/webclient/webclient.h"
+	#include "../../app/webserver/webclient/webclient.h"
 #endif
 
+//#ifdef PAKAI_RESOLV
+//	#include "resolv/resolv.h"
+	#include "../../app/resolv/resolv.c"
+//#endif
 
 //#include "../monita/monita_uip.h"
 //#include "../app/monita/monita_uip.h"
 #include "../tinysh/enviro.h"
 
 #ifdef PAKE_TELNETD
-#include "apps/telnetd/telnetd.h"
+//#include "apps/telnetd/telnetd.h"
+	#include "telnetd/telnetd.h"
 #endif
 
 #ifdef PAKAI_WEBCLIENT
@@ -89,7 +95,6 @@ unsigned int paket_kita=0;
 unsigned char status_eth = 0;
 		
 extern xTaskHandle hdl_ether;
-//#define DEBUG_UIP_TASK
 
 #ifdef PAKAI_ETH_TEST
 	void eth_test_init(void) {
@@ -206,6 +211,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	
 	portBASE_TYPE xARPTimer;
 	uip_ipaddr_t xIPAddr;
+	uip_ipaddr_t xIPRAddr;
+	//uip_ipaddr_t netmask;
 	int loop;
 	int mul;
 	unsigned int timer_menit=0;
@@ -214,17 +221,32 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	
 	vTaskDelay(300);
 	
+	#ifdef DEBUG_UIP_TASK
+		int wli;
+	#endif 
+	
 	/* baca environtment (dapat IP dll dulu) */
 //	baca_env(0);
 	printf("Init Application ......\r\n");
 	printf(" UIP : uip_init\r\n");
 
-	uip_init ();
+	uip_init ();	
 	
 	//uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
 	uip_ipaddr( xIPAddr, envx->IP0, envx->IP1, envx->IP2, envx->IP3 );
 	uip_sethostaddr( xIPAddr );
+	//uip_ipaddr( xIPAddr, envx->RIP0, envx->RIP1, envx->RIP2, envx->RIP3 );
+	uip_ipaddr( xIPAddr, envx->GW0, envx->GW1, envx->GW2, envx->GW3 );
+	uip_setdraddr(xIPAddr);
 
+	uip_ipaddr(xIPAddr, 255,255,255,0);
+	uip_setnetmask(xIPAddr);
+	
+	#ifdef PAKAI_RESOLV
+	uip_ipaddr(xIPAddr, 4,2,2,1);
+	resolv_conf(xIPAddr);
+	#endif
+	
 	printf(" ARP : arp_init\r\n");
 	uip_arp_init ();
 	
@@ -250,6 +272,20 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		}	else	{
 			printf(" ENC tidak respons !\r\n");
 		}
+	#endif
+	
+	uip_gethostaddr(&xIPAddr);
+	printf("\tIP : %d.%d.%d.%d\r\n", uip_ipaddr1(xIPAddr), uip_ipaddr2(xIPAddr), uip_ipaddr3(xIPAddr), uip_ipaddr4(xIPAddr) );
+	uip_getdraddr(xIPAddr);
+	printf("\tGW : %d.%d.%d.%d\r\n", uip_ipaddr1(xIPAddr), uip_ipaddr2(xIPAddr), uip_ipaddr3(xIPAddr), uip_ipaddr4(xIPAddr) );
+	uip_getnetmask(xIPAddr);
+	printf("\tNM : %d.%d.%d.%d\r\n", uip_ipaddr1(xIPAddr), uip_ipaddr2(xIPAddr), uip_ipaddr3(xIPAddr), uip_ipaddr4(xIPAddr) );
+	
+	#ifdef PAKAI_RESOLV
+	unsigned int dns;
+	dns = resolv_getserver();
+	if (dns != NULL)
+	printf("\tDNS: %d.%d.%d.%d\r\n", uip_ipaddr1(dns), uip_ipaddr2(dns), uip_ipaddr3(dns), uip_ipaddr4(dns) );
 	#endif
 	
 	vTaskDelay(100);
@@ -282,6 +318,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
     telnetd_init ();
 	#endif
 
+	#ifdef PAKAI_RESOLV
+		printf(" MONITA : DNS init\r\n");
+		resolv_init();
+	#endif
+
 #ifdef BOARD_KOMON
     //printf(" MONITA : monita init\r\n");
 #endif
@@ -306,6 +347,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
     printf(" Monita : sampurasun client init !\r\n");
 #endif
 
+#ifdef PAKAI_WEBCLIENT_INTERNET
+	webclient_init();
+	printf(" Monita : webclient internet init !! [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
+#endif
+
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
 		webclient_init();
@@ -326,10 +372,17 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		extern int  noawal;
 		
 		int selang=0;
-		
-	#endif
 		char ipdest[15];
+		int tiapKirim=950;		
+	#endif
+	
+	#ifdef PAKAI_WEBCLIENT_INTERNET
+		char ipdest[15];
+		int menit = 0;
 		int tiapKirim=950;
+		wclient=0;
+	#endif
+
 
 	#ifdef  PAKAI_GPS
 		#ifdef WEBCLIENT_GPS
@@ -342,6 +395,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			
 			//double lintang=0.0, bujur=0.0;
 		#endif
+	#endif
+	
+	#ifdef PAKAI_WEBCLIENT_INTERNET
+
 	#endif
 #endif
 
@@ -478,7 +535,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 
 				if (jmlData>0) {
 					
-					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					//sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 					//portENTER_CRITICAL();
 					//sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
 					strcpy(datakeserver, envx->berkas);
@@ -514,7 +572,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				if (menit == tiapKirim) {
 					//wclient = 0;
 					menit=0;
-					sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					//sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
+					sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 					strcpy(datakeserver, envx->berkas);
 					strcat(datakeserver, "?i=");
 					strcat(datakeserver, envx->SN);
@@ -538,6 +597,37 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 
 					//printf("datakeserver: %d : %s\r\n",strlen(datakeserver), datakeserver);
 					webclient_get(ipdest, PORT_HTTP, datakeserver);
+				}
+			#endif
+			
+			#ifdef PAKAI_WEBCLIENT_INTERNET
+				if (envx->statusWebClientI==1) {
+					if (wclient>1000) {		// 1 detik, 60000 = 60 detik = 1 menit
+						wclient=0;
+						menit++;
+					}
+					if (menit == tiapKirim) {
+						sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
+						strcpy(datakeserver, envx->berkas);
+						printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
+						webclient_get(ipdest, PORT_HTTP, datakeserver);
+						menit=0;
+					}
+				}
+				
+				if (status_webc_i==1)	{
+					sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
+					strcpy(datakeserver, envx->berkas);
+					printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					status_webc_i = 0;
+				}
+				
+				if (status_webc_i==2)	{
+					printf("Tes DNS ...\r\n");
+					resolv_lookup(urlweb);
+					resolv_query(urlweb);
+					status_webc_i = 0;
 				}
 			#endif
 		}
@@ -580,7 +670,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		//#else
 		//if (0) {
 		//#endif
-			//printf("masuk cek paket !!!\r\n");
+			//printf("masuk cek paket !!! len: %d\r\n", uip_len);
 			#if 1
 			  paket_per_menit++;
 			  /* Let the network device driver read an entire IP packet
@@ -600,8 +690,18 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				  if (pucUIP_Buffer->type == htons (UIP_ETHTYPE_IP))
 		    	  {
 					#ifdef DEBUG_UIP_TASK
-						printf("UIP_ETHTYPE_IP: %04x masuk.\r\n", UIP_ETHTYPE_IP);
+						
 						#if 1
+							if (uip_len>66) {
+								printf("UIP_ETHTYPE_IP: %04x masuk. p: %d\r\n", UIP_ETHTYPE_IP, uip_len);
+								for (wli=0; wli<uip_len; wli++) {
+									printf("%c", uip_buf[wli]);
+								}					
+								printf("\r\n");
+							}
+						#endif
+
+						#if 0
 						//for (gg=0; gg<uip_len; gg++) {
 						for (gg=0; gg<32; gg++) {
 							if (gg%16==0) { 
@@ -710,7 +810,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					}
 				}
 
-		#if UIP_UDP_KU
+		//#if UIP_UDP_KU
+		#if UIP_UDP
+				//printf("UIP_UDP ...%d\r\n", UIP_UDP_CONNS);
 		        for (i = 0; i < UIP_UDP_CONNS; i++)		{
 					uip_udp_periodic (i);
 
@@ -758,6 +860,11 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 #ifdef BOARD_TAMPILAN
 	void start_ether(void)	{	//8
 		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 10), \
+			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
+	}
+#elif defined(BOARD_KOMON_KONTER_3_1 )
+	void start_ether(void)	{	//8
+		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 20), \
 			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
 	}
 #else
@@ -846,7 +953,16 @@ void dispatch_udp_appcall (void)	{
   if (uip_udp_conn->rport == HTONS (DHCPC_SERVER_PORT))
     dhcpc_appcall ();
 #endif
+
+#ifdef PAKAI_RESOLV
+	if (uip_udp_conn->rport == HTONS (53)) 
+	{
+		resolv_appcall ();
+	}
+#endif
+
 }
+
 
 #endif
 

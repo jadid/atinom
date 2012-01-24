@@ -272,7 +272,7 @@ int enc28j60Init (void)
   //encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_BCEN);
 	// set filter
 	encWriteReg16 (ERXFCON, ERXFCON_UCEN | ERXFCON_CRCEN | ERXFCON_PMEN);
-	printf("\r\nERXFCON: 0x%02x\r\n", ERXFCON);
+	//printf("\r\nERXFCON: 0x%02x\r\n", ERXFCON);
 	
 //#define UIP_ETHADDR0 0x00
 //#define UIP_ETHADDR1 0xbd
@@ -530,7 +530,16 @@ u16_t enc28j60Receive (void)
   //
   encBFSReg (ECON2, ECON2_PKTDEC);
 
-  //printf(":%d:", len);
+#if 0
+	printf(":%d:", len);
+	int qqq;
+	if (len>66)	{
+		for (qqq=0; qqq<(len-4); qqq++) {
+			printf("%c", uip_buf[qqq]);
+		}
+		printf("\r\n UIP_BUFSIZE: %d\r\n", UIP_BUFSIZE);
+	}
+#endif
   //
   //  Return the length - the 4 bytes of CRC (why?)
   //

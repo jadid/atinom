@@ -547,6 +547,44 @@ signed portBASE_TYPE xReturn;
 
 #ifdef PAKAI_MODEM_SERIAL
 int fd = 0;
+int cc, nser=0;
+
+char isiSerial[50];
+
+void diwoco() {
+	int res=0;
+	res = ser2_getchar(0, &cc, 1 );
+	if (res) {
+		//printf("%c %02x : ", (char) cc, (char) cc);
+		if ( (char) cc == 0x0A )		{
+			printf("\r");
+			serX_putstring(2, "\r");
+			serX_putstring(2, "ada \\r \r\n");
+		}
+		else if ( (char) cc == 0x0D )	{
+			printf("\n");
+			serX_putstring(2, "\n");
+			serX_putstring(2, "ada \\n \r\n");
+			isiSerial[nser] = '\0';
+			printf("isiserial: %s\r\n", isiSerial);
+			nser = 0;
+		}
+		else if ( (char) cc == '!' )	{
+			printf("\n");
+			serX_putstring(2, "\n");
+			serX_putstring(2, "ada \\! \r\n");
+//			bacabaca();
+//			nser = 0;
+		}
+		else {
+			
+			//serX_putstring(2, "%c", (char) cc);
+			xSerialPutChar2(0,  (char) cc, 1000);
+			isiSerial[nser] = (char) cc;
+		}
+	}
+	//printf("res: %d\r\n", res);
+}
 
 int baca_serial(char *buf, int len, int timeout)
 {

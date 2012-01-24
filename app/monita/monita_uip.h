@@ -15,8 +15,10 @@
 
 //#include "../uip/uip/psock.h"
 //#include "../uip/uip/uipopt.h"
+#ifdef PAKAI_ETH
 #include "../modul/uip/uip/psock.h"
 #include "../modul/uip/uip/uipopt.h"
+#endif
 
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
@@ -66,6 +68,14 @@
 #ifdef PAKAI_MODEM_SERIAL
 	int saat_gsm_aksi;
 	int status_modem;
+#endif
+
+#ifdef PAKAI_WEBCLIENT_INTERNET
+	int status_webc_i;
+	
+	#ifdef PAKAI_RESOLV
+		char urlweb[32];
+	#endif
 #endif
 
 #ifdef BOARD_KOMON_KONTER
@@ -144,10 +154,10 @@
 //#define ALMT_DT_SET		ALMT_SEKTOR_20
 #define ALMT_DT_SET		0x00068000 
 
-#ifdef PAKAI_GSM_FTP
+//#ifdef PAKAI_GSM_FTP
 	#define SEKTOR_GSM_FTP	27
 	#define ALMT_GSM_FTP	0x7D000
-#endif
+//#endif
 
 #ifdef PAKAI_CRON				// berlebihan kah ? 32 kB 
 	#define JML_CRON	10		// baca_cron() setiap 1/2 detik mulai detik ke 5

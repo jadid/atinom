@@ -143,6 +143,20 @@ static void setenv_fnt(int argc, char **argv)
 		
 		printf("%d.%d.%d.%d\r\n", p_sbr->GW0, p_sbr->GW1, p_sbr->GW2, p_sbr->GW3);
 	}
+	else if (strcmp(argv[1], "webclientip") == 0)  	{
+		printf(" set GATEWAY address ");  
+
+		sprintf(str_ip_iddr, "%s", argv[2]);
+		
+		ret_ip = baca_ip(str_ip_iddr);
+		
+		p_sbr->wIP0 = (unsigned char)(ret_ip >> 24);
+		p_sbr->wIP1 = (unsigned char)(ret_ip >> 16);
+		p_sbr->wIP2 = (unsigned char)(ret_ip >> 8);
+		p_sbr->wIP3 = (unsigned char)(ret_ip);
+		
+		printf("%d.%d.%d.%d\r\n", p_sbr->wIP0, p_sbr->wIP1, p_sbr->wIP2, p_sbr->wIP3);
+	}
 	else if (strcmp(argv[1], "nama") == 0)	{
 		printf(" set nama_board\r\n");
 		//memset(env2.nama_board, 0, sizeof (env2.nama_board));
@@ -200,6 +214,22 @@ static void setenv_fnt(int argc, char **argv)
 		}
 		printf(" Status webclient : %s\r\n", (p_sbr->statusWebClient==1)?"aktif":"mati");
 	}
+	#ifdef PAKAI_WEBCLIENT_INTERNET
+	else if (strcmp(argv[1], "webclientint") == 0)	{
+		printf(" set status webclient Internet\r\n");
+  		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {
+			p_sbr->statusWebClientI = (argv[2][0] - '0');
+		} 
+		else if (strcmp(argv[2], "aktif")==0 || strcmp(argv[2], "hidup")==0) {
+			p_sbr->statusWebClientI = 1;
+		} else if (strcmp(argv[2], "mati")==0)  {
+			p_sbr->statusWebClientI = 0;
+		} else {
+			p_sbr->statusWebClientI = 0;
+		}
+		printf(" Status webclient internet : %s\r\n", (p_sbr->statusWebClientI==1)?"aktif":"mati");
+	}
+	#endif
 	else if (strcmp(argv[1], "burst") == 0)	{
 		printf(" set status burst\r\n");
   		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {

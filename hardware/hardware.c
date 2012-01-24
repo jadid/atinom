@@ -57,8 +57,8 @@ void setup_hardware() {
 		#endif
 		
 		/* PCLK UART3, PCLK = CCLK */
-		PCLKSEL1 &= ~(BIT(18) | BIT(19));
-		PCLKSEL1 |= BIT(18);
+		//PCLKSEL1 &= ~(BIT(18) | BIT(19));
+		//PCLKSEL1 |= BIT(18);
 		
 	#endif
 
@@ -71,11 +71,11 @@ void setup_hardware() {
 		#endif
 		
 		/* PCLK UART2, PCLK = CCLK */
-		PCLKSEL1 &= ~(BIT(16) | BIT(17));
-		PCLKSEL1 |= BIT(16);
+		//PCLKSEL1 &= ~(BIT(16) | BIT(17));
+		//PCLKSEL1 |= BIT(16);
 		
 		/* init TX2, RX2 */
-		PINSEL0 |= (BIT(20) | BIT(22));
+		//PINSEL0 |= (BIT(20) | BIT(22));
 	#endif
 
 }
@@ -99,10 +99,13 @@ void init_hardware()	{
 	#endif
 	
 	#ifdef PAKAI_SHELL
+		#ifndef BLINK
+		// #if 0
 		init_shell();
+		#endif
 	#endif
 	
-	#ifdef PAKAI_ALARM
+	#ifdef PAKAI_ALARM	
 		init_task_alarm();
 	#endif
 	
@@ -140,8 +143,9 @@ void init_hardware()	{
  *						APLIKASI ada di sini 
  */
 //***************************************************************/
-	
+	#ifndef BLINK
 	init_ambilcepat();
+	#endif
 }
 
 void dele(int dd)	{

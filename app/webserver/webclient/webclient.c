@@ -227,27 +227,34 @@ unsigned char webclient_get(char *host, u16_t port, char *file)
   uip_ipaddr_t *ipaddr;
   static uip_ipaddr_t addr;
 
+#ifndef PAKAI_RESOLV
   uip_ipaddr_t ip_modul;
 	unsigned int ret_ip;
 	ret_ip = baca_ip(host);	
 
   //uip_ipaddr(ip_modul, 192,168, 1, 75);
   uip_ipaddr(ip_modul, (uchr)(ret_ip >> 24), (uchr)(ret_ip >> 16), (uchr)(ret_ip >> 8), (uchr)(ret_ip));
-
+#endif
   /* First check if the host is an IP address. */
   ipaddr = &addr; 
   
-  /*
+  #ifdef PAKAI_RESOLV
+  
   if(uiplib_ipaddrconv(host, (unsigned char *)addr) == 0) {
-	// ipaddr = (uip_ipaddr_t *)resolv_lookup(host);
-    printf("Perlu diresolve !\r\n");
-	
+    ipaddr = (uip_ipaddr_t *)resolv_lookup(host);
+    
     if(ipaddr == NULL) {
       return 0;
     }
-  }*/
+  }
+  #endif
 
+#ifdef PAKAI_RESOLV
+	conn = uip_connect(ipaddr, htons(port));
+#else
 	conn = uip_connect( ip_modul, htons(port));
+#endif
+
 	if (conn == NULL) {
 		return 0;
 	} else {
@@ -608,24 +615,24 @@ webclient_appcall(void)
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    //printf("%s(): Connected\r\n", __FUNCTION__);
+    printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-   // printf("%s(): Closed\r\n", __FUNCTION__);
+    printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	//printf("%s(): Aborted\r\n", __FUNCTION__);
+	printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	//printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   
@@ -634,7 +641,7 @@ webclient_appcall(void)
     acked();
   }
   if(uip_newdata()) {
-	  //printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
+	  printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
     s.timer = 0;
     newdata();
   }
@@ -646,7 +653,7 @@ webclient_appcall(void)
     ++s.timer;
     if(s.timer == WEBCLIENT_TIMEOUT) {
       //webclient_timedout();
-	 // printf("%s(): Timeout 2\r\n", __FUNCTION__);
+	  printf("%s(): Timeout 2\r\n", __FUNCTION__);
       uip_abort();
       return;
     }
@@ -654,7 +661,7 @@ webclient_appcall(void)
   }
 
   if(uip_closed()) {
-	//printf("%s(): uip closed\r\n", __FUNCTION__);
+	printf("%s(): uip closed\r\n", __FUNCTION__);
     if(s.httpflag != HTTPFLAG_MOVED) {
       /* Send NULL data to signal EOF. */
       webclient_datahandler(NULL, 0);
@@ -695,7 +702,7 @@ void webclient_datahandler(char *data, u16_t len)
 
 		char *isi = &data[s.nData];
 		isi[uip_len-s.nData]='\0';
-		//printf("isinya: %s\r\n", isi);
+		printf("isinya: %s\r\n", isi);
 		#ifdef PAKAI_RELAY
 		parsing_cmd(isi);		// file @ app/relay/relay.c
 		#endif
@@ -743,7 +750,7 @@ void webclient_datahandler(char *data, u16_t len)
 		}
 	#endif
 	}
-	printf("\r\n");
+	printf("\r\n+++++++++++\r\n");
 	#endif	
 }
 #endif

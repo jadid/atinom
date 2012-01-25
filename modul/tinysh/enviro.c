@@ -387,12 +387,12 @@ void set_env_default() {
 	env2->GW0 = 192;
 	env2->GW1 = 168;
 	env2->GW2 = 1;
-	env2->GW3 = 10;
+	env2->GW3 = 1;
 	
 	env2->wIP0 = 192;
 	env2->wIP1 = 168;
 	env2->wIP2 = 1;
-	env2->wIP3 = 1;
+	env2->wIP3 = 10;
 	
 	#ifdef PAKAI_TSC
 		env2->k1 = 255;

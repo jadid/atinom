@@ -951,7 +951,11 @@ vTaskDelay(100);
 	tinysh_add_command(&cek_mac_cmd);
 	#ifdef PAKAI_WEBCLIENT_INTERNET
 		tinysh_add_command(&cek_webcc_cmd);
-		tinysh_add_command(&cek_server_cmd);
+		#ifdef PAKAI_RESOLV
+			tinysh_add_command(&cek_server_cmd);
+			tinysh_add_command(&cek_dns_cmd);
+			tinysh_add_command(&cek_ip_cmd);
+		#endif
 	#endif
 #endif
 

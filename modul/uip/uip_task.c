@@ -623,12 +623,29 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					status_webc_i = 0;
 				}
 				
+				#ifdef PAKAI_RESOLV
 				if (status_webc_i==2)	{
 					printf("Tes DNS ...\r\n");
-					resolv_lookup(urlweb);
+					//resolv_lookup(urlweb);
 					resolv_query(urlweb);
 					status_webc_i = 0;
 				}
+				
+				if (status_webc_i==3)	{
+					printf("Tes webclient ...\r\n");
+					printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					status_webc_i = 0;
+				}
+				
+				if (status_webc_i==4)	{
+					printf("Tes ip ...%s\r\n", urlweb);
+					gg = resolv_lookup(urlweb);
+					printf(">> %s : %d.%d.%d.%d\r\n", urlweb, \
+						uip_ipaddr1(gg), uip_ipaddr2(gg), uip_ipaddr3(gg), uip_ipaddr4(gg));
+					status_webc_i = 0;
+				}
+				#endif
 			#endif
 		}
 		#endif

@@ -24,18 +24,20 @@
 
 	void parsing_cmd(char * cmd)	{
 		printf("cmdnya: %s\r\n", cmd);
-		char status[20], rel[30];
+		char status[120], rel[30];
 		int inc;
 		
 		sscanf (cmd,"<html><body>%s %d %s", status, &inc, rel);
 		rel[8] = '0';
 		
+		#if 1
 		printf("status: %s, n: %d\r\n", status, inc);
 		printf("cmd   : %s\r\n", rel);
 
 		printf("1: %d\r\n", (int)(rel[0]-'0'));
 		printf("2: %d\r\n", (int)(rel[1]-'0'));
 		printf("3: %d\r\n", (int)(rel[2]-'0'));
+		#endif
 		set_semuaRelay(rel);
 	}
 #endif

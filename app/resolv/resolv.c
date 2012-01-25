@@ -250,13 +250,13 @@ newdata(void)
   hdr = (struct dns_hdr *)uip_appdata;
   //*  
       printf("ID %d\n", htons(hdr->id));
-      printf("Query %d\n", hdr->flags1 & DNS_FLAG1_RESPONSE);
-      printf("Error %d\n", hdr->flags2 & DNS_FLAG2_ERR_MASK);
+      //printf("Query %d\n", hdr->flags1 & DNS_FLAG1_RESPONSE);
+      //printf("Error %d\n", hdr->flags2 & DNS_FLAG2_ERR_MASK);
       printf("Num questions %d, answers %d, authrr %d, extrarr %d\n",
-      htons(hdr->numquestions),
-      htons(hdr->numanswers),
-      htons(hdr->numauthrr),
-      htons(hdr->numextrarr));
+		htons(hdr->numquestions),
+		htons(hdr->numanswers),
+		htons(hdr->numauthrr),
+		htons(hdr->numextrarr));
   //*/
 
   /* The ID in the DNS header should be our entry into the name
@@ -369,12 +369,12 @@ resolv_query(char *name)
       
   lseq = lseqi = 0;
   printf("%s ..... \r\n", __FUNCTION__);
-  for(i = 0; i < RESOLV_ENTRIES; ++i) {
-    nameptr = &names[i];
-     printf("%d. %20s : %d.%d.%d.%d\r\n", i, nameptr->name, \
-		uip_ipaddr1(nameptr->ipaddr), uip_ipaddr2(nameptr->ipaddr), uip_ipaddr3(nameptr->ipaddr), uip_ipaddr4(nameptr->ipaddr));
+	for(i = 0; i < RESOLV_ENTRIES; ++i) {
+		nameptr = &names[i];
+		//printf("%d. %20s : %d.%d.%d.%d\r\n", i, nameptr->name, \
+		//	uip_ipaddr1(nameptr->ipaddr), uip_ipaddr2(nameptr->ipaddr), uip_ipaddr3(nameptr->ipaddr), uip_ipaddr4(nameptr->ipaddr));
     if(nameptr->state == STATE_UNUSED) {
-		printf("%d. break !!!\r\n", i);
+		//printf("%d. break !!!\r\n", i);
       break;
     }
     if(seqno - nameptr->seqno > lseq) {
@@ -421,8 +421,9 @@ resolv_lookup(char *name)
      not, we return NULL. */
   for(i = 0; i < RESOLV_ENTRIES; ++i) {
     nameptr = &names[i];
-    printf("%d. %20s : %d.%d.%d.%d\r\n", i, nameptr->name, \
-		uip_ipaddr1(nameptr->ipaddr), uip_ipaddr2(nameptr->ipaddr), uip_ipaddr3(nameptr->ipaddr), uip_ipaddr4(nameptr->ipaddr));
+    printf("%d. %20s : %3d.%3d.%3d.%3d : %d\r\n", i, nameptr->name, \
+		uip_ipaddr1(nameptr->ipaddr), uip_ipaddr2(nameptr->ipaddr), uip_ipaddr3(nameptr->ipaddr), uip_ipaddr4(nameptr->ipaddr), \
+		nameptr->state);
     if(nameptr->state == STATE_DONE &&
        strcmp(name, nameptr->name) == 0) {
       return nameptr->ipaddr;
@@ -430,6 +431,22 @@ resolv_lookup(char *name)
   }
   return NULL;
 }
+
+u16_t * resolv_table()	{
+  static u8_t i;
+  struct namemap *nameptr;
+  printf("%s ....\r\n", __FUNCTION__);
+  /* Walk through the list to see if the name is in there. If it is
+     not, we return NULL. */
+  for(i = 0; i < RESOLV_ENTRIES; ++i) {
+    nameptr = &names[i];
+    printf("%d. %20s : %3d.%3d.%3d.%3d : %d\r\n", i, nameptr->name, \
+		uip_ipaddr1(nameptr->ipaddr), uip_ipaddr2(nameptr->ipaddr), uip_ipaddr3(nameptr->ipaddr), uip_ipaddr4(nameptr->ipaddr), \
+		nameptr->state);
+  }
+  return NULL;
+}
+
 /*---------------------------------------------------------------------------*/
 /**
  * Obtain the currently configured DNS server.
@@ -478,10 +495,10 @@ void
 resolv_init(void)
 {
   static u8_t i;
-  printf("RESOLV ENTRIES: %d\r\n", RESOLV_ENTRIES);
+  //printf("RESOLV ENTRIES: %d\r\n", RESOLV_ENTRIES);
   for(i = 0; i < RESOLV_ENTRIES; ++i) {
     names[i].state = STATE_DONE;
-    printf("%2d. %d\r\n", i+1, names[i].state);
+    //printf("%2d. %d\r\n", i+1, names[i].state);
   }
 
 }

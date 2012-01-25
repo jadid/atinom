@@ -45,6 +45,23 @@ void cek_server(int argc, char **argv)	{
 
 static tinysh_cmd_t cek_server_cmd={0,"cek_server","ambil data dari internet","", cek_server,0,0,0};
 
+void cek_dns(int argc, char **argv)	{
+	resolv_table();
+}
+
+static tinysh_cmd_t cek_dns_cmd={0,"cek_dns","ambil data dari internet","", cek_dns,0,0,0};
+
+void cek_ip(int argc, char **argv)	{
+	if (argc!=2)
+		return;
+
+	status_webc_i = 4;
+	printf("argv[0]:%s, argv[1]: %s : %d\r\n", argv[0], argv[1], status_webc_i);
+	strcpy(urlweb, argv[1]);
+}
+
+static tinysh_cmd_t cek_ip_cmd={0,"cek_ip","ambil data dari internet","", cek_ip,0,0,0};
+
 #endif
 
 #endif

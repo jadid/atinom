@@ -104,14 +104,13 @@
 	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
-	#define SAMPURASUN_CLIENT
+//	#define SAMPURASUN_CLIENT
 //	#define SAMPURASUN_SERVER
-	#define PAKAI_WEBCLIENT
-	#define PAKE_TELNETD
+//	#define PAKE_TELNETD
 	#define PAKAI_HTTP
-	
 	#define PAKAI_RESOLV
 	
+	#define PAKAI_WEBCLIENT
 	#ifdef PAKAI_WEBCLIENT
 		//#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS

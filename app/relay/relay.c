@@ -23,14 +23,14 @@
 	}
 
 	void parsing_cmd(char * cmd)	{
-		printf("cmdnya: %s\r\n", cmd);
-		char status[120], rel[30];
+		//printf("cmdnya: %s\r\n", cmd);
+		char status[30], rel[30];
 		int inc;
 		
 		sscanf (cmd,"<html><body>%s %d %s", status, &inc, rel);
 		rel[8] = '0';
 		
-		#if 1
+		#if 0
 		printf("status: %s, n: %d\r\n", status, inc);
 		printf("cmd   : %s\r\n", rel);
 

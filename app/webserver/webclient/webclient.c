@@ -68,7 +68,7 @@
 
 
 #define uchr unsigned char
-#define WEBCLIENT_TIMEOUT 100
+#define WEBCLIENT_TIMEOUT 1000
 
 #define WEBCLIENT_STATE_STATUSLINE 0
 #define WEBCLIENT_STATE_HEADERS    1
@@ -615,24 +615,24 @@ webclient_appcall(void)
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    printf("%s(): Connected\r\n", __FUNCTION__);
+    //printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    printf("%s(): Closed\r\n", __FUNCTION__);
+    //printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	printf("%s(): Aborted\r\n", __FUNCTION__);
+	//printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	//printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   
@@ -641,7 +641,7 @@ webclient_appcall(void)
     acked();
   }
   if(uip_newdata()) {
-	  printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
+	  //printf("%s() masuk .... ke f newdata\r\n", __FUNCTION__);
     s.timer = 0;
     newdata();
   }
@@ -653,7 +653,7 @@ webclient_appcall(void)
     ++s.timer;
     if(s.timer == WEBCLIENT_TIMEOUT) {
       //webclient_timedout();
-	  printf("%s(): Timeout 2\r\n", __FUNCTION__);
+	  //printf("%s(): Timeout 2\r\n", __FUNCTION__);
       uip_abort();
       return;
     }
@@ -661,7 +661,7 @@ webclient_appcall(void)
   }
 
   if(uip_closed()) {
-	printf("%s(): uip closed\r\n", __FUNCTION__);
+	//printf("%s(): uip closed\r\n", __FUNCTION__);
     if(s.httpflag != HTTPFLAG_MOVED) {
       /* Send NULL data to signal EOF. */
       webclient_datahandler(NULL, 0);
@@ -702,7 +702,7 @@ void webclient_datahandler(char *data, u16_t len)
 
 		char *isi = &data[s.nData];
 		isi[uip_len-s.nData]='\0';
-		printf("isinya: %s\r\n", isi);
+		//printf("isinya: %s\r\n", isi);
 		#ifdef PAKAI_RELAY
 		parsing_cmd(isi);		// file @ app/relay/relay.c
 		#endif
@@ -750,7 +750,7 @@ void webclient_datahandler(char *data, u16_t len)
 		}
 	#endif
 	}
-	printf("\r\n+++++++++++\r\n");
+	//printf("\r\n+++++++++++\r\n");
 	#endif	
 }
 #endif

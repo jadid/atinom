@@ -379,7 +379,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	#ifdef PAKAI_WEBCLIENT_INTERNET
 		char ipdest[15];
 		int menit = 0;
-		int tiapKirim=950;
+		int tiapKirim=5;
 		wclient=0;
 	#endif
 
@@ -605,14 +605,21 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					if (wclient>1000) {		// 1 detik, 60000 = 60 detik = 1 menit
 						wclient=0;
 						menit++;
+						
 					}
+					
 					if (menit == tiapKirim) {
+						printf("webclient : %d\r\n", menit);
+						menit=0;
+					#if 1
 						sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 						strcpy(datakeserver, envx->berkas);
 						printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
 						webclient_get(ipdest, PORT_HTTP, datakeserver);
-						menit=0;
+						
+					#endif
 					}
+					
 				}
 				
 				if (status_webc_i==1)	{

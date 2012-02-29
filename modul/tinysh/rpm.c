@@ -48,6 +48,7 @@ void reset_konter(void)
 
 void hitung_rpm(void)
 {	
+	//printf("%s() masuk ...\r\n", __FUNCTION__);
 	portENTER_CRITICAL();
 	if (konter.t_konter[giliran].hit_lama == konter.t_konter[giliran].hit)
 	{
@@ -118,6 +119,7 @@ void set_konter_onoff(int st, int isi_input) {
 }
 
 void data_frek_rpm() {
+	//printf("%s() masuk ...\r\n", __FUNCTION__);
 	unsigned int i;
 	float temp_f;
 	float temp_rpm;
@@ -152,7 +154,16 @@ void data_frek_rpm() {
 		}
 		else if (env2->kalib[i].status==1) {		// OnOff
 			data_f[i*2] = (float) konter.t_konter[i].onoff;
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (env2->kalib[i].status==3) {		// 
+			data_f[i*2]   = (float) konter.t_konter[i].onoff;
+			data_f[i*2+1] = (float) konter.t_konter[i].hit;
+		} else if (env2->kalib[i].status==100) {		// 
+			data_f[i*2]   = (float) konter.t_konter[i].hit;
+			data_f[i*2+1] = (float) konter.t_konter[i].hit;
+		#endif
 		}
+		
 	}	
 }
 
@@ -183,21 +194,51 @@ void cek_rpm()	{
 					temp_f = 0;
 					temp_rpm = 0;
 				}	
-		
+
 				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
 					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
 			}
 		} else if (penv->kalib[i].status==1) {		// onoff
-			#ifndef BOARD_KOMON_KONTER_3_1
-			if (i>6) 
+			#if 0
+				#ifndef BOARD_KOMON_KONTER_3_1
+				if (i>6) 
+				#endif
+			#endif
+			{
+				printf(" %2d : Status: %3d [%s], Nilai: %d : %s\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==1)?"OnOff":"ERROR1", \
+						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"ON":"OFF");
+			}
+		#ifdef PAKAI_PUSHBUTTON
+		} else if (penv->kalib[i].status==2) {		// pushbutton
+			#if 0
+				#ifndef BOARD_KOMON_KONTER_3_1
+				if (i>6) 
+				#endif
 			#endif
 			{
 				printf(" %2d : Status: %d [%s], Nilai: %d : %s\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==1)?"OnOff":"Pulsa/RPM", konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off");
+					(i+1), status_konter[i], (status_konter[i]==2)?"PushButton":"ERROR2", konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off");
 			}
+		#endif
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (penv->kalib[i].status==3) {		// selector_flow
+			{
+				printf(" %2d : Status: %3d [%s], Nilai: %d : %s\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==3)?"Selector flow":"ERROR3", \
+						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off");
+			}
+		} else if (penv->kalib[i].status==100) {		// flow_setelah_selector
+			{
+				printf(" %2d : Status: %3d [%s],  Nilai %d: %8.0f, Nilai %d : %8.0f\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==100)?"Flow":"ERROR100", \
+						(i*2+1), /*konter.t_konter[i].hit*/data_f[i*2], (i*2+2), data_f[i*2+1]);
+			}
+		#endif
 		}
+		
 	}
-	
+
 	#if (KONTER_MALINGPING == 1)
 	// data kanal 1 adalah adc1 (adc0 internal) //
 	extern float volt_supply;

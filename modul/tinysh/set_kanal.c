@@ -85,17 +85,31 @@ void set_kanal(int argc, char **argv)	{
   		printf(" %s", p_sbr->kalib[kanal-1].ket);
   	}
   	else if (strcmp(argv[2], "status") == 0)  	{
+		char w=0;
   		printf(" Setting status kanal %d :\r\n", kanal);
   		//*
-  		if (( argv[3][0] == '2') || ( argv[3][0] == '1') || (argv[3][0] == '0')) {
-			p_sbr->kalib[kanal-1].status = (argv[3][0] - '0');
-		} 
+  		w = argv[3][0] - '0';
+  		if (w>0 && w<4) {
+			//if ( (kanal%2) && (kanal<10) )	
+			{
+				p_sbr->kalib[kanal-1].status = w;
+				#ifdef PAKAI_PILIHAN_FLOW
+					p_sbr->kalib[kanal].status = 100;
+				#endif
+			}
+		}
 		else if ( strcmp(argv[3], "onoff")==0) {
 			p_sbr->kalib[kanal-1].status = 1;
 		}
 		#ifdef PAKAI_PUSHBUTTON
 		else if ( strcmp(argv[3], "toogle")==0) {
 			p_sbr->kalib[kanal-1].status = 2;
+		}
+		#endif
+		#ifdef PAKAI_PILIHAN_FLOW
+		else if ( strcmp(argv[3], "flow")==0) {
+			p_sbr->kalib[kanal-1].status = 3;
+			p_sbr->kalib[kanal].status = 100;
 		}
 		#endif
 		else if ( strcmp(argv[3], "rpm")==0) {
@@ -105,6 +119,7 @@ void set_kanal(int argc, char **argv)	{
 		}
 		
 		//(int) setup_konter_onoff((unsigned int) 2, (unsigned char)0);
+		
   	}
   	else  	{
 		sprintf(str_kanal, "%s", argv[2]);

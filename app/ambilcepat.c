@@ -103,9 +103,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	
 		for (loopambil=0; loopambil<KANALNYA; loopambil++)	{
 			status_konter[loopambil] = penv->kalib[loopambil].status;
-			
-			printf("status %d: %d : %d : %d\r\n", \
-				loopambil+1, penv->kalib[loopambil].status, status_konter[loopambil], setup_konter_onoff(loopambil, status_konter[loopambil]));
+			setup_konter_onoff(loopambil, status_konter[loopambil]);
+			printf("status %d --> %d : %d\r\n", \
+				loopambil+1, status_konter[loopambil], setup_konter_onoff(loopambil, status_konter[loopambil]));
 			
 		}
 		loopambil=0;
@@ -114,7 +114,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
   	vTaskDelay(50);
   	for(;;) {
-		vTaskDelay(5);
+		vTaskDelay(1);
 		
 		#ifdef PAKAI_CRON
 			//if (loopambil%60==0)	//	30 detik
@@ -159,9 +159,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		#ifdef BOARD_KOMON_KONTER
 			#ifdef HITUNG_RPM
-				if (loopambil%20==0) {		// 5x20 = 100
+				//if (loopambil%20==0) {		// 5x20 = 100
 					hitung_rpm();
-				}
+				//}
 				data_frek_rpm();
 			#endif
 		#endif

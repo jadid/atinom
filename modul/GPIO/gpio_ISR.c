@@ -17,6 +17,10 @@
 #include "task.h"
 #include "semphr.h"
 #include "gpio.h"
+#include "lpc23xx.h"
+
+// tes konter
+#define LED_UTAMA	BIT(27)
 
 #include "../../app/monita/monita_uip.h"
 
@@ -135,73 +139,64 @@ extern unsigned char status_konter[KANALNYA];
 
 void gpio_ISR_Handler( void )
 {
-	int t=0;
+	int t=0, zz=0;
 	unsigned int new_period;
 	konter.global_hit++;
 
 	new_period = T1TC;
 	//cek sumber
 
-	/*
-	if (IO2_INT_STAT_F & kont_10)
-	{
-		t = 9;
-		set_konter(t, new_period);
-		IO2_INT_CLR = kont_10;
-	}
-	//*/
 	if (IO2_INT_STAT_F & kont_10) {
-		t = 9;
-		if (status_konter[t]==0) {
+		t = 9; zz = status_konter[t];
+		if (zz==0) {
 			set_konter(t, new_period);
-		} else if (status_konter[t]==1) {
+		} else if (zz==1) {
 			set_konter_onoff(t, 1);
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==100)	{
+			//FIO0PIN ^= LED_UTAMA;
+			set_konter_flow_pilih(t, konter.t_konter[t-1].onoff);
+		#endif
 		}
+		
 		IO2_INT_CLR = kont_10;
 	} 
 	if (IO2_INT_STAT_R & kont_10)	{
-		t = 9;
-		if (status_konter[t]==1) {
-			set_konter_onoff(t, 1);
+		t = 9;	zz = status_konter[t];
+		if (zz==1) {
+			set_konter_onoff(t, 0);
 		}
 		IO2_INT_CLR = kont_10;
 	}
 
-	/*
-	if (IO2_INT_STAT_F & kont_9)
-	{
-		t = 8;
-		set_konter(t, new_period);
-		IO2_INT_CLR = kont_9;
-	}
-	//*/
+
 	if (IO2_INT_STAT_F & kont_9) {
-		t = 8;
-		if (status_konter[t]==0) {
+		t = 8;	zz = status_konter[t];
+		if (zz==0) {
 			set_konter(t, new_period);
-		} else if (status_konter[t]==1) {
+		} else if (zz==1) {
 			set_konter_onoff(t, 1);
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==3)	{
+			set_konter_onoff(t, 1);
+		#endif
 		}
 		IO2_INT_CLR = kont_9;
 	} 
 	if (IO2_INT_STAT_R & kont_9)	{
-		t = 8;
-		if (status_konter[t]==1) {
+		t = 8;	zz = status_konter[t];
+		if (zz==1) {
 			set_konter_onoff(t, 0);
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==3)	{
+			set_konter_onoff(t, 0);
+		#endif
 		}
 		IO2_INT_CLR = kont_9;
 	}
-	
-	/*
-	if (IO2_INT_STAT_F & kont_8)
-	{
-		t = 7;
-		set_konter(t, new_period);
-		IO2_INT_CLR = kont_8;
-	}
-	//*/
+
 	if (IO2_INT_STAT_F & kont_8) {		// buat pulsa
-		t = 7;
+		t = 7; zz = status_konter[t];
 		if (status_konter[t]==0) {
 			set_konter(t, new_period);
 		} else if (status_konter[t]==1) {
@@ -214,6 +209,10 @@ void gpio_ISR_Handler( void )
 					toogle_selenoid(t+1);
 				#endif
 			}
+		#endif
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==100) {
+			set_konter(t, new_period);
 		#endif
 		}
 		IO2_INT_CLR = kont_8;
@@ -228,13 +227,13 @@ void gpio_ISR_Handler( void )
 	
 	
 	if (IO2_INT_STAT_F & kont_7) {
-		t = 6;
-		if (status_konter[t]==0) {
+		t = 6; zz = status_konter[t];
+		if (zz==0) {
 			set_konter(t, new_period);
-		} else if (status_konter[t]==1) {
+		} else if (zz==1) {
 			set_konter_onoff(t, 1);
 		#ifdef PAKAI_PUSHBUTTON
-		} else if (status_konter[t]==2) {
+		} else if (zz==2) {
 			if (debound[t]==0) {
 				debound[t] = DELAY_DEBOUND;
 				#ifdef PAKAI_RELAY
@@ -242,26 +241,26 @@ void gpio_ISR_Handler( void )
 				#endif
 			}
 		#endif
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==3)	{
+			set_konter_onoff(t, 1);
+		#endif
 		}
 		IO2_INT_CLR = kont_7;
 	} 
 	if (IO2_INT_STAT_R & kont_7)	{
-		t = 6;
-		if (status_konter[t]==1) {
+		t = 6; zz = status_konter[t];
+		if (zz==1) {
 			set_konter_onoff(t, 0);
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==3)	{
+			set_konter_onoff(t, 0);
+		#endif
 		}
 		IO2_INT_CLR = kont_7;
 	}
-	
-	/*
-	if (IO2_INT_STAT_F & kont_6)
-	{
-		t = 5;
-		set_konter(t, new_period);
-		IO2_INT_CLR = kont_6;
-	}
-	//*/
-	
+
+
 	if (IO2_INT_STAT_F & kont_6) {
 		t = 5;
 		if (status_konter[t]==0) {

@@ -349,6 +349,8 @@ void dele(int dd);
 #ifdef BOARD_KOMON_KONTER
 	#define uC	"NXP LPC 2387"
 	
+	#define PORT_INPUT_KONTER(kanal)	(FIO2PIN & (1 << kanal)) ? 0 : 1;
+	
 	#ifdef PAKAI_LED_UTAMA
 		#define LED_UTAMA	BIT(27)
 		

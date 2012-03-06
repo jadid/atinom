@@ -29,8 +29,8 @@ void rtc_init(void)
 
 }
 
-void rtc_reset(void)
-{
+void rtc_reset(void)	{
+	
 	RTC_CCR = BIT(1);
 
 }

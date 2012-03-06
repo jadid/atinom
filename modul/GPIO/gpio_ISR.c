@@ -179,6 +179,8 @@ void gpio_ISR_Handler( void )
 		#ifdef PAKAI_PILIHAN_FLOW
 		} else if (zz==3)	{
 			set_konter_onoff(t, 1);
+		} else if (zz==202)	{
+			set_konter_flow_pilih(t, zz);
 		#endif
 		}
 		IO2_INT_CLR = kont_9;
@@ -212,7 +214,9 @@ void gpio_ISR_Handler( void )
 		#endif
 		#ifdef PAKAI_PILIHAN_FLOW
 		} else if (zz==100) {
-			set_konter(t, new_period);
+			set_konter_flow_pilih(t, konter.t_konter[t-1].onoff);
+		} else if (zz==201)	{
+			set_konter_onoff(t, 1);
 		#endif
 		}
 		IO2_INT_CLR = kont_8;
@@ -244,6 +248,10 @@ void gpio_ISR_Handler( void )
 		#ifdef PAKAI_PILIHAN_FLOW
 		} else if (zz==3)	{
 			set_konter_onoff(t, 1);
+		} else if (zz==4)	{
+			set_konter_onoff(t, 1);
+		} else if (zz==201)	{
+			set_konter_onoff(t, 1);
 		#endif
 		}
 		IO2_INT_CLR = kont_7;
@@ -255,6 +263,10 @@ void gpio_ISR_Handler( void )
 		#ifdef PAKAI_PILIHAN_FLOW
 		} else if (zz==3)	{
 			set_konter_onoff(t, 0);
+		} else if (zz==4)	{
+			set_konter_onoff(t, 1);
+		} else if (zz==201)	{
+			set_konter_onoff(t, 1);
 		#endif
 		}
 		IO2_INT_CLR = kont_7;
@@ -283,6 +295,10 @@ void gpio_ISR_Handler( void )
 		t = 5;
 		if (status_konter[t]==1) {
 			set_konter_onoff(t, 0);
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==100) {
+			set_konter_flow_pilih(t, konter.t_konter[t-1].onoff);
+		#endif
 		}
 		IO2_INT_CLR = kont_6;
 	}
@@ -364,16 +380,20 @@ void gpio_ISR_Handler( void )
 					#endif
 				}
 			#endif
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==100) {
+				set_konter_flow_pilih(t, konter.t_konter[t-1].onoff);
+			#endif			
 			}
 			IO2_INT_CLR = kont_2;
 		}
 		
 		if (IO2_INT_STAT_F & kont_1)	{
-			t = 0;
+			t = 0; zz = status_konter[t];
 			//set_konter(t, new_period);
-			if (status_konter[t]==0) {
+			if (zz==0) {
 				set_konter(t, new_period);
-			} else if (status_konter[t]==1) {
+			} else if (zz==1) {
 				set_konter_onoff(t, 1);
 			#ifdef PAKAI_PUSHBUTTON
 			} else if (status_konter[t]==2) {
@@ -383,6 +403,21 @@ void gpio_ISR_Handler( void )
 						toogle_selenoid(t+1);
 					#endif
 				}
+			#endif
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==3)	{
+				//set_konter_onoff(t, 1);
+			#endif
+			}
+			IO2_INT_CLR = kont_1;
+		}
+		if (IO2_INT_STAT_R & kont_1)	{
+			t = 0;	zz = status_konter[t];
+			if (zz==1) {
+				set_konter_onoff(t, 0);
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==3)	{
+				set_konter_onoff(t, 0);
 			#endif
 			}
 			IO2_INT_CLR = kont_1;

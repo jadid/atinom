@@ -331,7 +331,7 @@ void set_date(int argc, char **argv)
 	int ret;
 	time_t clk;	
 	
-	rtc_reset();
+	//rtc_reset();
 	rtc_init();
 	rtc_start();
 	
@@ -1032,7 +1032,9 @@ vTaskDelay(100);
 	#ifdef PAKAI_RTC	
 		tinysh_add_command(&set_date_cmd);
 		#ifdef PAKAI_MEM_RTC
-			tinysh_add_command(&set_mem_cmd);		
+			tinysh_add_command(&set_mem_cmd);
+			tinysh_add_command(&cek_mem_cmd);
+			tinysh_add_command(&reg_rtc_cmd);
 			#ifdef TES_MEM_RTC
 				tinysh_add_command(&tes_mem_cmd);
 			#endif
@@ -1084,7 +1086,9 @@ vTaskDelay(100);
 		rtc_init();
 		vTaskDelay(100);
 		rtc_start();
-		baca_rtc_mem();
+		
+		printf(" Init RTC ....\r\n");
+		//baca_rtc_mem();
 		#endif
 	#endif
 	

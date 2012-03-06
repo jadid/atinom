@@ -110,7 +110,7 @@ static void reset_konter(void)
 int setup_konter_onoff(unsigned int aaa, unsigned char statk) {
 	//printf("\r\n aaa: %d, statk: %d\r\n", aaa, statk);
 	int bbb = 0;
-	if ((statk==1) || (statk==3)) {
+	if (statk==1) {
 		if (aaa==0) {	IO2_INT_EN_R |= kont_1;		bbb = 101;	}
 		if (aaa==1) {	IO2_INT_EN_R |= kont_2;		bbb = 102;	}
 		if (aaa==2) {	IO2_INT_EN_R |= kont_3;		bbb = 103;	}
@@ -121,6 +121,18 @@ int setup_konter_onoff(unsigned int aaa, unsigned char statk) {
 		if (aaa==7) {	IO2_INT_EN_R |= kont_8;		bbb = 108;	}
 		if (aaa==8) {	IO2_INT_EN_R |= kont_9;		bbb = 109;	}
 		if (aaa==9) {	IO2_INT_EN_R |= kont_10;	bbb = 110;	}
+	
+	} else if (statk==3)	{
+		if (aaa==0) {	;	bbb = 201;	}
+		if (aaa==1) {	;	bbb = 202;	}
+		if (aaa==2) {	;	bbb = 203;	}
+		if (aaa==3) {	;	bbb = 204;	}
+		if (aaa==4) {	;	bbb = 205;	}
+		if (aaa==5) {	;	bbb = 206;	}
+		if (aaa==6) {	;	bbb = 207;	}
+		if (aaa==7) {	;	bbb = 208;	}
+		if (aaa==8) {	;	bbb = 209;	}
+		if (aaa==9) {	;	bbb = 210;	}
 	} else {
 		if (aaa==0) {	IO2_INT_EN_R &= ~kont_1;	bbb = 1;	}
 		if (aaa==1) {	IO2_INT_EN_R &= ~kont_2;	bbb = 2;	}
@@ -180,7 +192,7 @@ void init_gpio(void)
 	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_EINT3);
 
 
-	// setup GPIO direction & interrupt
+	// setup GPIO direction as input & interrupt
 	FIO2DIR = FIO2DIR & ~(kont_10 | kont_9 | kont_8 | kont_7 | kont_6);
 	
 	#ifdef BOARD_KOMON_KONTER_3_1
@@ -189,6 +201,7 @@ void init_gpio(void)
 	
 	// enable falling edge interrupt
 	// inverse input
+	
 	IO2_INT_EN_F = kont_10 | kont_9 | kont_8 | kont_7 | kont_6;
 	
 	#ifdef BOARD_KOMON_KONTER_3_1

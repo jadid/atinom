@@ -61,6 +61,9 @@ struct t_env {
 	unsigned char k1;
 	unsigned char k2;
 	#endif
+	#ifdef PAKAI_RTC
+	unsigned char uRTC;
+	#endif
 };
 
 //#define SEKTOR_ENV	24

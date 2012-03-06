@@ -11,6 +11,8 @@
 #include "monita/monita_uip.h"
 xTaskHandle hdl_ambilcepat;
 
+#define TES_MEM_RTC
+
 #ifdef PAKAI_MODEM_SERIAL
 	
 #endif
@@ -38,6 +40,9 @@ xTaskHandle hdl_ambilcepat;
 	extern unsigned int debound[KANALNYA];
 #endif
 
+#ifdef PAKAI_PILIHAN_FLOW
+	extern struct t2_konter konter;
+#endif
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(500);
@@ -100,16 +105,22 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#ifndef BLINK
 		struct t_env *penv;
 		penv = (char *) ALMT_ENV;
-	
+		
+		baca_rtc_mem();
+		
 		for (loopambil=0; loopambil<KANALNYA; loopambil++)	{
 			status_konter[loopambil] = penv->kalib[loopambil].status;
 			setup_konter_onoff(loopambil, status_konter[loopambil]);
-			printf("status %d --> %d : %d\r\n", \
-				loopambil+1, status_konter[loopambil], setup_konter_onoff(loopambil, status_konter[loopambil]));
+			//printf("status %d --> %d : %d\r\n", \
+			//	loopambil+1, status_konter[loopambil], setup_konter_onoff(loopambil, status_konter[loopambil]));
 			
 		}
 		loopambil=0;
 		#endif
+  	#endif
+  	
+  	#ifdef PAKAI_RTC
+
   	#endif
   	
   	vTaskDelay(50);
@@ -160,7 +171,8 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#ifdef BOARD_KOMON_KONTER
 			#ifdef HITUNG_RPM
 				//if (loopambil%20==0) {		// 5x20 = 100
-					hitung_rpm();
+				cek_input_onoff();
+				hitung_rpm();
 				//}
 				data_frek_rpm();
 			#endif
@@ -270,11 +282,14 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		//printf("isi memRTC0: %d, loopambil: %d\r\n", MEM_RTC0, loopambil);
-		if (loopambil>300) {
+		if (loopambil>1000) {
 			#ifdef TES_MEM_RTC
 			//MEM_RTC0++;
 			//MEM_RTC1++;
-			printf("isi memRTC0: %d\r\n", MEM_RTC0);
+			//printf("   isi mem0: %d, mem1: %d, mem2: %d, mem3: %d    ", \
+			//	*(&MEM_RTC0), *(&MEM_RTC0+1), *(&MEM_RTC0+2), *(&MEM_RTC0+3));
+			//printf("   isi h1: %d : %d, --- h2: %d : %d\r\n", \
+			//	konter.t_konter[0].onoff, konter.t_konter[0].hit, konter.t_konter[1].hit, konter.t_konter[1].hit2);
 			#endif
 			loopambil=0;
 		}

@@ -35,6 +35,10 @@ typedef struct {
 	unsigned int hit;
 	unsigned int hit_lama;		// untuk mengetahui mati atau enggak
 	unsigned char onoff;
+	#ifdef PAKAI_PILIHAN_FLOW
+	unsigned int hit2;
+	unsigned int hit_lama2;		// untuk mengetahui mati atau enggak
+	#endif
 } ts_konter;
 
 struct t2_konter{

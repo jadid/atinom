@@ -160,7 +160,7 @@ int baca_env(char tampil)
 		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
-	printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
+	//printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
 	
 	if (ev->magic1 == MAGIC_1)	{
 		if (ev->magic2 == MAGIC_2)		{			
@@ -169,8 +169,8 @@ int baca_env(char tampil)
 	
 			printf(" Nama board = "); 	printf("%s\r\n",env2->nama_board);
 			printf(" No Seri    = ");	printf("%s\r\n", env2->SN);
-			printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
-			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
+			//printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+			//printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
 			printf(" Webclient  = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
 			
 			#ifdef PAKAI_WEBCLIENT

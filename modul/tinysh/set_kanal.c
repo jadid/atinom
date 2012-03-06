@@ -89,12 +89,17 @@ void set_kanal(int argc, char **argv)	{
   		printf(" Setting status kanal %d :\r\n", kanal);
   		//*
   		w = argv[3][0] - '0';
-  		if (w>0 && w<4) {
+  		if (w>0 && w<5) {
 			//if ( (kanal%2) && (kanal<10) )	
 			{
 				p_sbr->kalib[kanal-1].status = w;
 				#ifdef PAKAI_PILIHAN_FLOW
-					p_sbr->kalib[kanal].status = 100;
+					if (w==3)
+						p_sbr->kalib[kanal].status = 100;
+					else if (w==4)	{
+						p_sbr->kalib[kanal].status   = 201;
+						p_sbr->kalib[kanal+1].status = 202;
+					}
 				#endif
 			}
 		}
@@ -110,6 +115,13 @@ void set_kanal(int argc, char **argv)	{
 		else if ( strcmp(argv[3], "flow")==0) {
 			p_sbr->kalib[kanal-1].status = 3;
 			p_sbr->kalib[kanal].status = 100;
+		}
+		#endif
+		#ifdef PAKAI_PILIHAN_FLOW
+		else if ( strcmp(argv[3], "flow2")==0) {
+			p_sbr->kalib[kanal-1].status = 4;
+			p_sbr->kalib[kanal].status   = 201;
+			p_sbr->kalib[kanal+1].status = 202;
 		}
 		#endif
 		else if ( strcmp(argv[3], "rpm")==0) {

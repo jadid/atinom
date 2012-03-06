@@ -160,7 +160,19 @@ void baca_rtc_mem() {
 					printf("   onoff %2d: %d : %d\r\n", \
 						i+1, konter.t_konter[i].onoff, konter.t_konter[i].hit);
 				}
-			}
+			} else if ((env2->kalib[i].status==4) || (env2->kalib[i].status==201) || (env2->kalib[i].status==202))	{
+				if (env2->kalib[i].status==202)	{	// 
+					konter.t_konter[i].hit  = *(&MEM_RTC0+(i*2));
+					konter.t_konter[i].hit2 = *(&MEM_RTC0+(i*2)+1);
+					printf("   hit   %2d: %d : %d\r\n", \
+						i+1, konter.t_konter[i].hit, konter.t_konter[i].hit2);
+				} else {		// 
+					konter.t_konter[i].onoff = *(&MEM_RTC0+(i*2));
+					konter.t_konter[i].hit   = *(&MEM_RTC0+(i*2)+1);
+					printf("   onoff %2d: %d : %d\r\n", \
+						i+1, konter.t_konter[i].onoff, konter.t_konter[i].hit);
+				}
+			} 
 		#else
 			if (env2->kalib[i].status==0)	{
 				konter.t_konter[i*2].hit = *(&MEM_RTC0+i*2);

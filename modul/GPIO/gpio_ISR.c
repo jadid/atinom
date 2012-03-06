@@ -222,9 +222,17 @@ void gpio_ISR_Handler( void )
 		IO2_INT_CLR = kont_8;
 	} 
 	if (IO2_INT_STAT_R & kont_8)	{
-		t = 7;
-		if (status_konter[t]==1) {
+		t = 7;  zz = status_konter[t];
+		if (zz==1) {
 			set_konter_onoff(t, 0);
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==3)	{
+			set_konter_onoff(t, 0);
+		} else if (zz==4)	{
+			set_konter_onoff(t, 0);
+		} else if (zz==201)	{
+			set_konter_onoff(t, 0);
+		#endif
 		}
 		IO2_INT_CLR = kont_8;
 	}
@@ -264,9 +272,9 @@ void gpio_ISR_Handler( void )
 		} else if (zz==3)	{
 			set_konter_onoff(t, 0);
 		} else if (zz==4)	{
-			set_konter_onoff(t, 1);
+			set_konter_onoff(t, 0);
 		} else if (zz==201)	{
-			set_konter_onoff(t, 1);
+			set_konter_onoff(t, 0);
 		#endif
 		}
 		IO2_INT_CLR = kont_7;
@@ -274,13 +282,13 @@ void gpio_ISR_Handler( void )
 
 
 	if (IO2_INT_STAT_F & kont_6) {
-		t = 5;
-		if (status_konter[t]==0) {
+		t = 5;  zz = status_konter[t];
+		if (zz==0) {
 			set_konter(t, new_period);
-		} else if (status_konter[t]==1) {
+		} else if (zz==1) {
 			set_konter_onoff(t, 1);
 		#ifdef PAKAI_PUSHBUTTON
-		} else if (status_konter[t]==2) {
+		} else if (zz==2) {
 			if (debound[t]==0) {
 				debound[t] = DELAY_DEBOUND;
 				#ifdef PAKAI_RELAY
@@ -288,12 +296,18 @@ void gpio_ISR_Handler( void )
 				#endif
 			}
 		#endif
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (zz==3)	{
+			set_konter_onoff(t, 1);
+		} else if (zz==202)	{
+			set_konter_flow_pilih(t, zz);
+		#endif
 		}
 		IO2_INT_CLR = kont_6;
 	} 
 	if (IO2_INT_STAT_R & kont_6)	{
-		t = 5;
-		if (status_konter[t]==1) {
+		t = 5;  zz = status_konter[t];
+		if (zz==1) {
 			set_konter_onoff(t, 0);
 		#ifdef PAKAI_PILIHAN_FLOW
 		} else if (zz==100) {
@@ -305,34 +319,55 @@ void gpio_ISR_Handler( void )
 	
 	#ifdef BOARD_KOMON_KONTER_3_1
 		if (IO2_INT_STAT_F & kont_5)	{
-			t = 4;
-			if (status_konter[t]==0) {
+			t = 4;  zz = status_konter[t];
+			if (zz==0) {
 				set_konter(t, new_period);
-			} else if (status_konter[t]==1) {
+			} else if (zz==1) {
 				set_konter_onoff(t, 1);
 			#ifdef PAKAI_PUSHBUTTON
-			} else if (status_konter[t]==2) {
+			} else if (zz==2) {
 				if (debound[t]==0) {
 					debound[t] = DELAY_DEBOUND;
 					#ifdef PAKAI_RELAY
 						toogle_selenoid(t+1);
 					#endif
 				}
+			#endif
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==100) {
+				set_konter_flow_pilih(t, konter.t_konter[t-1].onoff);
+			} else if (zz==201)	{
+				set_konter_onoff(t, 1);
 			#endif
 			}
 			//set_konter(t, new_period);
 			IO2_INT_CLR = kont_5;
 		}
+		if (IO2_INT_STAT_R & kont_5)	{
+			t = 4;
+			if (status_konter[t]==1) {
+				set_konter_onoff(t, 0);
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==3)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==4)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==201)	{
+				set_konter_onoff(t, 0);
+			#endif
+			}
+			IO2_INT_CLR = kont_5;
+		}
 		
 		if (IO2_INT_STAT_F & kont_4)	{
-			t = 3;
+			t = 3;  zz = status_konter[t];
 			//set_konter(t, new_period);
-			if (status_konter[t]==0) {
+			if (zz==0) {
 				set_konter(t, new_period);
-			} else if (status_konter[t]==1) {
+			} else if (zz==1) {
 				set_konter_onoff(t, 1);
 			#ifdef PAKAI_PUSHBUTTON
-			} else if (status_konter[t]==2) {
+			} else if (zz==2) {
 				if (debound[t]==0) {
 					debound[t] = DELAY_DEBOUND;
 					#ifdef PAKAI_RELAY
@@ -340,12 +375,36 @@ void gpio_ISR_Handler( void )
 					#endif
 				}
 			#endif
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==3)	{
+				set_konter_onoff(t, 1);
+			} else if (zz==4)	{
+				set_konter_onoff(t, 1);
+			} else if (zz==201)	{
+				set_konter_onoff(t, 1);
+			#endif
 			}		
 			IO2_INT_CLR = kont_4;
 		}
+		if (IO2_INT_STAT_R & kont_4)	{
+			t = 3; zz = status_konter[t];
+			if (zz==1) {
+				set_konter_onoff(t, 0);
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==3)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==4)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==201)	{
+				set_konter_onoff(t, 0);
+			#endif
+			}
+			IO2_INT_CLR = kont_4;
+		}
+
 		
 		if (IO2_INT_STAT_F & kont_3)	{
-			t = 2;
+			t = 2; zz = status_konter[t];
 			//set_konter(t, new_period);
 			if (status_konter[t]==0) {
 				set_konter(t, new_period);

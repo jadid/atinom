@@ -465,7 +465,11 @@ void gpio_ISR_Handler( void )
 			#endif
 			#ifdef PAKAI_PILIHAN_FLOW
 			} else if (zz==3)	{
-				//set_konter_onoff(t, 1);
+				set_konter_onoff(t, 1);
+			} else if (zz==4)	{
+				set_konter_onoff(t, 1);
+			} else if (zz==201)	{
+				set_konter_onoff(t, 1);
 			#endif
 			}
 			IO2_INT_CLR = kont_1;
@@ -476,6 +480,10 @@ void gpio_ISR_Handler( void )
 				set_konter_onoff(t, 0);
 			#ifdef PAKAI_PILIHAN_FLOW
 			} else if (zz==3)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==4)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==201)	{
 				set_konter_onoff(t, 0);
 			#endif
 			}

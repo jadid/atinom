@@ -160,12 +160,14 @@ void baca_rtc_mem() {
 					printf("   onoff %2d: %d : %d\r\n", \
 						i+1, konter.t_konter[i].onoff, konter.t_konter[i].hit);
 				}
-			} else if ((env2->kalib[i].status==4) || (env2->kalib[i].status==201) || (env2->kalib[i].status==202))	{
+			} else if ((env2->kalib[i].status==4) || (env2->kalib[i].status==201) || (env2->kalib[i].status==202) || (env2->kalib[i].status==203))	{
 				if (env2->kalib[i].status==202)	{	// 
 					konter.t_konter[i].hit  = *(&MEM_RTC0+(i*2));
 					konter.t_konter[i].hit2 = *(&MEM_RTC0+(i*2)+1);
 					printf("   hit   %2d: %d : %d\r\n", \
 						i+1, konter.t_konter[i].hit, konter.t_konter[i].hit2);
+				} else if (env2->kalib[i].status==203)	{
+					konter.global_hit  = *(&MEM_RTC0+(i*2));
 				} else {		// 
 					konter.t_konter[i].onoff = *(&MEM_RTC0+(i*2));
 					konter.t_konter[i].hit   = *(&MEM_RTC0+(i*2)+1);
@@ -296,6 +298,12 @@ void data_frek_rpm() {
 			//*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];		// konter.t_konter[i].hit2;
 			*(&MEM_RTC0+(i*2))	 = konter.t_konter[i].hit;		// konter.t_konter[i].hit;
 			*(&MEM_RTC0+(i*2+1)) = konter.t_konter[i].hit2;		// konter.t_konter[i].hit2;
+		} else if (env2->kalib[i].status==203) {		// flow_setelah_selector
+			data_f[i*2]   = (float) konter.global_hit;
+			data_f[i*2+1] = (float) konter.ovflow;
+			
+			*(&MEM_RTC0+(i*2))	 = konter.global_hit;
+			*(&MEM_RTC0+(i*2+1)) = konter.ovflow;
 		#endif
 		}
 		//printf("\r\n");
@@ -372,20 +380,25 @@ void cek_rpm()	{
 		} else if (penv->kalib[i].status==4) {		// selector_flow
 			{
 				printf(" %2d : Status: %3d [%s], Nilai: %d : %s, x: %d\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==4)?"Selector flow2":"ERROR3", \
+					(i+1), status_konter[i], (status_konter[i]==4)?"Selector flow2":"ERROR4", \
 						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off", konter.t_konter[i].hit);
 			}
 		} else if (penv->kalib[i].status==201) {	// selector_flow
 			{
 				printf(" %2d : Status: %3d [%s], Nilai: %d : %s, x: %d\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==201)?"Selector flow2":"ERROR3", \
+					(i+1), status_konter[i], (status_konter[i]==201)?"Selector flow2":"ERROR4", \
 						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off", konter.t_konter[i].hit);
 			}
 		} else if (penv->kalib[i].status==202) {	// flow_setelah_selector
 			{
 				printf(" %2d : Status: %3d [%s],  Nilai %d: %8.0f, Nilai %d : %8.0f\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==202)?"Flow":"ERROR100", \
+					(i+1), status_konter[i], (status_konter[i]==202)?"Flow":"ERROR4", \
 						(i*2+1), /*konter.t_konter[i].hit*/data_f[i*2], (i*2+2), data_f[i*2+1]);
+			}
+		} else if (penv->kalib[i].status==203) {	// flow_setelah_selector
+			{
+				printf(" %2d : Status: %3d [%s],  global : %d\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==203)?"Global":"ERROR4", konter.global_hit);
 			}
 		#endif
 		}

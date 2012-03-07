@@ -188,7 +188,7 @@ int baca_env(char tampil)
 				printf("   No    Status       Faktor kalibrasi     Keterangan kanal\r\n");
 				for (i=0; i<KANALNYA; i++)	{
 					if (env2->kalib[i].status==0) { // Tegangan (default)
-						printf("  (%2d) %-10s  m: %7.3f, C: %7.3f  %-s\r\n", \ 
+						printf("  (%2d) %-10s  m: %10.7f, C: %7.3f  %-s\r\n", \ 
 							i+1, (env2->kalib[i].status==0)?"Tegangan":"On/OFF", \
 							env2->kalib[i].m, env2->kalib[i].C, env2->kalib[i].ket);
 					} else {		// OnOff
@@ -212,7 +212,7 @@ int baca_env(char tampil)
 					#endif
 					{
 						z++;
-						printf("  (%2d)  m: %7.3f, C: %7.3f  Pulsa dan Konter Kanal %d\t\t%d\t\r\n", \ 
+						printf("  (%2d)  m: %10.6f, C: %7.3f  Pulsa dan Konter Kanal %d\t\t%d\t\r\n", \ 
 							z, env2->kalib[i].m, env2->kalib[i].C, i+1, env2->kalib[i].status);		// , ket_kanal(env2->kalib[i].status)
 					}
 				}

@@ -99,6 +99,7 @@ void set_kanal(int argc, char **argv)	{
 					else if (w==4)	{
 						p_sbr->kalib[kanal].status   = 201;
 						p_sbr->kalib[kanal+1].status = 202;
+						p_sbr->kalib[KANALNYA-1].status = 203;
 					}
 				#endif
 			}
@@ -122,6 +123,7 @@ void set_kanal(int argc, char **argv)	{
 			p_sbr->kalib[kanal-1].status = 4;
 			p_sbr->kalib[kanal].status   = 201;
 			p_sbr->kalib[kanal+1].status = 202;
+			p_sbr->kalib[KANALNYA-1].status = 203;
 		}
 		#endif
 		else if ( strcmp(argv[3], "rpm")==0) {

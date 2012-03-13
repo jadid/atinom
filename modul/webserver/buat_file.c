@@ -744,7 +744,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 	#endif
 
-	strcat(tot_buf, "<table border>\n");
+	strcat(tot_buf, "<table border='1'>\n");
 	//strcat(tot_buf, "<col width = \"70px\" />\n");
 	//strcat(tot_buf, "<col width = \"90px\" />\n");
 #ifdef BOARD_KOMON_420_SAJA	
@@ -782,9 +782,11 @@ void buat_file_index(unsigned int flag, char *kata) {
 #endif
 
 #ifdef BOARD_KOMON_KONTER
+	printf("permatax: %d\r\n", pertamax);
 	if (pertamax>0) {
+		printf("masuk sini !!! ");
 		strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
-		//printf("env2->IP3: %d, pmx[no].IP3: %d", env2->IP3, pmx[no].IP3);
+		printf("env2->IP3: %d, pmx[no].IP3: %d", env2->IP3, pmx[no].IP3);
 		if ((env2->IP3 == pmx[no].IP3) && (pmx[no].status==1)) {
 			strcat(tot_buf, "<th width=\"100px\">Frek (rpm)</th>\n");
 			strcat(tot_buf, "<th width=\"100px\">Pulsa</th>\n");	

@@ -97,6 +97,47 @@ static unsigned int nomer_mesin=0;
 	extern char * satuannya_pm[];
 #endif
 
+#ifdef BOARD_KOMON_KONTER
+void ket_konter(char *ket, int status, int flag)	{
+	switch (status)	{
+		case  0:
+			strcpy(ket, "RPM/Pulsa"); break;
+		case  1:
+			strcpy(ket, "OnOff"); break;
+		case  2:
+			strcpy(ket, "OnOff PushButton"); break;
+		case  3:
+			strcpy(ket, "Selector"); break;
+		case  4:
+			if (flag==0)
+				strcpy(ket, "Selector MFO"); 
+			else 
+				strcpy(ket, "Hit MFO"); 
+			break;
+		case  100:
+			strcpy(ket, "Flow"); break;
+		case  201:
+			if (flag==0)
+				strcpy(ket, "Selector HSD");
+			else 
+				strcpy(ket, "Hit HSD");
+			break;
+		case  202:
+			if (flag==0)
+				strcpy(ket, "Flow MFO");
+			else 
+				strcpy(ket, "Flow HSD"); 
+			break;
+		case  203:
+			if (flag==0)
+				strcpy(ket, "Global hit");
+			else 
+				strcpy(ket, "Over Flow Hit"); 
+			break;
+	}
+}
+#endif
+
 
 #ifdef BOARD_TAMPILAN
 //#ifdef BOARD_DISPLAY
@@ -172,7 +213,9 @@ void buat_head(unsigned int flag) {
 
 	sprintf(head_buf, "Nama Modul : %s<br/>\n", env2->nama_board);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "Alamat IP  : %d.%d.%d.%d</h4>\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+	sprintf(head_buf, "Alamat IP  : %d.%d.%d.%d<br/>\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "Alamat wIP : %d.%d.%d.%d</h4>\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3);
 	strcat(tot_buf, head_buf);
 }
 
@@ -637,11 +680,18 @@ int ganti_setting(char *str) {
 		p_sbr->IP2 = (unsigned char)(ret_ip >> 8);
 		p_sbr->IP3 = (unsigned char)(ret_ip);
 		
+		//ret_ip = baca_ip(ketgate);	
+		//p_sbr->GW0 = (unsigned char)(ret_ip >> 24);
+		//p_sbr->GW1 = (unsigned char)(ret_ip >> 16);
+		//p_sbr->GW2 = (unsigned char)(ret_ip >> 8);
+		//p_sbr->GW3 = (unsigned char)(ret_ip);
+		
 		ret_ip = baca_ip(ketgate);	
-		p_sbr->GW0 = (unsigned char)(ret_ip >> 24);
-		p_sbr->GW1 = (unsigned char)(ret_ip >> 16);
-		p_sbr->GW2 = (unsigned char)(ret_ip >> 8);
-		p_sbr->GW3 = (unsigned char)(ret_ip);
+		p_sbr->wIP0 = (unsigned char)(ret_ip >> 24);
+		p_sbr->wIP1 = (unsigned char)(ret_ip >> 16);
+		p_sbr->wIP2 = (unsigned char)(ret_ip >> 8);
+		p_sbr->wIP3 = (unsigned char)(ret_ip);
+		
 		#endif
 		//*/
 		
@@ -1055,7 +1105,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 	#endif
 
-	strcat(tot_buf, "<table border>\n");
+	strcat(tot_buf, "<table border='1'>\n");
 	//strcat(tot_buf, "<col width = \"70px\" />\n");
 	//strcat(tot_buf, "<col width = \"90px\" />\n");
 #ifdef BOARD_KOMON_420_SAJA	
@@ -1072,7 +1122,14 @@ void buat_file_index(unsigned int flag, char *kata) {
 	strcat(tot_buf, "<th>Keterangan</th>\n</tr>\n");
 #endif
 
-#ifdef BOARD_KOMON_420_SAJA	
+#ifdef BOARD_KOMON_KONTER
+	strcat(tot_buf, "<th width=\"50px\">No</th>\n");
+	strcat(tot_buf, "<th width=\"50px\">Kanal</th>\n");
+	strcat(tot_buf, "<th width=\"100px\">Nilai</th>\n");
+	strcat(tot_buf, "<th width=\"200px\">Keterangan</th>\n</tr>\n");
+#endif
+
+#ifdef BOARD_KOMON_420_SAJA
 	strcat(tot_buf, "<th>Teg ADC</th>\n");
 	strcat(tot_buf, "<th>Status</th>\n");
 	strcat(tot_buf, "<th>Nilai</th>\n");
@@ -1207,7 +1264,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if (nk==0) nk=1;
 		no = nk-1;
 		
-		printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[i].alamat, nk, pmx[i].tipe, pertamax);
+		//printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
 
 		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 			if (pmx[no].alamat==0) {			// Modul Monita
@@ -1223,8 +1280,26 @@ void buat_file_index(unsigned int flag, char *kata) {
 		#endif
 		
 		#if defined(BOARD_KOMON_KONTER)
-			if (pmx[no].alamat==0) {			// Modul Monita
+			struct t_env *penv;
+			penv = (char *) ALMT_ENV;
 			
+			if (pmx[no].alamat==0) {			// Modul Monita
+				if ((pmx[no].tipe==100) && (pertamax)) {
+					for (i=0; i<KANALNYA; i++)	{
+						ket_konter(ket, penv->kalib[i].status, 0);
+						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%d</th>\n", (i*2+1), (i+1));
+						strcat(tot_buf, head_buf);
+						sprintf(head_buf, "<td>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[no*KANALNYA+(i*2)], ket);
+						strcat(tot_buf, head_buf);
+						
+						ket_konter(ket, penv->kalib[i].status, 1);
+						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%d</th>\n", (i*2+2), (i+1));
+						strcat(tot_buf, head_buf);
+						sprintf(head_buf, "<td>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[no*KANALNYA+(i*2)+1], ket);		
+						strcat(tot_buf, head_buf);
+					}
+					//strcat(tot_buf, "</table>\n");
+				}
 			}
 		#endif
 	#else
@@ -1771,7 +1846,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
 		
-			sprintf(head_buf, "%d.%d.%d.%d", env2ww->GW0, env2ww->GW1, env2ww->GW2, env2ww->GW3);
+			//sprintf(head_buf, "%d.%d.%d.%d", env2ww->GW0, env2ww->GW1, env2ww->GW2, env2ww->GW3);
+			sprintf(head_buf, "%d.%d.%d.%d", env2ww->wIP0, env2ww->wIP1, env2ww->wIP2, env2ww->wIP3);
 			ganti_karakter(ket, head_buf);
 			sprintf(head_buf, "<tr>" \
 					"<td>Gateway IP</td><td><input type=\"text\" name=\"t\" value=\"%s\"></td>" \

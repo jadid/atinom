@@ -743,7 +743,8 @@ void buat_file_index(unsigned int flag, char *kata) {
 		}
 		if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 	#endif
-
+	
+	printf("permatax a: %d\r\n", pertamax);
 	strcat(tot_buf, "<table border='1'>\n");
 	//strcat(tot_buf, "<col width = \"70px\" />\n");
 	//strcat(tot_buf, "<col width = \"90px\" />\n");

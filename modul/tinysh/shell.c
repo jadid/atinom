@@ -209,7 +209,7 @@ extern xTaskHandle *hdl_ambilcepat;
 
 
 
-#ifdef PAKAI_SELENOID
+#ifdef PAKAI_RELAY
 	extern xTaskHandle *hdl_relay;
 #endif
 
@@ -421,14 +421,14 @@ void cek_stack(void)
 	printf(    " Ether      : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ether));
 	#endif
 	
-	#ifdef PAKAI_SELENOID
+	#ifdef PAKAI_RELAY
 		printf(" Relay       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
 		
 	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)
 //		printf(" GSM         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modem));
 	#endif
-	
+
 	#ifdef PAKAI_CRON
 		printf(" CRON        : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cron));
 	#endif

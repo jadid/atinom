@@ -80,7 +80,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#ifdef PAKAI_ADC
 		extern unsigned char status_adcnya; 
   	#endif
-  	
+
   	#ifdef PAKAI_GPIO_DIMMER
 		//init_remang();
   	#endif
@@ -158,12 +158,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#ifdef PAKAI_ADC
 			if (status_adcnya) {
 				proses_data_adc();
-				//printf("proses adc ... %d !!\r\n", status_adcnya);
+				//printf("proses adc ... %d - %d !!\r\n", status_adcnya, loopambil);
 				
 				#ifdef BOARD_KOMON_420_SAJA
 					hitung_datanya();
 				#endif
-				
+
 				simpan_ke_data_f();
 			}
 		#endif

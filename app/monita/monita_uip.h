@@ -54,7 +54,7 @@
 	#define PER_SUMBER	33
 #elif defined(LIHAT_PM)
 	#define PER_SUMBER 33
-#elif defined(BOARD_KOMON_420_SAJA)
+#elif defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG_2_3)
 	#define PER_SUMBER 10
 #else
 	#define PER_SUMBER	20
@@ -422,10 +422,10 @@ struct t_dt_set  {
 	char 	satuan[8];
 	float 	alarm_H;
 	//float 	alarm_L;
-	//#ifdef UNTUK_PLTD_LOPANA
+	#ifdef UNTUK_PLTD_LOPANA
 		float batas_bawah;
 		float batas_atas;
-	//#endif
+	#endif
 };
 
 #ifdef PAKAI_FILE_SIMPAN

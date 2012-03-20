@@ -778,11 +778,14 @@ int ganti_setting(char *str) {
 		portENTER_CRITICAL();
 		memcpy((char *) p_dtw, (char *) ALMT_DT_SET, jmlData * sizeof (struct t_dt_set));
 		portEXIT_CRITICAL();
-
+		
+		#ifdef UNTUK_PLTD_LOPANA
 		p_dtw[no-1].batas_bawah = y;
+		p_dtw[no-1].batas_atas	= t;
+		#endif
 		p_dtw[no-1].alarm_H		= n;
 		p_dtw[no-1].alarm_HH	= r;
-		p_dtw[no-1].batas_atas	= t;
+		
 		p_dtw[no-1].aktif		= atoi(stat)?1:0;
 		
 		//printf("bawah: %.1f\r\natas: %.1f\r\n", p_dtw[no-1].batas_bawah, p_dtw[no-1]. batas_atas);
@@ -2093,28 +2096,30 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						if (i>6)
 						#endif 
 						{
+							ket_konter(ket, env2->kalib[i].status, 0);
 							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
-											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-											"<td align=\"left\">Frekuensi/RPM kanal %d</td>\n" \
+											"<td>%d</td><th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+											"<td align=\"left\">%s</td>\n" \
 											"<td align=\"left\"><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
 											"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
 											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 								no+1, z+1, i+1, i*2+1, konfig[i*2].id, \
-								i+1, \
+								ket, \
 								//data_f[i*2],
 								(konfig[i*2].status?"checked":""), \
 								(konfig[i*2].status?"":"checked"));
 							strcat(tot_buf, head_buf);
 							z++;
 							
+							ket_konter(ket, env2->kalib[i].status, 1);
 							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
-											"<td>%d</td><td>%d</td>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
-											"<td align=\"left\">Pulsa konter kanal %d</td>\n" \
+											"<td>%d</td><th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+											"<td align=\"left\">%s</td>\n" \
 											"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"1\" %s/>Aktif" \
 											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 								no+1, z+1, i+1, i*2+2, konfig[i*2+1].id, \
-								i+1, \
+								ket, \
 								//data_f[i*2+1],
 								i+1, (konfig[i*2+1].status?"checked":""), \
 								i+1, (konfig[i*2+1].status?"":"checked"));

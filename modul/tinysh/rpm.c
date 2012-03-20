@@ -290,9 +290,19 @@ void data_frek_rpm() {
 		} else if (env2->kalib[i].status==202) {		// flow_setelah_selector
 			//data_f[i*2]   = (float) konter.t_konter[i].hit;
 			//data_f[i*2+1] = (float) konter.t_konter[i].hit2;
-			
+
 			data_f[i*2]   = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
 			data_f[i*2+1] = (konter.t_konter[i].hit2*env2->kalib[i].m)+env2->kalib[i].C;
+			
+			#if 1
+			if (data_f[i*2]>9999999.99)	{
+				konter.t_konter[i].hit = 0;
+			}
+			
+			if (data_f[i*2+1]>9999999.99)	{
+				konter.t_konter[i].hit2 = 0;
+			}
+			#endif
 			
 			//*(&MEM_RTC0+(i*2))   = data_f[i*2];		// konter.t_konter[i].hit;
 			//*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];		// konter.t_konter[i].hit2;

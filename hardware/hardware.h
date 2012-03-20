@@ -107,6 +107,40 @@ void dele(int dd);
 										PCLKSEL1 |= BIT(12);				\
 									} while(0)
 	#endif
+
+	#ifdef PAKAI_RELAY
+		#define RLY_1	BIT(0)			/* P1 */
+		#define RLY_2	BIT(1)
+		#define RLY_3	BIT(4)			
+		#define RLY_4	BIT(8)	
+		#define RLY_5	BIT(9)
+		#define RLY_6	BIT(10)			
+		#define RLY_7	BIT(14)
+		#define RLY_8	BIT(15)			
+		
+		#define cRelay1()		FIO1CLR = RLY_1
+		#define cRelay2()		FIO1CLR = RLY_2
+		#define cRelay3()		FIO1CLR = RLY_3
+		#define cRelay4()		FIO1CLR = RLY_4
+		#define cRelay5()		FIO1CLR = RLY_5
+		#define cRelay6()		FIO1CLR = RLY_6
+		#define cRelay7()		FIO1CLR = RLY_7
+		#define cRelay8()		FIO1CLR = RLY_8
+		
+		#define sRelay1()		FIO1SET = RLY_1
+		#define sRelay2()		FIO1SET = RLY_2
+		#define sRelay3()		FIO1SET = RLY_3
+		#define sRelay4()		FIO1SET = RLY_4
+		#define sRelay5()		FIO1SET = RLY_5
+		#define sRelay6()		FIO1SET = RLY_6
+		#define sRelay7()		FIO1SET = RLY_7
+		#define sRelay8()		FIO1SET = RLY_8
+
+		#define setup_relay()		do {	\
+										FIO1DIR = FIO1DIR | RLY_1 | RLY_2 | RLY_3 | RLY_4;		\
+										FIO1DIR = FIO1DIR | RLY_5 | RLY_6 | RLY_7 | RLY_8;		\
+									} while(0)	
+	#endif
 #endif
 
 
@@ -182,6 +216,40 @@ void dele(int dd);
 									FIO2DIR = FIO2DIR & ~port_rdy_ad7708;	\
 									uncs_ad7708();							\
 								} while (0);
+	#endif
+	
+	#ifdef PAKAI_RELAY
+		#define RLY_1	BIT(0)			/* P1 */
+		#define RLY_2	BIT(1)
+		#define RLY_3	BIT(4)			
+		#define RLY_4	BIT(8)	
+		#define RLY_5	BIT(9)
+		#define RLY_6	BIT(10)			
+		#define RLY_7	BIT(14)
+		#define RLY_8	BIT(15)			
+		
+		#define cRelay1()		FIO1CLR = RLY_1
+		#define cRelay2()		FIO1CLR = RLY_2
+		#define cRelay3()		FIO1CLR = RLY_3
+		#define cRelay4()		FIO1CLR = RLY_4
+		#define cRelay5()		FIO1CLR = RLY_5
+		#define cRelay6()		FIO1CLR = RLY_6
+		#define cRelay7()		FIO1CLR = RLY_7
+		#define cRelay8()		FIO1CLR = RLY_8
+		
+		#define sRelay1()		FIO1SET = RLY_1
+		#define sRelay2()		FIO1SET = RLY_2
+		#define sRelay3()		FIO1SET = RLY_3
+		#define sRelay4()		FIO1SET = RLY_4
+		#define sRelay5()		FIO1SET = RLY_5
+		#define sRelay6()		FIO1SET = RLY_6
+		#define sRelay7()		FIO1SET = RLY_7
+		#define sRelay8()		FIO1SET = RLY_8
+
+		#define setup_relay()		do {	\
+										FIO1DIR = FIO1DIR | RLY_1 | RLY_2 | RLY_3 | RLY_4;		\
+										FIO1DIR = FIO1DIR | RLY_5 | RLY_6 | RLY_7 | RLY_8;		\
+									} while(0)
 	#endif
 	
 #endif

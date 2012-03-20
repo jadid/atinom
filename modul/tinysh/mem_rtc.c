@@ -54,6 +54,8 @@ void reset_mem_rtc()	{
 			konter.t_konter[ii].hit  = 0;
 			konter.t_konter[ii].hit2 = 0;
 			konter.t_konter[ii].onoff = 0;
+			konter.global_hit = 0;
+			konter.ovflow = 0;
 		#endif
 	}
 	#endif
@@ -81,29 +83,35 @@ static tinysh_cmd_t reg_rtc_cmd={0,"reg_rtc","cek semua nilai memori RTC","", ce
 
 void set_mem_rtc(int argc, char **argv)	{
 	
-	if (argc>3) {
+	if (argc>4 || argc==3) {
 		printf("Perintah: \r\n");
-		printf("  set_mem [kanal] [nilai]\r\n");
-		printf("  contoh: set_rtc 3 53443\r\n");
+		printf("  set_mem [kanal] [flag] [nilai]\r\n");
+		printf("  flag nilai 1 = MFO\r\n");
+		printf("  flag nilai 2 = HSD\r\n");
+		printf("  contoh: set_rtc 3 1 53443\r\n");
 		return 0;
 	} else if (argc==2) {
 		if (strcmp(argv[1], "reset") == 0) {
 			reset_mem_rtc();
 		}
-
 		return 0;
 	}
-	int kanalnya=0, nilainya=0;
+	
+	
+	int kanalnya=0, nilainya=0, flagnya=0;
 	
 	sscanf(argv[1], "%d", &kanalnya);
-	sscanf(argv[2], "%d", &nilainya);
+	sscanf(argv[2], "%d", &flagnya);
+	sscanf(argv[3], "%d", &nilainya);
 	
 	//printf("kanal: %d, nilai: %d\r\n", kanalnya, nilainya);
 	//printf("Pulsa ke-%d: %.1f -->", kanalnya, data_f[kanalnya*2-1]);
 	
 	#ifdef PAKAI_PILIHAN_FLOW
-		
-		konter.t_konter[kanalnya-1].hit = *(&MEM_RTC0+kanalnya-1) = (int) nilainya;
+		if (flagnya==1)
+			konter.t_konter[kanalnya-1].hit = (int) nilainya;
+		else if (flagnya==2)
+			konter.t_konter[kanalnya-1].hit2 = (int) nilainya;
 	#else
 	
 		//konter.t_konter[kanalnya-1].hit = *(&MEM_RTC0+kanalnya-1) = (int) nilainya;

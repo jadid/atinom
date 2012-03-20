@@ -226,8 +226,10 @@ int set_data_default(void) {
 		p_gr[i].alarm_HH = 90.0;
 		p_gr[i].alarm_H = 80.0;
 		p_gr[i].aktif = 0;
+		#ifdef UNTUK_PLTD_LOPANA
 		p_gr[i].batas_bawah = -40;
 		p_gr[i].batas_atas = 200;
+		#endif
 	}
 	
 	for (i=JML_SUMBER*PER_SUMBER; i< (sizeof(data_f)/sizeof(float)) ; i++)
@@ -377,6 +379,7 @@ int set_data(int argc, char **argv)
 			return;
 		}
 	}
+	#ifdef UNTUK_PLTD_LOPANA
 	else if (strcmp(argv[2], "atas") == 0)	{
 		sprintf(str_data, "%s", argv[1]);	
 		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
@@ -399,6 +402,7 @@ int set_data(int argc, char **argv)
 			return;
 		}
 	}
+	#endif
 	/*
 	else if (strcmp(argv[2], "alarmL") == 0)
 	{

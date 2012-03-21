@@ -101,6 +101,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
   	#endif
   	
+  	#ifdef PAKAI_ADC_ORI
+		printf("  ADC ori dipakai !!\r\n");
+  	#endif
+  	
 	#ifdef BOARD_KOMON_KONTER
 		#ifndef BLINK
 		struct t_env *penv;
@@ -125,8 +129,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
   	vTaskDelay(50);
   	for(;;) {
-		vTaskDelay(1);
-		
+
 		#ifdef PAKAI_CRON
 			//if (loopambil%60==0)	//	30 detik
 			if (loopambil%120==0)	//	60 detik
@@ -165,6 +168,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				#endif
 
 				simpan_ke_data_f();
+			}
+		#endif
+		
+		#ifdef PAKAI_ADC_ORI
+			if (loopambil)	{
+				proses_data_adc_ori();
 			}
 		#endif
 		
@@ -312,6 +321,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#endif
 			//*/
 		#endif
+		
+		vTaskDelay(1000);
+		
 	}
 
 	#ifdef PAKAI_GPS

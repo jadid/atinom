@@ -1,0 +1,9 @@
+18 April 2009
+========================
+74HC14 sebaiknya diganti dengan 74HCT14, soalnya tegangan
+keluar dari optocouple hanya 2.2 Volt.
+
+27 Juni 2009
+========================
+modifikasi untuk pemonitor tegangan Malingping
+versi 1.45

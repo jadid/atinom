@@ -77,6 +77,10 @@ void setup_hardware() {
 		/* init TX2, RX2 */
 		//PINSEL0 |= (BIT(20) | BIT(22));
 	#endif
+	
+	#ifdef PAKAI_ADC_ORI
+		setup_adc_ori();
+	#endif
 
 }
 

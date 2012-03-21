@@ -6,6 +6,10 @@
 void setup_hardware(void);
 void dele(int dd);
 
+#define GESER_NM(N, M) (N << M)
+#define GESER_N(N) (1 << N)
+#define GESER_NM_KA(N, M) (N >> M)
+
 #ifdef BOARD_KOMON_420_SABANG_2_3
 	#define uC	"NXP LPC 2387"
 	
@@ -461,6 +465,16 @@ void dele(int dd);
 									} while(0)
 	#endif	
 	
+	#ifdef PAKAI_ADC_ORI
+		#define setup_adc_ori()	do 	{	\
+										PCONP    |=  BIT(12);									\
+										PCLKSEL0 &= ~(BIT(24) | BIT(25));						\		
+										PCLKSEL0 |=  BIT(24);									\
+										PINSEL1  &= ~(BIT(15) | BIT(14) | BIT(17) | BIT(16));	\
+										PINSEL1  |=  BIT(14) | BIT(16);							\
+									} while(0)
+									//AD0CR |= GESER_N(21) | GESER_NM(20, 8) | GESER_N(1) | GESER_N(0);	\		/* PDN = 1 operational */
+	#endif
 /*
 	#ifdef PAKAI_ETH
 		#define CS_ENC	BIT(18)

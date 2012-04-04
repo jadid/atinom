@@ -94,36 +94,48 @@ void set_kanal(int argc, char **argv)	{
 			{
 				p_sbr->kalib[kanal-1].status = w;
 				#ifdef PAKAI_PILIHAN_FLOW
-					if (w==3)
-						p_sbr->kalib[kanal].status = 100;
-					else if (w==4)	{
-						p_sbr->kalib[kanal].status   = 201;
-						p_sbr->kalib[kanal+1].status = 202;
-						p_sbr->kalib[KANALNYA-1].status = 203;
+					if (w==sFLOW1)
+						p_sbr->kalib[kanal].status = nFLOW1;		// ket ini @ tinysh/enviro.h
+					else if (w==sFLOW2)	{
+						p_sbr->kalib[kanal].status   = ssFLOW2;
+						p_sbr->kalib[kanal+1].status = nFLOW2;
+						p_sbr->kalib[KANALNYA-1].status = fFLOW;
 					}
 				#endif
 			}
 		}
+		#ifdef PAKAI_ADC_ORI
+		else if (w==sADC_ORI)	{
+			p_sbr->kalib[kanal-1].status = w;
+			if (argc==5)	{
+				p_sbr->kalib[kanal-1].adc = argv[4][0] - '0';
+				printf("kanal %d: input ADC ke %d\r\n", kanal, p_sbr->kalib[kanal-1].adc);
+			}
+		}
+		#endif
 		else if ( strcmp(argv[3], "onoff")==0) {
-			p_sbr->kalib[kanal-1].status = 1;
+			p_sbr->kalib[kanal-1].status = sONOFF;			// ket ini @ tinysh/enviro.h
 		}
 		#ifdef PAKAI_PUSHBUTTON
 		else if ( strcmp(argv[3], "toogle")==0) {
-			p_sbr->kalib[kanal-1].status = 2;
+			p_sbr->kalib[kanal-1].status = sPUSHBUTTON;
 		}
 		#endif
 		#ifdef PAKAI_PILIHAN_FLOW
 		else if ( strcmp(argv[3], "flow")==0) {
-			p_sbr->kalib[kanal-1].status = 3;
-			p_sbr->kalib[kanal].status = 100;
+			p_sbr->kalib[kanal-1].status = sFLOW1;
+			p_sbr->kalib[kanal].status = nFLOW1;
+		}
+		else if ( strcmp(argv[3], "flow2")==0) {
+			p_sbr->kalib[kanal-1].status = sFLOW2;
+			p_sbr->kalib[kanal].status   = ssFLOW2;
+			p_sbr->kalib[kanal+1].status = nFLOW2;
+			p_sbr->kalib[KANALNYA-1].status = fFLOW;
 		}
 		#endif
-		#ifdef PAKAI_PILIHAN_FLOW
-		else if ( strcmp(argv[3], "flow2")==0) {
-			p_sbr->kalib[kanal-1].status = 4;
-			p_sbr->kalib[kanal].status   = 201;
-			p_sbr->kalib[kanal+1].status = 202;
-			p_sbr->kalib[KANALNYA-1].status = 203;
+		#ifdef PAKAI_ADC_ORI
+		else if ( strcmp(argv[3], "adcori")==0) {
+			p_sbr->kalib[kanal-1].status = sADC_ORI;
 		}
 		#endif
 		else if ( strcmp(argv[3], "rpm")==0) {

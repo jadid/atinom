@@ -174,11 +174,9 @@ void gpio_ISR_Handler( void )
 		t = 8;	zz = status_konter[t];
 		if (zz==0) {
 			set_konter(t, new_period);
-		} else if (zz==1) {
-			set_konter_onoff(t, 1);
+		} else if (zz==1 || zz==3) {
+			set_konter_onoff(t, 1);		
 		#ifdef PAKAI_PILIHAN_FLOW
-		} else if (zz==3)	{
-			set_konter_onoff(t, 1);
 		} else if (zz==202)	{
 			set_konter_flow_pilih(t, zz);
 		#endif
@@ -322,10 +320,11 @@ void gpio_ISR_Handler( void )
 			t = 4;  zz = status_konter[t];
 			if (zz==0) {
 				set_konter(t, new_period);
-			} else if (zz==1) {
+			} else if (zz==1 || zz==3) {
 				set_konter_onoff(t, 1);
 			#ifdef PAKAI_PUSHBUTTON
 			} else if (zz==2) {
+				set_konter_onoff(t, 1);
 				if (debound[t]==0) {
 					debound[t] = DELAY_DEBOUND;
 					#ifdef PAKAI_RELAY

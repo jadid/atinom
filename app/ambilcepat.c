@@ -103,6 +103,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
   	#ifdef PAKAI_ADC_ORI
 		printf("  ADC ori dipakai !!\r\n");
+		init_adc_ori();
   	#endif
   	
 	#ifdef BOARD_KOMON_KONTER
@@ -172,15 +173,15 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		#ifdef PAKAI_ADC_ORI
-			if (loopambil)	{
-				proses_data_adc_ori();
-			}
+			//if (loopambil%2)	{
+				proses_data_adc_ori(loopambil%2);		// 2 = JML_ADC
+			//}
 		#endif
 		
 		#ifdef BOARD_KOMON_KONTER
 			#ifdef HITUNG_RPM
 				//if (loopambil%20==0) {		// 5x20 = 100
-				cek_input_onoff();
+				cek_input_onoff();			// ada di tinysh/rpm.c
 				hitung_rpm();
 				//}
 				data_frek_rpm();
@@ -322,7 +323,13 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			//*/
 		#endif
 		
+		#if 0
 		vTaskDelay(1000);
+		#endif
+		
+		#if 1
+		vTaskDelay(1);
+		#endif
 		
 	}
 

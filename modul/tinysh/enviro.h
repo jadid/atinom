@@ -8,6 +8,17 @@ typedef void (*IAP)(unsigned int [],unsigned int[]);
 
 #include "../app/monita/monita_uip.h"
 
+#define	 sONOFF			1
+#define	 sPUSHBUTTON	2
+#define	 sFLOW1			3
+#define	 sFLOW2			4
+#define	 nFLOW1			100
+#define	 ssFLOW2		201
+#define	 nFLOW2			202
+#define	 fFLOW			203
+#define	 sADC_ORI		9
+
+
 /*
 #ifdef BOARD_KOMON_KONTER
 	#define KANALNYA 10
@@ -18,8 +29,11 @@ typedef void (*IAP)(unsigned int [],unsigned int[]);
 struct t_kalib {
 	float m;
 	float C;
-	char status;		// [sabang 0: adc tegangan,	1: sensor pintu] [konter 0: rpm/counting, 1: OnOff]
+	char status;		// [status lihat define di atas !!!] //
 	char ket[32];
+	#ifdef PAKAI_ADC_ORI
+	char adc;
+	#endif
 };
 
 struct t_webclient {

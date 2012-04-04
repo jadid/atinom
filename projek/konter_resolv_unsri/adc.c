@@ -141,8 +141,7 @@ unsigned int read_bat_level(void)
 }
 
 
-int read_gas(void)
-{
+int read_gas(void)	{
 	
 	//data_adc2[ 2 ] = filter_iir2( data_adc[ 2 ],  data_adc2[ 2 ] );
 	//data_adc2[ 2 ] = filter_iir2( throt,  data_adc2[ 2 ] );
@@ -150,8 +149,7 @@ int read_gas(void)
 }
 
 /* milivolt temperature */
-int read_temp(void)
-{
+int read_temp(void)		{
 	//return (int) data_adc[ 4 ];
 	
 	//data_adc2[ 0 ] = filter_iir2( data_adc[ 0 ],  data_adc2[ 0 ] );
@@ -159,13 +157,11 @@ int read_temp(void)
 }
 
 /* milivolt vakum pressure */
-int read_vakum(void)
-{
+int read_vakum(void)		{
 	return (int) data_adc[ 4 ];
 }
 
-void hitung_koef_IIR(void)
-{
+void hitung_koef_IIR(void)		{
 	float pangkat;
 	float xf;
 	float a0;
@@ -273,8 +269,7 @@ void proses_ADC(int count)
 
 
 /* hemat 1 us untuk 8 loop jika pakai integer semua */
-int filter_iir(int data_in, int data)
-{
+int filter_iir(int data_in, int data)		{
 	int AA;
 	int BB;
 	int CC;
@@ -293,8 +288,7 @@ int filter_iir(int data_in, int data)
 }
 
 /* untuk proses setiap siklus */
-int filter_iir2(int data_in, int data)
-{
+int filter_iir2(int data_in, int data)		{
 	int AA;
 	int BB;
 	int CC;
@@ -313,8 +307,7 @@ int filter_iir2(int data_in, int data)
 }
 
 
-void proses_ADC(int count)
-{
+void proses_ADC(int count)		{
 	int stat;
 	int i;
 	int y;

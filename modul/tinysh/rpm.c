@@ -13,6 +13,11 @@
 #include "enviro.h"
 #include "hardware.h"
 
+/*
+#define	 sONOFF			1	 ada @ tinysh/enviro.h
+#define	 sPUSHBUTTON	2
+//*/
+
 void reset_konter(void);
 void hitung_rpm(void);
 
@@ -29,9 +34,14 @@ void set_konter_onoff(int i, int onoff);
 void set_konter_flow_pilih(int i, int onoff);
 #endif
 
+#ifdef PAKAI_ADC_ORI
+	#include "../adc/adc_ori.h"
+	extern struct t_adc_ori adco;
+#endif
+
 unsigned int data_putaran[KANALNYA];
 unsigned int data_hit[KANALNYA];	
-struct t2_konter konter;
+struct t2_konter konter;		// struct ada di gpio.h
 
 //int rtcRate[KANALNYA];	// 	__attribute__ ((section (".rtcram_rate")));
 extern float data_f[];
@@ -46,7 +56,7 @@ void cek_input_onoff(void)	{
 	
 	for (i=0; i<KANALNYA; i++)	{
 		ww = env2->kalib[i].status; 
-		if ( (ww==3) || (ww==4) || (ww==201) )	{
+		if ( (ww==1) || (ww==2) || (ww==3) || (ww==4) || (ww==201) )	{
 			switch (i)	{
 				case 0:	zzz = 5; break;
 				case 1: zzz = 6; break;
@@ -66,8 +76,7 @@ void cek_input_onoff(void)	{
 }
 
 
-void reset_konter(void)
-{
+void reset_konter(void)	{
 	int i;
 	
 	konter.global_hit = 0;
@@ -94,33 +103,37 @@ void reset_konter(void)
 
 }
 
-void hitung_rpm(void)
-{	
+void hitung_rpm(void)	{	
 	//printf("%s() masuk ...\r\n", __FUNCTION__);
-	portENTER_CRITICAL();
-	if (konter.t_konter[giliran].hit_lama == konter.t_konter[giliran].hit)
-	{
-		//konter.t_konter[giliran].beda = 0;		
-		data_putaran[giliran] = 0;
-		data_hit[giliran] = konter.t_konter[giliran].hit;
-	}
-	else
-	{
-		/* didapatkan frekuensi (HZ) putaran */
-		//temp_rpm = konter.t_konter[i].beda; // beda msh dlm nS
+	struct t_env *env2;
+	env2 = (char *) ALMT_ENV;
+	
+	if (env2->kalib[giliran].status==0)	{
 		
-		/* rpm */
-		data_putaran[giliran] = konter.t_konter[giliran].beda;
-		data_hit[giliran] = konter.t_konter[giliran].hit;
+		portENTER_CRITICAL();
+		if (konter.t_konter[giliran].hit_lama == konter.t_konter[giliran].hit)
+		{
+			//konter.t_konter[giliran].beda = 0;		
+			data_putaran[giliran] = 0;
+			data_hit[giliran] = konter.t_konter[giliran].hit;
+		}
+		else
+		{
+			/* didapatkan frekuensi (HZ) putaran */
+			//temp_rpm = konter.t_konter[i].beda; // beda msh dlm nS
+			
+			/* rpm */
+			data_putaran[giliran] = konter.t_konter[giliran].beda;
+			data_hit[giliran] = konter.t_konter[giliran].hit;
+		}
+		
+		konter.t_konter[giliran].hit_lama = konter.t_konter[giliran].hit; 
+		#ifdef PAKAI_PILIHAN_FLOW
+		
+		konter.t_konter[giliran].hit_lama2 = konter.t_konter[giliran].hit2; 
+		#endif
+		portEXIT_CRITICAL();
 	}
-	
-	konter.t_konter[giliran].hit_lama = konter.t_konter[giliran].hit; 
-	#ifdef PAKAI_PILIHAN_FLOW
-	
-	konter.t_konter[giliran].hit_lama2 = konter.t_konter[giliran].hit2; 
-	#endif
-	portEXIT_CRITICAL();
-	
 	giliran++;
 	if (giliran == KANALNYA) giliran = 0;
 	
@@ -203,7 +216,7 @@ void set_konter(int st, unsigned int period)
 	konter.t_konter[st].last_period = period;
 }
 
-void set_konter_onoff(int i, int onoff) {
+void set_konter_onoff(int i, int onoff) {	// hanya menambah jml counter hit tiap kanal saja
 	//konter.t_konter[i].onoff = onoff;		// status dilihat dari GPIO (polling) saja
 	konter.t_konter[i].hit++;
 }
@@ -226,6 +239,7 @@ void set_konter_flow_pilih(int i, int onoff)	{
 void data_frek_rpm() {
 	//printf("%s() masuk ...\r\n", __FUNCTION__);
 	unsigned int i;
+	char status;
 	float temp_f;
 	float temp_rpm;
 	
@@ -233,7 +247,8 @@ void data_frek_rpm() {
 	env2 = (char *) ALMT_ENV;
 	
 	for (i=0; i<KANALNYA; i++)	{
-		if (env2->kalib[i].status==0) 				// RPM
+		status = env2->kalib[i].status;
+		if (status==0) 				// RPM
 //		if (i>6) 
 		{
 			if (data_putaran[i])	{
@@ -255,39 +270,55 @@ void data_frek_rpm() {
 				konter.t_konter[i].hit = 0;
 			}
 			//rtcRate[i] = (int) konter.t_konter[i].hit;
-			*(&MEM_RTC0+i) = data_f[(i*2)+1];
-		}
-		else if (env2->kalib[i].status==1) {		// OnOff
+			#ifdef PAKAI_RTC
+			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
+			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
+			#endif
+		}	else if (status==sONOFF || status==sFLOW1 || status==sFLOW2 || status==ssFLOW2) {		// OnOff
 			data_f[i*2] = (float) konter.t_konter[i].onoff;
-		#ifdef PAKAI_PILIHAN_FLOW
-		} else if (env2->kalib[i].status==3) {		// selector_flow
+			data_f[i*2+1] = (float) konter.t_konter[i].hit;
+			
+			#ifdef PAKAI_RTC
+			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
+			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
+			#endif
+		/*
+		} else if (status==3) {		// selector_flow
+			data_f[i*2]   = (float) konter.t_konter[i].onoff;
+			data_f[i*2+1] = (float) konter.t_konter[i].hit;
+			
+			#ifdef PAKAI_RTC
+			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
+			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
+			#endif
+			//printf("   %d : %d, %d : %d,", (i*2), *(&MEM_RTC0+(i*2)), (i*2+1), *(&MEM_RTC0+(i*2+1)));
+		//*/
+
+		/*
+		} else if (status==4) {		// selector_flow
 			data_f[i*2]   = (float) konter.t_konter[i].onoff;
 			data_f[i*2+1] = (float) konter.t_konter[i].hit;
 			
 			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
 			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
+		} else if (status==201) {		// selector_flow
+			data_f[i*2]   = (float) konter.t_konter[i].onoff;
+			data_f[i*2+1] = (float) konter.t_konter[i].hit;
 			
-			//printf("   %d : %d, %d : %d,", (i*2), *(&MEM_RTC0+(i*2)), (i*2+1), *(&MEM_RTC0+(i*2+1)));
-		} else if (env2->kalib[i].status==100) {		// flow_setelah_selector
+			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
+			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
+		//*/
+		#ifdef PAKAI_PILIHAN_FLOW
+		} else if (status==nFLOW1) {		// flow_setelah_selector
 			data_f[i*2]   = (float) konter.t_konter[i].hit;
 			data_f[i*2+1] = (float) konter.t_konter[i].hit2;
 			
+			#ifdef PAKAI_RTC
 			*(&MEM_RTC0+(i*2))	 = data_f[i*2];			// konter.t_konter[i].hit;
 			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];		// konter.t_konter[i].hit2;
+			#endif
 			//printf("   %d : %d, %d : %d", (i*2), *(&MEM_RTC0+(i*2)), (i*2+1), *(&MEM_RTC0+(i*2+1)));
-		} else if (env2->kalib[i].status==4) {		// selector_flow
-			data_f[i*2]   = (float) konter.t_konter[i].onoff;
-			data_f[i*2+1] = (float) konter.t_konter[i].hit;
-			
-			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
-			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
-		} else if (env2->kalib[i].status==201) {		// selector_flow
-			data_f[i*2]   = (float) konter.t_konter[i].onoff;
-			data_f[i*2+1] = (float) konter.t_konter[i].hit;
-			
-			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
-			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
-		} else if (env2->kalib[i].status==202) {		// flow_setelah_selector
+		} else if (status==nFLOW2) {		// Hitung flow_setelah_selector, dengan kalibrasi
 			//data_f[i*2]   = (float) konter.t_konter[i].hit;
 			//data_f[i*2+1] = (float) konter.t_konter[i].hit2;
 
@@ -306,21 +337,34 @@ void data_frek_rpm() {
 			
 			//*(&MEM_RTC0+(i*2))   = data_f[i*2];		// konter.t_konter[i].hit;
 			//*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];		// konter.t_konter[i].hit2;
+			#ifdef PAKAI_RTC
 			*(&MEM_RTC0+(i*2))	 = konter.t_konter[i].hit;		// konter.t_konter[i].hit;
 			*(&MEM_RTC0+(i*2+1)) = konter.t_konter[i].hit2;		// konter.t_konter[i].hit2;
-		} else if (env2->kalib[i].status==203) {		// flow_setelah_selector
+			#endif
+		} else if (status==fFLOW) {		// flow_setelah_selector = 203
 			data_f[i*2]   = (float) konter.global_hit;
 			data_f[i*2+1] = (float) konter.ovflow;
 			
+			#ifdef PAKAI_RTC
 			*(&MEM_RTC0+(i*2))	 = konter.global_hit;
 			*(&MEM_RTC0+(i*2+1)) = konter.ovflow;
+			#endif
+		#endif
+
+		#ifdef PAKAI_ADC_ORI
+		} else if (status==sADC_ORI)	{
+			//printf("kanal[%d]: %d\r\n", kanalx-1, adco.data[kanalx-1]);
+			konter.t_konter[i].hit = adco.data[(env2->kalib[i].adc-1)];
+			
+			data_f[i*2]   = (float) (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
+			data_f[i*2+1] = (float) konter.t_konter[i].hit;
 		#endif
 		}
 		//printf("\r\n");
 	}
 }
 
-void cek_rpm()	{
+void cek_kanal()	{
 	unsigned int i;
 	float temp_f;
 	float temp_rpm;
@@ -351,65 +395,72 @@ void cek_rpm()	{
 				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
 					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
 			}
-		} else if (penv->kalib[i].status==1) {		// onoff
+		} else if (penv->kalib[i].status == sONOFF) {		// onoff = 1
 			#if 0
 				#ifndef BOARD_KOMON_KONTER_3_1
 				if (i>6) 
 				#endif
 			#endif
 			{
-				printf(" %2d : Status: %3d [%s], Nilai: %d : %s\r\n", \
+				printf(" %2d : Status: %2d [%s], Nilai: %d : %s, Hit: %3d\r\n", \
 					(i+1), status_konter[i], (status_konter[i]==1)?"OnOff":"ERROR1", \
-						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"ON":"OFF");
+						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"ON":"OFF", konter.t_konter[i].hit);
 			}
 		#ifdef PAKAI_PUSHBUTTON
-		} else if (penv->kalib[i].status==2) {		// pushbutton
+		} else if (penv->kalib[i].status == sPUSHBUTTON) {		// pushbutton
 			#if 0
 				#ifndef BOARD_KOMON_KONTER_3_1
 				if (i>6) 
 				#endif
 			#endif
 			{
-				printf(" %2d : Status: %d [%s], Nilai: %d : %s\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==2)?"PushButton":"ERROR2", konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off");
+				printf(" %2d : Status: %2d [%s], Nilai: %d : %s, Hit: %d\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==2)?"PushButton":"ERROR2",	\
+					 konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off", konter.t_konter[i].hit);
 			}
 		#endif
 		#ifdef PAKAI_PILIHAN_FLOW
-		} else if (penv->kalib[i].status==3) {		// selector_flow
+		} else if (penv->kalib[i].status == sFLOW1) {		// selector_flow = 3
 			{
-				printf(" %2d : Status: %3d [%s], Nilai: %d : %s, x: %d\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==3)?"Selector flow":"ERROR3", \
+				printf(" %2d : Status: %2d [%s], Nilai: %d : %s, x: %d\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==sFLOW1)?"Selector flow":"ERROR3", \
 						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off", konter.t_konter[i].hit);
 			}
-		} else if (penv->kalib[i].status==100) {		// flow_setelah_selector
+		} else if (penv->kalib[i].status == nFLOW1) {		// flow_setelah_selector = 100
 			{
 				printf(" %2d : Status: %3d [%s],  Nilai %d: %8.0f, Nilai %d : %8.0f\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==100)?"Flow":"ERROR100", \
+					(i+1), status_konter[i], (status_konter[i]==nFLOW1)?"Flow":"ERROR100", \
 						(i*2+1), /*konter.t_konter[i].hit*/data_f[i*2], (i*2+2), data_f[i*2+1]);
 			}
-		} else if (penv->kalib[i].status==4) {		// selector_flow
+		} else if (penv->kalib[i].status == sFLOW2) {		// selector_flow = 4
 			{
 				printf(" %2d : Status: %3d [%s], Nilai: %d : %s, x: %d\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==4)?"Selector flow2":"ERROR4", \
+					(i+1), status_konter[i], (status_konter[i]==sFLOW2)?"Selector flow2":"ERROR4", \
 						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off", konter.t_konter[i].hit);
 			}
-		} else if (penv->kalib[i].status==201) {	// selector_flow
+		} else if (penv->kalib[i].status == ssFLOW2) {	// selector_flow = 201
 			{
 				printf(" %2d : Status: %3d [%s], Nilai: %d : %s, x: %d\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==201)?"Selector flow2":"ERROR4", \
+					(i+1), status_konter[i], (status_konter[i]==ssFLOW2)?"Selector flow2":"ERROR4", \
 						konter.t_konter[i].onoff, (konter.t_konter[i].onoff==1)?"on":"off", konter.t_konter[i].hit);
 			}
-		} else if (penv->kalib[i].status==202) {	// flow_setelah_selector
+		} else if (penv->kalib[i].status == nFLOW2) {	// flow_setelah_selector = 202
 			{
 				printf(" %2d : Status: %3d [%s],  Nilai %d: %8.0f, Nilai %d : %8.0f\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==202)?"Flow":"ERROR4", \
+					(i+1), status_konter[i], (status_konter[i]==nFLOW2)?"Flow":"ERROR4", \
 						(i*2+1), /*konter.t_konter[i].hit*/data_f[i*2], (i*2+2), data_f[i*2+1]);
 			}
-		} else if (penv->kalib[i].status==203) {	// flow_setelah_selector
+		} else if (penv->kalib[i].status == fFLOW) {	// flow_setelah_selector = 203
 			{
 				printf(" %2d : Status: %3d [%s],  global : %d\r\n", \
-					(i+1), status_konter[i], (status_konter[i]==203)?"Global":"ERROR4", konter.global_hit);
+					(i+1), status_konter[i], (status_konter[i]==fFLOW)?"Global":"ERROR4", konter.global_hit);
 			}
+		#endif
+		#ifdef PAKAI_ADC_ORI
+		} else if (penv->kalib[i].status == sADC_ORI)	{
+			printf(" %2d : Status: %2d [%s], ADCori[%d]: %d\r\n", \
+					(i+1), status_konter[i], (status_konter[i]==sADC_ORI)?"ADC Ori":"ERROR9", \
+					penv->kalib[i].adc, konter.t_konter[i].hit);
 		#endif
 		}
 		
@@ -422,7 +473,7 @@ void cek_rpm()	{
 	#endif
 }
 
-static tinysh_cmd_t cek_rpm_cmd={0,"cek_rpm","data kounter/rpm","[args]", cek_rpm,0,0,0};
+static tinysh_cmd_t cek_rpm_cmd={0,"cek_kanal","data kounter/rpm","[args]", cek_kanal,0,0,0};
 
 #endif		// BOARD_KOMON_KONTER
 #endif		// __RPM__

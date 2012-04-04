@@ -23,7 +23,7 @@ void cek_ip_client(int argc, char **argv)	{
 
 static tinysh_cmd_t cek_mac_cmd={0,"cek_mac","cek mac dan IP client","", cek_ip_client,0,0,0};
 
-#if PAKAI_WEBCLIENT_INTERNET
+#ifdef PAKAI_WEBCLIENT_INTERNET
 void webclient_coba(int argc, char **argv)	{
 	status_webc_i = 1;
 	vTaskDelay(1);
@@ -62,7 +62,7 @@ void cek_ip(int argc, char **argv)	{
 
 static tinysh_cmd_t cek_ip_cmd={0,"cek_ip","ambil data dari internet","", cek_ip,0,0,0};
 
-#endif
+#endif		// PAKAI_RESOLV
 
-#endif
-#endif
+#endif		// PAKAI_ETH
+#endif		// __SHELL_UIP__

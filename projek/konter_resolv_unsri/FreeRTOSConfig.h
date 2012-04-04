@@ -91,8 +91,12 @@
 	#endif
 #endif
 
+#ifdef UNTUK_UNSRI
+	#define PROMPT 		"KonterUnsri@"
+#else
+	#define PROMPT 		"Konter@"
+#endif
 
-#define PROMPT 		"KonterUnsri@"
 #define NAMA_BOARD	"Babelan Komon Konter"
 
 /*-----------------------------------------------------------

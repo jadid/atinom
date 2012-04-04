@@ -57,7 +57,7 @@
 #define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
 
-//#define PAKAI_PUSHBUTTON
+#define PAKAI_PUSHBUTTON
 //#define PAKAI_RELAY
 
 #ifdef PAKAI_RTC

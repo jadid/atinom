@@ -88,10 +88,10 @@ int cek_data(int argc, char **argv)
 		p_dt = (char *) ALMT_DT_SET;
 
 		judul(" Data Setting\r\n");
-		printf("  No  : Kanal  :       Nama       :    Data    : Satuan");
-		#ifdef PAKAI_SELENOID
-			printf(": Alr_H : Alr_HH");
-			printf("Rly : ");
+		printf("  No  :       Nama       :    Data    : Satuan");
+		#ifdef PAKAI_RELAY
+			printf(" : Alr_LL : Alr_L  : Alr_H  : Alr_HH");
+			printf(" : Rly : ");
 		#endif
 		#ifdef UNTUK_PLTD_LOPANA
 			printf(": Bawah  :  Atas   : Status :");
@@ -111,7 +111,11 @@ int cek_data(int argc, char **argv)
 			
 			#ifdef UNTUK_PLTD_LOPANA
 				printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : (%X)\r\n", (i+1), \
-				p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].batas_atas, &p_dt[i]);	
+					p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].batas_atas, &p_dt[i]);	
+			#elif defined(UNTUK_UNSRI)
+				printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : % 4.1f : % 4.1f : %2d : (%X)\r\n", (i+1), \
+					p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].alarm_LL, p_dt[i].alarm_L, \
+					p_dt[i].alarm_H, p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#else
 				printf(" (%3d): %-16s : % 8.2f : %-6s : (%X)\r\n", (i+1), \
 				p_dt[i].nama, data_f[i], p_dt[i].satuan, &p_dt[i]);	
@@ -221,10 +225,10 @@ int set_data_default(void) {
 		//sprintf(p_gr[i].ket, "--");
 		sprintf(p_gr[i].satuan, "-");
 		p_gr[i].relay = 0;
-		//p_gr[i].alarm_LL = 0;
-		//p_gr[i].alarm_L = 0;
-		p_gr[i].alarm_HH = 90.0;
-		p_gr[i].alarm_H = 80.0;
+		p_gr[i].alarm_LL = -10.0;
+		p_gr[i].alarm_L = -5.0;
+		p_gr[i].alarm_HH = 500.0;
+		p_gr[i].alarm_H = 400.0;
 		p_gr[i].aktif = 0;
 		#ifdef UNTUK_PLTD_LOPANA
 		p_gr[i].batas_bawah = -40;
@@ -294,7 +298,7 @@ int set_data(int argc, char **argv)
 				printf("    artinya memberikan setting batasan alarm rendah data 5 dengan nilai 1.25\r\n");
 				printf("\r\n");
 				printf("    relay : mengaktif/nonaktifkan relay pada kanal tertentu\r\n");
-				printf("    misalnya  : $ set_data 4 relay [1|aktif|hidup] 7 \r\n");
+				printf("    misalnya  : $ set_data 4 relay [1|2|3|aktif|hidup|atas|bawah|semua] 7 \r\n");
 				printf("    artinya mengaktifkan relay untuk data ke 4 pada kanal 7\r\n");
 				printf("    misalnya  : $ set_group 8 relay [0|mati] 2\r\n");
 				printf("    artinya me-nonaktifkan relay untuk data ke 8 pada kanal 2\r\n");
@@ -379,6 +383,28 @@ int set_data(int argc, char **argv)
 			return;
 		}
 	}
+	else if (strcmp(argv[2], "alarmLL") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)	{
+			printf(" Data %d : Alarm low low : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].alarm_LL = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
+	else if (strcmp(argv[2], "alarmL") == 0)	{
+		sprintf(str_data, "%s", argv[1]);	
+		sumb = cek_nomer_valid(str_data, (sizeof(data_f)/sizeof(float)));
+		if (sumb > 0)		{
+			printf(" Data %d : Alarm low : %s\r\n", sumb, argv[3]);			
+			p_dt[sumb-1].alarm_L = atof(argv[3]);
+		} else {
+			vPortFree( p_dt );
+			return;
+		}
+	}
 	#ifdef UNTUK_PLTD_LOPANA
 	else if (strcmp(argv[2], "atas") == 0)	{
 		sprintf(str_data, "%s", argv[1]);	
@@ -434,6 +460,7 @@ int set_data(int argc, char **argv)
 	else if (strcmp(argv[2], "alarm") == 0)		// 	set_data 4 relay [1|aktif] 7
 	{
 		int slot=0;
+		char qqq;
 		sprintf(str_data, "%s", argv[1]);	
 		sumb = cek_nomer_valid(str_data, (PER_SUMBER * JML_SUMBER));
 		
@@ -445,17 +472,27 @@ int set_data(int argc, char **argv)
 			}
 			
 			printf(" Data %d : Status Relay : %s pada %d\r\n", sumb, argv[3], p_dt[sumb-1].relay);			
+			qqq = argv[3][0];
 			if (( argv[3][0] == '1') || (argv[3][0] == '0')) {
 				p_dt[sumb - 1].aktif = (argv[3][0] - '0');
 			} 
 			else if ( strcmp(argv[3], "aktif")==0 || strcmp(argv[3], "hidup")==0 ) {
 				p_dt[sumb - 1].aktif = 1;
 			}
+			else if ( strcmp(argv[3], "atas")==0) {
+				p_dt[sumb - 1].aktif = 1;
+			}
+			else if ( strcmp(argv[3], "bawah")==0) {
+				p_dt[sumb - 1].aktif = 2;
+			}
+			else if ( strcmp(argv[3], "semua")==0) {
+				p_dt[sumb - 1].aktif = 3;
+			}
 			else if ( strcmp(argv[3], "mati")==0 ) 	{
 				p_dt[sumb - 1].aktif = 0;
 			} else {
 				printf(" Setting relay masih salah\r\n");	
-				printf(" Format : set_data [no_data] relay [1|aktif|hidup|0|mati] [no_kanal]\r\n");	
+				printf(" Format : set_data [no_data] alarm [1|aktif|hidup|atas|2|bawah|3|semua|0|mati] [no_kanal]\r\n");	
 				vPortFree( p_dt );
 				return;
 			}	

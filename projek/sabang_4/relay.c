@@ -90,7 +90,7 @@ void init_task_relay(void) {
 void cek_alarm_relay(no_sumber) {
 	int i=0, j=0, index=0;
 	int jam = jam_sekarang();
-	
+	char str;
 	
 	struct t_dt_set *p_dt;
 	p_dt = (char *) ALMT_DT_SET;
@@ -98,7 +98,8 @@ void cek_alarm_relay(no_sumber) {
 	for (j=0; j<PER_SUMBER; j++) {
 		index = JML_SUMBER*no_sumber+j;
 		//printf("masuk sini %s %d", __FUNCTION__, no_sumber);
-		if (p_dt[index].aktif == 1) {		// Teg AKI, relay 2
+		str = p_dt[index].aktif;
+		if ((str==1) || (str==3)) {		// Teg AKI, relay 2
 			
 			#ifdef DEBUG_RELAY
 			printf("%d. %s data: %.2f, alarmH: %.2f, alarmHH: %.2f, falarm: %d\r\n", \ 
@@ -192,6 +193,32 @@ void cek_alarm_relay(no_sumber) {
 			#ifdef DEBUG_RELAY
 				vTaskDelay(2000);
 			#endif
+		}
+		
+		if ((str==2) || (str==3)) {		// Teg AKI, relay 2
+			
+			#ifdef DEBUG_RELAY
+			printf("%d. %s data: %.2f, alarmH: %.2f, alarmHH: %.2f, falarm: %d\r\n", \ 
+				 index, p_dt[index].nama, data_f[index], p_dt[index].alarm_H, p_dt[index].alarm_HH, p_dt[index].relay);
+			#endif
+			//*
+			if ((data_f[index]<p_dt[index].alarm_LL) ) {
+				unset_selenoid(p_dt[index].relay);
+				#ifdef DEBUG_RELAY
+				printf("__%d___%d\r\n", (PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2, data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2]);
+				#endif
+				fAlarm[p_dt[index].relay] = 0;
+				//vTaskDelay(1000);
+			}
+			
+			if ( (fAlarm[p_dt[index].relay] != 1) && ((data_f[index]>p_dt[index].alarm_L) ) ) {
+				set_selenoid(p_dt[index].relay);
+				#ifdef DEBUG_RELAY
+				printf("__%d___%d\r\n", (PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2, data_f[(PER_SUMBER*JML_SUMBER)+p_dt[index].relay-2]);
+				#endif
+				fAlarm[p_dt[index].relay] = 1;
+				//vTaskDelay(1000);
+			}
 		}
 	}
 	//*/

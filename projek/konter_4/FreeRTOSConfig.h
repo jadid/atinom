@@ -52,7 +52,7 @@
 #define PAKAI_LED_UTAMA
 #define BANYAK_SUMBER
 #define CENDOL
-#define PAKAI_RTC
+//#define PAKAI_RTC
 #define PAKAI_ADC_ORI
 #define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
@@ -72,19 +72,19 @@
 
 //	#define PAKAI_MODBUSTCP
 	#define SAMPURASUN_CLIENT
-	#define SAMPURASUN_SERVER
+//	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
-		//#define WEBCLIENT_DATA
+		#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS
 			#define WEBCLIENT_GPS
 		#endif
 		
-		#define PAKAI_WEBCLIENT_INTERNET
+		//#define PAKAI_WEBCLIENT_INTERNET
 		#ifdef PAKAI_WEBCLIENT_INTERNET
 			#define PAKAI_RESOLV
 		#endif

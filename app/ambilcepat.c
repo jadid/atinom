@@ -180,17 +180,22 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		#ifdef BOARD_KOMON_KONTER
 			#ifdef HITUNG_RPM
-				//if (loopambil%20==0) {		// 5x20 = 100
-				cek_input_onoff();			// ada di tinysh/rpm.c
-				hitung_rpm();
-				//}
+				if (loopambil%100==0) {				// 5x20 = 100
+					cek_input_onoff();				// ada di tinysh/rpm.c
+					hitung_rpm();
+				}
 				data_frek_rpm();
+				
+				if (loopambil%1000==0) {		// 5x20 = 100
+					//printf("____RPM 7: %f-%f\r\n", data_f[12],data_f[13]);
+				}
+				
 			#endif
 		#endif
 
 		#ifdef BOARD_KOMON_KONTER_3_0
 			#ifdef HITUNG_RPM
-				if (loopambil%20==0) {		// 5x20 = 100
+				if (loopambil%1000==0) {		// 5x20 = 100
 					hitung_rpm();
 					data_frek_rpm();
 				}
@@ -292,7 +297,8 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		//printf("isi memRTC0: %d, loopambil: %d\r\n", MEM_RTC0, loopambil);
-		if (loopambil>1000) {
+		if (loopambil>2000) 
+		{
 			#ifdef TES_MEM_RTC
 			//MEM_RTC0++;
 			//MEM_RTC1++;

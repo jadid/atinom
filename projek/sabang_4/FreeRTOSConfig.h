@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-
+#define UNTUK_UNSRI
 
 #define PAKAI_ID
 #define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
@@ -80,7 +80,12 @@
 
 //#define TES_GET_WEB
 
-#define PROMPT 		"Unsri@"
+#ifdef UNTUK_UNSRI
+	#define PROMPT 		"SabangUnsri@"
+#else
+	#define PROMPT 		"Sabang@"
+#endif
+
 #define NAMA_BOARD	"Babelan Komon-420"
 
 #define PAKAI_LED_UTAMA

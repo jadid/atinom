@@ -144,7 +144,7 @@ static void setenv_fnt(int argc, char **argv)
 		printf("%d.%d.%d.%d\r\n", p_sbr->GW0, p_sbr->GW1, p_sbr->GW2, p_sbr->GW3);
 	}
 	else if (strcmp(argv[1], "webclientip") == 0)  	{
-		printf(" set GATEWAY address ");  
+		printf(" set Server Tujuan address ");  
 
 		sprintf(str_ip_iddr, "%s", argv[2]);
 		

@@ -1,6 +1,8 @@
 
 #include "monita/monita_uip.h"
 
+#define JML_ADC		2
+
 #ifdef UNTUK_UNSRI
 	#define JML_ADC		2
 #endif

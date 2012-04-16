@@ -152,6 +152,7 @@ int setup_konter_onoff(unsigned int aaa, unsigned char statk) {
 
 void init_gpio(void)
 {
+	//printf("   %s() masuk...", __FUNCTION__);
 	extern void ( gpio_ISR_Wrapper )( void );
 	extern void ( timer1_ISR_Wrapper )( void );
 

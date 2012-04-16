@@ -108,9 +108,14 @@ void hitung_rpm(void)	{
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
 	
-	if (env2->kalib[giliran].status==0)	{
+	if (env2->kalib[giliran].status==0)	
+	{
 		
 		portENTER_CRITICAL();
+		if (giliran==6)	{
+			printf("hit: %d, lama: %d\r\n", konter.t_konter[giliran].hit, konter.t_konter[giliran].hit_lama);
+		}
+		
 		if (konter.t_konter[giliran].hit_lama == konter.t_konter[giliran].hit)
 		{
 			//konter.t_konter[giliran].beda = 0;		
@@ -125,6 +130,9 @@ void hitung_rpm(void)	{
 			/* rpm */
 			data_putaran[giliran] = konter.t_konter[giliran].beda;
 			data_hit[giliran] = konter.t_konter[giliran].hit;
+			
+			//if (giliran==6)
+			//printf("data_putaran[%d]: %d\r\n", giliran, data_putaran[giliran]);
 		}
 		
 		konter.t_konter[giliran].hit_lama = konter.t_konter[giliran].hit; 
@@ -236,6 +244,8 @@ void set_konter_flow_pilih(int i, int onoff)	{
 }
 #endif
 
+int qwe=0;
+
 void data_frek_rpm() {
 	//printf("%s() masuk ...\r\n", __FUNCTION__);
 	unsigned int i;
@@ -256,23 +266,48 @@ void data_frek_rpm() {
 				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 				// rpm
 				temp_rpm = temp_f * 60;
+				
+				if (i==6) {
+					//printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
+				}
 			}
 			else	{
 				temp_f = 0;
 				temp_rpm = 0;
 			}
-			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
-			data_f[i*2] = (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
 			
+			if (i==6) {
+			//		printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
+			}
+			
+			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
+			data_f[i*2] = (float) (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
+			
+			/*
+			qwe++;
+			if (qwe>2000)	{
+				if (i==6)	{
+					printf("giliran: %d, data_putaran[%d]: %d, temp_f: %.3f, hit: %d, hitlama: %d\r\n", \
+						giliran, i, data_putaran[i], temp_f, konter.t_konter[i].hit, konter.t_konter[i].hit_lama);
+					printf("RPM%d: temp_f: %.3f, data_f: %f, data_putaran: %d, lp: %d, beda: %d\r\n", \
+						i+1, temp_rpm, data_f[12], data_putaran[i], \
+						konter.t_konter[i].last_period, konter.t_konter[i].beda);
+				}
+				qwe=0;
+			}
+			//*/
+			
+			/*
 			if (data_f[(i*2)+1]>10000000) {		// reset setelah 10juta, 7 digit
 			//if (data_f[(i*2)+1]>1000) {		// tes saja, reset setelah 10juta, 7 digit
 				data_f[(i*2)+1] = 0;
 				konter.t_konter[i].hit = 0;
 			}
+			//*/
 			//rtcRate[i] = (int) konter.t_konter[i].hit;
 			#ifdef PAKAI_RTC
-			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
-			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
+			//*(&MEM_RTC0+(i*2))   = data_f[i*2];		// konter.t_konter[i].onoff;
+			//*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];		// konter.t_konter[i].hit;
 			#endif
 		}	else if (status==sONOFF || status==sFLOW1 || status==sFLOW2 || status==ssFLOW2) {		// OnOff
 			data_f[i*2] = (float) konter.t_konter[i].onoff;
@@ -392,8 +427,8 @@ void cek_kanal()	{
 					temp_rpm = 0;
 				}	
 
-				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
-					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
+				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f, lp: %d, beda: %d\r\n", \
+					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1], konter.t_konter[i].last_period, konter.t_konter[i].beda);
 			}
 		} else if (penv->kalib[i].status == sONOFF) {		// onoff = 1
 			#if 0

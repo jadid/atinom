@@ -356,6 +356,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 			} else if (strncmp(s->filename,"/setting.html?smb=7",19)==0) {	// alarm trip
 				buat_file_setting(7, s->filename);
 			#else
+				#ifdef PAKAI_RELAY
+			} else if (strncmp(s->filename,"/setting.html?smb=7",19)==0) {	// alarm trip
+				buat_file_setting(7, s->filename);
+				#endif
 			} else if (strncmp(s->filename,"/setting.html?smb=8",19)==0) {	// kalibrasi
 				buat_file_setting(8, s->filename);
 			#endif

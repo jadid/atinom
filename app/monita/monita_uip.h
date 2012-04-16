@@ -414,14 +414,14 @@ struct t_group {
 
 struct t_dt_set  {
 	float 	alarm_HH;			// 4
-	//float 	alarm_LL;
+	float 	alarm_LL;
 	char	relay;
 	char 	aktif;
 	//char	ket[32];	
 	char	nama[16];
 	char 	satuan[8];
 	float 	alarm_H;
-	//float 	alarm_L;
+	float 	alarm_L;
 	#ifdef UNTUK_PLTD_LOPANA
 		float batas_bawah;
 		float batas_atas;

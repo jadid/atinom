@@ -45,6 +45,8 @@
 
 #define KANALNYA 10
 
+#define PM710		0
+#define PM810		1
 #define	MICOM_M300	2
 #define	MICOM_P127	3
 #define ION8600		4

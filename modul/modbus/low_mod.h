@@ -240,6 +240,10 @@ struct d_PM710 {
    unsigned short kvarA;
    unsigned short kvarB;
    unsigned short kvarC;
+   
+   unsigned short kwh_receive;
+   unsigned short kvarh_receive;
+   unsigned short kvah_receive;
 
    unsigned short pfA;
    unsigned short pfB;
@@ -327,6 +331,13 @@ struct f_PM710 {
    float kvarA;
    float kvarB;
    float kvarC;
+
+	//Parameter tambahan untuk KWH meter
+   //#ifdef TIPE_ION8600
+   float kwh_receive;
+   float kvarh_receive;
+   float kvah_receive;
+   //#endif
 
    float pfA;
    float pfB;

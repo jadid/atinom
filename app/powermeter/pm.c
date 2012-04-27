@@ -55,22 +55,24 @@ struct t_kontrol_PM kontrol_PM[JML_SUMBER];
 int jmlPM=0,k=0;
 
 unsigned char jml_sequen(char tipe) {
-	if 		(tipe==0) return 6;		// PM710
-	else if (tipe==1) return 8;		// PM810
+	if 		(tipe==PM710) return 6;		// PM710
+	#ifdef TIPE_PM810
+	else if (tipe==PM810) return 8;		// PM810
+	#endif
 	#ifdef TIPE_MICOM_M300
-	else if (tipe==2) return 5;		// MICOM M300 <--- nilai return disesuaikan
+	else if (tipe==MICOM_M300) return 5;		// MICOM M300 <--- nilai return disesuaikan
 	#endif
 	#ifdef TIPE_MICOM_P127
-	else if (tipe==3) return 7; 	//P_127
+	else if (tipe==MICOM_P127) return 7; 	//P_127
 	#endif
 	#ifdef TIPE_ION8600
-	else if (tipe==4) return 5; 	//ION8600
+	else if (tipe==ION8600) return 5; 	//ION8600
 	#endif
 	#ifdef TIPE_A2000
-	else if (tipe==5) return 10; 	//A2000
+	else if (tipe==A2000) return 10; 	//A2000
 	#endif
 	#ifdef TIPE_TFX_ULTRA
-	else if (tipe==20) return 3; 	//tfx
+	else if (tipe==TFX_ULTRA) return 1; 	//tfx
 	#endif
 }
 
@@ -86,7 +88,7 @@ int sedot_pm() {
 	
 	jmlPM++;		// kok ini kudu ada ????
 	if ( (k<JML_SUMBER) && (alamatClient>0) ) {
-		if (p_sbrq[k].status==1)
+		if (p_sbrq[k].status==1)		// 1
 		{
 			tipe = p_sbrq[k].tipe;
 			alamatClient = p_sbrq[k].alamat;
@@ -151,7 +153,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	#endif
 	
 	#ifdef TIPE_PM810
-	if (tipe==1) {
+	if (tipe==PM810) {					// 1
 	#ifdef LIAT
 	printf("___810 ....\r\n");
 	#endif
@@ -185,9 +187,9 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	#endif
 
 	#ifdef TIPE_MICOM_M300
-		if (tipe==2) {
+		if (tipe==MICOM_M300) {			// 2
 		#ifdef LIAT
-		printf("___MICOM .. edit disini ....\n");
+		printf("___MICOM M300.. edit disini ....");
 		#endif
 			if (urut_PM710==0)    {
 				jum_balik = get_M300(alamatPM, meter_voltage_micom, 12);		// 
@@ -196,12 +198,42 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 			} else if (urut_PM710==2)		{
 				jum_balik = get_M300(alamatPM, meter_frek_micom, 2);  //
 			} else if (urut_PM710==3)		{
-				jum_balik = get_M300(alamatPM, meter_power_micom, 6); //
+				jum_balik = get_M300(alamatPM, meter_power_micom, 7); //
 			}
-			else if (urut_PM710==4)		
-			{
+			else if (urut_PM710==4)			{
 				jum_balik = get_M300(alamatPM, meter_energi_micom, 6);
+			} else {
+				#ifdef LIAT
+				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+				#endif
+			}
+		}
+	#endif
+
+	#ifdef TIPE_MICOM_P127
+		if (tipe==MICOM_P127) {			// 3
+		#ifdef LIAT
+		//printf("___MICOM P127 .. edit disini ....\n");
+		#endif
+			if (urut_PM710==0)    {
+				jum_balik = get_P127(alamatPM, meter_vrms_p127, 6);		// 
+			} else if (urut_PM710==1)	{	
+				jum_balik = get_P127(alamatPM, meter_power_p127, 4);// 
+			} else if (urut_PM710==2)	{
+				jum_balik = get_P127(alamatPM, meter_current_p127, 8);  //
+			} else if (urut_PM710==3)	{
+				jum_balik = get_P127(alamatPM, meter_frek_p127, 2);  //
+			} else if (urut_PM710==4)	{
+				jum_balik = get_P127(alamatPM, meter_energi_p127, 6); //meter_power_p127, 7); //
+			} else if (urut_PM710==5)	{
+				jum_balik = get_P127(alamatPM, meter_pf_p127, 2);
+			} else if (urut_PM710==6)	{
+				jum_balik = get_P127(alamatPM, meter_kva_p127, 4); 
 			} 
+			/*else if (urut_PM710==7)	
+			{
+				jum_balik = get_P127(alamatPM, meter_kva_p127, 4); 
+			} */
 			else
 			{
 				#ifdef LIAT
@@ -210,48 +242,8 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 			}
 		}
 	#endif
-
-#if 0	
-	#ifdef TIPE_MICOM_M300
-		if (tipe==2) {
-		#ifdef LIAT
-		printf("___MICOM M300.. edit disini ....");
-		#endif
-			if (urut_PM710==0)    {
-				jum_balik = get_PM710(alamatPM, meter_voltage_micom, 11);		// 
-			} else if (urut_PM710==1)		{
-				jum_balik = get_PM710(alamatPM, meter_power_each_micom, 9);  //
-			} else if (urut_PM710==2)		{
-				jum_balik = get_PM710(alamatPM, meter_power_micom, 4);  //
-			} else if (urut_PM710==3)		{
-				jum_balik = get_PM710(alamatPM, meter_energi_micom, 2); //
-				#ifdef LIAT
-				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
-				#endif
-			}
-		}
-	#endif
-#endif
-
-	#ifdef TIPE_MICOM_P127
-		if (tipe==3) {
-		#ifdef LIAT
-		printf("___MICOM P127.. edit disini ....");
-		#endif
-			if (urut_PM710==0)    {
-				jum_balik = get_PM710(alamatPM, meter_voltage_p127, 11);		// 
-			} else if (urut_PM710==1)		{
-				jum_balik = get_PM710(alamatPM, meter_power_each_p127, 9);  //
-			} else if (urut_PM710==2)		{
-				jum_balik = get_PM710(alamatPM, meter_power_p127, 4);  //
-			} else if (urut_PM710==3)		{
-				jum_balik = get_PM710(alamatPM, meter_energi_p127, 2); //
-				#ifdef LIAT
-				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
-				#endif
-			}
-		}
-	#endif
+	
+	
 	
 	#ifdef LIAT_TX
 	printf("___Minta ke PM -%d : %d : \r\n", urut_PM710, sizeof(pmod));
@@ -384,32 +376,49 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 			#endif
 		}
 		
-		if (tipe==0 && pm_sukses==1)	{	// 710
+		if 		  (tipe==PM710 && pm_sukses==1)	{		// PM710 		= 0
 		#ifdef TIPE_PM710
 			portENTER_CRITICAL();
 			taruh_data_710(no, i);
 			portEXIT_CRITICAL();
 		#endif
-		} else if (tipe==1 && pm_sukses==1) {
 		#ifdef TIPE_PM810
+		} else if (tipe==PM810 && pm_sukses==1) {		// PM810 		= 1
 			portENTER_CRITICAL();
 			taruh_data_810(no, i);
 			portEXIT_CRITICAL();
 		#endif
-		} else if (tipe==2 && pm_sukses==1) {
 		#ifdef TIPE_MICOM_M300
+		} else if (tipe==MICOM_M300 && pm_sukses==1) {	// MICOM_M300	= 2
 			portENTER_CRITICAL();
 			taruh_data_301(no, i);
 			portEXIT_CRITICAL();
 		#endif
-		} else if (tipe==3 && pm_sukses==1) {
 		#ifdef TIPE_MICOM_P127
+		} else if (tipe==MICOM_P127 && pm_sukses==1) {	// MICOM_P127	= 3
 			portENTER_CRITICAL();
-			taruh_data_127(no, i);
+			//taruh_data_127(no, i);
+			taruh_data_P127(no, i);
 			portEXIT_CRITICAL();
 		#endif
-		} else if (tipe==3 && pm_sukses==1) {
-			
+		#ifdef TIPE_ION8600
+		} else if (tipe==ION8600 && pm_sukses==1) {		// ION8600		= 4
+			portENTER_CRITICAL();
+			taruh_data_ION8600(no, i);
+			portEXIT_CRITICAL();
+		#endif
+		#ifdef TIPE_A2000
+		} else if (tipe==A2000 && pm_sukses==1) {		// A2000		= 5
+			portENTER_CRITICAL();
+			taruh_data_A2000(no, i);
+			portEXIT_CRITICAL();
+		#endif
+		#ifdef TIPE_TFX_ULTRA
+		} else if (tipe==TFX_ULTRA && pm_sukses==1) {	// TFX_ULTRA	= 20
+			portENTER_CRITICAL();
+			taruh_data_tfx(no, i);
+			portEXIT_CRITICAL();
+		#endif
 		}
 		i++;
 	}

@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include "lpc23xx.h"
 
-#define UNTUK_UNSRI
+//#define UNTUK_UNSRI
 
 #define PAKAI_ID
 #define CENDOL		// cendol adalah versi terbaru komunikasi data modul monita
@@ -55,12 +55,16 @@
 
 //#define PAKAI_MULTI_SERIAL
 
-#define PAKAI_TIMER_2
+#define PAKAI_TIMER_2		// CRON
+#ifdef  PAKAI_TIMER_2
+	//#define PAKAI_CRON
+#endif
 
 
 #define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
-	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
+//	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
+	#define PAKAI_SERIAL_3_P0	9600		// TFX_ULTRA: 9600
 //	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
@@ -70,16 +74,16 @@
 	#define PAKAI_PM			3
 
 	#ifdef AMBIL_PM
-	
+		
 	#endif
 
 	#ifdef PAKAI_PM
-		#define TIPE_PM810
-		#define TIPE_PM710
-		#define TIPE_MICOM_M300		//
-		#define TIPE_MICOM_P127		//	
-		#define TIPE_ION8600		//
-		#define TIPE_A2000			//
+		//#define TIPE_PM810
+		//#define TIPE_PM710
+		//#define TIPE_MICOM_M300	//
+		//#define TIPE_MICOM_P127	//
+		//#define TIPE_ION8600		//
+		//#define TIPE_A2000		//
 		#define TIPE_TFX_ULTRA		//
 	#endif
 #endif

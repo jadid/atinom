@@ -43,7 +43,9 @@ unsigned short wind_dir_tr;
 extern struct d_pmod pmod;
 
 #define MOD_SERVER
-
+#define T10_des2		0.01
+#define T11_des3		0.001
+#define T12_des4		0.0001
 
 /*
    query data dari register PM710 & juga dimasukkan ukuran data yang akan diquery
@@ -1462,12 +1464,1073 @@ void taruh_data_301(int pm_dibaca, int urut)
 }
 #endif
 
-#ifdef TIPE_MICOM_P127
+#ifdef TIPE_MICOM_P127	
+void taruh_data_P127(int pm_dibaca, int urut) {	
+	#ifdef LIAT
+	printf("taruh_data_P127: urut:%d\n-- RESPONSE ANALYSIS---\n", urut); 
+	#endif
 	
-void taruh_data_127(int pm_dibaca, int urut) {
+	short satuan_t;
+	int i;
+	unsigned int temp;
+   	unsigned int temp1,temp2,temp3,temp4,temp5,temp6;
+    
+    int shift;
+    shift=8;
+    int itemp;
+   
+    float ftemp;
+    
+	if(urut==0)	{
+		#ifdef LIAT
+		printf(">Voltage dalam Long\n");
+		#endif
+		
+		//Formatnya adalah F18A (P127 Modbus database, page 65)
+		// F18A = Unsigned Long integer. 0 - 2E32
+		for(i=0;i<3;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//temp3=(temp1<<16) + temp2;
+			temp3=(temp2<<16) + temp1;
+			
+			ftemp=((float) temp3)/100;
+			
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_vrms_p127+i*2, temp1, temp2,temp3,temp3,ftemp);
+			//printf(">Hitung Voltage antar Phase. Hitung dengan perkalian sudut fasanya\n");
+			#endif
+			
+			if(i==0)	{
+				asli_PM710[pm_dibaca].voltA_N = ftemp;
+				data_PM710[pm_dibaca].voltA_N = ftemp;
+				
+				ftemp=asli_PM710[pm_dibaca].voltA_N + asli_PM710[pm_dibaca].voltA_N * 0.73205;
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			}
+			if(i==1)	{
+				asli_PM710[pm_dibaca].voltB_N = ftemp;
+				data_PM710[pm_dibaca].voltB_N = ftemp;
+				
+				ftemp=asli_PM710[pm_dibaca].voltB_N +asli_PM710[pm_dibaca].voltC_N * 0.73205;
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			}
+			if(i==2)	{
+				asli_PM710[pm_dibaca].voltC_N = ftemp;
+				data_PM710[pm_dibaca].voltC_N = ftemp;
+				
+				ftemp=(asli_PM710[pm_dibaca].voltA_N+asli_PM710[pm_dibaca].voltB_N+asli_PM710[pm_dibaca].voltC_N)/3;
+				asli_PM710[pm_dibaca].volt2=ftemp;
+				data_PM710[pm_dibaca].volt2=ftemp;
+				
+				ftemp=asli_PM710[pm_dibaca].voltC_N + asli_PM710[pm_dibaca].voltA_N * 0.73205;
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+				
+				ftemp=(asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C)/3;
+				asli_PM710[pm_dibaca].volt1 = ftemp;
+				data_PM710[pm_dibaca].volt1 = ftemp;
+			}
+		}
+	}
+	else if (urut==1)	{
+		int i,j;
+		
+		#ifdef LIAT
+		//	printf(">DATA POWER \n");
+		#endif
+		
+		for(i=0;i<2;i++)	{
+			j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//itemp=(int) ((temp1<<16) + temp2);
+			itemp=(int) ((temp2<<16) + temp1);
+			ftemp=((float) itemp)/100;
+			
+			#ifdef LIAT
+			printf(" - Address %0.4X: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_p127+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+			{
+				
+				asli_PM710[pm_dibaca].kw = ftemp;
+				data_PM710[pm_dibaca].kw=ftemp;
+				#ifdef CEK_PM
+					printf(" --->KW : %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+				#endif
+			}
+			else if(i==1)
+				asli_PM710[pm_dibaca].kvar = (int) ftemp;
+		}	
+	}
+	else if(urut==2)	{
+		#ifdef LIAT
+		printf(">DATA CURRENT dalam Long\n");
+		#endif
+		for(i=0;i<4;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//temp3=(temp1<<16) + temp2;
+			temp3=(temp2<<16) + temp1;
+			ftemp=((float) temp3)/100; 
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_current_p127+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)	{
+				asli_PM710[pm_dibaca].ampA = ftemp;
+				data_PM710[pm_dibaca].ampA = ftemp;
+			}
+			if(i==1)	{
+				asli_PM710[pm_dibaca].ampB = ftemp;
+				data_PM710[pm_dibaca].ampB = ftemp;
+			}
+			if(i==2)	{
+				asli_PM710[pm_dibaca].ampC = ftemp;
+				data_PM710[pm_dibaca].ampC = ftemp;
+			}
+			if(i==3)	{
+				asli_PM710[pm_dibaca].ampN = ftemp;
+				data_PM710[pm_dibaca].ampN = ftemp;
+				
+				ftemp=asli_PM710[pm_dibaca].ampA+asli_PM710[pm_dibaca].ampB+asli_PM710[pm_dibaca].ampC;
+				asli_PM710[pm_dibaca].amp = ftemp/3;
+				data_PM710[pm_dibaca].amp = ftemp/3;
+			}
+		}
+	}
+	else if(urut==3) 	{//FREKUENSI
+		temp1=(buf[shift+3]<< 8)+buf[shift+4];
+		temp2=(buf[shift+5]<< 8)+buf[shift+6];
+		
+		ftemp=(float) temp1/100;
+		
+		#ifdef LIAT
+			printf(">DATA Frekuensi [0x%0.4X] : 0x%0.4X + 0x%0.4X \n",meter_frek_p127, temp1, temp2);		
+			printf(" Frekuensi: %0.3f\n",ftemp);
+		#endif
+		
+		asli_PM710[pm_dibaca].frek = ftemp;
+		data_PM710[pm_dibaca].frek = ftemp;
+		
+		#ifdef CEK_PM
+			printf(" --->Frek : %d - %.2f : %f\r\n", data_PM710[pm_dibaca].frek, asli_PM710[pm_dibaca].frek, satuan_kw[pm_dibaca]);
+		#endif
+
+	}
+	else if(urut==4)	{
+		#ifdef LIAT
+		printf(">DATA ENERGY \n");
+		#endif
+		
+		for(i=0;i<3;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(temp1<<16) + temp2;
+			ftemp=(float) temp3;///1000; //harusnya di scaled dengan data CT 
+			ftemp=ftemp/16;
+			
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_energi_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+				asli_PM710[pm_dibaca].kvarh = ftemp;//3*ftemp/125;
+			else if(i==1)
+				asli_PM710[pm_dibaca].kwh =ftemp;// 3*ftemp/125; //Imported energy
+			else if(i==2)
+				asli_PM710[pm_dibaca].kvah =ftemp;// 3*ftemp/125;
+			//else if(i==3)
+			//	asli_PM710[pm_dibaca].kvah =ftemp;// 3*ftemp/125;
+		}	
+		
+	}
+	else if(urut==5)	{
+		int i,j;
+		//Power Factor ngitungnya beda
+		i=0;
+		j=i*2;
+		temp1=(short) (buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			
+		ftemp= (short) temp1;
 	
+		asli_PM710[pm_dibaca].pf = ftemp/100;
+		
+		#ifdef LIAT
+		printf(">Power Factor \n");
+		printf(" - Address 3%0.4d: (0x%0.4X) =>  %d => %0.3f\n",meter_pf_p127+i*2, temp1, temp1, ftemp);
+		#endif
+	}
+	else if (urut==6)	{
+		int i,j;
+		//KVA
+		i=0;
+		j=i*2;
+		temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+		int k=j+1;
+		temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+		
+		//itemp=(int) ((temp1<<16) + temp2);
+		temp3=(int) ((temp2<<16) + temp1);
+		ftemp=((float) temp3)/100;
+		
+		asli_PM710[pm_dibaca].kva = (int) ftemp;
+		
+		#ifdef LIAT
+		printf(">KVA \n");
+		printf(" - Address %0.4X: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_kva_p127+i*2, temp1, temp2,temp3,temp3,ftemp);
+		#endif		
+		
+	}
+	/*
+		else if (urut==10) { //VOLTAGE
+		
+			
+			data_PM710[pm_dibaca].voltA_N = buf[3+HD];
+			data_PM710[pm_dibaca].voltA_N = (data_PM710[pm_dibaca].voltA_N << 8) + buf[4+HD];		
+			if (data_PM710[pm_dibaca].voltA_N == 32768)
+				asli_PM710[pm_dibaca].voltA_N = 0;
+			else
+				asli_PM710[pm_dibaca].voltA_N = data_PM710[pm_dibaca].voltA_N * satuan_amp[pm_dibaca];
+			#ifdef CEK_PM
+			printf("ampA: %d - %.2f, satuan amp: %f\r\n", data_PM710[pm_dibaca].voltA_N, asli_PM710[pm_dibaca].voltA_N, satuan_amp[pm_dibaca]);
+			#endif
+		}*/
+		/*else 
+		{
+			#ifdef LIAT
+			printf(">DATA lain-lain (urut: %d \n",urut);
+			#endif
+			
+			temp1=(buf[3]<< 8)+buf[4];
+			temp2=(buf[5]<< 8)+buf[6];
+			temp3=(buf[7]<< 8)+buf[8];
+			temp4=(buf[9]<< 8)+buf[10];
+			
+			#ifdef LIAT
+			printf(" - Data 1: %d (0x%0.4X)\n",temp1,temp1);
+			printf(" - Data 2: %d (0x%0.4X)\n",temp2,temp2); //(buf[3]<< 8) + buf[4]
+			
+			printf(" - Data 3: %d (0x%0.4X)\n",temp3,temp3);
+			printf(" - Data 4: %d (0x%0.4X)\n",temp4,temp4); //(buf[5]<< 8) + 	
+			#endif
+		}*/
+		
+	#ifdef CEK_PM
+		printf(" -out >KW : data_pm710[%d]: %d - %.2f. \r\n", pm_dibaca, data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+	#endif
+		
 }
 #endif
+
+#ifdef TIPE_ION8600
+void taruh_data_ION8600(int pm_dibaca, int urut) {	
+	#ifdef LIAT
+	printf("taruh_data_ION8600: urut:%d\n-- RESPONSE ANALYSIS---\n", urut); 
+	#endif
+	
+	short satuan_t;
+	int i;
+	unsigned int temp;
+   	unsigned int temp1,temp2,temp3,temp4,temp5,temp6;
+    
+    int shift;
+    shift=8;
+    int itemp;
+   
+    float ftemp;
+    
+	if(urut==0)	{
+		#ifdef LIAT
+		printf(">Voltage dalam Long\n");
+		#endif
+		
+		for(i=0;i<10;i++)		{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//temp3=(temp1<<16) + temp2;
+			temp3=(temp1<<16) + temp2;
+			
+			ftemp=((float) temp3);
+			
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_voltage_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)	{
+				asli_PM710[pm_dibaca].voltA_N = ftemp;
+				data_PM710[pm_dibaca].voltA_N = ftemp;		
+			} 
+			if(i==1)	{
+				asli_PM710[pm_dibaca].voltB_N = ftemp;
+				data_PM710[pm_dibaca].voltB_N = ftemp;
+			} 
+			if(i==2)	{
+				asli_PM710[pm_dibaca].voltC_N = ftemp;
+				data_PM710[pm_dibaca].voltC_N = ftemp;
+			} 
+			if(i==3)	{
+				asli_PM710[pm_dibaca].volt2 = ftemp;
+				data_PM710[pm_dibaca].volt2 = ftemp;
+			} 
+			if(i==6)	{
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			} 
+			if(i==7)	{
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			} 
+			if(i==8)	{
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+			} 
+			if(i==9)	{
+				asli_PM710[pm_dibaca].volt1 = ftemp;
+				data_PM710[pm_dibaca].volt1 = ftemp;
+			}
+		}
+	}// EOF urut 0: Voltage ION8600 
+	else if (urut==1)	{ //Arus ION 8600
+		int i,j;
+		
+		#ifdef LIAT
+		//	printf(">DATA POWER \n");
+		#endif
+		
+		for(i=0;i<10;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			//int k=j+1;
+			//temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//itemp=(int) ((temp1<<16) + temp2);
+			//itemp=(int) ((temp2<<16) + temp1);
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_current_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)	{
+				asli_PM710[pm_dibaca].ampA = ftemp;
+				data_PM710[pm_dibaca].ampA = ftemp;		
+			} 
+			if(i==1)	{
+				asli_PM710[pm_dibaca].ampB = ftemp;
+				data_PM710[pm_dibaca].ampB = ftemp;
+			} 
+			if(i==2)	{
+				asli_PM710[pm_dibaca].ampC = ftemp;
+				data_PM710[pm_dibaca].ampC = ftemp;
+			} 
+			if(i==3)	{//Arus Netral
+				asli_PM710[pm_dibaca].ampN = ftemp;
+				data_PM710[pm_dibaca].ampN = ftemp;
+			} 
+			if(i==5)	{//Arus rata-rata
+				asli_PM710[pm_dibaca].amp = ftemp;
+				data_PM710[pm_dibaca].amp = ftemp;
+			} 
+			if(i==9)	{//Frekuensi
+				asli_PM710[pm_dibaca].frek = ftemp;
+				data_PM710[pm_dibaca].frek = ftemp;
+			}
+		}	
+	} //EOF ARUS ion8600
+	else if(urut==2)	{ //meter_power_ION8600
+		#ifdef LIAT
+		printf(">DATA power dalam Long\n");
+		#endif
+		for(i=0;i<15;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(int) (temp1<<16) + temp2;
+			//temp3=(temp2<<16) + temp1;
+			ftemp=((signed) temp3); 
+			ftemp=ftemp*0.001;
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)	{
+				asli_PM710[pm_dibaca].kwA = ftemp;
+				data_PM710[pm_dibaca].kwA = ftemp;
+			} if(i==1)	{
+				asli_PM710[pm_dibaca].kwB = ftemp;
+				data_PM710[pm_dibaca].kwB = ftemp;
+			} if(i==2)	{
+				asli_PM710[pm_dibaca].kwC = ftemp;
+				data_PM710[pm_dibaca].kwC = ftemp;
+			} if(i==3)	{
+				asli_PM710[pm_dibaca].kw = ftemp;
+				data_PM710[pm_dibaca].kw = ftemp;
+			} if(i==5)	{
+				asli_PM710[pm_dibaca].kvarA = ftemp;
+				data_PM710[pm_dibaca].kvarA = ftemp;
+			} if(i==6)	{
+				asli_PM710[pm_dibaca].kvarB = ftemp;
+				data_PM710[pm_dibaca].kvarB = ftemp;
+			} if(i==7)	{
+				asli_PM710[pm_dibaca].kvarC = ftemp;
+				data_PM710[pm_dibaca].kvarC = ftemp;
+			} if(i==8)	{
+				asli_PM710[pm_dibaca].kvar = ftemp;
+				data_PM710[pm_dibaca].kvar = ftemp;
+			} if(i==10)	{
+				asli_PM710[pm_dibaca].kvaA = ftemp;
+				data_PM710[pm_dibaca].kvaA = ftemp;
+			}
+			if(i==11)
+			{
+				asli_PM710[pm_dibaca].kvaB = ftemp;
+				data_PM710[pm_dibaca].kvaB = ftemp;
+			}
+			if(i==12)
+			{
+				asli_PM710[pm_dibaca].kvaC = ftemp;
+				data_PM710[pm_dibaca].kvaC = ftemp;
+			}
+			if(i==13)
+			{
+				asli_PM710[pm_dibaca].kva = ftemp;
+				data_PM710[pm_dibaca].kva = ftemp;
+			
+			}
+		}
+	}
+	else if(urut==3) 	{//ENERGI
+		#ifdef LIAT
+		printf(">DATA ENERGI. pm_dibaca: [%d]\n", pm_dibaca);
+		#endif
+		for(i=0;i<6;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(int) (temp1<<16) + temp2;
+			//temp3=(temp2<<16) + temp1;
+			ftemp=((signed) temp3); 
+			ftemp=ftemp;
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_energi_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].kwh = ftemp;
+				data_PM710[pm_dibaca].kwh = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].kwh_receive = ftemp;
+				data_PM710[pm_dibaca].kwh_receive = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].kvarh = ftemp;
+				data_PM710[pm_dibaca].kvarh = ftemp;
+			}
+			if (i==3)	{
+				asli_PM710[pm_dibaca].kvarh_receive = ftemp;
+				data_PM710[pm_dibaca].kvarh_receive = ftemp;
+			}
+			if (i==4)	{
+				asli_PM710[pm_dibaca].kvah = ftemp;
+				data_PM710[pm_dibaca].kvah = ftemp;
+			}
+			/*if(i==5)
+			{
+				asli_PM710[pm_dibaca].kvah_receive = ftemp;
+				data_PM710[pm_dibaca].kvah_receive = ftemp;
+			}*/
+		}
+		#ifdef CEK_PM
+			printf(" --->KWH : %d - %.2f : %f\r\n", data_PM710[pm_dibaca].frek, asli_PM710[pm_dibaca].frek, satuan_kw[pm_dibaca]);
+		#endif
+
+	} //EOF ENERGY ION8600
+	else if(urut==4)	{
+		#ifdef LIAT
+		printf(">POWER FAKTOR \n");
+		#endif
+		
+		for(i=0;i<4;i++)
+		{
+			int j=i;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			//int k=j+1;
+			//temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp2=(signed short int) temp1;
+			
+			if(temp2 & 0x8000000)
+			{
+				printf ("-> 0x8000000 =>");
+				temp3 =(int)( ~temp2|0xffffffffffffffff); 
+			}
+			else
+				temp3=temp2;
+			
+			ftemp=((float) temp3)/10000;			
+		
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X) %d => %0.3f\n",meter_faktor_ION8600+i, temp1,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+				asli_PM710[pm_dibaca].pfA = ftemp;
+			else if(i==1)
+				asli_PM710[pm_dibaca].pfB =ftemp;
+			else if(i==2)
+				asli_PM710[pm_dibaca].pfC =ftemp;
+			else if(i==3)
+				asli_PM710[pm_dibaca].pf =ftemp;
+		}	
+		
+	}
+		
+		#ifdef CEK_PM
+		printf(" -out >KW : data_pm710[%d]: %d - %.2f. \r\n", pm_dibaca, data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+		#endif
+		
+}
+#endif //TIPE ION8600
+
+#ifdef TIPE_A2000	
+void taruh_data_A2000(int pm_dibaca, int urut) {	
+	#ifdef LIAT
+	printf("taruh_data_A2000: urut:%d\n-- RESPONSE ANALYSIS---\n", urut); 
+	#endif
+	
+	short satuan_t;
+	int i;
+	unsigned int temp;
+   	unsigned int temp1,temp2,temp3,temp4,temp5,temp6;
+    
+    int shift;
+    shift=8;
+    int itemp;
+   
+    float ftemp;
+    float SKALA_A2000=0.1;
+    
+	if 		(urut==0)	{ //Voltage Delta Phase
+		#ifdef LIAT
+		printf(">Voltage dalam Long\n");
+		#endif
+		
+		for(i=0;i<3;i++)	{
+			int j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			//int k=j+1;
+			//temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//temp3=(temp1<<16) + temp2;
+			temp3=temp1;
+			
+			ftemp=((float) temp3) *SKALA_A2000;
+			
+			//#define LIAT
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_voltage_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+			}
+			
+		}
+		//Hitung Rata-rata
+		ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
+		asli_PM710[pm_dibaca].volt2=ftemp/3;
+		
+	}// EOF urut 0: Voltage Delta Phase A2000 
+	else if (urut==1)	{ //Voltae Phase A2000
+		int i,j;
+		
+		#ifdef LIAT
+		#endif
+		
+		for(i=0;i<3;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_current_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+		
+			if (i==0)		{
+				asli_PM710[pm_dibaca].voltA_N = ftemp;
+				data_PM710[pm_dibaca].voltA_N = ftemp;		
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].voltB_N = ftemp;
+				data_PM710[pm_dibaca].voltB_N = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].voltC_N = ftemp;
+				data_PM710[pm_dibaca].voltC_N = ftemp;
+			}		
+			//Hitung Rata-rata
+			ftemp=asli_PM710[pm_dibaca].voltA_N+asli_PM710[pm_dibaca].voltB_N+asli_PM710[pm_dibaca].voltC_N;
+			asli_PM710[pm_dibaca].volt1=ftemp/3;	
+		}	
+	} //EOF Voltae Phase A2000
+	else if (urut==2)	{ //Voltae ARUS PHASE A2000
+		int i,j;
+		
+		#ifdef LIAT
+		#endif
+		
+		for(i=0;i<4;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_current_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+		
+			if (i==0)	{
+				asli_PM710[pm_dibaca].ampA = ftemp;
+				data_PM710[pm_dibaca].ampA = ftemp;		
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].ampB = ftemp;
+				data_PM710[pm_dibaca].ampB = ftemp;
+			}
+			if(i==2)	{
+				asli_PM710[pm_dibaca].ampC = ftemp;
+				data_PM710[pm_dibaca].ampC = ftemp;
+			}		//Hitung Rata-rata
+			ftemp=asli_PM710[pm_dibaca].ampA+asli_PM710[pm_dibaca].ampB+asli_PM710[pm_dibaca].ampC;
+			asli_PM710[pm_dibaca].amp=ftemp/3;
+		}		
+	} //EOF Arus Phase A2000
+	else if (urut==3)	{ //
+		#ifdef LIAT
+		printf(">DATA power dalam Long\n");
+		#endif
+		int i,j;
+		for(i=0;i<4;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].kwA = ftemp;
+				data_PM710[pm_dibaca].kwA = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].kwB = ftemp;
+				data_PM710[pm_dibaca].kwB = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].kwC = ftemp;
+				data_PM710[pm_dibaca].kwC = ftemp;
+			}
+			if (i==3)	{
+				asli_PM710[pm_dibaca].kw = ftemp;
+				data_PM710[pm_dibaca].kw = ftemp;
+			}
+		}
+	}
+	else if (urut==4)	{ //ENERGI
+		#ifdef LIAT
+		printf(">DATA ENERGI. pm_dibaca: [%d]\n", pm_dibaca);
+		#endif
+		for(i=0;i<8;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			temp3=(int) (temp1<<16) + temp2;
+			//temp3=(temp2<<16) + temp1;
+			ftemp=((signed) temp3); 
+			ftemp=ftemp;
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_energi_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==3)	{
+				asli_PM710[pm_dibaca].kwh = ftemp;
+				data_PM710[pm_dibaca].kwh = ftemp;
+			}
+			if (i==7)	{
+				asli_PM710[pm_dibaca].kvarh = ftemp;
+				data_PM710[pm_dibaca].kvarh = ftemp;
+			}
+		}
+		#ifdef CEK_PM
+			printf(" --->KWH : %d - %.2f : %f\r\n", data_PM710[pm_dibaca].frek, asli_PM710[pm_dibaca].frek, satuan_kw[pm_dibaca]);
+		#endif
+
+	} //EOF ENERGY A2000
+	else if (urut==5)	{
+		#ifdef LIAT
+		printf(">POWER FAKTOR \n");
+		#endif
+		
+		for(i=0;i<4;i++)			{
+			int j=i;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/100);
+			
+			//#define LIAT
+			#ifdef LIAT
+			printf(" - Address 3%0.4d: (0x%0.4X) %d => %0.3f\n",meter_faktor_A2000+i, temp1,temp3,ftemp);
+			#endif
+			
+			if(i==0)
+				asli_PM710[pm_dibaca].pfA = ftemp;
+			else if(i==1)
+				asli_PM710[pm_dibaca].pfB =ftemp;
+			else if(i==2)
+				asli_PM710[pm_dibaca].pfC =ftemp;
+			else if(i==3)
+				asli_PM710[pm_dibaca].pf =ftemp;
+		}	
+		
+	}
+	else if (urut==6)	{ //Apparent Power
+		#ifdef LIAT
+		printf(">DATA Apparent power dalam Long (KVA)\n");
+		#endif
+		int i,j;
+		for(i=0;i<4;i++)
+		{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].kvaA = ftemp;
+				data_PM710[pm_dibaca].kvaA = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].kvaB = ftemp;
+				data_PM710[pm_dibaca].kvaB = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].kvaC = ftemp;
+				data_PM710[pm_dibaca].kvaC = ftemp;
+			}
+			if (i==3)	{
+				asli_PM710[pm_dibaca].kva = ftemp;
+				data_PM710[pm_dibaca].kva = ftemp;
+			}
+		}
+	}
+	else if (urut==7)	{ //Reactive Power
+		#ifdef LIAT
+		printf(">DATA Apparent power dalam Long (KVAR)\n");
+		#endif
+		int i,j;
+		for(i=0;i<4;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].kvarA = ftemp;
+				data_PM710[pm_dibaca].kvarA = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].kvarB = ftemp;
+				data_PM710[pm_dibaca].kvarB = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].kvarC = ftemp;
+				data_PM710[pm_dibaca].kvarC = ftemp;
+			}
+			if (i==3)	{
+				asli_PM710[pm_dibaca].kvar = ftemp;
+				data_PM710[pm_dibaca].kvar = ftemp;
+			}
+		}
+	}
+	else if (urut==8)	{ //Frekuensi
+		#ifdef LIAT
+		printf(">DATA Frekuensi\n");
+		#endif
+		int i,j;
+		for(i=0;i<1;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/100);
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].frek = ftemp;
+				data_PM710[pm_dibaca].frek = ftemp;
+			}
+		}
+	}
+	else if (urut==9)	{ //Netral Ampere
+		#ifdef LIAT
+		printf(">DATA Arus Netral\n");
+		#endif
+		int i,j;
+		for(i=0;i<1;i++)	{
+			j=i;//*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			ftemp=((float) temp1/10);
+			
+			#ifdef LIAT
+			printf(" - Address %0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_ION8600+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if(i==0)	{
+				asli_PM710[pm_dibaca].ampN = ftemp;
+				data_PM710[pm_dibaca].ampN = ftemp;
+			}
+		}
+	}
+	#ifdef CEK_PM
+	printf(" -out >KW : data_pm710[%d]: %d - %.2f. \r\n", pm_dibaca, data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+	#endif
+		
+}
+#endif //TIPE_A2000
+//---------------------------------------------------------------------------
+
+#ifdef TIPE_TFX_ULTRA	
+void taruh_data_tfx(int pm_dibaca, int urut) {	
+	#ifdef LIAT
+	printf("taruh_data_tfx: urut:%d\n-- RESPONSE ANALYSIS---\n", urut); 
+	#endif
+	
+	short satuan_t;
+	int i;
+	unsigned int temp;
+   	unsigned int temp1,temp2,temp3,temp4,temp5,temp6;
+    
+    int shift;
+    shift=8;
+    int itemp;
+   
+    float ftemp;
+    float SKALA_tfx=1;
+    
+	if (urut==0) {	//Integer Data
+		#ifdef LIAT
+		printf(">Long Integer Precision\n");
+		#endif
+		
+		for(i=0;i<7;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//BIG ENDIAN
+			temp3=(temp2<<16) + temp1;
+			
+			//LITTLE ENDIAN
+			//temp3=(temp1<<16) + temp2;
+			//temp3=temp1;
+						
+			if(temp1 & 0x8000)	{
+				//printf("| minus =>");
+				temp2= ~temp1 +1 ;
+				temp3=0x0000FFFF & temp2;
+				
+				temp3 =temp3;
+				ftemp=- ((float) temp3);
+			}	else	{
+				temp2=temp1;
+				temp3=temp2;
+				ftemp=((float) temp3);
+			}	
+			
+			//#define LIAT
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",tfx_integer+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+			}	
+		}
+		
+		//Hitung Rata-rata
+		ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
+		asli_PM710[pm_dibaca].volt2=ftemp/3;
+		
+	}// EOF urut 0: Integer Format
+	if (urut==1) 	{ //Single Precission Format
+		#ifdef LIAT
+		printf(">Single Precision\n");
+		#endif
+		
+		for(i=0;i<7;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//BIG ENDIAN
+			temp3=(temp2<<16) + temp1;
+			
+			//LITTLE ENDIAN
+			//temp3=(temp1<<16) + temp2;
+			//temp3=temp1;
+						
+			if(temp1 & 0x8000)	{
+				//printf("| minus =>");
+				temp2= ~temp1 +1 ;
+				temp3=0x0000FFFF & temp2;
+				
+				temp3 =temp3;
+				ftemp=- ((float) temp3);
+			} else	{
+				temp2=temp1;
+				temp3=temp2;
+				ftemp=((float) temp3);
+			}	
+			
+			//#define LIAT
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",tfx_integer+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			}
+			if(i==2)	{
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+			}	
+		}
+		
+		//Hitung Rata-rata
+		ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
+		asli_PM710[pm_dibaca].volt2=ftemp/3;
+		
+	}// EOF urut 1: Single Precission Format
+	if (urut==2)	{ // Double Precission Format
+		#ifdef LIAT
+		printf("> Double Precission Format\n");
+		#endif
+		
+		for(i=0;i<7;i++)	{
+			int j=i*2;
+			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
+			int k=j+1;
+			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			
+			//BIG ENDIAN
+			temp3=(temp2<<16) + temp1;
+			
+			//LITTLE ENDIAN
+			//temp3=(temp1<<16) + temp2;
+			//temp3=temp1;
+						
+			if(temp1 & 0x8000)	{
+				//printf("| minus =>");
+				temp2= ~temp1 +1 ;
+				temp3=0x0000FFFF & temp2;
+				
+				temp3 =temp3;
+				ftemp=- ((float) temp3);
+			} else {
+				temp2=temp1;
+				temp3=temp2;
+				ftemp=((float) temp3);
+			}	
+			
+			//#define LIAT
+			#ifdef LIAT
+			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",tfx_integer+i*2, temp1, temp2,temp3,temp3,ftemp);
+			#endif
+			
+			if (i==0)	{
+				asli_PM710[pm_dibaca].voltA_B = ftemp;
+				data_PM710[pm_dibaca].voltA_B = ftemp;
+			}
+			if (i==1)	{
+				asli_PM710[pm_dibaca].voltB_C = ftemp;
+				data_PM710[pm_dibaca].voltB_C = ftemp;
+			}
+			if (i==2)	{
+				asli_PM710[pm_dibaca].voltA_C = ftemp;
+				data_PM710[pm_dibaca].voltA_C = ftemp;
+			}	
+		}
+		
+		//Hitung Rata-rata
+		ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
+		asli_PM710[pm_dibaca].volt2=ftemp/3;
+		
+	}// EOF urut 2: Double Precission Format
+	#ifdef CEK_PM
+	//printf(" -out >KW : data_pm710[%d]: %d - %.2f. \r\n", pm_dibaca, data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+	#endif
+		
+}
+#endif //TIPE_TFX_ULTRA
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)

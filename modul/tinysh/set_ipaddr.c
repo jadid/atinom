@@ -186,6 +186,27 @@ static void setenv_fnt(int argc, char **argv)
 			printf(" SN : %s\n", p_sbr->SN);
 		}
 	}
+	#ifdef KIRIM_KE_SER_2
+	else if (strcmp(argv[1], "serclient") == 0)	{
+		printf(" set status serclient\r\n");
+  		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {
+			p_sbr->statusSerClient = (argv[2][0] - '0');
+		} 
+		else if (strcmp(argv[2], "aktif")==0 || strcmp(argv[2], "hidup")==0) {
+			p_sbr->statusSerClient = 1;
+		} else if (strcmp(argv[2], "mati")==0)  {
+			p_sbr->statusSerClient = 0;
+		} else {
+			p_sbr->statusSerClient = 0;
+		}
+		printf(" Status serialclient : %s\r\n", (p_sbr->statusSerClient==1)?"aktif":"mati");
+	}
+	else if (strcmp(argv[1], "serperiode") == 0)	{
+		printf(" set periode serclient\r\n");
+  		sprintf(p_sbr->intSer, "%d", argv[2]);
+  		printf(" periode serialclient : %s\r\n", p_sbr->intSer);
+	}
+	#endif
 	#ifdef PAKAI_WEBCLIENT
 	else if (strcmp(argv[1], "file") == 0)	{
 		printf(" set file");

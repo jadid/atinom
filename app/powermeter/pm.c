@@ -10,7 +10,7 @@
 #include "FreeRTOS.h"
 #include "hardware.h"
 
-//#define LIAT
+#define LIAT
 #define LIAT_TX
 #define LIAT_RX
 #define CEK_PM
@@ -243,8 +243,32 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		}
 	#endif
 	
-	
-	
+	#ifdef TIPE_TFX_ULTRA
+	if (tipe==TFX_ULTRA) 	{
+		#ifdef LIAT
+		printf("___TFX_ULTRA__proses_pm\n");
+		#endif
+			if (urut_PM710==0)    
+			{
+				jum_balik = get_tfx(alamatPM, tfx_integer, 7);		// 
+			} 
+			else if (urut_PM710==1)		
+			{	
+				jum_balik = get_tfx(alamatPM, tfx_single_precision, 7);// 
+			} 
+			else if (urut_PM710==2)		
+			{
+				jum_balik = get_tfx(alamatPM, tfx_double_precision, 7);  //
+			} 
+			else
+			{
+				#ifdef LIAT
+				printf("Jml balik Power urut 20: %d \r\n", jum_balik);
+				#endif
+			}
+		}
+	#endif
+
 	#ifdef LIAT_TX
 	printf("___Minta ke PM -%d : %d : \r\n", urut_PM710, sizeof(pmod));
 	#endif

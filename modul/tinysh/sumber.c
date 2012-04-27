@@ -254,6 +254,14 @@ void set_sumber(int argc, char **argv)
 				p_sbr[sumb-1].tipe = 2;
 			} else if ( strcmp(argv[3], "P127")==0 || strcmp(argv[3], "3")==0) 	{
 				p_sbr[sumb-1].tipe = 3;
+			} else if ( strcmp(argv[3], "TFX")==0 || strcmp(argv[3], "20")==0) 	{
+				p_sbr[sumb-1].tipe = 20;
+			/*
+			} else if ( strcmp(argv[3], "810")==0 || strcmp(argv[3], "1")==0) 	{
+				p_sbr[sumb-1].tipe = 1;
+			} else if ( strcmp(argv[3], "M300")==0 || strcmp(argv[3], "2")==0) 	{
+				p_sbr[sumb-1].tipe = 2;
+			//*/
 			} else {
 				p_sbr[sumb-1].tipe = 0;
 			}

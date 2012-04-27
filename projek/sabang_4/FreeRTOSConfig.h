@@ -100,19 +100,20 @@
 
 #define PAKAI_LED_UTAMA
 
-//#define PAKAI_SERIAL_2
+#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		115200
+	#define KIRIM_KE_SER_2
 //	#define PAKAI_GPS				2
 //	#define DEBUG_GPS
 #endif
 
 #define PAKAI_SHELL
-#define PAKAI_ADC
+//#define PAKAI_ADC
 #define CENDOL
-#define PAKAI_RELAY
-#define UNTUK_UNSRI
-#define HITUNG_ENERGI
+//#define PAKAI_RELAY
+//#define UNTUK_UNSRI
+//#define HITUNG_ENERGI
 
 //#define DATA_RANDOM
 #define PAKAI_RTC

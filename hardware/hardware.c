@@ -154,6 +154,7 @@ void init_hardware()	{
 //***************************************************************/
 	#ifndef BLINK
 	init_ambilcepat();
+	init_kirimcepat();
 	#endif
 }
 

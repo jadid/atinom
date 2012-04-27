@@ -48,7 +48,10 @@ int main( void )	{
 
 	init_led_utama();
 	init_hardware();
+	
+	#ifdef PAKAI_RELAY
 	init_task_relay();
+	#endif
 	
 	vTaskStartScheduler();
 

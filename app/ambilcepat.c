@@ -131,14 +131,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#endif
   	
   	vTaskDelay(50);
-  	for(;;) {
-
-		#ifdef PAKAI_CRON
-			//if (loopambil%60==0)	//	30 detik
-			if (loopambil%120==0)	//	60 detik
-				baca_cron();
-		#endif
-		
+  	for(;;) {		
 		#ifdef DATA_RANDOM
 			data_f[loopambil%10] = (float) ((rand() % 100));
 			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
@@ -146,7 +139,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		#ifdef PAKAI_SERIAL_2
 			if (loopambil%1000==0) {			// 1 detik ambil data
-				sprintf(ser2, "tes serial 2 : %d\r\n", lm);
+				//sprintf(ser2, "tes serial 2 : %d\r\n", lm);
 				ser2_putstring(ser2);
 			}
 			
@@ -178,7 +171,6 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				#ifdef BOARD_KOMON_420_SAJA
 					hitung_datanya();
 				#endif
-
 				simpan_ke_data_f();
 			}
 		#endif
@@ -190,14 +182,22 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		}
 		#endif
 		
+		/*
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
-				printf("lb: %d : %d\r\n", lb, iTim2);
+				//printf("lb: %d : %d\r\n", lb, iTim2);
+				
+				#ifdef PAKAI_CRON
+				//if (loopambil%120==0)	//	60 detik
+					baca_cron();		// tiap detik
+				#endif
+				
+				
 				flagT2 = 0;
 				lb++;
 			}
-			
 		#endif
+		//*/
 		
 		#ifdef PAKAI_ADC_ORI
 			//if (loopambil%2)	{

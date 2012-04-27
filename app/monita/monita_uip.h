@@ -91,6 +91,10 @@
 	int  iTim2;
 #endif
 
+#ifdef KIRIM_KE_SER_2
+	char statKirimSer;
+#endif
+
 #ifdef BOARD_KOMON_KONTER
 	
 	unsigned char status_konter[KANALNYA];

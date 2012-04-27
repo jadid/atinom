@@ -81,7 +81,10 @@ struct t_env {
 	#ifdef PAKAI_RTC
 	unsigned char uRTC;
 	#endif
+	//#ifdef KIRIM_KE_SER_2
 	char statusSerClient;
+	int  intSer;
+	//#endif
 };
 
 //#define SEKTOR_ENV	24

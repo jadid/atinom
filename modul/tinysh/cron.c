@@ -177,11 +177,12 @@ int hitung = 0;
 int hitung_lagi=0;
 
 void baca_cron() {
-	if (hitung_lagi==120) {			// tunggu sampai 120 untuk 1 menit, 60 untuk 30 detik, 
+	if (hitung_lagi==60) {			// tunggu sampai 120 untuk 1 menit, 60 untuk 30 detik, 
 		hitung_lagi=0;				// reset;
 	}
+	return;
 	
-	if ((hitung_lagi>10) && (hitung_lagi<(10+JML_CRON+1))) {			// masuk cron !!
+	//if ((hitung_lagi>10) && (hitung_lagi<(10+JML_CRON+1))) {			// masuk cron !!
 		//printf("hitung_lagi: %d, hitung: %d\r\n", hitung_lagi, hitung);
 		struct t_cron *p_dt;
 		p_dt = (char *) ALMT_CRON;
@@ -207,7 +208,8 @@ void baca_cron() {
 				//		p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
 				//		p_dt[hitung].cmd, p_dt[hitung].alamat, p_dt[hitung].status?"Aktif [1]":"Mati [0]");
 				//*/
-				#ifdef PAKAI_SELENOID
+				//#ifdef PAKAI_SELENOID
+				#ifdef PAKAI_RELAY
 				if (strcmp(p_dt[hitung].cmd,"relay")==0) {
 					if (p_dt[hitung].status==1) {
 						set_selenoid((uint) p_dt[hitung].alamat);
@@ -287,7 +289,7 @@ void baca_cron() {
 			
 		}
 		hitung++;
-	}
+	//}
 	hitung_lagi++;
 	//printf("hitung lagi : %d\r\n", hitung_lagi);
 }

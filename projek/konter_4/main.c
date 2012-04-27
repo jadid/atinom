@@ -35,6 +35,7 @@ void init_led_utama(void);
 
 xTaskHandle hdl_led;
 xTaskHandle hdl_shell;
+xTaskHandle hdl_relay;
 
 #ifdef PAKAI_ETH
 	xTaskHandle hdl_ether;

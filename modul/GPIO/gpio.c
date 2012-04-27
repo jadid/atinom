@@ -36,7 +36,7 @@
 
 #define INTERRUPT_GPIO	0x20000 // EINT3
 
-#ifdef BOARD_CNC
+#ifdef PAKAI_TIMER_2
 void init_timer2() {
 	extern void ( timer2_ISR_Wrapper )( void );
 	

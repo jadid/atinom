@@ -19,7 +19,7 @@
 extern struct t_adc st_adc;
 
 void simpan_ke_data_f() {
-	
+	//printf("%s()\r\n", __FUNCTION__);
 	#if defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG_2_3) || defined(BOARD_KOMON_420_SABANG)
 		int g;
 		float temp;
@@ -32,13 +32,21 @@ void simpan_ke_data_f() {
 				temp = st_adc.data[g] * faktor_pengali_420 / 0xffff;
 				data_f[g] = (float) (temp * envx->kalib[g].m) + envx->kalib[g].C;
 				//printf("%d -Suhu/Tegangan- %d, nilai: %6.2f\r\n",(g+1), st_adc.data[g], data_f[g]);//(float) (temp_rpm * env2->kalib[i].m) + env2->kalib[i].C;
-			} else {		// onoff
+			} else if (envx->kalib[g].status==sONOFF) {
 				if (st_adc.data[g]>10000) {		// on/tertutup
 					data_f[g] = 1;
 				} else {		// off/terbuka
 					data_f[g] = 0;
 				}
-				//printf("%d -OnOff- %2.0f\r\n",(g+1), st_adc.data[g], data_f[g]);
+			#ifdef HITUNG_ENERGI
+			} else if (envx->kalib[g].status==DAYA) {
+				temp = data_f[6] * data_f[7];		// hardcode 
+				data_f[g] = (float) (temp * envx->kalib[g].m) + envx->kalib[g].C;
+				//printf("7: %.2f, 8: %.2f = %.2f\r\n", data_f[6], data_f[7], data_f[g]);
+			#endif
+			} else {		// onoff
+				
+				//printf("%d -lain- %2.0f\r\n",(g+1), st_adc.data[g], data_f[g]);
 			}
 		}
 	#endif

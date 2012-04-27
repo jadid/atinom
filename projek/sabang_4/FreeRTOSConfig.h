@@ -55,8 +55,10 @@
 
 //#define PAKAI_MULTI_SERIAL
 
+#define PAKAI_TIMER_2
 
-//#define PAKAI_SERIAL_3
+
+#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
 //	#define PAKAI_SERIAL_3_P0	38400		// max MICOM: 19200
@@ -73,8 +75,12 @@
 
 	#ifdef PAKAI_PM
 		#define TIPE_PM810
-		//#define TIPE_PM710
-		#define TIPE_MICOM_M300
+		#define TIPE_PM710
+		#define TIPE_MICOM_M300		//
+		#define TIPE_MICOM_P127		//	
+		#define TIPE_ION8600		//
+		#define TIPE_A2000			//
+		#define TIPE_TFX_ULTRA		//
 	#endif
 #endif
 
@@ -92,8 +98,8 @@
 
 //#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
-	#define PAKAI_SERIAL_2_P0		4800
-	#define PAKAI_GPS				2
+	#define PAKAI_SERIAL_2_P0		115200
+//	#define PAKAI_GPS				2
 //	#define DEBUG_GPS
 #endif
 
@@ -102,6 +108,7 @@
 #define CENDOL
 #define PAKAI_RELAY
 #define UNTUK_UNSRI
+#define HITUNG_ENERGI
 
 //#define DATA_RANDOM
 #define PAKAI_RTC

@@ -151,6 +151,10 @@ int status_MMC=0;
 	#include "dimmer.c"
 #endif
 
+#ifdef UNTUK_UNSRI
+	#include "../../app/unsri/custom_unsri.c"
+#endif
+
 #include "enviro.h"
 //#include "GPIO/gpio.h"
 //#include "../monita/monita_uip.h"

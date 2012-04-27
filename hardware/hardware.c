@@ -49,6 +49,10 @@ void setup_hardware() {
 		setup_timer2();
 	#endif
 	
+	#ifdef PAKAI_TIMER_2
+		setup_timer2();
+	#endif
+	
 	#ifdef PAKAI_SERIAL_3
 		/* PCONP enable UART3 */
 		
@@ -138,7 +142,8 @@ void init_hardware()	{
 		
 	#endif
 	
-	#ifdef PAKAI_TIMER2
+	#ifdef PAKAI_TIMER_2
+		printf("init timer 2\r\n");
 		init_timer2();
 	#endif
 	

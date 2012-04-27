@@ -114,12 +114,82 @@
 #endif //TIPE_MICOM_300
 
 #ifdef TIPE_MICOM_P127
-	#define info_micom				30001		//
-	#define meter_voltage_p127		30454		// 11 data: VA, VB, VC, VAB, VBC, VCA, IA, IB, IC, IN, frek
-	#define meter_power_each_p127	30483		//  9 data: kwA, kwB, kwC, kvarA, kvarB, kvarC, kvaA, kvaB, kvaC
-	#define meter_power_p127		30501		//  4 data: Tot P, Q, S, pf 
-	#define meter_energi_p127		30508		//    data: wh, varh
-#endif	// TIPE_MICOM_M300
+
+	#define comand_baca_127 0x03
+	#define model_number_p127 1
+	#define meter_vrms_p127 0x0080
+	#define meter_angle_p127 0x00B2	//Digunakan untuk menghitung VAB dari VA-N 
+	#define meter_current_p127 0x0030
+	#define meter_frek_p127 0x003E
+
+	#define meter_power_p127     0x009E
+	#define meter_pf_p127    0x00A2
+
+	#define meter_energi_p127   0x0061 
+	#define meter_kva_p127 0x00AB
+
+	//pembacaan skaal VT/CT
+	#define reg_ct	42	
+	#define reg_vt	44	
+
+#endif //TIPE_MICOM_P127
+
+#ifdef TIPE_ION8600
+	#define comand_baca_ION8600 0x03
+
+	#define meter_current_ION8600    150		// 40150 s/d 40158 =  8 register
+	#define meter_voltage_ION8600    166		// 40166 s/d 40187 = 11 register
+	#define meter_power_ION8600      198		// 1140
+	#define meter_faktor_ION8600     262		// 1160
+	#define meter_energi_ION8600     230    	// 1700
+	#define reg_frek_ION8600         159	 	// 1180 x
+	//#define meter_energi_vah_ION8600 1725    	// 1724
+
+	//#define reg_kwh_ION8600   4000     // 2 register
+	#define reg_satuan_ION8600      3210		//3209 x
+#endif //TIPE_ION8600
+
+//Maret 2012
+#ifdef TIPE_A2000
+	#define comand_baca_A2000 0x03
+	
+	#define meter_phase_voltage_A2000    0000	 // 0x0000 s/d 0x0005 = 6 register
+	#define meter_delta_voltage_A2000    0x0100	 // 0x0100 s/d 0x0105 = 6 register
+	#define meter_phase_current_A2000    0x0200	 // 0x0200 s/d 0x0205 = 6 register
+	
+	#define meter_active_power_A2000     0x0400	 // 0x0400 s/d 0x0407 = 8 register
+	#define meter_reactive_power_A2000   0x0500	 // 0x0500 s/d 0x0507 = 8 register
+	#define meter_apparent_power_A2000   0x0600	 // 0x0500 s/d 0x0507 = 8 register
+	
+	#define meter_frek_A2000         	 0x0f00	 // 0x0F00 			  = 1 register
+	
+	#define meter_netral_current_A2000  0x0D00	 // 0x0D00 s/d 0x0D03 = 4 register	
+	
+	#define meter_faktor_A2000     		0x0700	 // 0x0700 s/d 0x0707 = 8 register
+	
+	#define meter_energi_A2000     		0x0800 	//  0x0800 s/d 0x080F = 16 register
+	
+	//#define reg_satuan_A2000      3210		//3209 x
+#endif //TIPE_A2000
+
+#ifdef TIPE_TFX_ULTRA
+	#define comand_baca_tfx 0x03
+	
+	#define tfx_integer				0x0064	 // 0x40100 s/d 0x40113  
+	#define tfx_single_precision	0x0066	 // 0x40200 s/d 0x40213 
+	#define tfx_double_precision	0x0068	 // 0x40200 s/d 0x40327 
+	
+	/*
+	#define tfx_signal_strength    	0x40100	 // 0x0000 s/d 0x0005 = 2 register
+	#define tfx_flowrate    		0x40102	 // 0x0100 s/d 0x0105 = 2 register
+	#define tfx_net_totalizer    	0x40104	 // 0x0200 s/d 0x0205 = 2 register
+	
+	#define tfx_positive_totalizer	0x40106	 // 0x0400 s/d 0x0407 = 8 register
+	#define tfx_negative_totalizer  0x40108	 // 0x0500 s/d 0x0507 = 8 register
+	#define tfx_temperature_1   	0x40110	 // 0x0500 s/d 0x0507 = 8 register
+	#define tfx_temperature_2       0x40112	 // 0x0F00 			  = 1 register
+	*/
+#endif //TIPE_TFX_ULTRA
 
 
 struct d_pmod {
@@ -282,5 +352,24 @@ struct t_kontrol_PM {
 
 unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk);
 
+#ifdef TIPE_MICOM_M300
+unsigned int get_M300(int alamatPM, unsigned short reg, unsigned char uk);
+#endif
+
+#ifdef TIPE_MICOM_P127
+unsigned int get_P127(int alamatPM, unsigned short reg, unsigned char uk);
+#endif
+
+#ifdef TIPE_ION8600
+unsigned int get_ION8600(int alamatPM, unsigned short reg, unsigned char uk);
+#endif
+
+#ifdef TIPE_A2000
+unsigned int get_A2000	(int alamatPM, unsigned short reg, unsigned char uk);
+#endif
+
+#ifdef TIPE_TFX_ULTRA
+unsigned int get_tfx	(int alamatPM, unsigned short reg, unsigned char uk);
+#endif
 //---------------------------------------------------------------------------
 #endif

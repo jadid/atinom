@@ -45,6 +45,12 @@
 
 #define KANALNYA 10
 
+#define	MICOM_M300	2
+#define	MICOM_P127	3
+#define ION8600		4
+#define A2000		5
+#define TFX_ULTRA	20
+
 // PER_SUMBER itu menujukkan jml data untuk 10 kanal.
 #define SUMBER_420		10
 #define SUMBER_KONTER	20
@@ -76,6 +82,11 @@
 	#ifdef PAKAI_RESOLV
 		char urlweb[32];
 	#endif
+#endif
+
+#ifdef PAKAI_TIMER_2
+	char flagT2;
+	int  iTim2;
 #endif
 
 #ifdef BOARD_KOMON_KONTER

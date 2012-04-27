@@ -189,11 +189,24 @@ int baca_env(char tampil)
 				for (i=0; i<KANALNYA; i++)	{
 					if (env2->kalib[i].status==0) { // Tegangan (default)
 						printf("  (%2d) %-10s  m: %10.7f, C: %7.3f  %-s\r\n", \ 
-							i+1, (env2->kalib[i].status==0)?"Tegangan":"On/OFF", \
+							i+1, (env2->kalib[i].status==0)?"Tegangan":"Error0", \
 							env2->kalib[i].m, env2->kalib[i].C, env2->kalib[i].ket);
-					} else {		// OnOff
+					} else if (env2->kalib[i].status==sONOFF) { // On/Off
 						printf("  (%2d) %-23s  %10s %-s\r\n", \ 
-							i+1, (env2->kalib[i].status==0)?"Tegangan":"On/OFF", " ", env2->kalib[i].ket);
+							i+1, (env2->kalib[i].status==sONOFF)?"OnOff":"Error1", " ", env2->kalib[i].ket);
+					#ifdef HITUNG_ENERGI
+					} else if (env2->kalib[i].status==DAYA) { // Daya
+						printf("  (%2d) %-10s  %3d : data: %10.7f  %-10s  %-s\r\n", \ 
+							i+1, (env2->kalib[i].status==DAYA)?"Daya":"Error6", env2->kalib[i].status, \
+							data_f[i], env2->kalib[i].ket, env2->kalib[i].formula);
+					} else if (env2->kalib[i].status==fENERGI) { // Energi
+						printf("  (%2d) %-10s  %3d : data: %10.7f  %-10s  %-s\r\n", \ 
+							i+1, (env2->kalib[i].status==fENERGI)?"Energi":"Error301", env2->kalib[i].status,\
+							data_f[i], env2->kalib[i].ket, env2->kalib[i].formula);
+					#endif
+					} else {		// OnOff
+						printf("  (%2d) status: %d  %10s %-s\r\n", \ 
+							i+1, (env2->kalib[i].status), " ", env2->kalib[i].ket);
 					}
 				}
 			}
@@ -402,6 +415,8 @@ void set_env_default() {
 	env2->statusWebClient = 0;
 	env2->banyak_sumber=0;
 	env2->burst = 0;
+	
+	env2->statusSerClient = 0;
 	
 	if (simpan_env( env2 ) < 0) {
 		vPortFree( env2 );

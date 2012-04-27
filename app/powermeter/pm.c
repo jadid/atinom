@@ -57,8 +57,21 @@ int jmlPM=0,k=0;
 unsigned char jml_sequen(char tipe) {
 	if 		(tipe==0) return 6;		// PM710
 	else if (tipe==1) return 8;		// PM810
+	#ifdef TIPE_MICOM_M300
 	else if (tipe==2) return 5;		// MICOM M300 <--- nilai return disesuaikan
-	else if (tipe==3) return 5;		// MICOM P127 <--- nilai return disesuaikan
+	#endif
+	#ifdef TIPE_MICOM_P127
+	else if (tipe==3) return 7; 	//P_127
+	#endif
+	#ifdef TIPE_ION8600
+	else if (tipe==4) return 5; 	//ION8600
+	#endif
+	#ifdef TIPE_A2000
+	else if (tipe==5) return 10; 	//A2000
+	#endif
+	#ifdef TIPE_TFX_ULTRA
+	else if (tipe==20) return 3; 	//tfx
+	#endif
 }
 
 int sedot_pm() {
@@ -395,6 +408,8 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 			taruh_data_127(no, i);
 			portEXIT_CRITICAL();
 		#endif
+		} else if (tipe==3 && pm_sukses==1) {
+			
 		}
 		i++;
 	}

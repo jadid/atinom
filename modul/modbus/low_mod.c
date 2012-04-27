@@ -78,6 +78,7 @@ unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk)	{
    	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
 }
 
+#ifdef TIPE_MICOM_M300
 unsigned int get_M300(int alamatPM, unsigned short reg, unsigned char uk)	{
    unsigned short dcrc;
    int i;
@@ -114,8 +115,166 @@ unsigned int get_M300(int alamatPM, unsigned short reg, unsigned char uk)	{
 			
    	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
 }
+#endif
 
+#ifdef TIPE_MICOM_P127
+unsigned int get_P127(int alamatPM, unsigned short reg, unsigned char uk)	{
+   unsigned short dcrc;
+   int i;
+	
+   reg_flag = reg;
 
+   //if (reg != reg_kwh)
+   //reg = reg - 1;
+
+   //pmod.addr = (unsigned char)   addr_PM710;
+   pmod.addr = (unsigned char)   alamatPM;
+   pmod.command = (unsigned char) comand_baca_127;
+   pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
+   pmod.reg_lo = (unsigned char) (reg & 0x00FF);
+   pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
+
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
+   pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
+
+	#ifdef LIAT   
+	printf("Kirim: %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X  \n",
+			pmod.addr,
+			pmod.command,
+			pmod.reg_hi,
+			pmod.reg_lo,
+			pmod.jum_hi,
+			pmod.jum_lo,
+			pmod.crc_hi,
+			pmod.crc_lo);
+	
+	#endif		
+			
+   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
+}
+#endif
+
+#ifdef TIPE_ION8600
+unsigned int get_ION8600(int alamatPM, unsigned short reg, unsigned char uk)	{
+   unsigned short dcrc;
+   int i;
+	
+   reg_flag = reg;
+
+   //if (reg != reg_kwh)
+   reg = reg - 1;
+
+   //pmod.addr = (unsigned char)   addr_PM710;
+   pmod.addr = (unsigned char)   alamatPM;
+   pmod.command = (unsigned char) comand_baca_ION8600;
+   pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
+   pmod.reg_lo = (unsigned char) (reg & 0x00FF);
+   pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
+
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
+   pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
+
+	#ifdef LIAT   
+	printf("Kirim: %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X  \n",
+			pmod.addr,
+			pmod.command,
+			pmod.reg_hi,
+			pmod.reg_lo,
+			pmod.jum_hi,
+			pmod.jum_lo,
+			pmod.crc_hi,
+			pmod.crc_lo);
+	
+	#endif		
+			
+   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
+}
+#endif
+
+#ifdef TIPE_A2000
+unsigned int get_A2000(int alamatPM, unsigned short reg, unsigned char uk)	{
+   unsigned short dcrc;
+   int i;
+	
+	//printf("[%s]: alamatPM: %d, register: %d (0x%0.4X), ukuran: %d\n",__FUNCTION__, alamatPM,reg,reg, uk);
+   reg_flag = reg;
+
+   //if (reg != reg_kwh)
+   //reg = reg - 1;
+
+   //pmod.addr = (unsigned char)   addr_PM710;
+   pmod.addr = (unsigned char)   alamatPM;
+   pmod.command = (unsigned char) comand_baca_A2000;
+   pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
+   pmod.reg_lo = (unsigned char) (reg & 0x00FF);
+   pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
+
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
+   pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
+
+	#ifdef LIAT   
+	printf("Kirim: %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X  \n",
+			pmod.addr,
+			pmod.command,
+			pmod.reg_hi,
+			pmod.reg_lo,
+			pmod.jum_hi,
+			pmod.jum_lo,
+			pmod.crc_hi,
+			pmod.crc_lo);
+	
+	#endif		
+			
+   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
+}
+#endif
+
+#ifdef TIPE_TFX_ULTRA
+unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
+   unsigned short dcrc;
+   int i;
+	
+	printf("[%s]: Alamat Modbus: %d, register: %d (0x%0.4X), ukuran: %d\n",__FUNCTION__, alamatPM,reg,reg, uk);
+	reg_flag = reg;
+
+   //if (reg != reg_kwh)
+   reg = reg - 1;
+
+   //pmod.addr = (unsigned char)   addr_PM710;
+   pmod.addr = (unsigned char)   alamatPM;
+   pmod.command = (unsigned char) comand_baca_tfx;
+   pmod.reg_hi = (unsigned char) ((reg & 0xFF00) >> 8);
+   pmod.reg_lo = (unsigned char) (reg & 0x00FF);
+   pmod.jum_hi = (unsigned char) ((uk & 0xFF00) >> 8);
+   pmod.jum_lo = (unsigned char) (uk & 0x00FF);
+
+   dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
+   pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+   pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
+
+	//#define LIAT
+	#ifdef LIAT   
+	printf("Kirim: %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X  \n",
+			pmod.addr,
+			pmod.command,
+			pmod.reg_hi,
+			pmod.reg_lo,
+			pmod.jum_hi,
+			pmod.jum_lo,
+			pmod.crc_hi,
+			pmod.crc_lo);
+	
+	#endif		
+			
+   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
+}
+#endif
 
 unsigned short cek_PM(int alamatPM) {
 	unsigned short dcrc;

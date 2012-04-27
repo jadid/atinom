@@ -16,6 +16,8 @@ typedef void (*IAP)(unsigned int [],unsigned int[]);
 #define	 ssFLOW2		201
 #define	 nFLOW2			202
 #define	 fFLOW			203
+#define	 DAYA			6
+#define  fENERGI		251
 #define	 sADC_ORI		9
 
 
@@ -34,6 +36,7 @@ struct t_kalib {
 	#ifdef PAKAI_ADC_ORI
 	char adc;
 	#endif
+	char formula[32];
 };
 
 struct t_webclient {
@@ -78,6 +81,7 @@ struct t_env {
 	#ifdef PAKAI_RTC
 	unsigned char uRTC;
 	#endif
+	char statusSerClient;
 };
 
 //#define SEKTOR_ENV	24

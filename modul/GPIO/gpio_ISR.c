@@ -32,7 +32,7 @@
 extern xSemaphoreHandle keypad_sem;
 #endif
 
-#ifdef BOARD_CNC
+#ifdef PAKAI_TIMER_2
 void timer2_ISR_Wrapper( void )
 {
 	portSAVE_CONTEXT();
@@ -48,11 +48,14 @@ void timer2_ISR_Wrapper( void )
 
 void timer2_ISR_Handler( void )
 {
+	iTim2 = T2TC;
 	T2IR	= TxIR_MR0_Interrupt;   		// clear interrupt by writing an IR-bit
-	T2TCR	= TxTCR_Counter_Reset;
+	//T2TCR	= TxTCR_Counter_Reset;
 	T2TCR  |= TxTCR_Counter_Enable;         // enable timer 2
+
+	flagT2 = 1;
+	T2TC = 0;
 	
-	printf("x.%d.", T2TC);
 	/* Clear the ISR in the VIC. */
 	VICVectAddr = 0;
 }
@@ -73,6 +76,8 @@ void timer1_ISR_KONTROL( void );
 void gpio_ISR_Wrapper_keypad( void ) __attribute__ ((naked));
 void gpio_ISR_keypad_Handler( void );
 
+void timer2_ISR_Wrapper( void ) __attribute__ ((naked));
+void timer2_ISR_Handler( void );
 
 //void set_konter(int st, unsigned int period);
 

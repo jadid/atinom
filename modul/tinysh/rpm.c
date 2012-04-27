@@ -112,9 +112,11 @@ void hitung_rpm(void)	{
 	{
 		
 		portENTER_CRITICAL();
+		/*
 		if (giliran==6)	{
 			printf("hit: %d, lama: %d\r\n", konter.t_konter[giliran].hit, konter.t_konter[giliran].hit_lama);
 		}
+		//*/
 		
 		if (konter.t_konter[giliran].hit_lama == konter.t_konter[giliran].hit)
 		{
@@ -265,7 +267,7 @@ void data_frek_rpm() {
 				// cari frekuensi
 				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 				// rpm
-				temp_rpm = temp_f * 60;
+				temp_rpm = temp_f;		// ganti ke rps * 60;
 				
 				if (i==6) {
 					//printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
@@ -427,8 +429,11 @@ void cek_kanal()	{
 					temp_rpm = 0;
 				}	
 
-				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f, lp: %d, beda: %d\r\n", \
-					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1], konter.t_konter[i].last_period, konter.t_konter[i].beda);
+				//printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f, lp: %d, beda: %d\r\n", \
+				//	(i+1), temp_f, data_f[(i*2)], data_f[i*2+1], konter.t_konter[i].last_period, konter.t_konter[i].beda);
+				printf(" %2d : F = %6.2f Hz, rpm = %7.2f, hit = %8.0f\r\n", \
+					(i+1), temp_f, data_f[(i*2)], data_f[i*2+1]);
+
 			}
 		} else if (penv->kalib[i].status == sONOFF) {		// onoff = 1
 			#if 0

@@ -49,7 +49,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	baca_env(0);	
   	
   	vTaskDelay(50);
-  	unsigned int loopambil=0;
+  	unsigned int loopambil=0, lm=0, lb=0;
+  	char ser2[50];
+  	
 	
 	#ifdef PAKAI_SHELL
 		printf(" Monita : Ambil cepat init !!\r\n");
@@ -142,6 +144,15 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
 		#endif
 		
+		#ifdef PAKAI_SERIAL_2
+			if (loopambil%1000==0) {			// 1 detik ambil data
+				sprintf(ser2, "tes serial 2 : %d\r\n", lm);
+				ser2_putstring(ser2);
+			}
+			
+			
+		#endif
+		
 		loopambil++;
 		#ifdef PAKAI_GPS
 			if (serPollGPS())	
@@ -172,6 +183,22 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			}
 		#endif
 		
+		#ifdef UNTUK_UNSRI
+		if (loopambil%1000==0) {			// 1 detik ambil data
+			//hitung_energi();
+			//printf("T2MR0: %d, T2TC: %d\r\n", T2MR0, T2TC);
+		}
+		#endif
+		
+		#ifdef PAKAI_TIMER_2
+			if (flagT2)	{
+				printf("lb: %d : %d\r\n", lb, iTim2);
+				flagT2 = 0;
+				lb++;
+			}
+			
+		#endif
+		
 		#ifdef PAKAI_ADC_ORI
 			//if (loopambil%2)	{
 				proses_data_adc_ori(loopambil%2);		// 2 = JML_ADC
@@ -180,7 +207,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		#ifdef BOARD_KOMON_KONTER
 			#ifdef HITUNG_RPM
-				if (loopambil%100==0) {				// 5x20 = 100
+				if (loopambil%150==0) {				// 1.5 detik ambil data
 					cek_input_onoff();				// ada di tinysh/rpm.c
 					hitung_rpm();
 				}
@@ -297,8 +324,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		#endif
 		
 		//printf("isi memRTC0: %d, loopambil: %d\r\n", MEM_RTC0, loopambil);
-		if (loopambil>2000) 
-		{
+		if (loopambil>10000) {
 			#ifdef TES_MEM_RTC
 			//MEM_RTC0++;
 			//MEM_RTC1++;
@@ -337,6 +363,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		vTaskDelay(1);
 		#endif
 		
+		lm++;
 	}
 
 	#ifdef PAKAI_GPS

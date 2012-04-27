@@ -52,13 +52,13 @@
 #define PAKAI_LED_UTAMA
 #define BANYAK_SUMBER
 #define CENDOL
-//#define PAKAI_RTC
+#define PAKAI_RTC
 #define PAKAI_ADC_ORI
 #define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
 
 #define PAKAI_PUSHBUTTON
-//#define PAKAI_RELAY
+#define PAKAI_RELAY
 
 #ifdef PAKAI_RTC
 	#define PAKAI_MEM_RTC

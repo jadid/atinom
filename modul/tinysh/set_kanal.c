@@ -83,13 +83,14 @@ void set_kanal(int argc, char **argv)	{
   		printf(" Setting keterangan kanal %d :\r\n", kanal);
   		sprintf(p_sbr->kalib[kanal-1].ket, "%s", argv[3]);
   		printf(" %s", p_sbr->kalib[kanal-1].ket);
-  	}
-  	else if (strcmp(argv[2], "status") == 0)  	{
+  	} else if (strcmp(argv[2], "formula") == 0)  	{
+		sprintf(p_sbr->kalib[kanal-1].formula, "%s", argv[3]);
+  	} else if (strcmp(argv[2], "status") == 0)  	{
 		char w=0;
   		printf(" Setting status kanal %d :\r\n", kanal);
   		//*
   		w = argv[3][0] - '0';
-  		if (w>0 && w<5) {
+  		if (w>0 && w<9) {
 			//if ( (kanal%2) && (kanal<10) )	
 			{
 				p_sbr->kalib[kanal-1].status = w;
@@ -100,6 +101,11 @@ void set_kanal(int argc, char **argv)	{
 						p_sbr->kalib[kanal].status   = ssFLOW2;
 						p_sbr->kalib[kanal+1].status = nFLOW2;
 						p_sbr->kalib[KANALNYA-1].status = fFLOW;
+					}
+				#endif
+				#ifdef HITUNG_ENERGI
+					if (w==DAYA)	{
+						p_sbr->kalib[kanal].status = fENERGI;
 					}
 				#endif
 			}

@@ -104,7 +104,7 @@ void dele(int dd);
 									} while(0);
 	#endif
 
-	#ifdef PAKAI_TIMER2
+	#ifdef PAKAI_TIMER_2
 		#define setup_timer2()		do	{	\
 										PCONP |= BIT(22);		\
 										PCLKSEL1 &= ~(BIT(12) | BIT(13));	\

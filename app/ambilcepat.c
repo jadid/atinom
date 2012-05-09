@@ -125,7 +125,12 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		loopambil=0;
 		#endif
   	#endif
-  	
+
+	#ifdef UNTUK_UNSRI
+		printf("*******************baca_mem_rtc*********************\r\n");
+		baca_mem_rtc();
+	#endif
+
   	#ifdef PAKAI_RTC
 
   	#endif
@@ -137,14 +142,16 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
 		#endif
 		
+		/*
 		#ifdef PAKAI_SERIAL_2
 			if (loopambil%1000==0) {			// 1 detik ambil data
-				//sprintf(ser2, "tes serial 2 : %d\r\n", lm);
+				sprintf(ser2, "tes serial 2 : %d\r\n", lm);
 				ser2_putstring(ser2);
 			}
 			
 			
 		#endif
+		//*/
 		
 		loopambil++;
 		#ifdef PAKAI_GPS

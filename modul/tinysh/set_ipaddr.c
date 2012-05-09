@@ -201,10 +201,10 @@ static void setenv_fnt(int argc, char **argv)
 		}
 		printf(" Status serialclient : %s\r\n", (p_sbr->statusSerClient==1)?"aktif":"mati");
 	}
-	else if (strcmp(argv[1], "serperiode") == 0)	{
+	else if (strcmp(argv[1], "intclient") == 0)	{
 		printf(" set periode serclient\r\n");
-  		sprintf(p_sbr->intSer, "%d", argv[2]);
-  		printf(" periode serialclient : %s\r\n", p_sbr->intSer);
+  		p_sbr->intSer = atoi(argv[2]);
+		printf(" %d detik\r\n", p_sbr->intSer);
 	}
 	#endif
 	#ifdef PAKAI_WEBCLIENT

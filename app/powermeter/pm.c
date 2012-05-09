@@ -55,24 +55,24 @@ struct t_kontrol_PM kontrol_PM[JML_SUMBER];
 int jmlPM=0,k=0;
 
 unsigned char jml_sequen(char tipe) {
-	if 		(tipe==PM710) return 6;		// PM710
+	if 		(tipe==PM710) return 6;			// PM710
 	#ifdef TIPE_PM810
-	else if (tipe==PM810) return 8;		// PM810
+	else if (tipe==PM810) return 8;			// PM810
 	#endif
 	#ifdef TIPE_MICOM_M300
-	else if (tipe==MICOM_M300) return 5;		// MICOM M300 <--- nilai return disesuaikan
+	else if (tipe==MICOM_M300) return 5;	// MICOM M300 <--- nilai return disesuaikan
 	#endif
 	#ifdef TIPE_MICOM_P127
-	else if (tipe==MICOM_P127) return 7; 	//P_127
+	else if (tipe==MICOM_P127) return 7; 	// P_127
 	#endif
 	#ifdef TIPE_ION8600
-	else if (tipe==ION8600) return 5; 	//ION8600
+	else if (tipe==ION8600) return 5; 		// ION8600
 	#endif
 	#ifdef TIPE_A2000
-	else if (tipe==A2000) return 10; 	//A2000
+	else if (tipe==A2000) return 10; 		// A2000
 	#endif
 	#ifdef TIPE_TFX_ULTRA
-	else if (tipe==TFX_ULTRA) return 1; 	//tfx
+	else if (tipe==TFX_ULTRA) return 1; 	// tfx = 20
 	#endif
 }
 

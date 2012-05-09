@@ -153,8 +153,10 @@ void init_hardware()	{
  */
 //***************************************************************/
 	#ifndef BLINK
+	#ifndef BOARD_TAMPILAN
 	init_ambilcepat();
 	init_kirimcepat();
+	#endif
 	#endif
 }
 

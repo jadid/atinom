@@ -68,7 +68,7 @@
 
 #if defined(PAKAI_ETH) && defined(PAKAI_ENCX24J600)
 
-#ifdef BOARD_KOMON_420_SABANG_2_3
+//#ifdef BOARD_KOMON_420_SABANG_2_3
 
 #include "MAC.h"
 
@@ -89,7 +89,7 @@
 //							FIO0DIR = FIO0DIR | CS_ENC;
 
 #define BOARD_KOMON
-#endif
+//#endif
 
 // Define macro for 8-bit PSP SFR address translation to SPI addresses
 #if (ENC100_INTERFACE_MODE == 0)	// SPI

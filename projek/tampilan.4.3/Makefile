@@ -96,9 +96,9 @@ THUMB_SOURCE= \
 		../../modul/spi/spi.c \
 		../../modul/serial/serial.c \
 		../../modul/spi/low_ss1.c	\
-		../../tinysh/tinysh.c \
-		../../tinysh/shell.c \
-		../../tinysh/enviro.c \
+		../../modul/tinysh/tinysh.c \
+		../../modul/tinysh/shell.c \
+		../../modul/tinysh/enviro.c \
 		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
 		

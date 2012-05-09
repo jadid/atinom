@@ -250,7 +250,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	printf(" ARP : arp_init\r\n");
 	uip_arp_init ();
 	
-	#if defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENCX24J600) 
+	//#if defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENCX24J600) 
+	#if defined(PAKAI_ENCX24J600) 
 		printf(" Init ENC624J600.. ");
 		
 		if ( (status_eth=Enc624Init())== 1)	{
@@ -258,7 +259,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		}	else	{
 			printf("ENC tidak respons !\r\n");
 		}
-	#elif defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENC28J60) 
+	//#elif defined(BOARD_KOMON_420_SABANG_2_3) && defined(PAKAI_ENC28J60) 
+	#elif defined(PAKAI_ENC28J60) 
 		printf(" Init ENC28J .. ");
 		if ( (status_eth=enc28j60Init())== 1)	{
 			 printf(" .. ENC OK\r\n");

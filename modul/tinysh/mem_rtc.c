@@ -14,13 +14,18 @@
 #include "hardware.h"
 #include "../app/monita/monita_uip.h"
 #include "enviro.h"
+//#include "../../hardware/lpc23xx.h"
 
 #ifdef PAKAI_MEM_RTC
+
+#define MEM_RTC_BASE_ADDR		0xE0084000
+#define MEM_RTC0	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x00))
+#define MEM_RTC1	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x04))
 
 extern float data_f[];
 extern struct t2_konter konter;
 
-//#define TES_MEM_RTC
+#define TES_MEM_RTC
 
 #ifdef TES_MEM_RTC
 void tes_mem_rtc(int argc, char **argv)	{
@@ -42,6 +47,24 @@ void tes_mem_rtc(int argc, char **argv)	{
 static tinysh_cmd_t tes_mem_cmd={0,"tes_mem","set memori RTC","", tes_mem_rtc,0,0,0};
 #endif
 
+#ifdef HITUNG_ENERGI
+void simpan_ke_mem_rtc()	{
+	uint tmpi;
+	tmpi = (int) (data_f[9]*1000);
+	*(&MEM_RTC0+(9))	= (int) (data_f[9]*1000);
+	//printf("tmpi: %d, mem: %d\r\n", tmpi, *(&MEM_RTC0+(9)));
+}
+
+void baca_mem_rtc()	{
+	uint  tmpi;
+	float tmpf;
+	tmpi = *(&MEM_RTC0+(9));
+	tmpf = (float) (tmpi)/1000;
+	data_f[9] = tmpf;
+	printf("_______________ tmpi: %d, tmpf: %.4f d[10]: %.3f ________________\r\n", tmpi, tmpf, data_f[9]);
+}
+
+#endif
 
 void reset_mem_rtc()	{
 	unsigned char ii;

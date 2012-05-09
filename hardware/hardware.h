@@ -422,7 +422,7 @@ void dele(int dd);
 	#define uC	"NXP LPC 2387"
 	
 	#define PORT_INPUT_KONTER(kanal)	(FIO2PIN & (1 << kanal)) ? 0 : 1;
-	
+
 	#ifdef PAKAI_LED_UTAMA
 		#define LED_UTAMA	BIT(27)
 		
@@ -445,6 +445,14 @@ void dele(int dd);
 									} while(0)
 	#endif
 	
+	#ifdef PAKAI_TIMER_2
+		#define setup_timer2()		do	{	\
+										PCONP |= BIT(22);		\
+										PCLKSEL1 &= ~(BIT(12) | BIT(13));	\
+										PCLKSEL1 |= BIT(12);				\
+									} while(0)
+	#endif
+	
 	#ifdef PAKAI_MODBUS_RTU
 		#define TXDE	BIT(5)
 		#define RXDE	BIT(4)
@@ -453,8 +461,6 @@ void dele(int dd);
 	#ifdef PAKAI_SERIAL_3_P0
 		#define setup_serial3_P0()	do 	{	\
 										PCONP |= BIT(25);	\
-										PCLKSEL1 &= ~(BIT(18) | BIT(19));	\
-										PCLKSEL1 |= BIT(18);				\
 										PINSEL0 &= ~(BIT(0) | BIT(1) | BIT(2) | BIT(3));	\
 										PINSEL0 |= (BIT(1));								\
 										PINSEL0 |= (BIT(3));								\
@@ -545,17 +551,25 @@ void dele(int dd);
 
 	#ifdef PAKAI_ETH
 		#define CS_ENC	BIT(18)
-
 		#define INT_ENC	BIT(13)
 
+		#ifdef PAKAI_ENC28J60
+			#define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
+			#define ENC28J60_Deselect() FIO1SET = CS_ENC
 
-		#define ENC28J60_Select()   FIO1CLR = CS_ENC  // P1.18
-		#define ENC28J60_Deselect() FIO1SET = CS_ENC
-
-		// seharusnya tidak ada pin reset (sudah disambung ke VCC)
-		#define ENC28J60_Reset()    FIO1CLR = CS_ENC
-		#define ENC28J60_Unreset()  FIO1SET = CS_ENC
-
+			// seharusnya tidak ada pin reset (sudah disambung ke VCC)
+			#define ENC28J60_Reset()    FIO1CLR = CS_ENC
+			#define ENC28J60_Unreset()  FIO1SET = CS_ENC
+		#endif
+		
+		#ifdef PAKAI_ENCX24J600
+			#define ENCX24J600_Reset()		FIO1CLR = CS_ENC
+			#define ENCX24J600_Unreset()	FIO1SET = CS_ENC
+			
+			#define AssertChipSelect()		FIO1CLR = CS_ENC  // P0.16		// ENC28J60_Select()
+			#define DeassertChipSelect()	FIO1SET = CS_ENC				// ENC28J60_Deselect()
+		#endif
+		
 		#define FIO_CEK_PAKET		FIO2PIN
 
 		#define init_enc_port()		FIO2DIR = FIO2DIR & ~(INT_ENC); \

@@ -80,7 +80,7 @@
 #define NAMA_BOARD	"Babelan Tampilan-4.3"
 
 #define PAKAI_LED_UTAMA
-#define PAKAI_BACKLIT
+//#define PAKAI_BACKLIT
 //#define CEK_BLINK
 
 //#define PAKAI_SERIAL_2
@@ -120,7 +120,7 @@
 #define PAKAI_BACKLIT
 
 #define BANYAK_SUMBER
-#define UNTUK_PLTD_AMPENAN
+//#define UNTUK_PLTD_AMPENAN
 #define SUMBER_BANYAK_SEKALI
 
 //#define PAKAI_RELAY

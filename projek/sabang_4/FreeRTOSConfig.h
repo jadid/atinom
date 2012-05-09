@@ -61,7 +61,7 @@
 #endif
 
 
-#define PAKAI_SERIAL_3
+//#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
 	#define PAKAI_SERIAL_3_P0	9600		// TFX_ULTRA: 9600
@@ -90,6 +90,7 @@
 
 //#define TES_GET_WEB
 
+#define UNTUK_UNSRI
 #ifdef UNTUK_UNSRI
 	#define PROMPT 		"SabangUnsri@"
 #else
@@ -100,7 +101,7 @@
 
 #define PAKAI_LED_UTAMA
 
-#define PAKAI_SERIAL_2
+//#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		115200
 	#define KIRIM_KE_SER_2
@@ -109,16 +110,16 @@
 #endif
 
 #define PAKAI_SHELL
-//#define PAKAI_ADC
+#define PAKAI_ADC
 #define CENDOL
 //#define PAKAI_RELAY
-//#define UNTUK_UNSRI
-//#define HITUNG_ENERGI
+#define UNTUK_UNSRI
+#define HITUNG_ENERGI
 
 //#define DATA_RANDOM
 #define PAKAI_RTC
 #ifdef PAKAI_RTC
-	//#define PAKAI_MEM_RTC
+	#define PAKAI_MEM_RTC
 	//#define TES_MEM_RTC
 #endif
 
@@ -130,7 +131,7 @@
 
 //	#define PAKAI_MODBUSTCP
 	#define SAMPURASUN_CLIENT
-//	#define SAMPURASUN_SERVER
+	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP

@@ -28,6 +28,7 @@
 //unsigned int result[2]; 	// For Result Table
 //IAP iap_entry;
 
+//#define MAGIC_1	0x27
 #define MAGIC_1	0x27
 #define MAGIC_2	0xEF
 
@@ -181,6 +182,12 @@ int baca_env(char tampil)
 				printf(" File        = %s\r\n", env2->berkas); 
 				printf(" Mode Burst  = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
 			#endif
+			
+			#ifdef KIRIM_KE_SER_2
+				printf(" serclient  = %s\r\n", (env2->statusSerClient==1)?"Aktif":"mati"); 
+				printf(" intclient  = %d\r\n", env2->intSer);
+			#endif
+			
 			garis_bawah();
 			
 			#ifdef PAKAI_ADC
@@ -417,6 +424,7 @@ void set_env_default() {
 	env2->burst = 0;
 	
 	env2->statusSerClient = 0;
+	env2->intSer = 5;				// 5 detik
 	
 	if (simpan_env( env2 ) < 0) {
 		vPortFree( env2 );

@@ -242,7 +242,9 @@ unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
    unsigned short dcrc;
    int i;
 	
+	#ifdef LIAT
 	printf("[%s]: Alamat Modbus: %d, register: %d (0x%0.4X), ukuran: %d\n",__FUNCTION__, alamatPM,reg,reg, uk);
+	#endif
 	reg_flag = reg;
 
    //if (reg != reg_kwh)

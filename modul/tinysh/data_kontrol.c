@@ -298,9 +298,9 @@ int set_data(int argc, char **argv)
 				printf("    artinya memberikan setting batasan alarm rendah data 5 dengan nilai 1.25\r\n");
 				printf("\r\n");
 				printf("    relay : mengaktif/nonaktifkan relay pada kanal tertentu\r\n");
-				printf("    misalnya  : $ set_data 4 relay [1|2|3|aktif|hidup|atas|bawah|semua] 7 \r\n");
+				printf("    misalnya  : $ set_data 4 alarm [1|2|3|aktif|hidup|atas|bawah|semua] 7 \r\n");
 				printf("    artinya mengaktifkan relay untuk data ke 4 pada kanal 7\r\n");
-				printf("    misalnya  : $ set_group 8 relay [0|mati] 2\r\n");
+				printf("    misalnya  : $ set_group 8 alarm [0|mati] 2\r\n");
 				printf("    artinya me-nonaktifkan relay untuk data ke 8 pada kanal 2\r\n");
 				printf("\r\n");
 				

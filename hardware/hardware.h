@@ -442,7 +442,7 @@ void dele(int dd);
 										PCLKSEL1 &= ~(BIT(16) | BIT(17));	\
 										PCLKSEL1 |= BIT(16);	\
 										PINSEL0 |= (BIT(20) | BIT(22));	\
-									} while(0)	\
+									} while(0)
 	#endif
 
 	#ifdef PAKAI_TIMER_2

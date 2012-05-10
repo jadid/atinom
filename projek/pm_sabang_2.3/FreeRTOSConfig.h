@@ -70,7 +70,7 @@
 	#define PAKAI_PM			3
 
 	#ifdef AMBIL_PM
-	
+
 	#endif
 
 	#ifdef PAKAI_PM

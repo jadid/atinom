@@ -47,7 +47,7 @@
 #define printf	printf2
 
 //#define UNTUK_UNSRI
-#define UNTUK_MONITA_KAPAL
+//#define UNTUK_MONITA_KAPAL
 
 #define PAKAI_SHELL
 #define PAKAI_LED_UTAMA
@@ -61,7 +61,7 @@
 //#define PAKAI_PUSHBUTTON
 //#define PAKAI_RELAY
 
-#define PAKAI_TIMER_2		// CRON
+//#define PAKAI_TIMER_2		// CRON
 #ifdef  PAKAI_TIMER_2
 	//#define PAKAI_CRON
 #endif
@@ -71,21 +71,21 @@
 	//#define TES_MEM_RTC
 #endif
 
-//#define PAKAI_ETH
+#define PAKAI_ETH
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
-	#define SAMPURASUN_CLIENT
+//	#define SAMPURASUN_CLIENT
 //	#define SAMPURASUN_SERVER
-	#define PAKAI_WEBCLIENT
-	#define PAKE_TELNETD
-	#define PAKAI_HTTP
+//	#define PAKAI_WEBCLIENT
+//	#define PAKE_TELNETD
+//	#define PAKAI_HTTP
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
-		#define WEBCLIENT_DATA
+//		#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS
 			#define WEBCLIENT_GPS
 		#endif
@@ -99,26 +99,26 @@
 
 #define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
-//	#define PAKAI_SERIAL_3_P0	9600		// max PM810: 38400
-//	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
 	#define PAKAI_SERIAL_3_P0	115200		// TES
+//	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
+//	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
 
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
 	#define PAKAI_MAX485		1
-
+	
 	#define AMBIL_PM
 	#define PAKAI_PM			3
-	
+
 	#ifdef AMBIL_PM
 	
 	#endif
 
 	#ifdef PAKAI_PM
-//		#define TIPE_PM810
-//		#define TIPE_PM710
-//		#define TIPE_MICOM_M300
-//		#define TIPE_MICOM_P127
+		#define TIPE_PM810
+		//#define TIPE_PM710
+		//#define TIPE_MICOM_M300
+		//#define TIPE_MICOM_P127
 		#define TIPE_TFX_ULTRA
 	#endif
 #endif

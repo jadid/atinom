@@ -70,7 +70,7 @@ void togle_led_utama(void)	{
 	if (tog)	{
 		FIO0SET = LED_UTAMA;
 		tog = 0;
-		FIO0SET = RXDE;
+		//FIO0SET = RXDE;
 		/* kalkulasi idle loop */
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
@@ -81,7 +81,7 @@ void togle_led_utama(void)	{
 		tendang_wdog();
 	}	else	{
 		FIO0CLR = LED_UTAMA;
-		FIO0CLR = RXDE;
+		//FIO0CLR = RXDE;
 		tog = 1;
 		//ser2_putstring("masuk ...\r\n");	
 	}

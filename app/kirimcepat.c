@@ -73,12 +73,11 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#ifdef KIRIM_KE_SER_2
 		if (statKirimSer==1)	{
 			qw++;
-			printf("kirim ser 2 : %d\r\n", qw);
-			
 			#ifdef UNTUK_MONITA_KAPAL
+			//printf("kirim ser 2 : %d\r\n", qw);
 			sprintf(ser2, "%.1f,%.1f\r\n", data_f[0], data_f[2]);	
 			vTaskDelay(1);
-			printf("%s\r\n", ser2);
+			//printf("%s\r\n", ser2);
 			ser2_putstring(ser2);
 
 			//cek_ngisi_minyak(dlama);

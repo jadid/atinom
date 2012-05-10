@@ -53,7 +53,7 @@
 #define PAKAI_LED_UTAMA
 #define BANYAK_SUMBER
 #define CENDOL
-#define PAKAI_RTC
+//#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
 //#define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
@@ -99,31 +99,31 @@
 
 #define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
-	#define PAKAI_SERIAL_3_P0	9600		// max PM810: 38400
+//	#define PAKAI_SERIAL_3_P0	9600		// max PM810: 38400
 //	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
-
+	#define PAKAI_SERIAL_3_P0	115200		// max MICOM: 19200
 
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
 	#define PAKAI_MAX485		1
-/*	
+
 	#define AMBIL_PM
 	#define PAKAI_PM			3
-*/
+	
 	#ifdef AMBIL_PM
 	
 	#endif
 
 	#ifdef PAKAI_PM
-		//#define TIPE_PM810
-		//#define TIPE_PM710
-		//#define TIPE_MICOM_M300
-		//#define TIPE_MICOM_P127
+		#define TIPE_PM810
+//		#define TIPE_PM710
+//		#define TIPE_MICOM_M300
+//		#define TIPE_MICOM_P127
 		#define TIPE_TFX_ULTRA
 	#endif
 #endif
 
-#define PAKAI_SERIAL_2
+//#define PAKAI_SERIAL_2
 #ifdef PAKAI_SERIAL_2
 	#define PAKAI_SERIAL_2_P0		9600
 	#define KIRIM_KE_SER_2

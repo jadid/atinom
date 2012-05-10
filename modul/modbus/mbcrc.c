@@ -32,7 +32,7 @@
 //#include "port.h"
 
 
-USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug );
+//USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug );
 
 static const UCHAR aucCRCHi[] = {
     0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,

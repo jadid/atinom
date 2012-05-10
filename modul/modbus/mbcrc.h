@@ -33,6 +33,6 @@
 //typedef unsigned char UCHAR;
 //typedef unsigned short USHORT;
 
-USHORT          usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug );
+//USHORT          usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug );
 
 #endif

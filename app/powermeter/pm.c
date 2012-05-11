@@ -452,10 +452,12 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 
 void cek_coil(unsigned char almx, int regx, int jmlx)	{
 	struct d_pmod pmodx;
-	unsigned char *stx, *pm;	
+	unsigned char *stx, *x;	
 	char i;
 
-	printf("  %s() ---> alm: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almx, regx, jmlx);
+	//printf("  %s() ---> alm: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almx, regx, jmlx);
+	modbus_rtu(&x, almx, 0x01, regx, jmlx);
+	
 	
 	#if 0
 	stx = (char *) &pmodx;
@@ -475,25 +477,24 @@ void cek_coil(unsigned char almx, int regx, int jmlx)	{
 	printf("\r\n");
 	#endif
 
-   	return (1 + 1 + 1 + (jmlx * 2) + 2);	// slave address, function, bytecount, data, crc
+   	return ( 3+ jmlx + 2 );	// slave address, function, bytecount, data, crc
 }
 
 void cek_holding(unsigned char almx, int regx, int jmlx)	{
 	unsigned char *stx, *x;	
 	char i;
 
-	int tipe=2;
 	//printf("  %s() ---> alm: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almx, regx, jmlx);
 	
 	paket_modbus_rtu(&x, almx, 0x03, regx, jmlx);
 
-	#if 1
+	#if 0
 	stx = &x;
 	for (i=0; i<8; i++)	{
-		#ifdef DEBUG_MODBUS_ELEMEN
+		//#ifdef DEBUG_MODBUS_ELEMEN
 		printf("%02x ", stx[i]);
-		#endif
-		//serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
+		//#endif
+		serX_putchar(PAKAI_PM, stx[i], TUNGGU_PM_TX);
 	}
 	printf("\r\n");
 	#endif
@@ -502,7 +503,7 @@ void cek_holding(unsigned char almx, int regx, int jmlx)	{
 	
 	//printf("%02x %02x %02x %02x\r\n", *pm, *(pm+1), *(pm+2), *(pm+3));
 
-   	return (1 + 1 + 1 + (jmlx * 2) + 2);	// slave address, function, bytecount, data, crc
+   	return (3 + jmlx + 2);	// slave address, function, bytecount, data, crc
 }
 
 #if 0

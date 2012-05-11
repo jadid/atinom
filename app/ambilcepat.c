@@ -98,7 +98,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		int sPM=0;
 		
 		#ifdef AMBIL_PM
-			printf("Init ambil PM ..-ambilcepat-..!!!\r\n");
+			printf("      Init ambil PM ..-ambilcepat-..!!!\r\n");
 			vTaskDelay(3000);
 		#endif
   	#endif
@@ -127,7 +127,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#endif
 
 	#ifdef UNTUK_UNSRI
-		printf("*******************baca_mem_rtc*********************\r\n");
+		//printf("*******************baca_mem_rtc*********************\r\n");
 		baca_mem_rtc();
 	#endif
 

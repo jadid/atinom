@@ -265,9 +265,14 @@ unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
 }
 #endif
 
-void modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, int regx, int jmlx)	{
-	paket_modbus_rtu(&x, almt, cmd, regx, jmlx);
-	minta_modbus(&x);
+#define DEBUG_MODBUS_ELEMEN
+
+void modbus_rtu(unsigned char *q, unsigned char almx, unsigned char cmd, int regx, int jmlx)	{
+	unsigned char *stx, *x;
+	unsigned char npaket;
+	
+	paket_modbus_rtu(&x, almx, cmd, regx, jmlx);	
+	npaket = minta_modbus(&x, jmlx);
 }
 
 void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, int regx, int jmlx)	{
@@ -290,7 +295,7 @@ void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, i
 	pmodx.crc_lo = (unsigned char) ((dcrcx & 0xFF00) >> 8);
 	pmodx.crc_hi = (unsigned char) (dcrcx & 0x00FF);
 	
-	#if DEBUG_MODBUS_ELEMEN
+	#ifdef DEBUG_MODBUS_ELEMEN
 		printf("addr: %02x, cmd: %02x, reg: %02x-%02x, jml: %02x-%02x, crc: %02x-%02x\r\n", \
 			pmodx.addr, pmodx.command, pmodx.reg_hi, pmodx.reg_lo, pmodx.jum_hi, pmodx.jum_lo, \
 			pmodx.crc_hi, pmodx.crc_lo);
@@ -310,27 +315,41 @@ void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, i
 }
 
 
-void minta_modbus(unsigned char *data, int tipe)	{
-	
-	char ss, timeout=0;
+unsigned char minta_modbus(unsigned char *data, int tipe)	{
+	char ss, timeout=0, retx;
 	unsigned char * ww;
 	int jml = 3+(tipe)+2;		// slave+cmd+jml+ data +crchi+crclo
 	int lenpmodx = 8;
+	//printf("len: %d : %d\r\n", sizeof(struct d_pmod), strlen(struct d_pmod));
 	
 	FIO0SET = TXDE;		// on	---> bisa kirim
 	FIO0CLR = RXDE;
 	
+	#if 0
 	printf("%s() -->Kirim modbus ..\r\n", __FUNCTION__);
+
+	printf("Data : %02x %02x %02x %02x %02x %02x %02x %02x\r\n", \
+		data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+	ww = data;
+	printf("ww : %02x %02x %02x %02x %02x %02x %02x %02x\r\n", \
+		ww[0], ww[1], ww[2], ww[3], ww[4], ww[5], ww[6], ww[7]);
+	#endif
+	
+	ww = data;
 	for (ss=0; ss<8; ss++)	{
 		//#ifdef DEBUG_MODBUS_ELEMEN
-			printf("%02x ", data[ss]);
+			printf("%02x ", *ww);
 		//#endif
-		serX_putchar(PAKAI_PM, data[ss], TUNGGU_PM_TX);
+		serX_putchar(PAKAI_PM, ww++, TUNGGU_PM_TX);
 	}
+	#ifdef DEBUG_MODBUS_ELEMEN
 	printf("\r\n");
-	
+	#endif
+
 	ss=0;
+	#ifdef DEBUG_MODBUS_ELEMEN
 	printf("terima ..\r\n");
+	#endif
 	while(1)	{
 		#if (PAKAI_PM == 1) 
 			if (ser1_getchar(1, &buf_rx[ss], TUNGGU_PM_RX ) == pdTRUE)
@@ -346,28 +365,28 @@ void minta_modbus(unsigned char *data, int tipe)	{
 			//#endif
 	
 			ss++;
-			//pm_sukses = 1;
-			//*
+			retx = 1;
 			#ifdef PAKAI_MAX485
 				if (ss == jml+lenpmodx) break;
 			#else
 				if (ss == jml) break;
 			#endif
-			//*/
+
 		}	else	{
 			timeout++;
-			if (timeout > 20)	{
+			if (timeout > 10)	{
 				#if defined (LIAT_RX) || defined(TIMEOUT)
 				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
 				#endif
 				
-				//pm_sukses=0;
+				retx=0;
 				break;
 			}
 		}
 		
 	}
 	printf("\r\n");
+	return ss;
 }
 
 unsigned short cek_PM(int alamatPM) {

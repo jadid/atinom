@@ -10,11 +10,11 @@
 #include "FreeRTOS.h"
 #include "hardware.h"
 
-#define LIAT
-#define LIAT_TX
-#define LIAT_RX
-#define CEK_PM
-#define TIMEOUT
+//#define LIAT
+//#define LIAT_TX
+//#define LIAT_RX
+//#define CEK_PM
+//#define TIMEOUT
 
 #ifdef AMBIL_PM
 
@@ -24,10 +24,10 @@
 #include <math.h>
 #include <float.h>
 
-#define TUNGGU_PM_TX	50
-#define TUNGGU_PM_RX	80
 
-#include "../monita/monita_uip.h"
+
+#include "monita/monita_uip.h"
+#include "modbus/mbcrc.h"
 #include "modbus/low_mod.h"
 
 int ambil_pmnya(char no, char alamat, char tipe, char sequen);
@@ -40,9 +40,10 @@ int lenpmod = sizeof(pmod);
 //static	int konting2 = 0;
 //static	int loop;
 unsigned char buf_rx[64];
-extern float data_f [];
+extern float  data_f[];
 
 #ifdef PAKAI_PM
+
 float satuan_kwh[JML_SUMBER];
 float satuan_kw[JML_SUMBER];
 float satuan_volt[JML_SUMBER];
@@ -50,7 +51,7 @@ float satuan_volt2[JML_SUMBER];
 float satuan_amp[JML_SUMBER];
 float satuan_amp2[JML_SUMBER];
 struct t_kontrol_PM kontrol_PM[JML_SUMBER];
-#include "modbus/low_mod.c"
+//#include "modbus/low_mod.c"
 
 int jmlPM=0,k=0;
 
@@ -99,6 +100,7 @@ int sedot_pm() {
 			
 			ap = ambil_pmnya(k, alamatClient, tipe, jml_sequen(tipe));
 			
+			//printf("ap: %d _____ k: %d __ d0: %.2f -- %.2f\r\n", ap, k, data_f[3], asli_PM710[k].kw);
 			if (ap==1) {
 				portENTER_CRITICAL();
 				memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
@@ -106,9 +108,11 @@ int sedot_pm() {
 			}
 			
 			#if 0
-			printf("data voltAN: %d : %.2f - %.2f\r\n", k*JML_SUMBER+18, asli_PM710[k].voltA_N, data_f[k*JML_SUMBER+18]);
-			printf("data kWh   : %d : %.0f - %.0f\r\n", k*JML_SUMBER+0,  asli_PM710[k].kwh, data_f[k*JML_SUMBER+0]);
-			printf("data frek  : %d : %.2f - %.2f\r\n", k*JML_SUMBER+10, asli_PM710[k].frek, data_f[k*JML_SUMBER+10]);
+			printf("data : %d : %.2f - %.2f\r\n", k*JML_SUMBER+0, asli_PM710[k].kwh,   data_f[k*JML_SUMBER+0]);
+			printf("data : %d : %.2f - %.2f\r\n", k*JML_SUMBER+2, asli_PM710[k].kvarh, data_f[k*JML_SUMBER+2]);
+			printf("data : %d : %.2f - %.2f\r\n", k*JML_SUMBER+3, asli_PM710[k].kw,    data_f[k*JML_SUMBER+3]);
+			printf("ap: %d _____ k: %d __ d0: %.2f -- %.2f\r\n", ap, k, data_f[3], asli_PM710[k].kw);
+			printf("------------------------------\r\n");
 			#endif
 		} 
 		#if 0
@@ -248,20 +252,16 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		#ifdef LIAT
 		printf("___TFX_ULTRA__proses_pm\n");
 		#endif
-			if (urut_PM710==0)    
-			{
+			if (urut_PM710==0)    {
 				jum_balik = get_tfx(alamatPM, tfx_integer, 7);		// 
 			} 
-			else if (urut_PM710==1)		
-			{	
+			else if (urut_PM710==1)		{	
 				jum_balik = get_tfx(alamatPM, tfx_single_precision, 7);// 
 			} 
-			else if (urut_PM710==2)		
-			{
+			else if (urut_PM710==2)		{
 				jum_balik = get_tfx(alamatPM, tfx_double_precision, 7);  //
 			} 
-			else
-			{
+			else	{
 				#ifdef LIAT
 				printf("Jml balik Power urut 20: %d \r\n", jum_balik);
 				#endif
@@ -398,6 +398,7 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 			#ifdef LIAT_RX
 			printf(" pm_sukses=0: %d ", i);
 			#endif
+			return 0;
 		}
 		
 		if 		  (tipe==PM710 && pm_sukses==1)	{		// PM710 		= 0
@@ -447,6 +448,61 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 		i++;
 	}
 	return 1;
+}
+
+void cek_coil(unsigned char almx, int regx, int jmlx)	{
+	struct d_pmod pmodx;
+	unsigned char *stx, *pm;	
+	char i;
+
+	printf("  %s() ---> alm: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almx, regx, jmlx);
+	
+	#if 0
+	stx = (char *) &pmodx;
+	for (i=0; i< sizeof(pmodx); i++)	{
+		printf("%02hX ", *stx++);
+		//serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
+	}
+	printf("\r\n");
+
+	paket_modbus_rtu(&pm, almx, 0x01, regx, jmlx);
+
+	stx = (char *) &pm;
+	for (i=0; i<8; i++)	{
+		printf("%02hX ", *stx++);
+		//serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
+	}
+	printf("\r\n");
+	#endif
+
+   	return (1 + 1 + 1 + (jmlx * 2) + 2);	// slave address, function, bytecount, data, crc
+}
+
+void cek_holding(unsigned char almx, int regx, int jmlx)	{
+	unsigned char *stx, *x;	
+	char i;
+
+	int tipe=2;
+	//printf("  %s() ---> alm: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almx, regx, jmlx);
+	
+	paket_modbus_rtu(&x, almx, 0x03, regx, jmlx);
+
+	#if 1
+	stx = &x;
+	for (i=0; i<8; i++)	{
+		#ifdef DEBUG_MODBUS_ELEMEN
+		printf("%02x ", stx[i]);
+		#endif
+		//serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
+	}
+	printf("\r\n");
+	#endif
+	
+	minta_modbus(&x, jmlx);
+	
+	//printf("%02x %02x %02x %02x\r\n", *pm, *(pm+1), *(pm+2), *(pm+3));
+
+   	return (1 + 1 + 1 + (jmlx * 2) + 2);	// slave address, function, bytecount, data, crc
 }
 
 #if 0

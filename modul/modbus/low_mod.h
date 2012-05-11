@@ -21,9 +21,46 @@
 
 #include "FreeRTOS.h"
 #include "hardware.h"
+#include "monita/monita_uip.h"
 
 #ifndef PM710H
 #define PM710H
+
+//struct d_PM710 data_PM710[2];
+//struct f_PM710 asli_PM710[2];
+
+//struct d_PM710 data_PM710[JML_SUMBER];
+//struct f_PM710 asli_PM710[JML_SUMBER];
+
+#ifdef PAKAI_KTA
+unsigned short 	wind_speed;
+unsigned short 	wind_dir;
+float 			f_wind_speed;
+
+unsigned short wind_satuan;
+unsigned short wind_speed_tr;		// retransmision value
+unsigned short wind_dir_tr;
+#endif
+
+extern unsigned char buf_rx[];
+#define buf	buf_rx
+extern struct d_pmod pmod;
+
+#define TUNGGU_PM_TX	50
+#define TUNGGU_PM_RX	80
+
+#define MOD_SERVER
+#define T10_des2		0.01
+#define T11_des3		0.001
+#define T12_des4		0.0001
+
+
+#ifdef PAKAI_MAX485
+	#define HD	sizeof(pmod)
+	//#define HD	0
+#else
+	#define HD	0
+#endif
 
 //#define addr_PM710      2
 #define command_baca    0x03	//4
@@ -203,7 +240,6 @@ struct d_pmod {
       unsigned char crc_lo;
 };
 
-
 struct d_PM710 {
    unsigned int kwh;		// 41
    unsigned int kvah;
@@ -345,6 +381,8 @@ struct f_PM710 {
 
 } ;
 
+struct d_PM710 data_PM710[JML_SUMBER];
+struct f_PM710 asli_PM710[JML_SUMBER];
 
 //17 januari 2008
 struct dpm_eth {
@@ -383,4 +421,7 @@ unsigned int get_A2000	(int alamatPM, unsigned short reg, unsigned char uk);
 unsigned int get_tfx	(int alamatPM, unsigned short reg, unsigned char uk);
 #endif
 //---------------------------------------------------------------------------
+
+void paket_modbus_rtu(unsigned char * x, unsigned char almt, unsigned char cmd, int regx, int jmlx);
+
 #endif

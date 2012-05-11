@@ -290,6 +290,20 @@ int ganti_kata(char *dest, char *src) {
 	};
 #endif
 
+#ifdef TIPE_TFX_ULTRA
+	char * judulnya_tfx[] __attribute__ ((section (".lokasi_font"))) = {
+		"Sinyal",				// 0 //
+		"Flowrate",
+		"Net Tot",
+		"Pos Tot",
+		"Neg Tot",		
+		"Temp 1",
+		"Temp 2"
+	};
+#endif
+
+
+
 #endif
 
 

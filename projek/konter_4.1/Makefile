@@ -133,7 +133,9 @@ GPS_SOURCE = \
 		../../app/gps/gps.c		\
 
 PM_SOURCE = \
-		../../app/powermeter/pm.c	\
+		../../modul/modbus/low_mod.c	\
+		../../modul/modbus/mbcrc.c	\
+#		../../app/powermeter/pm.c	\
 
 RTC_SOURCE = \
 		../../modul/system/rtc.c			\
@@ -149,12 +151,12 @@ ARM_SOURCE= \
 
 THUMB_SOURCE += $(GPS_SOURCE)
 THUMB_SOURCE += $(UIP_SOURCE)
-THUMB_SOURCE += $(PM_SOURCE)
 THUMB_SOURCE += $(WEBCLIENT_SOURCE)
 THUMB_SOURCE += $(ETH_SOURCE)
 THUMB_SOURCE += $(RTC_SOURCE)
 THUMB_SOURCE += $(RELAY_SOURCE)
 THUMB_SOURCE += $(ADC_SOURCE)
+THUMB_SOURCE += $(PM_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

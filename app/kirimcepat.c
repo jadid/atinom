@@ -90,7 +90,14 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		}
 		#endif
 		
+		#if 1
 		vTaskDelay(1);
+		#endif
+		
+		#if 0
+		vTaskDelay(1000);
+		//printf("data0: %.1f,2: %.1f,3: %.1f\r\n", data_f[0], data_f[2], data_f[3]);
+		#endif
 	}
 }
 

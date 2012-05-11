@@ -1,0 +1,12 @@
+
+Cara Ngetes sabang
+------------------
+
+1. Cek led power berkedip baik setiap 1/2 detik
+2. ping IP modul konter untuk mengetes ethernet.
+	GTKterm : cek Embd MAC zz:yy:xx:vv:uu:tt ..ENC bernilai OK
+3. Cek tiap kanal dengan menyambung +12V ke masing2 kanal [+].
+	- pastikan lampu led menyala.
+	- cek ke simple monita, hasil OnOff bernilai 1
+	- sambung-putus-sambung-putus kabel +12V ke tiap kanal ulang terus-menerus, 
+		apakah nge-hang ??

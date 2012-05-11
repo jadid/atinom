@@ -71,17 +71,17 @@
 	//#define TES_MEM_RTC
 #endif
 
-#define PAKAI_ETH
+//#define PAKAI_ETH
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600
 
 //	#define PAKAI_MODBUSTCP
-//	#define SAMPURASUN_CLIENT
+	#define SAMPURASUN_CLIENT
 //	#define SAMPURASUN_SERVER
-//	#define PAKAI_WEBCLIENT
-//	#define PAKE_TELNETD
-//	#define PAKAI_HTTP
+	#define PAKAI_WEBCLIENT
+	#define PAKE_TELNETD
+	#define PAKAI_HTTP
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
@@ -99,9 +99,10 @@
 
 #define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
-	#define PAKAI_SERIAL_3_P0	115200		// TES
+//	#define PAKAI_SERIAL_3_P0	115200		// TES
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
 //	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
+	#define PAKAI_SERIAL_3_P0	9600		// max TFX  :  9600
 
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
@@ -115,7 +116,7 @@
 	#endif
 
 	#ifdef PAKAI_PM
-		#define TIPE_PM810
+		//#define TIPE_PM810
 		//#define TIPE_PM710
 		//#define TIPE_MICOM_M300
 		//#define TIPE_MICOM_P127

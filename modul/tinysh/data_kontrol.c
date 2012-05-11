@@ -180,18 +180,32 @@ int cek_data(int argc, char **argv)
 					#endif
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
 					#ifdef PAKAI_PM
-					if (sumber[sumb-1].tipe==0 || sumber[sumb-1].tipe==1) {		// Power Meter
-						for (i=0; i<PER_SUMBER; i++) {
-							printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
-							judulnya_pm[i], data_f[(sumb-1)*PER_SUMBER+i], satuannya_pm[i], &p_dt[(sumb-1)*PER_SUMBER+i]);	
+						#ifdef TIPE_TFX_ULTRA
+							if (sumber[sumb-1].tipe==TFX_ULTRA)	{
+								//printf("jml : %d\r\n", sizeof (judulnya_tfx));
+								for (i=0; i<7; i++) {
+									printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
+									judulnya_tfx[i], data_f[(sumb-1)*PER_SUMBER+i], \
+									p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
+								}
+								printf("Data Flowmeter TFX Alamat %d\r\n", sumber[sumb-1].alamat);
+							}
+						#endif
+						
+						#ifdef PAKAI_KTA
+						
+						#endif
+					
+						if ( (sumber[sumb-1].tipe>0) && (sumber[sumb-1].tipe<10) ) {		// Power Meter
+							for (i=0; i<PER_SUMBER; i++) {
+								printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
+								judulnya_pm[i], data_f[(sumb-1)*PER_SUMBER+i], satuannya_pm[i], &p_dt[(sumb-1)*PER_SUMBER+i]);	
+							}
+							printf("Data Power Meter Alamat %d\r\n", sumber[sumb-1].alamat);
 						}
-						printf("Data Power Meter Alamat %d\r\n", sumber[sumb-1].alamat);
-					}
 					#endif
 					
-					#ifdef PAKAI_KTA
 					
-					#endif
 				}
 			} else
 				printf(" ERR: Perintah tidak dikenali !\r\n");

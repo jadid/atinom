@@ -15,7 +15,7 @@
 
 #include 	"low_mod.h"
 #include 	"mbcrc.h"
-#include 	"mbcrc.c"
+//#include 	"mbcrc.c"
 
 //unsigned short jum_PM710_masuk;
 unsigned short reg_flag;
@@ -24,28 +24,11 @@ unsigned short reg_flag;
 //extern unsigned char addr_PM710;
 //extern unsigned char addr_KTA;
 
-struct d_PM710 data_PM710[JML_SUMBER];
-struct f_PM710 asli_PM710[JML_SUMBER];
+//struct d_PM710 data_PM710[JML_SUMBER];
+//struct f_PM710 asli_PM710[JML_SUMBER];
 //struct t_kontrol_PM kontrol_PM[JUMLAH_PM];
 
-#ifdef PAKAI_KTA
-unsigned short 	wind_speed;
-unsigned short 	wind_dir;
-float 			f_wind_speed;
 
-unsigned short wind_satuan;
-unsigned short wind_speed_tr;		// retransmision value
-unsigned short wind_dir_tr;
-#endif
-
-
-#define buf	buf_rx
-extern struct d_pmod pmod;
-
-#define MOD_SERVER
-#define T10_des2		0.01
-#define T11_des3		0.001
-#define T12_des4		0.0001
 
 /*
    query data dari register PM710 & juga dimasukkan ukuran data yang akan diquery
@@ -55,6 +38,7 @@ extern struct d_pmod pmod;
 */
 //unsigned char addr_PM710=2;		//2
 
+#ifdef TIPE_PM710
 unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk)	{
    unsigned short dcrc;
    int i;
@@ -79,6 +63,7 @@ unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk)	{
 
    	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
 }
+#endif
 
 #ifdef TIPE_MICOM_M300
 unsigned int get_M300(int alamatPM, unsigned short reg, unsigned char uk)	{
@@ -280,6 +265,111 @@ unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
 }
 #endif
 
+void modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, int regx, int jmlx)	{
+	paket_modbus_rtu(&x, almt, cmd, regx, jmlx);
+	minta_modbus(&x);
+}
+
+void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, int regx, int jmlx)	{
+	#ifdef DEBUG_MODBUS_ELEMEN
+		printf("%s() --> almtx: %d, cmd: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almt, cmd, regx, jmlx);
+	#endif
+	
+	struct d_pmod pmodx;
+	unsigned short dcrcx;
+	unsigned char *y;
+
+	pmodx.addr    = (unsigned char) (almt);
+	pmodx.command = (unsigned char) cmd;
+	pmodx.reg_hi  = (unsigned char) ((regx & 0xFF00) >> 8);
+	pmodx.reg_lo  = (unsigned char) (regx & 0x00FF);
+	pmodx.jum_hi  = (unsigned char) ((jmlx & 0xFF00) >> 8);
+	pmodx.jum_lo  = (unsigned char) (jmlx & 0x00FF);
+
+	dcrcx = usMBCRC16((unsigned char *) &pmodx, sizeof (pmodx)-2, 0);
+	pmodx.crc_lo = (unsigned char) ((dcrcx & 0xFF00) >> 8);
+	pmodx.crc_hi = (unsigned char) (dcrcx & 0x00FF);
+	
+	#if DEBUG_MODBUS_ELEMEN
+		printf("addr: %02x, cmd: %02x, reg: %02x-%02x, jml: %02x-%02x, crc: %02x-%02x\r\n", \
+			pmodx.addr, pmodx.command, pmodx.reg_hi, pmodx.reg_lo, pmodx.jum_hi, pmodx.jum_lo, \
+			pmodx.crc_hi, pmodx.crc_lo);
+	#endif
+	
+	y = &pmodx;
+	for (dcrcx=0; dcrcx<8; dcrcx++)	{
+		#ifdef DEBUG_MODBUS_ELEMEN
+			printf("%02x ", y[dcrcx]);
+		#endif
+		x[dcrcx] = y[dcrcx];
+	}
+	#ifdef DEBUG_MODBUS_ELEMEN
+		printf("\r\n");
+		printf("X : %02x %02x %02x %02x %02x %02x %02x %02x\r\n", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]);
+	#endif
+}
+
+
+void minta_modbus(unsigned char *data, int tipe)	{
+	
+	char ss, timeout=0;
+	unsigned char * ww;
+	int jml = 3+(tipe)+2;		// slave+cmd+jml+ data +crchi+crclo
+	int lenpmodx = 8;
+	
+	FIO0SET = TXDE;		// on	---> bisa kirim
+	FIO0CLR = RXDE;
+	
+	printf("%s() -->Kirim modbus ..\r\n", __FUNCTION__);
+	for (ss=0; ss<8; ss++)	{
+		//#ifdef DEBUG_MODBUS_ELEMEN
+			printf("%02x ", data[ss]);
+		//#endif
+		serX_putchar(PAKAI_PM, data[ss], TUNGGU_PM_TX);
+	}
+	printf("\r\n");
+	
+	ss=0;
+	printf("terima ..\r\n");
+	while(1)	{
+		#if (PAKAI_PM == 1) 
+			if (ser1_getchar(1, &buf_rx[ss], TUNGGU_PM_RX ) == pdTRUE)
+		#elif (PAKAI_PM == 2) 			
+			if (ser2_getchar(1, &buf_rx[ss], TUNGGU_PM_RX ) == pdTRUE)
+		#elif (PAKAI_PM == 3)
+			if (ser3_getchar(1, &buf_rx[ss], TUNGGU_PM_RX ) == pdTRUE)
+		#endif 
+
+		{
+			//#ifdef DEBUG_MODBUS_ELEMEN
+			printf("%02hX ",buf_rx[ss]);
+			//#endif
+	
+			ss++;
+			//pm_sukses = 1;
+			//*
+			#ifdef PAKAI_MAX485
+				if (ss == jml+lenpmodx) break;
+			#else
+				if (ss == jml) break;
+			#endif
+			//*/
+		}	else	{
+			timeout++;
+			if (timeout > 20)	{
+				#if defined (LIAT_RX) || defined(TIMEOUT)
+				printf("%s(): alamat %d : timeout: %d\r\n", __FUNCTION__, alamatPM, urut_PM710);
+				#endif
+				
+				//pm_sukses=0;
+				break;
+			}
+		}
+		
+	}
+	printf("\r\n");
+}
+
 unsigned short cek_PM(int alamatPM) {
 	unsigned short dcrc;
    	unsigned char *p;
@@ -335,12 +425,7 @@ unsigned short get_KTA(unsigned short reg, unsigned char uk)
 
 //*/
 #endif
-#ifdef PAKAI_MAX485
-	#define HD	sizeof(pmod)
-	//#define HD	0
-#else
-	#define HD	0
-#endif
+
 
 #ifdef TIPE_PM710
 void taruh_data_710(int no_slave, int urt)	{
@@ -2399,22 +2484,38 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 			#endif
 			
 			if (i==0)	{
-				asli_PM710[pm_dibaca].voltA_B = ftemp;
-				data_PM710[pm_dibaca].voltA_B = ftemp;
+				asli_PM710[pm_dibaca].kwh = ftemp;
+				//data_PM710[pm_dibaca].kwh = ftemp;
 			}
 			if (i==1)	{
-				asli_PM710[pm_dibaca].voltB_C = ftemp;
-				data_PM710[pm_dibaca].voltB_C = ftemp;
+				asli_PM710[pm_dibaca].kvah = ftemp;
+				//data_PM710[pm_dibaca].kvah = ftemp;
 			}
 			if (i==2)	{
-				asli_PM710[pm_dibaca].voltA_C = ftemp;
-				data_PM710[pm_dibaca].voltA_C = ftemp;
-			}	
+				asli_PM710[pm_dibaca].kvarh = ftemp;
+				//data_PM710[pm_dibaca].kvarh = ftemp;
+			}
+			if(i==3)	{
+				asli_PM710[pm_dibaca].kw = ftemp;
+				//data_PM710[pm_dibaca].kw = ftemp;
+			}
+			if(i==4)	{
+				asli_PM710[pm_dibaca].kva = ftemp;
+				data_PM710[pm_dibaca].kva = ftemp;
+			}
+			if(i==5)	{
+				asli_PM710[pm_dibaca].kvar = ftemp;
+				//data_PM710[pm_dibaca].kvar = ftemp;
+			}
+			if(i==6)	{
+				asli_PM710[pm_dibaca].pf = ftemp;
+				//data_PM710[pm_dibaca].pf = ftemp;
+			}
 		}
 		
 		//Hitung Rata-rata
-		ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
-		asli_PM710[pm_dibaca].volt2=ftemp/3;
+		//ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
+		//asli_PM710[pm_dibaca].volt2=ftemp/3;
 		
 	}// EOF urut 0: Integer Format
 	if (urut==1) 	{ //Single Precission Format

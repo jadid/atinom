@@ -110,7 +110,7 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 			kurangi_delay_push();
 		#endif
 		
-		vTaskDelay(1500);
+		vTaskDelay(500);
 		//printf(" - Tanggal   : %d-%d-%d\r\n", infoGPS.utc.day, infoGPS.utc.mon, infoGPS.utc.year);
 	}
 }

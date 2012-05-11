@@ -11,8 +11,13 @@
 #include "rw_flash.c"
 #include "set_ipaddr.c"
 
-#include "../hardware/hardware.h"
+//#include "../hardware/hardware.h"
+#include "hardware.h"
 #include "utils.c"
+
+#ifndef BOARD_TAMPILAN
+	extern xTaskHandle *hdl_kirimcepat;
+#endif
 
 #define debug_printf printf
 
@@ -121,6 +126,12 @@ int status_MMC=0;
 #include "mem_rtc.c"
 #endif
 
+#ifdef PAKAI_MODBUS_RTU
+	#include "modbus_rtu.c"
+	//#include "../modbus/mbcrc.h"
+	//#include "../modbus/low_mod.h"
+#endif
+
 //#ifdef PAKAI_GSM_FTP
 #ifdef PAKAI_MODEM_SERIAL
 #include "modem.c"
@@ -192,6 +203,7 @@ extern xTaskHandle *hdl_alarm;
 	extern xTaskHandle *hdl_ether;
 	#include "uipcmd.c"
 #endif
+
 extern xTaskHandle *hdl_ambilcepat;
 
 #ifdef PAKAI_GPS
@@ -232,11 +244,9 @@ char str[20];
 static tinysh_cmd_t save_env_cmd={0,"save_env","menyimpan environment","[args]",
                               save_env,0,0,0};
 //*/						  
-static tinysh_cmd_t printenv_cmd={0,"cek_env","menampilkan environment","[args]",
-                              print_env,0,0,0};
+static tinysh_cmd_t printenv_cmd={0,"cek_env","menampilkan environment","[args]", print_env,0,0,0};
 							  
-static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]",
-                              reset_cpu,0,0,0};
+static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]", reset_cpu,0,0,0};
 							  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
@@ -396,8 +406,7 @@ static tinysh_cmd_t set_date_cmd={0,"set_date","Mengeset waktu","thn bulan tgl j
 
 #endif
 							  
-void cek_stack(void)
-{
+void cek_stack(void)	{
 	printf("Jml task: %d\r\n", uxTaskGetNumberOfTasks);
 	printf("Sisa stack masing2 task (bytes)\r\n");
 	garis_bawah();
@@ -446,6 +455,10 @@ void cek_stack(void)
 	#endif
 	
 	printf(    " AmbilCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
+	
+	#ifndef BOARD_TAMPILAN
+	printf(    " KirimCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_kirimcepat));
+	#endif
 }							 
 
 //static 
@@ -891,6 +904,12 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&cek_ftp_cmd);
 	
 #endif	
+
+#ifdef PAKAI_MODBUS_RTU
+	tinysh_add_command(&cek_coil_cmd);
+	tinysh_add_command(&set_coil_cmd);
+	tinysh_add_command(&cek_holding_cmd);
+#endif
 
 #ifdef PAKAI_SMS
 	tinysh_add_command(&cek_pulsa_cmd);

@@ -1267,5 +1267,73 @@ Reset, and Code Security/Debugging */
 #define TxIR_CR2_Interrupt (1UL<<6)
 #define TxIR_CR3_Interrupt (1UL<<7)
 
+
+
+/*##############################################################################
+## RTC
+##############################################################################*/
+
+#define pREG32 (volatile unsigned long *)
+
+#define RTC_ILR         (*(pREG32 (0xe0024000)))
+#define RTC_CTC         (*(pREG32 (0xe0024004)))
+#define RTC_CCR         (*(pREG32 (0xe0024008)))  
+#define RTC_CIIR        (*(pREG32 (0xe002400c)))
+#define RTC_AMR         (*(pREG32 (0xe0024010)))
+#define RTC_CTIME0      (*(pREG32 (0xe0024014)))
+#define RTC_CTIME1      (*(pREG32 (0xe0024018)))
+#define RTC_CTIME2      (*(pREG32 (0xe002401c)))
+
+#define RTC_SEC         (*(pREG32 (0xe0024020)))
+#define RTC_MIN         (*(pREG32 (0xe0024024)))
+#define RTC_HOUR        (*(pREG32 (0xe0024028)))
+#define RTC_DOM         (*(pREG32 (0xe002402c)))
+#define RTC_DOW         (*(pREG32 (0xe0024030)))
+#define RTC_DOY         (*(pREG32 (0xe0024034)))
+#define RTC_MONTH       (*(pREG32 (0xe0024038)))
+#define RTC_YEAR        (*(pREG32 (0xe002403c)))
+
+#define RTC_ALSEC       (*(pREG32 (0xe0024060)))
+#define RTC_ALMIN       (*(pREG32 (0xe0024064)))
+#define RTC_ALHOUR      (*(pREG32 (0xe0024068)))
+#define RTC_ALDOM       (*(pREG32 (0xe002406c)))
+#define RTC_ALDOW       (*(pREG32 (0xe0024070)))
+#define RTC_ALDOY       (*(pREG32 (0xe0024074)))
+#define RTC_ALMON       (*(pREG32 (0xe0024078)))
+#define RTC_ALYEAR      (*(pREG32 (0xe002407c)))
+
+#define RTC_PREINT      (*(pREG32 (0xe0024080)))
+#define RTC_PREFRAC     (*(pREG32 (0xe0024084)))
+
+#define RTC_ILR_RTCCIF  (0x00000001)
+#define RTC_ILR_RTCALF  (0x00000002)
+#define RTC_ILR_MASK    (0x00000003)
+
+#define RTC_CCR_CLKEN   (0x00000001)
+#define RTC_CCR_CTCRST  (0x00000002)
+#define RTC_CCR_TEST    (0x0000000c)
+#define RTC_CCR_CLKSRC  (0x00000010)
+
+#define RTC_CIIR_IMSEC  (0x00000001)
+#define RTC_CIIR_IMMIN  (0x00000002)
+#define RTC_CIIR_IMHOUR (0x00000004)
+#define RTC_CIIR_IMDOM  (0x00000008)
+#define RTC_CIIR_IMDOW  (0x00000010)
+#define RTC_CIIR_IMDOY  (0x00000020)
+#define RTC_CIIR_IMMON  (0x00000040)
+#define RTC_CIIR_IMYEAR (0x00000080)
+#define RTC_CIIR_IMMASK (0x000000ff)
+
+#define RTC_AMR_AMRSEC  (0x00000001)
+#define RTC_AMR_AMRMIN  (0x00000002)
+#define RTC_AMR_AMRHOUR (0x00000004)
+#define RTC_AMR_AMRDOM  (0x00000008)
+#define RTC_AMR_AMRDOW  (0x00000010)
+#define RTC_AMR_AMRDOY  (0x00000020)
+#define RTC_AMR_AMRMON  (0x00000040)
+#define RTC_AMR_AMRYEAR (0x00000080)
+#define RTC_AMR_AMRMASK (0x000000ff)
+
+
 #endif  /* __LPC23xx_H */
 

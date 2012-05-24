@@ -485,8 +485,8 @@ void cek_holding(unsigned char almx, int regx, int jmlx)	{
 	char i;
 
 	//printf("  %s() ---> alm: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almx, regx, jmlx);
-	
-	paket_modbus_rtu(&x, almx, 0x03, regx, jmlx);
+	modbus_rtu(&x, almx, 0x03, regx, jmlx);
+	//paket_modbus_rtu(&x, almx, 0x03, regx, jmlx);
 
 	#if 0
 	stx = &x;
@@ -499,10 +499,18 @@ void cek_holding(unsigned char almx, int regx, int jmlx)	{
 	printf("\r\n");
 	#endif
 	
-	minta_modbus(&x, jmlx);
+	//minta_modbus(&x, jmlx);
 	
 	//printf("%02x %02x %02x %02x\r\n", *pm, *(pm+1), *(pm+2), *(pm+3));
 
+   	return (3 + jmlx + 2);	// slave address, function, bytecount, data, crc
+}
+
+void set_coil(unsigned char almx, int regx, int jmlx)	{
+	unsigned char *stx, *x;	
+	char i;
+
+	modbus_rtu(&x, almx, 0x05, regx, jmlx);
    	return (3 + jmlx + 2);	// slave address, function, bytecount, data, crc
 }
 

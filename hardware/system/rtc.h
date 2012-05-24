@@ -8,11 +8,15 @@
  *   2006.07.13  ver 1.00    Prelimnary version, first Release
  *
 ******************************************************************************/
+
+#ifdef PAKAI_RTC
+
 #ifndef __RTC_H 
 #define __RTC_H
 
 //typedef unsigned long  DWORD;
 #include "../fatfs/integer.h"
+
 
 typedef struct {
     DWORD RTC_Sec;     /* Second value - [0,59] */
@@ -67,14 +71,14 @@ struct rtc_time {
 #define CCR_CLKSRC	0x10
 
 //extern void RTCHandler (void) __irq;
-extern void RTCInit( void );
-extern void RTCStart( void );
-extern void RTCStop( void );
-extern void RTC_CTCReset( void );
-extern void RTCSetTime( RTCTime );
-extern RTCTime RTCGetTime( void );
-extern void RTCSetAlarm( RTCTime );
-extern void RTCSetAlarmMask( DWORD AlarmMask );
+//extern void RTCInit( void );
+//extern void RTCStart( void );
+//extern void RTCStop( void );
+//extern void RTC_CTCReset( void );
+//extern void RTCSetTime( RTCTime );
+//extern RTCTime RTCGetTime( void );
+//extern void RTCSetAlarm( RTCTime );
+//extern void RTCSetAlarmMask( DWORD AlarmMask );
 
 void rtc_set_time( RTCTime Time ) ;
 void rtc_set_time_tm( struct rtc_time tc ) ;
@@ -86,6 +90,8 @@ void get_tm_time(struct tm *theTime);
 void rtc_init(void);
 
 #endif /* end __RTC_H */
+
+#endif /* PAKAI_RTC */
 /*****************************************************************************
 **                            End Of File
 ******************************************************************************/

@@ -53,6 +53,13 @@
 #define A2000		5
 #define TFX_ULTRA	20
 
+#define INTEGER		1
+#define FLOAT		2
+#define DOUBLE		3
+
+//#define LITTLE_ENDIAN	1
+//#define BIG_ENDIAN
+
 // PER_SUMBER itu menujukkan jml data untuk 10 kanal.
 #define SUMBER_420		10
 #define SUMBER_KONTER	20

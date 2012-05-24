@@ -148,6 +148,8 @@ void ubah_clk( unsigned int clk_div)
 	}
 }
 
+
+
 static void lowInit(void)
 {
 	init_PLL();
@@ -161,6 +163,22 @@ static void lowInit(void)
 
 	return;
 }
+
+#ifdef PAKAI_MODE_POWER
+void sleep_mode()	{
+	PCON &= ~(BIT(1));
+	PCON |= BIT(7) | BIT(0);
+}
+
+void normal_mode()	{
+	PCON &= ~(BIT(7) | BIT(1) | BIT(0));
+}
+
+void powerdown_mode()	{
+	PCON &= ~(BIT(7) | BIT(0));
+	PCON |= BIT(1);
+}
+#endif
 
 void sysInit(void)
 {

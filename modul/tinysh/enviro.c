@@ -395,10 +395,14 @@ void set_env_default() {
 	for (i=0; i<KANALNYA; i++) {
 		env2->kalib[i].m = 1.00;
 		env2->kalib[i].C = 0.00;
-		env2->kalib[i].status = 0;
+		#ifdef BOARD_KOMON_KONTER
+			env2->kalib[i].status = 1;
+		#else
+			env2->kalib[i].status = 0;
+		#endif
 		sprintf(env2->kalib[i].ket, "--");
 	}
-	sprintf(env2->nama_board, "Gantilah namanya.");
+	sprintf(env2->nama_board, "Nama modul");
 	env2->IP0 = 192;
 	env2->IP1 = 168;
 	env2->IP2 = 1;
@@ -412,7 +416,7 @@ void set_env_default() {
 	env2->wIP0 = 192;
 	env2->wIP1 = 168;
 	env2->wIP2 = 1;
-	env2->wIP3 = 10;
+	env2->wIP3 = 99;
 	
 	#ifdef PAKAI_TSC
 		env2->k1 = 255;

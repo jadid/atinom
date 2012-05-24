@@ -268,14 +268,17 @@ static int exec_command_line(tinysh_cmd_t *cmd, uchar *_str)
         {
           puts("ambiguity: ");
           puts(str);
-          putchar('\n');
+          //putchar('\n');
+          puts("\r\n");
           return 0;
         }
       else if(ret==UNMATCH) /* UNMATCH */
         {
+          
           puts("no match: ");
           puts(str);
-          putchar('\n');
+          //putchar('\n');
+          puts("\r\n");
           return 0;
         }
       else /* NULLMATCH */

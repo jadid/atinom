@@ -47,13 +47,15 @@
 #define printf	printf2
 
 //#define UNTUK_UNSRI
-//#define UNTUK_MONITA_KAPAL
+#define UNTUK_MONITA_KAPAL
 
 #define PAKAI_SHELL
 #define PAKAI_LED_UTAMA
+#define PAKAI_MODE_POWER
+
 #define BANYAK_SUMBER
 #define CENDOL
-//#define PAKAI_RTC
+#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
 //#define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
@@ -66,8 +68,18 @@
 	//#define PAKAI_CRON
 #endif
 
+#ifdef PAKAI_MODE_POWER
+	#ifndef PAKAI_RTC
+		#define PAKAI_RTC
+	#endif
+#endif
+
+#define KONTROL_RTC
+
+
 #ifdef PAKAI_RTC
 	#define PAKAI_MEM_RTC
+	#define KONTROL_RTC
 	//#define TES_MEM_RTC
 #endif
 
@@ -97,7 +109,7 @@
 	#endif
 #endif
 
-#define PAKAI_SERIAL_3
+//#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 //	#define PAKAI_SERIAL_3_P0	115200		// TES
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400

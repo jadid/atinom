@@ -1,12 +1,19 @@
 
-Cara Ngetes sabang
-------------------
-
-1. Cek led power berkedip baik setiap 1/2 detik
-2. ping IP modul konter untuk mengetes ethernet.
+Cara Ngetes Modul Sabang
+-------------------------
+1. Cek POWER
+	Cek IC power LM7805 atau LM2575-5, harus keluar Teg 5V +1%
+	Cek IC power LM2575-3.3 atau B0CC3.3, harus keluar Teg 3.3V +1%
+2. Cek LED power berkedip baik setiap 1/2 detik
+3. PING IP modul konter untuk mengetes ethernet.
 	GTKterm : cek Embd MAC zz:yy:xx:vv:uu:tt ..ENC bernilai OK
-3. Cek tiap kanal dengan menyambung +12V ke masing2 kanal [+].
-	- pastikan lampu led menyala.
-	- cek ke simple monita, hasil OnOff bernilai 1
-	- sambung-putus-sambung-putus kabel +12V ke tiap kanal ulang terus-menerus, 
-		apakah nge-hang ??
+4. Cek tiap KANAL dengan menyambung +12V ke MASING-2 kanal [+].
+	- 
+
+
+
+
+Cara Solder Modul Sabang
+-------------------------
+0. Sebelum disolder dimanapun cek kontinuiti track PCB.
+	Pastikan Power (+12, +5, +3.3, +24) dan GND tidak tersambung

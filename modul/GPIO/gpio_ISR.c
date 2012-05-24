@@ -20,9 +20,10 @@
 #include "lpc23xx.h"
 
 // tes konter
-#define LED_UTAMA	BIT(27)
+//#define LED_UTAMA	BIT(27)
 
-#include "../../app/monita/monita_uip.h"
+//#include "../../app/monita/monita_uip.h"
+#include "monita/monita_uip.h"
 
 #ifdef BOARD_TAMPILAN
 //#include "../tampilan/tampilan.h"

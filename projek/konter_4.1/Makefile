@@ -146,7 +146,8 @@ RELAY_SOURCE = \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \
 		../../modul/serial/serialISR.c \
-		../../modul/GPIO/gpio_ISR.c 
+		../../modul/GPIO/gpio_ISR.c	\
+		../../modul/rtc/rtc_ISR.c	\
 
 
 THUMB_SOURCE += $(GPS_SOURCE)

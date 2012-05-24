@@ -126,6 +126,10 @@ int status_MMC=0;
 #include "mem_rtc.c"
 #endif
 
+#ifdef PAKAI_MODE_POWER
+	#include "power.c"
+#endif
+
 #ifdef PAKAI_MODBUS_RTU
 	#include "modbus_rtu.c"
 	//#include "../modbus/mbcrc.h"
@@ -919,6 +923,11 @@ portTASK_FUNCTION(shell, pvParameters )
 	tinysh_add_command(&baca_sms_semua_cmd);
 	tinysh_add_command(&sms_monita_cmd);
 #endif 
+
+#ifdef PAKAI_MODE_POWER
+	tinysh_add_command(&cek_power_cmd);
+	tinysh_add_command(&set_power_cmd);
+#endif
 
 #ifdef PAKAI_CRON
 	tinysh_add_command(&set_cron_cmd);

@@ -6,6 +6,8 @@
 	banyak dicopy dari code bundle LPC uvision
 	*/
 
+#ifdef PAKAI_RTC
+
 #include "FreeRTOS.h"
 #include "../fatfs/integer.h" /* ambil def DWORD saja */
 #include <time.h>
@@ -26,13 +28,33 @@ void rtc_init(void)
 	
   	//RTC_PREINT = PREINT_RTC;
   	//RTC_PREFRAC = PREFRAC_RTC;
+	
+	#ifdef KONTROL_RTC
+		//RTC_CCR |= 
+	#endif
+}
 
+void rtc_init_irq()	{
+	VIC_VectAddr6 = (portLONG) rtcISR;
+	VIC_VectCntl6 = VIC_VectCntl_ENABLE | VIC_Channel_RTC;
+}
+
+unsigned char rtc_counter_irq_aktif(unsigned char x)	{
+	if (x & 0x01)	RTC_CIIR |= RTC_CIIR_IMSEC;
+	if (x & 0x02)	RTC_CIIR |= RTC_CIIR_IMMIN;
+	if (x & 0x04)	RTC_CIIR |= RTC_CIIR_IMHOUR;
+	if (x & 0x08)	RTC_CIIR |= RTC_CIIR_IMDOM;
+	if (x & 0x10)	RTC_CIIR |= RTC_CIIR_IMDOW;
+	if (x & 0x20)	RTC_CIIR |= RTC_CIIR_IMDOY;
+	if (x & 0x40)	RTC_CIIR |= RTC_CIIR_IMMON;
+	if (x & 0x80)	RTC_CIIR |= RTC_CIIR_IMYEAR;
+	return (RTC_CIIR);
 }
 
 void rtc_reset(void)	{
 	
 	RTC_CCR = BIT(1);
-
+	
 }
 
 void rtc_start( void ) 
@@ -44,15 +66,13 @@ void rtc_start( void )
   return;
 }
 
-void rtc_reset_waktu(void)
-{
+void rtc_reset_waktu(void)	{
 	RTC_SEC = 0;
 	RTC_MIN = 0;
 	RTC_HOUR = 0;
 	RTC_DOM = 1;
 	RTC_DOW = 0;
 	RTC_DOY = 0;
-	
 }
 
 void rtc_set_time( RTCTime Time ) 
@@ -172,3 +192,5 @@ void rtcWrite (struct tm *newTime)
 
   portEXIT_CRITICAL ();
 }
+
+#endif

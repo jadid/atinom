@@ -47,15 +47,15 @@
 #define printf	printf2
 
 //#define UNTUK_UNSRI
-#define UNTUK_MONITA_KAPAL
+//#define UNTUK_MONITA_KAPAL
 
 #define PAKAI_SHELL
 #define PAKAI_LED_UTAMA
-#define PAKAI_MODE_POWER
+//#define PAKAI_MODE_POWER
 
 #define BANYAK_SUMBER
 #define CENDOL
-#define PAKAI_RTC
+//#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
 //#define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
@@ -83,7 +83,7 @@
 	//#define TES_MEM_RTC
 #endif
 
-//#define PAKAI_ETH
+#define PAKAI_ETH
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600

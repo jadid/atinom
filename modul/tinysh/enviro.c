@@ -29,7 +29,7 @@
 //IAP iap_entry;
 
 //#define MAGIC_1	0x27
-#define MAGIC_1	0x27
+#define MAGIC_1	0x28
 #define MAGIC_2	0xEF
 
 void tulis_env_flash(struct t_env *ev);

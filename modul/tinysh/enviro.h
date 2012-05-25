@@ -8,6 +8,7 @@ typedef void (*IAP)(unsigned int [],unsigned int[]);
 
 #include "../app/monita/monita_uip.h"
 
+#define  sRPM			0
 #define	 sONOFF			1
 #define	 sPUSHBUTTON	2
 #define	 sFLOW1			3

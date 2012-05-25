@@ -35,8 +35,15 @@ void rtc_init(void)
 }
 
 void rtc_init_irq()	{
-	VIC_VectAddr6 = (portLONG) rtcISR;
-	VIC_VectCntl6 = VIC_VectCntl_ENABLE | VIC_Channel_RTC;
+	VIC_VectAddr13 = (portLONG) rtcISR;
+	VIC_VectCntl13 = VIC_VectCntl_ENABLE | VIC_Channel_RTC;
+	
+	VICIntSelect &= ~(VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC));		// set ke 0: IRQ [1: FOQ]
+	VICIntEnClr  = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);			// disable int
+	VICVectAddr13 = ( portLONG )rtcISR_Wrapper;
+	VICVectPriority13 = 0x01;
+	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);
+	
 }
 
 unsigned char rtc_counter_irq_aktif(unsigned char x)	{

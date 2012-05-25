@@ -50,11 +50,11 @@ static void rtcISR_Handler (void)	{
 //*/
 }
 
-void rtcISR (void) __attribute__ ((naked));
-void rtcISR (void)	{
-  portSAVE_CONTEXT ();
-  rtcISR_Handler ();
-  portRESTORE_CONTEXT ();
+void rtcISR_Wrapper (void) __attribute__ ((naked));
+void rtcISR_Wrapper (void)	{
+	portSAVE_CONTEXT ();
+	rtcISR_Handler ();
+	portRESTORE_CONTEXT ();
 }
 
 #endif

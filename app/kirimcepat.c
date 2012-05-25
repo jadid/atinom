@@ -90,6 +90,19 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		}
 		#endif
 		
+		#ifdef PAKAI_KONTROL_RTC
+			if (flagRTCc==1)	{
+				lb++;
+				printf("cout counter : %d\r\n", lb);
+				flagRTCc=0;
+			}
+			if (flagRTCc==2)	{
+				lb+=2;
+				printf("cout alarm	 : %d\r\n", lb);
+				flagRTCc=0;
+			}
+		#endif
+		
 		#if 1
 		vTaskDelay(1);
 		#endif

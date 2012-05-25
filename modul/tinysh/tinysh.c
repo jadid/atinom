@@ -38,7 +38,7 @@ char buf[30];
 #define MAX_ARGS 9		//16
 #endif
 #ifndef PROMPT_SIZE
-#define PROMPT_SIZE 	16 // 16
+#define PROMPT_SIZE 	17 // 16
 #endif
 #ifndef TOPCHAR
 #define TOPCHAR '/'

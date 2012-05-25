@@ -124,6 +124,10 @@ int status_MMC=0;
 #ifdef PAKAI_RTC
 #include "../modul/system/rtc.h"
 #include "mem_rtc.c"
+
+	#ifdef PAKAI_KONTROL_RTC
+		#include "rtc.c"
+	#endif
 #endif
 
 #ifdef PAKAI_MODE_POWER
@@ -167,7 +171,7 @@ int status_MMC=0;
 #endif
 
 #ifdef UNTUK_UNSRI
-	#include "../../app/unsri/custom_unsri.c"
+//	#include "../../app/unsri/custom_unsri.c"
 #endif
 
 #include "enviro.h"
@@ -338,76 +342,6 @@ void kirim_serial (int argc, char **argv) {
 
 static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
                               kirim_serial,0,0,0};
-#endif
-
-
-#ifdef PAKAI_RTC
-void set_date(int argc, char **argv)
-{	
-	unsigned char *str_rtc;
-	struct rtc_time tmku;
-	int ret;
-	time_t clk;	
-	
-	//rtc_reset();
-	rtc_init();
-	rtc_start();
-	
-	str_rtc = pvPortMalloc(512);
-	if (str_rtc == NULL) {
-		printf("ERR: alok failed\r\n");
-		//free(str_rtc);
-		vPortFree(str_rtc);
-		return;
-	}
-	
-	//printf("dapat free %X\r\n", str_rtc);	
-	memset(str_rtc, 0, 512);	
-	
-	printf(" set_date tahun bulan tanggal jam menit\r\n");
-	printf("   misalnya : set_date 2010 3 5 10 22\r\n");
-	printf("   artinya  : set waktu ke tgl 5 Maret 2010, jam 10:22 pagi\r\n");
-	
-	if (argc < 5) 	{
-		printf("Argument kurang !\r\n");
-		vPortFree(str_rtc);
-		return;
-	}
-		
-	//display_args(argc, argv);
-	sprintf(str_rtc, "%s:%s:%s:%s:%s", argv[1], argv[2], argv[3], argv[4], argv[5]); 
-	ret = sscanf(str_rtc, "%d:%d:%d:%d:%d", &tmku.tm_year, &tmku.tm_mon, &tmku.tm_mday, &tmku.tm_hour, &tmku.tm_min); 
-	if (ret < 5)	{
-		printf(" ERR: format salah !\r\n");
-		vPortFree(str_rtc);
-		return;
-	}
-
-	printf(" Set : %d-%d-%d %d:%d ",  tmku.tm_year, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
-		
-	tmku.tm_year = tmku.tm_year - 1900;
-	tmku.tm_mon  = tmku.tm_mon - 1;
-	tmku.tm_sec = 0;
-		
-	debug_printf(" OK : %d-%d-%d %d:%d\r\n",  tmku.tm_year+1900, tmku.tm_mon, tmku.tm_mday, tmku.tm_hour, tmku.tm_min); 
-	/*
-	if (rtc_valid_tm(&tmku)) 
-	{
-		printf(" ERR: waktu tidak mungkin !\r\n");
-		return;
-	}*/
-	//rtc_set_time_tm( tmku );
-	rtcWrite( &tmku );
-	//clk = mktime(&tmku);	
-	//ret = rtc_time_to_bfin(clk);
-	//bfin_write_RTC_STAT(ret);
-	vPortFree(str_rtc);
-	printf(" ..OK\r\n");
-}							 
-
-static tinysh_cmd_t set_date_cmd={0,"set_date","Mengeset waktu","thn bulan tgl jam menit",
-                              set_date,0,0,0};							 
-
 #endif
 							  
 void cek_stack(void)	{
@@ -1071,6 +1005,14 @@ vTaskDelay(100);
 				tinysh_add_command(&tes_mem_cmd);
 			#endif
 		#endif
+		
+		#ifdef PAKAI_KONTROL_RTC
+			tinysh_add_command(&set_irq_rtcc_cmd);
+			tinysh_add_command(&cek_irq_rtc_cmd);
+			tinysh_add_command(&set_irq_rtca_cmd);
+			tinysh_add_command(&cek_waktu_alarm_cmd);
+			tinysh_add_command(&set_waktu_alarm_cmd);
+		#endif
 	#endif
 	
 //#ifdef BOARD_TAMPILAN	
@@ -1113,15 +1055,16 @@ vTaskDelay(100);
 		#endif
 	#endif
 	
-	#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0) || defined(BOARD_KOMON_KONTER_3_1)
-		#ifdef PAKAI_RTC
+
+	
+	#ifdef PAKAI_RTC
 		rtc_init();
 		vTaskDelay(100);
 		rtc_start();
 		
 		printf(" Init RTC ....\r\n");
 		//baca_rtc_mem();
-		#endif
+		
 	#endif
 	
 	#ifdef PAKAI_MMC

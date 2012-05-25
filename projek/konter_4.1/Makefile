@@ -138,7 +138,8 @@ PM_SOURCE = \
 #		../../app/powermeter/pm.c	\
 
 RTC_SOURCE = \
-		../../modul/system/rtc.c			\
+		../../modul/system/rtc.c		\
+		../../modul/rtc/rtc.c			\
 
 RELAY_SOURCE = \
 		../../app/relay/relay.c	\
@@ -188,6 +189,7 @@ clean :
 	rm $(ARM_OBJS)
 	rm $(NAMA_FILE).elf
 	rm $(NAMA_FILE).hex
+	rm $(NAMA_FILE).bin
 #	touch Makefile
 	
 tulis :

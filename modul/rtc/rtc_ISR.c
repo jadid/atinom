@@ -17,28 +17,20 @@
 #include "system/rtc.h"
 
 static void rtcISR_Handler (void)	{
+	if (RTC_ILR & RTC_ILR_RTCCIF)	{		// counter irq
+		flagRTCc = 1;
+		RTC_ILR |= RTC_ILR_RTCCIF;
+	}
+	if (RTC_ILR & RTC_ILR_RTCALF)	{
+		flagRTCc = 2;
+		RTC_ILR |= RTC_ILR_RTCALF;
+	}
+	
+	VICVectAddr = (unsigned portLONG) 0;
 /*
 	//portBASE_TYPE higherPriorityTaskWoken = pdFALSE;
 	RTC_CCR = (RTC_CCR_CLKEN | RTC_CCR_CLKSRC);
 	SCB_PCONP |= SCB_PCONP_PCRTC;
-
-	if (RTC_ILR & RTC_ILR_RTCCIF)  {
-		U8 c = 0xff;
-
-	if (consoleQueue)
-		xQueueSendFromISR (consoleQueue, &c, &higherPriorityTaskWoken);
-
-		RTC_ILR = RTC_ILR_RTCCIF;
-	}
-
-	if (RTC_ILR & RTC_ILR_RTCALF)	{
-		U8 c = 0xfe;
-
-		if (consoleQueue)
-			xQueueSendFromISR (consoleQueue, &c, &higherPriorityTaskWoken);
-
-		RTC_ILR = RTC_ILR_RTCALF;
-	}
 
 	VIC_VectAddr = (unsigned portLONG) 0;
 

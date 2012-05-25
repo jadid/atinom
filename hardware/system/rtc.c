@@ -15,13 +15,13 @@
 
 
 //RTCTime local_time, current_time;
-
-void rtc_init(void)
-{
+#if 1
+void rtc_init(void)		{
 	PCONP |= BIT(9);
 	
-	/*--- Initialize registers ---*/    
-  	RTC_AMR = 0;
+	//--- Initialize registers ---//
+	RTC_CCR  = 0
+  	RTC_AMR  = 0;
   	RTC_CIIR = 0;
   	
 	RTC_CCR = BIT(4);		// clock dari kristal 32768
@@ -29,49 +29,35 @@ void rtc_init(void)
   	//RTC_PREINT = PREINT_RTC;
   	//RTC_PREFRAC = PREFRAC_RTC;
 	
-	#ifdef KONTROL_RTC
-		//RTC_CCR |= 
+	#ifdef PAKAI_KONTROL_RTC
+		flagRTCc = 100;
+		rtc_init_irq();
 	#endif
 }
 
 void rtc_init_irq()	{
-	VIC_VectAddr13 = (portLONG) rtcISR;
-	VIC_VectCntl13 = VIC_VectCntl_ENABLE | VIC_Channel_RTC;
-	
+	//RTC_AMR_AMRMASK
 	VICIntSelect &= ~(VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC));		// set ke 0: IRQ [1: FOQ]
 	VICIntEnClr  = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);			// disable int
 	VICVectAddr13 = ( portLONG )rtcISR_Wrapper;
-	VICVectPriority13 = 0x01;
+	VICVectPriority13 = 0x02;
 	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);
-	
 }
+#endif
 
-unsigned char rtc_counter_irq_aktif(unsigned char x)	{
-	if (x & 0x01)	RTC_CIIR |= RTC_CIIR_IMSEC;
-	if (x & 0x02)	RTC_CIIR |= RTC_CIIR_IMMIN;
-	if (x & 0x04)	RTC_CIIR |= RTC_CIIR_IMHOUR;
-	if (x & 0x08)	RTC_CIIR |= RTC_CIIR_IMDOM;
-	if (x & 0x10)	RTC_CIIR |= RTC_CIIR_IMDOW;
-	if (x & 0x20)	RTC_CIIR |= RTC_CIIR_IMDOY;
-	if (x & 0x40)	RTC_CIIR |= RTC_CIIR_IMMON;
-	if (x & 0x80)	RTC_CIIR |= RTC_CIIR_IMYEAR;
-	return (RTC_CIIR);
-}
-
+#if 0
 void rtc_reset(void)	{
-	
 	RTC_CCR = BIT(1);
-	
+	vTaskDelay(10);
+	RTC_CCR &= ~BIT(1);
 }
 
-void rtc_start( void ) 
-{
-  /*--- Start RTC counters ---*/
-  RTC_CCR |= CCR_CLKEN;
-  
-  //RTC_ILR = ILR_RTCCIF;
-  return;
+void rtc_start( void )	{
+	RTC_CCR |= CCR_CLKEN;
+	RTC_ILR = ILR_RTCCIF;
+	return;
 }
+#endif
 
 void rtc_reset_waktu(void)	{
 	RTC_SEC = 0;
@@ -82,60 +68,56 @@ void rtc_reset_waktu(void)	{
 	RTC_DOY = 0;
 }
 
-void rtc_set_time( RTCTime Time ) 
-{
-  RTC_SEC = Time.RTC_Sec;
-  RTC_MIN = Time.RTC_Min;
-  RTC_HOUR = Time.RTC_Hour;
-  RTC_DOM = Time.RTC_Mday;
-  RTC_DOW = Time.RTC_Wday;
-  RTC_DOY = Time.RTC_Yday;
-  RTC_MONTH = Time.RTC_Mon;
-  RTC_YEAR = Time.RTC_Year;    
-  return;
+void rtc_set_time( RTCTime Time )	{
+	RTC_SEC = Time.RTC_Sec;
+	RTC_MIN = Time.RTC_Min;
+	RTC_HOUR = Time.RTC_Hour;
+	RTC_DOM = Time.RTC_Mday;
+	RTC_DOW = Time.RTC_Wday;
+	RTC_DOY = Time.RTC_Yday;
+	RTC_MONTH = Time.RTC_Mon;
+	RTC_YEAR = Time.RTC_Year;    
+	return;
 }
 
-void rtc_set_time_tm( struct rtc_time tc ) 
-{
-  RTC_SEC = tc.tm_sec;
-  RTC_MIN = tc.tm_min;
-  RTC_HOUR = tc.tm_hour;
-  RTC_DOM = tc.tm_mday;
-  RTC_DOW = tc.tm_wday;
-  RTC_DOY = tc.tm_yday;
-  RTC_MONTH = tc.tm_mon + 1;
-  RTC_YEAR = tc.tm_year;    
-  return;
+void rtc_set_time_tm( struct rtc_time tc )	{
+	RTC_SEC = tc.tm_sec;
+	RTC_MIN = tc.tm_min;
+	RTC_HOUR = tc.tm_hour;
+	RTC_DOM = tc.tm_mday;
+	RTC_DOW = tc.tm_wday;
+	RTC_DOY = tc.tm_yday;
+	RTC_MONTH = tc.tm_mon + 1;
+	RTC_YEAR = tc.tm_year;    
+	return;
 }
 
-RTCTime rtc_get_time( void ) 
-{
-  RTCTime LocalTime;
+RTCTime rtc_get_time( void )	{
+	RTCTime LocalTime;
     
-  LocalTime.RTC_Sec = RTC_SEC;
-  LocalTime.RTC_Min = RTC_MIN;
-  LocalTime.RTC_Hour = RTC_HOUR;
-  LocalTime.RTC_Mday = RTC_DOM;
-  LocalTime.RTC_Wday = RTC_DOW;
-  LocalTime.RTC_Yday = RTC_DOY;
-  LocalTime.RTC_Mon = RTC_MONTH;
-  LocalTime.RTC_Year = RTC_YEAR;
-  return ( LocalTime );    
+	LocalTime.RTC_Sec = RTC_SEC;
+	LocalTime.RTC_Min = RTC_MIN;
+	LocalTime.RTC_Hour = RTC_HOUR;
+	LocalTime.RTC_Mday = RTC_DOM;
+	LocalTime.RTC_Wday = RTC_DOW;
+	LocalTime.RTC_Yday = RTC_DOY;
+	LocalTime.RTC_Mon = RTC_MONTH;
+	LocalTime.RTC_Year = RTC_YEAR;
+	return ( LocalTime );    
 }
 
-void p_rtc_get_time( RTCTime *LocalTime ) 
-{
+void p_rtc_get_time( RTCTime *LocalTime )	{
     
-  LocalTime->RTC_Sec = RTC_SEC;
-  LocalTime->RTC_Min = RTC_MIN;
-  LocalTime->RTC_Hour = RTC_HOUR;
-  LocalTime->RTC_Mday = RTC_DOM;
-  LocalTime->RTC_Wday = RTC_DOW;
-  LocalTime->RTC_Yday = RTC_DOY;
-  LocalTime->RTC_Mon = RTC_MONTH;
-  LocalTime->RTC_Year = RTC_YEAR;
+	LocalTime->RTC_Sec = RTC_SEC;
+	LocalTime->RTC_Min = RTC_MIN;
+	LocalTime->RTC_Hour = RTC_HOUR;
+	LocalTime->RTC_Mday = RTC_DOM;
+	LocalTime->RTC_Wday = RTC_DOW;
+	LocalTime->RTC_Yday = RTC_DOY;
+	LocalTime->RTC_Mon = RTC_MONTH;
+	LocalTime->RTC_Year = RTC_YEAR;
   
-  return;    
+	return;    
 }
 
 void get_rtc_time(time_t *tt )

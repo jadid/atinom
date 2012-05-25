@@ -98,6 +98,10 @@
 	int  iTim2;
 #endif
 
+#ifdef PAKAI_KONTROL_RTC
+	char flagRTCc;
+#endif
+
 #ifdef KIRIM_KE_SER_2
 	char statKirimSer;
 #endif

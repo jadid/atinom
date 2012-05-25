@@ -80,13 +80,16 @@ struct rtc_time {
 //extern void RTCSetAlarm( RTCTime );
 //extern void RTCSetAlarmMask( DWORD AlarmMask );
 
+unsigned char rtc_counter_irq_aktif(unsigned char x);
+
+/*
 void rtc_set_time( RTCTime Time ) ;
 void rtc_set_time_tm( struct rtc_time tc ) ;
 RTCTime rtc_get_time( void ) ;
 void p_rtc_get_time( RTCTime *LocalTime ) ;
 void get_rtc_time(time_t *tt );
 void get_tm_time(struct tm *theTime);
-
+//*/
 void rtc_init(void);
 
 #endif /* end __RTC_H */

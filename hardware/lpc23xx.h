@@ -1274,7 +1274,7 @@ Reset, and Code Security/Debugging */
 ##############################################################################*/
 
 #define pREG32 (volatile unsigned long *)
-
+/*
 #define RTC_ILR         (*(pREG32 (0xe0024000)))
 #define RTC_CTC         (*(pREG32 (0xe0024004)))
 #define RTC_CCR         (*(pREG32 (0xe0024008)))  
@@ -1304,7 +1304,7 @@ Reset, and Code Security/Debugging */
 
 #define RTC_PREINT      (*(pREG32 (0xe0024080)))
 #define RTC_PREFRAC     (*(pREG32 (0xe0024084)))
-
+//*/
 #define RTC_ILR_RTCCIF  (0x00000001)
 #define RTC_ILR_RTCALF  (0x00000002)
 #define RTC_ILR_MASK    (0x00000003)

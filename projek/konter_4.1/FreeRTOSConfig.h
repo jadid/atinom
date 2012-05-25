@@ -42,7 +42,7 @@
 #define BOARD_KOMON_KONTER_3_1
 
 //#define _printf	printf2
-//#define printf	printf2
+#define printf	printf2
 
 //#define UNTUK_UNSRI
 #define UNTUK_MONITA_KAPAL
@@ -70,12 +70,9 @@
 	#define PAKAI_RTC
 #endif
 
-#define KONTROL_RTC
-
-
 #ifdef PAKAI_RTC
 	#define PAKAI_MEM_RTC
-	#define KONTROL_RTC
+	#define PAKAI_KONTROL_RTC
 	//#define TES_MEM_RTC
 #endif
 
@@ -105,7 +102,7 @@
 	#endif
 #endif
 
-#define PAKAI_SERIAL_3
+//#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 //	#define PAKAI_SERIAL_3_P0	115200		// TES
 	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400

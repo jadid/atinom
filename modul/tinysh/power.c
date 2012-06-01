@@ -32,16 +32,31 @@ int cek_modepower_sh(int argc, char **argv)	{
 
 static tinysh_cmd_t cek_power_cmd={0,"cek_power","menampilkan status power modul","", cek_modepower_sh,0,0,0};
 
+void set_int_wakeup(unsigned char x)	{
+	INTWAKE = x;
+}
+
+int cek_main_clk()	{
+	return (SCS & BIT(6))? 1: 0;
+}
+
 void set_modepower_sh(int argc, char **argv) {
 	if ( (argc<2) || (argc>2) )	{	// cek_relay
 		modepower_kitab(argv[0]);
 		return 0;
 	}
 
+	
+	
+	#ifdef PAKAI_KONTROL_RTC
+	rtc_counter_irq_aktif(2);
+	set_int_wakeup(0x80);
+	vTaskDelay(100);
+	#endif
 	printf("  Set mode power\r\n");
-	vTaskDelay(1000);
-	//sleep_mode();
-	powerdown_mode();
+	vTaskDelay(100);
+	sleep_mode();
+	//powerdown_mode();
 
 }
 

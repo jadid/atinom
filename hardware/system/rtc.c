@@ -9,55 +9,73 @@
 #ifdef PAKAI_RTC
 
 #include "FreeRTOS.h"
-#include "../fatfs/integer.h" /* ambil def DWORD saja */
+//#include "../fatfs/integer.h" /* ambil def DWORD saja */
 #include <time.h>
 #include "rtc.h"
+#include "hardware.h"
 
-
+extern unsigned char flagRTCc;
 //RTCTime local_time, current_time;
-#if 1
+
 void rtc_init(void)		{
+	FIO0SET = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0CLR = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0SET = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0CLR = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0SET = LED_UTAMA;
+	
+	flagRTCc = 110;
 	PCONP |= BIT(9);
 	
 	//--- Initialize registers ---//
-	RTC_CCR  = 0
+	RTC_CCR  = 0;
   	RTC_AMR  = 0;
   	RTC_CIIR = 0;
   	
 	RTC_CCR = BIT(4);		// clock dari kristal 32768
-	
+	flagRTCc = 120;
   	//RTC_PREINT = PREINT_RTC;
   	//RTC_PREFRAC = PREFRAC_RTC;
 	
+	printf("________init RTC_________\r\n");
+	
 	#ifdef PAKAI_KONTROL_RTC
-		flagRTCc = 100;
-		rtc_init_irq();
+		flagRTCc = 130;
+		printf("________init masuk IRQ RTC_________\r\n");
+		//rtc_init_irq();
+		RTC_ILR = RTC_ILR_RTCCIF;
+		flagRTCc = 140;
 	#endif
+	
+	printf("___________init selesai RTC_________\r\n");
+	
+	FIO0SET = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0CLR = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0SET = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0CLR = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0SET = LED_UTAMA;
 }
 
 void rtc_init_irq()	{
-	//RTC_AMR_AMRMASK
+	flagRTCc = 150;
+	printf("   %s masuk \r\n", __FUNCTION__);
 	VICIntSelect &= ~(VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC));		// set ke 0: IRQ [1: FOQ]
 	VICIntEnClr  = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);			// disable int
-	VICVectAddr13 = ( portLONG )rtcISR_Wrapper;
+	VICVectAddr13 = ( portLONG )rtc_ISR_Wrapper;
 	VICVectPriority13 = 0x02;
 	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);
-}
-#endif
-
-#if 0
-void rtc_reset(void)	{
-	RTC_CCR = BIT(1);
-	vTaskDelay(10);
-	RTC_CCR &= ~BIT(1);
+	
+	flagRTCc = 160;
 }
 
-void rtc_start( void )	{
-	RTC_CCR |= CCR_CLKEN;
-	RTC_ILR = ILR_RTCCIF;
-	return;
-}
-#endif
 
 void rtc_reset_waktu(void)	{
 	RTC_SEC = 0;
@@ -105,20 +123,21 @@ RTCTime rtc_get_time( void )	{
 	LocalTime.RTC_Year = RTC_YEAR;
 	return ( LocalTime );    
 }
-
-void p_rtc_get_time( RTCTime *LocalTime )	{
-    
-	LocalTime->RTC_Sec = RTC_SEC;
-	LocalTime->RTC_Min = RTC_MIN;
-	LocalTime->RTC_Hour = RTC_HOUR;
-	LocalTime->RTC_Mday = RTC_DOM;
-	LocalTime->RTC_Wday = RTC_DOW;
-	LocalTime->RTC_Yday = RTC_DOY;
-	LocalTime->RTC_Mon = RTC_MONTH;
-	LocalTime->RTC_Year = RTC_YEAR;
+#if 0
+//void p_rtc_get_time( RTCTime *LocalTime )	{
+//    
+//	LocalTime->RTC_Sec = RTC_SEC;
+//	LocalTime->RTC_Min = RTC_MIN;
+//	LocalTime->RTC_Hour = RTC_HOUR;
+//	LocalTime->RTC_Mday = RTC_DOM;
+//	LocalTime->RTC_Wday = RTC_DOW;
+//	LocalTime->RTC_Yday = RTC_DOY;
+//	LocalTime->RTC_Mon = RTC_MONTH;
+//	LocalTime->RTC_Year = RTC_YEAR;
   
-	return;    
-}
+//	return;    
+//}
+#endif
 
 void get_rtc_time(time_t *tt )
 {
@@ -129,6 +148,7 @@ void get_rtc_time(time_t *tt )
 			(RTC_
 			*/
 }
+
 
 void get_tm_time(struct tm *theTime)
 {
@@ -143,28 +163,30 @@ void get_tm_time(struct tm *theTime)
   theTime->tm_isdst = 0;
 }
 
-unsigned int get_fattime ()
-{
-	struct tm tm;
-	unsigned int tmr;
+#if 0
+//unsigned int get_fattime ()
+//{
+//	struct tm tm;
+//	unsigned int tmr;
 	
-	get_tm_time( &tm );
+//	get_tm_time( &tm );
 	
-	if (tm.tm_year < 80) tm.tm_year = 80;
+//	if (tm.tm_year < 80) tm.tm_year = 80;
 
-  	tmr = 0
-    | ((tm.tm_year - 80) << 25)
-    | ((tm.tm_mon + 1)   << 21)
-    | (tm.tm_mday        << 16)
-    | (tm.tm_hour        << 11)
-    | (tm.tm_min         << 5)
-    | (tm.tm_sec         >> 1);
+//  	tmr = 0
+//    | ((tm.tm_year - 80) << 25)
+//    | ((tm.tm_mon + 1)   << 21)
+//    | (tm.tm_mday        << 16)
+//    | (tm.tm_hour        << 11)
+//    | (tm.tm_min         << 5)
+//    | (tm.tm_sec         >> 1);
 
 	//debug_printf("%s(): %u, year = %d\r\n", __FUNCTION__, tmr, tm.tm_year);
 	
-  	return tmr;
+//  	return tmr;
 
-}
+//}
+#endif
 
 void rtcWrite (struct tm *newTime)
 {

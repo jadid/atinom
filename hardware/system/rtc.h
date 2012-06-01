@@ -17,7 +17,7 @@
 //typedef unsigned long  DWORD;
 #include "../fatfs/integer.h"
 
-
+#if 0
 typedef struct {
     DWORD RTC_Sec;     /* Second value - [0,59] */
     DWORD RTC_Min;     /* Minute value - [0,59] */
@@ -40,6 +40,7 @@ struct rtc_time {
   int	tm_yday;
   int	tm_isdst;
 };
+#endif
 
 #define IMSEC		0x00000001
 #define IMMIN		0x00000002
@@ -90,7 +91,7 @@ void p_rtc_get_time( RTCTime *LocalTime ) ;
 void get_rtc_time(time_t *tt );
 void get_tm_time(struct tm *theTime);
 //*/
-void rtc_init(void);
+//void rtc_init(void);
 
 #endif /* end __RTC_H */
 

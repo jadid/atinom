@@ -14,6 +14,7 @@
 //typedef unsigned long  DWORD;
 #include "../fatfs/integer.h"
 
+#if 0
 typedef struct {
     DWORD RTC_Sec;     /* Second value - [0,59] */
     DWORD RTC_Min;     /* Minute value - [0,59] */
@@ -36,7 +37,7 @@ struct rtc_time {
   int	tm_yday;
   int	tm_isdst;
 };
-
+#endif
 #define IMSEC		0x00000001
 #define IMMIN		0x00000002
 #define IMHOUR		0x00000004

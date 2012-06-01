@@ -98,8 +98,8 @@
 	int  iTim2;
 #endif
 
-#ifdef PAKAI_KONTROL_RTC
-	char flagRTCc;
+#ifdef PAKAI_RTC
+	unsigned char flagRTCc;
 #endif
 
 #ifdef KIRIM_KE_SER_2
@@ -186,6 +186,10 @@
 	#define SEKTOR_GSM_FTP	27
 	#define ALMT_GSM_FTP	0x7D000
 //#endif
+
+#ifdef PAKAI_RTC
+
+#endif
 
 #ifdef PAKAI_CRON				// berlebihan kah ? 32 kB 
 	#define JML_CRON	10		// baca_cron() setiap 1/2 detik mulai detik ke 5

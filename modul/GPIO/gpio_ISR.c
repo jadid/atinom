@@ -33,6 +33,44 @@
 extern xSemaphoreHandle keypad_sem;
 #endif
 
+
+void rtc_ISR_Wrapper (void) __attribute__ ((naked));
+void rtc_ISR_Handler (void);
+
+extern unsigned char flagRTCc;
+
+void rtc_ISR_Handler (void)	{
+//	flagRTCc = 100;
+//	printf("IRQ RTC");
+
+//	RTC_ILR = RTC_ILR_RTCCIF;
+//	RTC_ILR = BIT(1) | BIT(0);
+
+	
+	
+
+	if (RTC_ILR & RTC_ILR_RTCCIF)	{		// counter irq
+		flagRTCc = 1;
+		RTC_ILR = RTC_ILR_RTCCIF;
+	}
+	if (RTC_ILR & RTC_ILR_RTCALF)	{
+		flagRTCc = 2;
+		RTC_ILR = RTC_ILR_RTCALF;
+	}
+	//FIO0CLR = LED_UTAMA;
+	VICVectAddr = (unsigned portLONG) 0;
+}
+
+void rtc_ISR_Wrapper (void)	{
+	// cek apakah dari powerdown dari memRTC
+	while(!cek_main_clk());
+	
+	portSAVE_CONTEXT ();
+	rtc_ISR_Handler ();
+	portRESTORE_CONTEXT ();
+}
+
+
 #ifdef PAKAI_TIMER_2
 void timer2_ISR_Wrapper( void )
 {

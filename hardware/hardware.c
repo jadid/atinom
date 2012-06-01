@@ -112,7 +112,11 @@ void init_hardware()	{
 		init_shell();
 		#endif
 	#endif
-	
+
+	#ifdef PAKAI_RTC
+		//init_rtc();
+	#endif
+
 	#ifdef PAKAI_ALARM	
 		init_task_alarm();
 	#endif

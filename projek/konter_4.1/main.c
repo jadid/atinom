@@ -29,7 +29,7 @@ unsigned int idle_lama;
 unsigned int tot_idle;
 
 static int tog;
-static void sysInit(void);
+//static void sysInit(void);
 void init_led_utama(void);
 //void init_spi_mmc(char min)	;
 
@@ -102,7 +102,17 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
-	
+#if 0
+	FIO0SET = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0CLR = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0SET = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0CLR = LED_UTAMA;
+	vTaskDelay(500);
+	FIO0SET = LED_UTAMA;
+#endif	
 	for (;;)	{
 		togle_led_utama();
 

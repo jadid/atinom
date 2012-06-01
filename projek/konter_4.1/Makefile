@@ -138,8 +138,9 @@ PM_SOURCE = \
 #		../../app/powermeter/pm.c	\
 
 RTC_SOURCE = \
-		../../modul/system/rtc.c		\
 		../../modul/rtc/rtc.c			\
+#		../../modul/system/rtc.c		\
+
 
 RELAY_SOURCE = \
 		../../app/relay/relay.c	\
@@ -151,13 +152,13 @@ ARM_SOURCE= \
 		../../modul/rtc/rtc_ISR.c	\
 
 
-THUMB_SOURCE += $(GPS_SOURCE)
-THUMB_SOURCE += $(UIP_SOURCE)
-THUMB_SOURCE += $(WEBCLIENT_SOURCE)
-THUMB_SOURCE += $(ETH_SOURCE)
+#THUMB_SOURCE += $(GPS_SOURCE)
+#THUMB_SOURCE += $(UIP_SOURCE)
+#THUMB_SOURCE += $(WEBCLIENT_SOURCE)
+#THUMB_SOURCE += $(ETH_SOURCE)
 THUMB_SOURCE += $(RTC_SOURCE)
-THUMB_SOURCE += $(RELAY_SOURCE)
-THUMB_SOURCE += $(ADC_SOURCE)
+#THUMB_SOURCE += $(RELAY_SOURCE)
+#THUMB_SOURCE += $(ADC_SOURCE)
 THUMB_SOURCE += $(PM_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)

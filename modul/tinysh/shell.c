@@ -11,7 +11,6 @@
 #include "rw_flash.c"
 #include "set_ipaddr.c"
 
-//#include "../hardware/hardware.h"
 #include "hardware.h"
 #include "utils.c"
 
@@ -122,11 +121,11 @@ int status_MMC=0;
 #endif
 
 #ifdef PAKAI_RTC
-#include "../modul/system/rtc.h"
+//#include "../modul/system/rtc.c"
 #include "mem_rtc.c"
-
 	#ifdef PAKAI_KONTROL_RTC
-		#include "rtc.c"
+//		#include "../rtc/rtc.h"
+		#include "rtc_sh.c"
 	#endif
 #endif
 
@@ -176,7 +175,6 @@ int status_MMC=0;
 
 #include "enviro.h"
 //#include "GPIO/gpio.h"
-//#include "../monita/monita_uip.h"
 #include "monita/monita_uip.h"
 
 #include <stdlib.h>
@@ -239,8 +237,7 @@ extern xTaskHandle *hdl_ambilcepat;
 
 char str[20];
 
-#if 1
-//#ifdef PAKAI_SHELL
+#ifdef PAKAI_SHELL
 
 /*****************************************************************************/
 // komand2 daun biru komon-kounter
@@ -477,11 +474,11 @@ void cek_uptime(int argc, char **argv)	{
 	printf("%d dtk : idle = %d\n", sec, tot_idle);
 	
 	#ifdef PAKAI_RTC
-	RTCTime wt;
-	
-	wt = rtc_get_time();
-	printf(" Now = %02d:%02d:%02d  %d-%d-%d\r\n", wt.RTC_Hour, wt.RTC_Min, wt.RTC_Sec, \
-			wt.RTC_Mday, wt.RTC_Mon, wt.RTC_Year);
+	//RTCTimex wt;
+
+	//wt = rtc_get_time();
+	//printf(" Now = %02d:%02d:%02d  %d-%d-%d\r\n", wt.RTC_Hour, wt.RTC_Min, wt.RTC_Sec, \
+	//		wt.RTC_Mday, wt.RTC_Mon, wt.RTC_Year);
 	#endif
 		
 	return ;
@@ -734,6 +731,7 @@ portTASK_FUNCTION(shell, pvParameters )
   	printf(" FreeRTOS versinya: %s\r\n", tskKERNEL_VERSION_NUMBER);
   	//vTaskDelay(2000);
 
+
   	#if 0
 		unsigned short qws=33742, wws;
 		unsigned int   qwi=0x8000;
@@ -748,7 +746,7 @@ portTASK_FUNCTION(shell, pvParameters )
 	else
 		printf("Preemptive kernel digunakan !\r\n");
 	
-	printf("configTOTAL_HEAP_SIZE: %d\r\n", configTOTAL_HEAP_SIZE);
+	//printf("configTOTAL_HEAP_SIZE: %d\r\n", configTOTAL_HEAP_SIZE);
 	
 	#ifdef USB_TEST
 	Host_Init();               /* Initialize the lpc2468 host controller                                    */
@@ -996,7 +994,7 @@ vTaskDelay(100);
 	#endif
 
 	#ifdef PAKAI_RTC	
-		tinysh_add_command(&set_date_cmd);
+		//tinysh_add_command(&set_date_cmd);
 		#ifdef PAKAI_MEM_RTC
 			tinysh_add_command(&set_mem_cmd);
 			tinysh_add_command(&cek_mem_cmd);
@@ -1007,6 +1005,8 @@ vTaskDelay(100);
 		#endif
 		
 		#ifdef PAKAI_KONTROL_RTC
+			tinysh_add_command(&init_rtc_cmd);
+			tinysh_add_command(&cek_flag_rtc_cmd);
 			tinysh_add_command(&set_irq_rtcc_cmd);
 			tinysh_add_command(&cek_irq_rtc_cmd);
 			tinysh_add_command(&set_irq_rtca_cmd);
@@ -1054,18 +1054,7 @@ vTaskDelay(100);
 			start_adc_1();
 		#endif
 	#endif
-	
 
-	
-	#ifdef PAKAI_RTC
-		rtc_init();
-		vTaskDelay(100);
-		rtc_start();
-		
-		printf(" Init RTC ....\r\n");
-		//baca_rtc_mem();
-		
-	#endif
 	
 	#ifdef PAKAI_MMC
 	tinysh_add_command(&util_ls_cmd);
@@ -1118,10 +1107,22 @@ vTaskDelay(100);
 	sprintf(abs_path, "%s", "");
 	#endif
 	
-
 	
 	vTaskDelay(1000);
-	
+
+	#ifdef PAKAI_RTC
+#if 0
+//		rtc_init();
+//		init_rtc();
+		vTaskDelay(10);
+//		rtc_start();
+		
+		printf(" Init RTC ....\r\n");
+#endif
+		//baca_rtc_mem();
+		vTaskDelay(10);
+	#endif
+
 	struct t_env *envx;
 	envx = (char *) ALMT_ENV;
 

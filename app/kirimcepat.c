@@ -46,10 +46,13 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 	#ifdef PAKAI_SHELL
 		printf(" Monita : Kirim cepat init !!\r\n");
   	#endif
-  	
+  	extern unsigned char flagRTCc;
   	
   	vTaskDelay(50);
   	for(;;) {
+		if (flagRTCc == 100)	{
+			printf("qw : %d\r\n", flagRTCc);
+		}
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
 				lb++;
@@ -93,13 +96,13 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#ifdef PAKAI_KONTROL_RTC
 			if (flagRTCc==1)	{
 				lb++;
-				printf("cout counter : %d\r\n", lb);
-				flagRTCc=0;
+				printf("counter : %d\r\n", lb);
+				flagRTCc=99;
 			}
 			if (flagRTCc==2)	{
-				lb+=2;
-				printf("cout alarm	 : %d\r\n", lb);
-				flagRTCc=0;
+				lb =lb+2;
+				printf("alarm	 : %d\r\n", lb);
+				flagRTCc=99;
 			}
 		#endif
 		

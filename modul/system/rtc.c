@@ -7,7 +7,7 @@
 	*/
 
 #include "FreeRTOS.h"
-#include "../fatfs/integer.h" /* ambil def DWORD saja */
+//#include "../fatfs/integer.h" /* ambil def DWORD saja */
 #include <time.h>
 #include "rtc.h"
 
@@ -29,7 +29,7 @@ void rtc_init(void)
   	//RTC_PREFRAC = PREFRAC_RTC;
 
 }
-
+#if 0
 void rtc_reset(void)
 {
 	RTC_CCR = BIT(1);
@@ -44,7 +44,7 @@ void rtc_start( void )
   //RTC_ILR = ILR_RTCCIF;
   return;
 }
-
+#endif
 void rtc_reset_waktu(void)
 {
 	RTC_SEC = 0;
@@ -135,6 +135,7 @@ void get_tm_time(struct tm *theTime)
   theTime->tm_isdst = 0;
 }
 
+#if 0
 unsigned int get_fattime ()
 {
 	struct tm tm;
@@ -157,7 +158,7 @@ unsigned int get_fattime ()
   	return tmr;
 
 }
-
+#endif
 void rtcWrite (struct tm *newTime)
 {
   portENTER_CRITICAL ();

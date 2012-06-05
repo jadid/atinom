@@ -72,7 +72,7 @@ void rtc_ISR_Wrapper (void)	{
 	// cek apakah dari powerdown dari memRTC
 	//while(!cek_main_clk());
 	FIO0CLR = LED_UTAMA;
-	init_PLLnya();
+	//init_PLLnya();
 	
 	portSAVE_CONTEXT ();
 	rtc_ISR_Handler ();

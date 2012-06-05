@@ -74,6 +74,7 @@ CFLAGS= $(DEBUG) \
 THUMB_SOURCE= \
 		main.c \
 		../../hardware/hardware.c \
+		../../hardware/sys.c	\
 		../../hardware/system/setup_cpu.c \
 		../../hardware/system/syscall.c \
 		../../hardware/system/reset_cpu.c \

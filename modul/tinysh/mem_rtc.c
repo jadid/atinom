@@ -25,6 +25,14 @@
 extern float data_f[];
 extern struct t2_konter konter;
 
+void set_mem_rtc_kitab()	{
+	printf( "Perintah: [set_rtc] [reset|alamat] [nilai]\r\n"	\
+			"  set_mem [kanal] [flag] [nilai]\r\n"				\
+			"  flag nilai 1 = MFO\r\n"							\
+			"  flag nilai 2 = HSD\r\n"							\
+			"  contoh: set_rtc 3 1 53443\r\n");
+}
+
 #define TES_MEM_RTC
 
 #ifdef TES_MEM_RTC
@@ -68,7 +76,7 @@ void baca_mem_rtc()	{
 
 void reset_mem_rtc()	{
 	unsigned char ii;
-	for (ii=0; ii<40; ii++)	{
+	for (ii=0; ii<60; ii++)	{
 		*(&MEM_RTC0+ii) = 0;
 	}
 	#ifdef BOARD_KOMON_KONTER
@@ -102,16 +110,17 @@ void cek_nilai_rtc()	{
 	}
 }
 
-static tinysh_cmd_t reg_rtc_cmd={0,"reg_rtc","cek semua nilai memori RTC","", cek_nilai_rtc,0,0,0};
+static tinysh_cmd_t reg_rtc_cmd={0,"reg_rtc","cek semua nilai memori RTC","reset|alamat [nilai]", cek_nilai_rtc,0,0,0};
 
 void set_mem_rtc(int argc, char **argv)	{
 	
-	if (argc>4 || argc==3) {
-		printf("Perintah: \r\n");
-		printf("  set_mem [kanal] [flag] [nilai]\r\n");
-		printf("  flag nilai 1 = MFO\r\n");
-		printf("  flag nilai 2 = HSD\r\n");
-		printf("  contoh: set_rtc 3 1 53443\r\n");
+	if (argc>4 || argc==1) {
+		set_mem_rtc_kitab();
+		//printf("Perintah: \r\n");
+		//printf("  set_mem [kanal] [flag] [nilai]\r\n");
+		//printf("  flag nilai 1 = MFO\r\n");
+		//printf("  flag nilai 2 = HSD\r\n");
+		//printf("  contoh: set_rtc 3 1 53443\r\n");
 		return 0;
 	} else if (argc==2) {
 		if (strcmp(argv[1], "reset") == 0) {
@@ -120,14 +129,20 @@ void set_mem_rtc(int argc, char **argv)	{
 		return 0;
 	}
 	
-	
+	display_args(argc, argv);
 	int kanalnya=0, nilainya=0, flagnya=0;
 	
 	sscanf(argv[1], "%d", &kanalnya);
-	sscanf(argv[2], "%d", &flagnya);
-	sscanf(argv[3], "%d", &nilainya);
+	if (kanalnya>512)	{
+		printf( " Alokasi Alamat Memori SALAH !!\r\n"	\
+				" Memori RTC hanya s/d 512\r\n");
+		return;
+	}
 	
-	//printf("kanal: %d, nilai: %d\r\n", kanalnya, nilainya);
+	if (argc==3)	sscanf(argv[2], "%d", &flagnya);
+	if (argc==4)	sscanf(argv[3], "%d", &nilainya);
+	
+	printf("kanal: %d, nilai: %d\r\n", kanalnya, flagnya);
 	//printf("Pulsa ke-%d: %.1f -->", kanalnya, data_f[kanalnya*2-1]);
 	
 	#ifdef PAKAI_PILIHAN_FLOW
@@ -136,7 +151,12 @@ void set_mem_rtc(int argc, char **argv)	{
 		else if (flagnya==2)
 			konter.t_konter[kanalnya-1].hit2 = (int) nilainya;
 	#else
-	
+		if (argc==3)	{
+			*(&MEM_RTC0+kanalnya-1) = flagnya;
+			printf("Nilai memRTC[%d]: %d : 0x%04X\r\n", kanalnya-1, *(&MEM_RTC0+kanalnya-1), *(&MEM_RTC0+kanalnya-1));
+			
+			// CEK BAIK-BAIK JUMLAH ARGUMEN !!!!!	//
+		}
 		//konter.t_konter[kanalnya-1].hit = *(&MEM_RTC0+kanalnya-1) = (int) nilainya;
 	#endif
 	//printf("  %x: hasil[%d]: %d <-- %d\r\n", (&MEM_RTC0+kanalnya-1), kanalnya, *(&MEM_RTC0+kanalnya-1), (int) nilainya );

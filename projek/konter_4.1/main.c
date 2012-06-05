@@ -23,6 +23,7 @@
 #include "semphr.h"
 #include "hardware.h"
 #include "monita/monita_uip.h"
+#include "sys.h"
 
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -101,13 +102,37 @@ void togle_led_utama(void)	{
 	}
 #endif
 
+extern xTaskHandle hdl_kirimcepat;
+extern xTaskHandle hdl_ambilcepat;
+
 static portTASK_FUNCTION(task_led2, pvParameters )	{
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
 	for (;;)	{
+		if (flagRTCc==66)	{
+			vTaskSuspend( hdl_kirimcepat );
+			vTaskSuspend( hdl_ambilcepat );
+			vTaskSuspend( hdl_shell );
+
+			init_PLLnya();
+			vTaskDelay(50);
+			
+			//setup_hardware();
+			//init_led_utama();
+			//init_hardware();
+			
+			//vTaskResume( hdl_kirimcepat );
+			//vTaskResume( hdl_ambilcepat );
+			//vTaskResume( hdl_shell );
+			flagRTCc = 0;
+			set_power_rtc(0);
+		}
+		
+		
 		togle_led_utama();
 		cek_tik();
+		
 		#ifdef PAKAI_PUSHBUTTON
 			kurangi_delay_push();
 		#endif

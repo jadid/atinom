@@ -75,7 +75,12 @@ void rtc_ISR_Wrapper (void)	{
 	//init_PLLnya();
 	
 	portSAVE_CONTEXT ();
-	rtc_ISR_Handler ();
+	if (status_power()!=0)	{
+		flagRTCc = 66;
+	} else	{
+		rtc_ISR_Handler ();
+	}
+	
 	portRESTORE_CONTEXT ();
 }
 #endif

@@ -42,24 +42,43 @@ int cek_main_clk()	{
 	return (SCS & BIT(6))? 1: 0;
 }
 
+#ifdef PAKAI_RTC
+void set_power_rtc(unsigned char status)	{
+	*(&MEM_RTC0+50-1) = status;
+}
+char status_power()	{
+	return (*(&MEM_RTC0+50-1));
+}
+#endif
+
 void set_modepower_sh(int argc, char **argv) {
 	if ( (argc<2) || (argc>2) )	{	// cek_relay
 		modepower_kitab(argv[0]);
 		return 0;
 	}
+	
+	char spow=0;
 
-	printf("INTWAKE: %04x\r\n", INTWAKE);
 	#ifdef PAKAI_KONTROL_RTC
-	rtc_counter_irq_aktif(2);
-	set_int_wakeup(0x8000);
-	printf("INTWAKE: %04x\r\n", INTWAKE);
-	vTaskDelay(100);
+	rtc_counter_irq_aktif(2);		// 1 menit
+	set_int_wakeup(0x8000);			// 
+	
+	if (strcmp(argv[1],"mati")==0)	{
+		set_power_rtc(spow = 1);
+	}
+	else if (strcmp(argv[1],"tidur")==0)	{
+		set_power_rtc(spow = 2);
+	} else {
+		spow = argv[1][0]-'0';
+		printf("spow: %d\r\n", spow+7);
+	}
 	#endif
+	
 	printf("  Set mode power %s\r\n", argv[1]);
-	vTaskDelay(100);
-	sleep_mode();
-	//powerdown_mode();
-
+	vTaskDelay(150);
+	//sleep_mode();
+	if (spow==1)	powerdown_mode();			// mati
+	if (spow==2)	sleep_mode();
 }
 
 static tinysh_cmd_t set_power_cmd={0,"set_power","set mode power", "help default ",set_modepower_sh,0,0,0};

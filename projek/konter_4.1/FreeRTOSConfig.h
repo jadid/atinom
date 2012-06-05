@@ -82,7 +82,7 @@
 #endif
 
 #define configUSE_PREEMPTION		0		
-#define configUSE_IDLE_HOOK         1
+#define configUSE_IDLE_HOOK         0
 #define configUSE_TICK_HOOK         0
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48000000 )	/* =12Mhz xtal multiplied by 5 using the PLL. */
 #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 60000000 )
@@ -108,7 +108,7 @@ to exclude the API function. */
 #define INCLUDE_uxTaskPriorityGet           0
 #define INCLUDE_vTaskDelete                 0
 #define INCLUDE_vTaskCleanUpResources       0
-#define INCLUDE_vTaskSuspend                0
+#define INCLUDE_vTaskSuspend                1
 #define INCLUDE_vTaskDelayUntil             0
 #define INCLUDE_vTaskDelay                  1
 #define INCLUDE_xTaskGetCurrentTaskHandle	0

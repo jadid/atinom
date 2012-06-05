@@ -1061,7 +1061,7 @@ vTaskDelay(100);
 	tinysh_char_in('\r');
 	int perdetiknya=0;
 
-	//*
+	/*
 	printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d, upLong: %d\r\n", \
 		sizeof(char), sizeof(int), sizeof(long int), sizeof(float), sizeof(double), sizeof(unsigned portLONG));
 	//printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d, l: %ld - %ld\r\n", \

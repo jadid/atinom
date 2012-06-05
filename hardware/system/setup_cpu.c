@@ -148,15 +148,18 @@ void ubah_clk( unsigned int clk_div)
 	}
 }
 
-
-
-static void lowInit(void)
-{
-	init_PLL();
+inline static void initMAM()	{
 	// setup & enable the MAM
 	MAMCR = 0;
 	MAMTIM = 3;
 	MAMCR = 2;
+}
+
+static void lowInit(void)
+{
+	init_PLL();
+	
+	initMAM();
 
 	PCLKSEL0 = 0x55555555;	/* PCLK is the same as CCLK */
 	PCLKSEL1 = 0x55555555;

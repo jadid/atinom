@@ -22,6 +22,9 @@
 
 #ifdef PAKAI_SHELL
 
+#ifndef __SHELL__
+#define __SHELL__
+
 #if (VERSI_KONFIG == 2)
 
 #include "group.c"
@@ -409,83 +412,8 @@ void cek_versi(void)	{
 
 //static
 tinysh_cmd_t version_cmd={0,"version","menampilkan versi firmware","[args]", cek_versi,0,0,0};
-							  
-unsigned int uptime_ovflow=0;
-unsigned int tik_lama=0;
 
-void uptime(unsigned int *sec, unsigned int *min, unsigned int *jam, unsigned int *hari, unsigned int *thn)	{
-	unsigned int detik;
-	unsigned int tik;
-	
-	tik = xTaskGetTickCount();
-	if (tik < tik_lama)
-			uptime_ovflow++;
-	
-	tik_lama = tik;
-	
-	detik = ((uptime_ovflow * 0xFFFFFFFF) + tik)/1000;	// port tick HZ
-	
-	*sec = detik % 60;
-	*min = detik / 60;
-	if (*min > 60) 
-		*min = *min % 60;
-	
-	*jam = detik / 3600;
-	if (*jam >= 24)
-		*jam = *jam % 24;
-	
-	*hari = detik / 86400;
-	if (*hari >= 365)
-		*hari = *hari % 365;
-	
-	*thn = detik / (8640 * 365);
-	
-}
 
-//static 
-void cek_uptime(int argc, char **argv)	{
-	unsigned int sec;
-	unsigned int menit;
-	unsigned int jam;
-	unsigned int hari;
-	unsigned int tahun;
-	
-	extern unsigned int tot_idle;
-	
-	uptime(&sec, &menit, &jam, &hari, &tahun);
-	printf(" Up  = ");
-	if (tahun !=0)
-	{
-		printf("%d thn ", tahun);	
-	}
-	if (hari !=0)
-	{
-		printf("%d hari ", hari);		
-	}
-	if (jam !=0)
-	{
-		printf("%d jam ", jam);		
-	}
-	if (menit !=0)
-	{
-		printf("%d mnt ", menit);		
-	}
-		
-	printf("%d dtk : idle = %d\n", sec, tot_idle);
-	
-	#ifdef PAKAI_RTC
-	//RTCTimex wt;
-
-	//wt = rtc_get_time();
-	//printf(" Now = %02d:%02d:%02d  %d-%d-%d\r\n", wt.RTC_Hour, wt.RTC_Min, wt.RTC_Sec, \
-	//		wt.RTC_Mday, wt.RTC_Mon, wt.RTC_Year);
-	#endif
-		
-	return ;
-}
-
-//static
-tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",  cek_uptime,0,0,0};
 
 #if defined(BOARD_KOMON_420_SAJA)
 void hitung_datanya() {
@@ -1133,11 +1061,25 @@ vTaskDelay(100);
 	tinysh_char_in('\r');
 	int perdetiknya=0;
 
-	/*
-	printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d\r\n", \
-		sizeof(char), sizeof(int), sizeof(long int), sizeof(float), sizeof(double));
-	printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d\r\n", \
-		255, 20000000, 20000000, 20000000, 20000000);
+	//*
+	printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d, upLong: %d\r\n", \
+		sizeof(char), sizeof(int), sizeof(long int), sizeof(float), sizeof(double), sizeof(unsigned portLONG));
+	//printf("nChr: %d, nInt: %d, nLInt: %d, nFloat: %d, nDouble: %d, l: %ld - %ld\r\n", \
+	//	255, 20000000, 20000000, 20000000, 20000000, 0xFFFFFFFF, 0x7FFFFFFF);
+	portTickType tik=0x7FFFFFFF;
+	printf("tik1: %ld, ", tik);
+	tik += 1;
+	printf("tik1: %ld, ", tik);
+	tik=0x80000000;
+	printf("tik2: %ld, ", tik);
+	tik += 1;
+	printf("tik2: %ld, ", tik);
+	
+	tik=0xFFFFFFFF;
+	printf("tik3: %ld, ", tik);
+	tik += 1;
+	printf("tik3: %ld\r\n", tik);
+	printf("l: %ld x %ld x %ld\r\n", 0xFFFFFFFF, 0x7FFFFFFF, 0x80000000);
 	//*/
 	/*
 	 * main loop shell
@@ -1209,6 +1151,8 @@ void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
 	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY+2, ( xTaskHandle * ) &hdl_shell);
 }
+#endif
+
 #endif
 
 #endif

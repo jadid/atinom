@@ -22,7 +22,7 @@
 #include "queue.h"
 #include "semphr.h"
 #include "hardware.h"
-
+#include "monita/monita_uip.h"
 
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -64,6 +64,9 @@ int main( void )	{
 	return 0;
 
 }
+void IdleTaskHook()	{
+	
+}
 
 void togle_led_utama(void)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");
@@ -102,20 +105,9 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 	tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
-#if 0
-	FIO0SET = LED_UTAMA;
-	vTaskDelay(500);
-	FIO0CLR = LED_UTAMA;
-	vTaskDelay(500);
-	FIO0SET = LED_UTAMA;
-	vTaskDelay(500);
-	FIO0CLR = LED_UTAMA;
-	vTaskDelay(500);
-	FIO0SET = LED_UTAMA;
-#endif	
 	for (;;)	{
 		togle_led_utama();
-
+		cek_tik();
 		#ifdef PAKAI_PUSHBUTTON
 			kurangi_delay_push();
 		#endif

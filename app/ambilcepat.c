@@ -133,7 +133,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 
   	#ifdef PAKAI_RTC
   	#if 1
-		printf(" Init RTC ....\r\n");
+		printf(" Init RTC ....%d\r\n", xTaskGetTickCount());
 		flagRTCc = 5;
 		init_rtc();
 		vTaskDelay(10);

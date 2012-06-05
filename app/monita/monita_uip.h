@@ -75,6 +75,12 @@
 	#define PER_SUMBER	20
 #endif
 
+
+//unsigned int loop_idle=0;
+//unsigned int idle_lama;
+//unsigned int tot_idle;
+
+
 #ifdef PAKAI_GSM_FTP
 	int saat_gsm_aksi;
 	int status_modem;

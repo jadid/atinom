@@ -19,6 +19,12 @@
 #include "gpio.h"
 #include "lpc23xx.h"
 
+#ifndef __GPIO_ISR__
+#define __GPIO_ISR__
+
+#include "hardware.h"
+#include "sys.h"
+
 // tes konter
 //#define LED_UTAMA	BIT(27)
 
@@ -33,13 +39,14 @@
 extern xSemaphoreHandle keypad_sem;
 #endif
 
-
+#ifdef PAKAI_KONTROL_RTC
 void rtc_ISR_Wrapper (void) __attribute__ ((naked));
 void rtc_ISR_Handler (void);
 
 extern unsigned char flagRTCc;
 
 void rtc_ISR_Handler (void)	{
+	
 //	flagRTCc = 100;
 //	printf("IRQ RTC");
 
@@ -63,13 +70,15 @@ void rtc_ISR_Handler (void)	{
 
 void rtc_ISR_Wrapper (void)	{
 	// cek apakah dari powerdown dari memRTC
-	while(!cek_main_clk());
+	//while(!cek_main_clk());
+	FIO0CLR = LED_UTAMA;
+	init_PLLnya();
 	
 	portSAVE_CONTEXT ();
 	rtc_ISR_Handler ();
 	portRESTORE_CONTEXT ();
 }
-
+#endif
 
 #ifdef PAKAI_TIMER_2
 void timer2_ISR_Wrapper( void )
@@ -719,4 +728,6 @@ void gpio_ISR_KONTROL( void )
 	/* Clear the ISR in the VIC. */
 	VICVectAddr = 0;
 }
+#endif
+
 #endif

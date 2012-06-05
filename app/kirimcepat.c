@@ -96,7 +96,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#ifdef PAKAI_KONTROL_RTC
 			if (flagRTCc==1)	{
 				lb++;
-				printf("counter : %d\r\n", lb);
+				printf("counter : %d, tik: %ld\r\n", lb, xTaskGetTickCount());
 				flagRTCc=99;
 			}
 			if (flagRTCc==2)	{

@@ -27,7 +27,7 @@ void setup_hardware() {
 	#ifdef PAKAI_BACKLIT
 		setup_backlit();
 	#endif
-	
+
 	#ifdef PAKAI_ADC
 		setup_adc();
 	//	init_ss1();
@@ -38,7 +38,12 @@ void setup_hardware() {
 	#endif
 
 	#ifdef PAKAI_SHELL
-		xSerialPortInitMinimal( BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE  );
+		#ifdef PAKAI_KONTROL_RTC
+			if (status_power()==0)
+				xSerialPortInitMinimal( BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE  );
+		#else
+			xSerialPortInitMinimal( BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE  );
+		#endif
 	#endif
 	
 	#ifdef PAKAI_I2C

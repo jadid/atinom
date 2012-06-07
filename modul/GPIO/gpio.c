@@ -69,12 +69,14 @@ void init_timer2() {
 }
 #endif
 
+#ifdef PAKAI_KONTROL_RTC
+
 extern unsigned char flagRTCc;
 
 void init_rtc_irq(void)	{
 	extern void rtc_ISR_Wrapper( void );
-	flagRTCc = 150;
-	printf("   %s masuk \r\n", __FUNCTION__);
+	//flagRTCc = 150;
+	//printf("   %s masuk \r\n", __FUNCTION__);
 
 	portENTER_CRITICAL();
 	VICIntSelect &= ~(VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC));		// set ke 0: IRQ [1: FOQ]
@@ -84,9 +86,9 @@ void init_rtc_irq(void)	{
 	VICIntEnable = VIC_CHAN_TO_MASK(VIC_CHAN_NUM_RTC);
 	portEXIT_CRITICAL();
 	
-	flagRTCc = 160;
+	//flagRTCc = 160;
 }
-
+#endif
 
 #if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 //extern struct t2_konter konter;

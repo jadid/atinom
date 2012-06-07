@@ -50,9 +50,6 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	
   	vTaskDelay(50);
   	for(;;) {
-		if (flagRTCc == 100)	{
-			printf("qw : %d\r\n", flagRTCc);
-		}
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
 				lb++;

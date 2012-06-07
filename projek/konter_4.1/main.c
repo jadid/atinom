@@ -29,7 +29,7 @@ unsigned int loop_idle=0;
 unsigned int idle_lama;
 unsigned int tot_idle;
 
-static int tog;
+
 //static void sysInit(void);
 void init_led_utama(void);
 //void init_spi_mmc(char min)	;
@@ -69,25 +69,19 @@ void IdleTaskHook()	{
 	
 }
 
-void togle_led_utama(void)	{
+void togle_led_utama(char tog)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");
+	//FIO0PIN ^= LED_UTAMA;
+
 	if (tog)	{
-		FIO0SET = LED_UTAMA;
-		tog = 0;
 		//FIO0SET = RXDE;
 		/* kalkulasi idle loop */
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
 		
 		//printf("isi: %x: %d\r\n", &MEM_RTC0+1, *(&MEM_RTC0+1));
-		
-		/* reset wdog setiap detik */
-		tendang_wdog();
-	}	else	{
-		FIO0CLR = LED_UTAMA;
-		//FIO0CLR = RXDE;
-		tog = 1;
-		//ser2_putstring("masuk ...\r\n");	
+
+		tendang_wdog();		// reset wdog setiap detik //
 	}
 }
 
@@ -106,31 +100,29 @@ extern xTaskHandle hdl_kirimcepat;
 extern xTaskHandle hdl_ambilcepat;
 
 static portTASK_FUNCTION(task_led2, pvParameters )	{
-	tog = 0;
+	static char tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
 	for (;;)	{
-		if (flagRTCc==66)	{
-			vTaskSuspend( hdl_kirimcepat );
+		if (status_power()>0)	{
+			//vTaskSuspend( hdl_kirimcepat );
 			vTaskSuspend( hdl_ambilcepat );
-			vTaskSuspend( hdl_shell );
+			//vTaskSuspend( hdl_shell );
 
-			init_PLLnya();
-			vTaskDelay(50);
-			
-			//setup_hardware();
-			//init_led_utama();
-			//init_hardware();
+			setup_hardware();
+
+			vTaskDelay(200);
 			
 			//vTaskResume( hdl_kirimcepat );
-			//vTaskResume( hdl_ambilcepat );
+			vTaskResume( hdl_ambilcepat );
 			//vTaskResume( hdl_shell );
 			flagRTCc = 0;
 			set_power_rtc(0);
+			printf("  kembali normal.... !!\r\n");
 		}
 		
 		
-		togle_led_utama();
+		togle_led_utama(tog=1-tog);
 		cek_tik();
 		
 		#ifdef PAKAI_PUSHBUTTON

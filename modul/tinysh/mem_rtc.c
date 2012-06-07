@@ -12,25 +12,39 @@
 
 #include "FreeRTOS.h"
 #include "hardware.h"
-#include "../app/monita/monita_uip.h"
+#include "monita/monita_uip.h"
 #include "enviro.h"
-//#include "../../hardware/lpc23xx.h"
 
 #ifdef PAKAI_MEM_RTC
 
-#define MEM_RTC_BASE_ADDR		0xE0084000
-#define MEM_RTC0	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x00))
-#define MEM_RTC1	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x04))
+//#define MEM_RTC_BASE_ADDR		0xE0084000
+//#define MEM_RTC0	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x00))
+//#define MEM_RTC1	(*(volatile unsigned int *)(MEM_RTC_BASE_ADDR + 0x04))
 
 extern float data_f[];
 extern struct t2_konter konter;
 
-void set_mem_rtc_kitab()	{
-	printf( "Perintah: [set_rtc] [reset|alamat] [nilai]\r\n"	\
-			"  set_mem [kanal] [flag] [nilai]\r\n"				\
-			"  flag nilai 1 = MFO\r\n"							\
-			"  flag nilai 2 = HSD\r\n"							\
-			"  contoh: set_rtc 3 1 53443\r\n");
+void mem_rtc_kitab(char *s)	{
+	if (strcmp(s, "set_mem")==0)	{
+		printf( "Perintah: [set_rtc] [reset|alamat] [nilai]\r\n"	\
+				"  set_mem [kanal] [flag] [nilai]\r\n"				\
+				"  flag nilai 1 = MFO\r\n"							\
+				"  flag nilai 2 = HSD\r\n"							\
+				"  contoh: set_rtc 3 1 53443\r\n");
+	}
+	if (strcmp(s, "cek_rtc")==0)	{
+		printf( "Perintah: \r\n"			\
+				"  cek_rtc [kanal]\r\n"		\
+				"  contoh: set_mem 3\r\n");
+	}
+	#ifdef TES_MEM_RTC
+	if (strcmp(s, "tes_mem")==0)	{
+		printf( "Perintah: \r\n"			\
+				"  tes_mem [nilai]\r\n"	\
+				"  contoh: set_dimmer 50\r\n");
+	}
+	#endif
+	
 }
 
 #define TES_MEM_RTC
@@ -40,9 +54,7 @@ void tes_mem_rtc(int argc, char **argv)	{
 	int awalsaja=0;
 	
 	if (argc>2 || argc==1) {
-		printf("Perintah: \r\n");
-		printf("  set_dimmer [%dimmer]\r\n");
-		printf("  contoh: set_dimmer 50\r\n");
+		mem_rtc_kitab(argv[0]);
 		return 0;
 	}
 	
@@ -53,6 +65,7 @@ void tes_mem_rtc(int argc, char **argv)	{
 }
 
 static tinysh_cmd_t tes_mem_cmd={0,"tes_mem","set memori RTC","", tes_mem_rtc,0,0,0};
+
 #endif
 
 #ifdef HITUNG_ENERGI
@@ -76,7 +89,7 @@ void baca_mem_rtc()	{
 
 void reset_mem_rtc()	{
 	unsigned char ii;
-	for (ii=0; ii<60; ii++)	{
+	for (ii=0; ii<512; ii++)	{
 		*(&MEM_RTC0+ii) = 0;
 	}
 	#ifdef BOARD_KOMON_KONTER
@@ -113,14 +126,8 @@ void cek_nilai_rtc()	{
 static tinysh_cmd_t reg_rtc_cmd={0,"reg_rtc","cek semua nilai memori RTC","reset|alamat [nilai]", cek_nilai_rtc,0,0,0};
 
 void set_mem_rtc(int argc, char **argv)	{
-	
 	if (argc>4 || argc==1) {
-		set_mem_rtc_kitab();
-		//printf("Perintah: \r\n");
-		//printf("  set_mem [kanal] [flag] [nilai]\r\n");
-		//printf("  flag nilai 1 = MFO\r\n");
-		//printf("  flag nilai 2 = HSD\r\n");
-		//printf("  contoh: set_rtc 3 1 53443\r\n");
+		mem_rtc_kitab(argv[0]);
 		return 0;
 	} else if (argc==2) {
 		if (strcmp(argv[1], "reset") == 0) {
@@ -168,9 +175,7 @@ static tinysh_cmd_t set_mem_cmd={0,"set_rtc","set memori RTC","", set_mem_rtc,0,
 void cek_mem_rtc(int argc, char **argv)	{
 	int aa=0;
 	if (argc>2) {
-		printf("Perintah: \r\n");
-		printf("  cek_rtc [kanal]\r\n");
-		printf("  contoh: set_mem 3\r\n");
+		mem_rtc_kitab(argv[0]);
 		return 0;
 	} else if (argc==1) {
 		return 0;
@@ -178,6 +183,11 @@ void cek_mem_rtc(int argc, char **argv)	{
 	int kanalnya=0, nilainya=0;
 	
 	sscanf(argv[1], "%d", &kanalnya);
+	if (kanalnya>512)	{
+		printf("");
+		return;
+	}
+	
 	
 	aa = *(&MEM_RTC0+kanalnya-1);
 	

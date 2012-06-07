@@ -642,10 +642,9 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp_exe","proses gsm_ftp","[args]",
 #endif 
 
 extern int usb_terup;
-portTASK_FUNCTION(shell, pvParameters )
-{
+portTASK_FUNCTION(shell, pvParameters )		{
   	int c;
-  	xTaskHandle xHandle;
+  	//xTaskHandle xHandle;
   	//printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
   	//vTaskDelay(1000);
   	printf("Daun Biru Engineering, Des 2008\r\n");
@@ -682,8 +681,7 @@ portTASK_FUNCTION(shell, pvParameters )
    	// if (c == 0) printf("Ketemu !\r\n");  
    	
    	#if 1
-   	if (OHCIInit() == 0)
-   	{
+   	if (OHCIInit() == 0)   	{
    		printf("------------ Init error \r\n");
    	}
    	vTaskDelay(1000);
@@ -878,8 +876,7 @@ vTaskDelay(100);
 	tinysh_add_command(&cek_dimmer_cmd);
 #endif
 
-	/* add sub commands
- 	*/
+	/* add sub commands 	*/
   	//tinysh_add_command(&ctxcmd);
   	//tinysh_add_command(&item1);
   	//tinysh_add_command(&item2);
@@ -1085,23 +1082,20 @@ vTaskDelay(100);
 	 * main loop shell
   	 */
   	int lop = 0;
-  	while(1)
-    {
+  	while(1)    {
 		vTaskDelay(1);
 	  lop++;
-	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)
-	  {
+	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)	  {
 			lop = 0;
 			tinysh_char_in((unsigned char)c);
+			FIO0PIN ^= BIT(27);
 	  }	
 	  
 	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 60)
-	  {
+	  if (lop > 60)	  {
 			lop = 0;
-			printf("\r\nPasswd lock!\r\n");
-			while(1)
-			{
+			printf("\r\nPassword lock!\r\n");
+			while(1)	{
 				if (xSerialGetChar(1, &c, 1000) == pdTRUE)	{
 					if (proses_passwd( &c ) == 1) break;
 				}

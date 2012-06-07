@@ -53,9 +53,6 @@ void rtc_ISR_Handler (void)	{
 //	RTC_ILR = RTC_ILR_RTCCIF;
 //	RTC_ILR = BIT(1) | BIT(0);
 
-	
-	
-
 	if (RTC_ILR & RTC_ILR_RTCCIF)	{		// counter irq
 		flagRTCc = 1;
 		RTC_ILR = RTC_ILR_RTCCIF;

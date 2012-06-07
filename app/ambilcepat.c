@@ -190,12 +190,13 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			}
 		#endif
 		
-		#ifdef UNTUK_UNSRI
-		if (loopambil%1000==0) {			// 1 detik ambil data
+		//#ifdef UNTUK_UNSRI
+		if (loopambil%500==0) {			// 1 detik ambil data
+			//FIO0PIN ^= BIT(27);
 			//hitung_energi();
 			//printf("T2MR0: %d, T2TC: %d\r\n", T2MR0, T2TC);
 		}
-		#endif
+		//#endif
 		
 		/*
 		#ifdef PAKAI_TIMER_2
@@ -386,13 +387,14 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	#endif
 }
 
-int nAmbilCepat=10;
+
 
 #ifdef PAKAI_GPS
 //	nAmbilCepat += 5;
 #endif
 
 void init_ambilcepat(void)	{
+	int nAmbilCepat=10;
 	#ifdef BOARD_TAMPILAN
 		xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+8, ( xTaskHandle * ) &hdl_ambilcepat);
 	#else

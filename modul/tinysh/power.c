@@ -60,8 +60,7 @@ void set_modepower_sh(int argc, char **argv) {
 	char spow=0;
 
 	#ifdef PAKAI_KONTROL_RTC
-	rtc_counter_irq_aktif(2);		// 1 menit
-	set_int_wakeup(0x8000);			// 
+	
 	
 	if (strcmp(argv[1],"mati")==0)	{
 		set_power_rtc(spow = 1);
@@ -69,13 +68,19 @@ void set_modepower_sh(int argc, char **argv) {
 	else if (strcmp(argv[1],"tidur")==0)	{
 		set_power_rtc(spow = 2);
 	} else {
-		spow = argv[1][0]-'0';
-		printf("spow: %d\r\n", spow+7);
+		set_power_rtc(spow = argv[1][0]-'0');
+		//printf("spow: %d\r\n", spow+7);
+	}
+	
+	if (spow>0)	{
+		rtc_counter_irq_aktif(2);		// 2: 1 menit | 1: 1 detik
+		set_int_wakeup(0x8000);			// 
 	}
 	#endif
-	
+	get_cal();
 	printf("  Set mode power %s\r\n", argv[1]);
-	vTaskDelay(150);
+	
+	vTaskDelay(50);
 	//sleep_mode();
 	if (spow==1)	powerdown_mode();			// mati
 	if (spow==2)	sleep_mode();

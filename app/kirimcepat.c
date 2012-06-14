@@ -8,8 +8,8 @@
 #ifndef __KIRIMCEPAT__
 #define __KIRIMCEPAT__
 
-#include "../../app/monita/monita_uip.h"
-#include "../../modul/tinysh/enviro.h"
+#include "monita/monita_uip.h"
+#include "tinysh/enviro.h"
 
 
 xTaskHandle hdl_kirimcepat;
@@ -46,7 +46,9 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 	#ifdef PAKAI_SHELL
 		printf(" Monita : Kirim cepat init !!\r\n");
   	#endif
+  	#ifdef PAKAI_RTC
   	extern unsigned char flagRTCc;
+  	#endif
   	
   	vTaskDelay(50);
   	for(;;) {

@@ -44,7 +44,7 @@ DISAMB=$(PAT)arm-elf-objdump
 UKURAN=$(PAT)arm-elf-size
 PENULIS= ../../modul/Penulis/./lpc_dbe
 
-NAMA_FILE=konter
+NAMA_FILE=konter_4.1
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
  LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 

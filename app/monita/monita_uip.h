@@ -81,6 +81,7 @@
 //unsigned int tot_idle;
 
 
+
 #ifdef PAKAI_GSM_FTP
 	int saat_gsm_aksi;
 	int status_modem;

@@ -47,7 +47,7 @@ PENULIS= ../../modul/Penulis/./lpc_dbe
 NAMA_FILE=konter
 
 #LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
-LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
+ LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -o$(NAMA_FILE).elf -Xlinker -M -Xlinker -Map=rtosdemo.map 
 
 OPTIM=-O1
 
@@ -74,6 +74,7 @@ CFLAGS= $(DEBUG) \
 THUMB_SOURCE= \
 		main.c \
 		../../hardware/hardware.c \
+		../../hardware/sys.c	\
 		../../hardware/system/setup_cpu.c \
 		../../hardware/system/syscall.c \
 		../../hardware/system/reset_cpu.c \
@@ -138,7 +139,9 @@ PM_SOURCE = \
 #		../../app/powermeter/pm.c	\
 
 RTC_SOURCE = \
-		../../modul/system/rtc.c			\
+		../../modul/rtc/rtc.c			\
+#		../../modul/system/rtc.c		\
+
 
 RELAY_SOURCE = \
 		../../app/relay/relay.c	\
@@ -150,13 +153,13 @@ ARM_SOURCE= \
 		../../modul/rtc/rtc_ISR.c	\
 
 
-THUMB_SOURCE += $(GPS_SOURCE)
-THUMB_SOURCE += $(UIP_SOURCE)
-THUMB_SOURCE += $(WEBCLIENT_SOURCE)
-THUMB_SOURCE += $(ETH_SOURCE)
+#THUMB_SOURCE += $(GPS_SOURCE)
+#THUMB_SOURCE += $(UIP_SOURCE)
+#THUMB_SOURCE += $(WEBCLIENT_SOURCE)
+#THUMB_SOURCE += $(ETH_SOURCE)
 THUMB_SOURCE += $(RTC_SOURCE)
-THUMB_SOURCE += $(RELAY_SOURCE)
-THUMB_SOURCE += $(ADC_SOURCE)
+#THUMB_SOURCE += $(RELAY_SOURCE)
+#THUMB_SOURCE += $(ADC_SOURCE)
 THUMB_SOURCE += $(PM_SOURCE)
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
@@ -188,6 +191,7 @@ clean :
 	rm $(ARM_OBJS)
 	rm $(NAMA_FILE).elf
 	rm $(NAMA_FILE).hex
+	rm $(NAMA_FILE).bin
 #	touch Makefile
 	
 tulis :

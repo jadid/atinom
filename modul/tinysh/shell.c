@@ -25,6 +25,8 @@
 #ifndef __SHELL__
 #define __SHELL__
 
+#include "serial_sh.c"
+
 #if (VERSI_KONFIG == 2)
 
 #include "group.c"
@@ -133,7 +135,7 @@ int status_MMC=0;
 #endif
 
 #ifdef PAKAI_MODE_POWER
-	#include "power.c"
+	#include "power_sh.c"
 #endif
 
 #ifdef PAKAI_MODBUS_RTU
@@ -258,6 +260,63 @@ static tinysh_cmd_t reset_cmd={0,"reset","reset cpu saja","[args]", reset_cpu,0,
 							  
 //static tinysh_cmd_t defenv_cmd={0,"defenv","set default environment","[args]",
 //                              getdef_env,0,0,0};
+
+unsigned int uptime_ovflow=0;
+unsigned int tik_lama=0;
+
+void cek_tik()	{
+	portTickType tik = (xTaskGetTickCount()/configTICK_RATE_HZ);		// dalam detik
+	if (tik<tik_lama)	{
+		uptime_ovflow++;
+	}
+	tik_lama = tik;
+}
+
+void hitung_wkt(unsigned int w, int *wx)	{
+	int aW[] = {1, 60, 60, 24, 365, 1};
+	char i=0;
+	
+	for (i=0; i<5; i++)	{
+		wx[i] = w /= (int) aW[i];
+		//printf("nW[%d]: %d, w:%d, aW[%d]\r\n",i,  nW[i], w, i, aW[i]);
+		if (wx[i]>=aW[i+1] && i<4)
+			wx[i] %= aW[i+1];
+		//printf("nW[%d]: %d\r\n",i,  nW[i]);
+	}
+}
+
+
+void cek_uptime_modul()	{
+	extern unsigned int tot_idle;
+	
+	int nW[5];
+	portTickType w;
+	portTickType qaz = (portTickType) (portMAX_DELAY/configTICK_RATE_HZ);
+	
+	w = (xTaskGetTickCount()/configTICK_RATE_HZ) + (uptime_ovflow*qaz);
+	//printf(" TickCount : %d : %d : %d, ov: %d\r\n", xTaskGetTickCount(), w, qaz, uptime_ovflow );
+	
+	hitung_wkt(w, &nW);
+	printf(" Up  = ");
+	if (nW[4] !=0)
+		printf("%d thn ", nW[4]);
+	if (nW[3] !=0)
+		printf("%d hari ", nW[3]);		
+	if (nW[2] !=0)
+		printf("%d jam ", nW[2]);		
+	if (nW[1] !=0)
+		printf("%d mnt ", nW[1]);		
+	printf("%d dtk : idle = %d\r\n", nW[0], tot_idle);
+	
+	#ifdef PAKAI_RTC
+		get_cal();
+	#endif
+	
+}
+
+tinysh_cmd_t uptime_cmd={0,"uptime","lama running","[args]",  cek_uptime_modul,0,0,0};
+
+
 
 #ifdef PAKAI_MULTI_SERIAL
 void kirim_serial (int argc, char **argv) {
@@ -701,6 +760,8 @@ portTASK_FUNCTION(shell, pvParameters )		{
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
+	tinysh_add_command(&init_shell_cmd);
+	
 #if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 	tinysh_add_command(&cek_rpm_cmd);
 	tinysh_add_command(&set_kanal_cmd);
@@ -1084,15 +1145,15 @@ vTaskDelay(100);
   	int lop = 0;
   	while(1)    {
 		vTaskDelay(1);
-	  lop++;
-	  if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)	  {
+		lop++;
+		if (xSerialGetChar(1, &c, 1000 ) == pdTRUE)	  {
 			lop = 0;
 			tinysh_char_in((unsigned char)c);
 			FIO0PIN ^= BIT(27);
-	  }	
+		}	
 	  
-	  /* dilindungi password setiap menit tidak ada aktifitas*/
-	  if (lop > 60)	  {
+		/* dilindungi password setiap menit tidak ada aktifitas*/
+		if (lop > 60)	  {
 			lop = 0;
 			printf("\r\nPassword lock!\r\n");
 			while(1)	{
@@ -1110,7 +1171,7 @@ vTaskDelay(100);
 				#endif
 
 			}
-	  }
+		}
 		
 		#if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 		//	data_frek_rpm();

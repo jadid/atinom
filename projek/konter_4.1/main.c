@@ -71,10 +71,9 @@ void IdleTaskHook()	{
 
 void togle_led_utama(char tog)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");
-	//FIO0PIN ^= LED_UTAMA;
+	FIO0PIN ^= LED_UTAMA;
 
 	if (tog)	{
-		//FIO0SET = RXDE;
 		/* kalkulasi idle loop */
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
@@ -105,15 +104,16 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 	idle_lama = 0;
 	for (;;)	{
 		if (status_power()>0)	{
-			//vTaskSuspend( hdl_kirimcepat );
+			vTaskSuspend( hdl_kirimcepat );
 			vTaskSuspend( hdl_ambilcepat );
-			//vTaskSuspend( hdl_shell );
+			vTaskSuspend( hdl_shell );
 
 			setup_hardware();
-
+			xSerialPortInitMinimal(BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE);
+			
 			vTaskDelay(200);
 			
-			//vTaskResume( hdl_kirimcepat );
+			vTaskResume( hdl_kirimcepat );
 			vTaskResume( hdl_ambilcepat );
 			//vTaskResume( hdl_shell );
 			flagRTCc = 0;

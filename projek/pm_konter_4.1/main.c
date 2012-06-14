@@ -43,7 +43,7 @@ xTaskHandle hdl_relay;
 #endif
 
 #ifdef PAKAI_PUSHBUTTON
-	#include "../../app/monita/monita_uip.h"
+	#include "monita/monita_uip.h"
 	extern unsigned int debound[KANALNYA];
 #endif
 

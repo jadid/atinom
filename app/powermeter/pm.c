@@ -44,13 +44,8 @@ extern float  data_f[];
 
 #ifdef PAKAI_PM
 
-float satuan_kwh[JML_SUMBER];
-float satuan_kw[JML_SUMBER];
-float satuan_volt[JML_SUMBER];
-float satuan_volt2[JML_SUMBER];
-float satuan_amp[JML_SUMBER];
-float satuan_amp2[JML_SUMBER];
-struct t_kontrol_PM kontrol_PM[JML_SUMBER];
+
+
 //#include "modbus/low_mod.c"
 
 int jmlPM=0,k=0;

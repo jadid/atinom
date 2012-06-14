@@ -29,7 +29,13 @@ unsigned short reg_flag;
 //struct f_PM710 asli_PM710[JML_SUMBER];
 //struct t_kontrol_PM kontrol_PM[JUMLAH_PM];
 
-
+float satuan_kwh[JML_SUMBER];
+float satuan_kw[JML_SUMBER];
+float satuan_volt[JML_SUMBER];
+float satuan_volt2[JML_SUMBER];
+float satuan_amp[JML_SUMBER];
+float satuan_amp2[JML_SUMBER];
+struct t_kontrol_PM kontrol_PM[JML_SUMBER];
 
 /*
    query data dari register PM710 & juga dimasukkan ukuran data yang akan diquery
@@ -39,7 +45,7 @@ unsigned short reg_flag;
 */
 //unsigned char addr_PM710=2;		//2
 
-#ifdef TIPE_PM710
+#if defined(TIPE_PM710) || defined (TIPE_PM810)
 unsigned int get_PM710(int alamatPM, unsigned short reg, unsigned char uk)	{
    unsigned short dcrc;
    int i;
@@ -1368,14 +1374,14 @@ void taruh_data_710(int no_slave, int urt)	{
 			#endif
 			
 			//kontrol_PM[pm_dibaca].alamat = addr_PM710;
-			kontrol_PM[pm_dibaca].alamat = pm_dibaca;
-			kontrol_PM[pm_dibaca].konek = 1;             // tersambung
-			kontrol_PM[pm_dibaca].baru = 1;              // data baru
+			//kontrol_PM[pm_dibaca].alamat = pm_dibaca;
+			//kontrol_PM[pm_dibaca].konek = 1;             // tersambung
+			//kontrol_PM[pm_dibaca].baru = 1;              // data baru
 
 			//cek jika Volt = 0, maka mesin mati
-			if (asli_PM710[pm_dibaca].volt1 == 0)	{
-			   kontrol_PM[pm_dibaca].baru = 0;           // supaya tidak dikirim ethernet
-			}
+			//if (asli_PM710[pm_dibaca].volt1 == 0)	{
+			 //  kontrol_PM[pm_dibaca].baru = 0;           // supaya tidak dikirim ethernet
+			//}
 
 			//NEXT PM
 		 }

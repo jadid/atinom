@@ -83,8 +83,11 @@ struct t_env {
 	unsigned char uRTC;
 	#endif
 	//#ifdef KIRIM_KE_SER_2
-	char statusSerClient;
-	int  intSer;
+	char	statusSerClient;
+	int		intSer;
+	int		intReset;
+	float	intTole;
+	int		netTot;
 	//#endif
 };
 

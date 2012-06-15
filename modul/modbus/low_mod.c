@@ -2573,31 +2573,31 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 			#endif
 			
 			if (i==0)	{
-				asli_PM710[pm_dibaca].kwh = ftemp;
+				asli_PM710[pm_dibaca].kwh = ftemp;		// signal strength
 				//data_PM710[pm_dibaca].kwh = ftemp;
 			}
 			if (i==1)	{
-				asli_PM710[pm_dibaca].kvah = ftemp;
+				asli_PM710[pm_dibaca].kvah = ftemp;		// flowrate
 				//data_PM710[pm_dibaca].kvah = ftemp;
 			}
 			if (i==2)	{
-				asli_PM710[pm_dibaca].kvarh = ftemp;
+				asli_PM710[pm_dibaca].kvarh = ftemp;	// net Tot
 				//data_PM710[pm_dibaca].kvarh = ftemp;
 			}
 			if(i==3)	{
-				asli_PM710[pm_dibaca].kw = ftemp;
+				asli_PM710[pm_dibaca].kw = ftemp;		// Pos Tot
 				//data_PM710[pm_dibaca].kw = ftemp;
 			}
 			if(i==4)	{
-				asli_PM710[pm_dibaca].kva = ftemp;
+				asli_PM710[pm_dibaca].kva = ftemp;		// Neg Tot
 				//data_PM710[pm_dibaca].kva = ftemp;
 			}
 			if(i==5)	{
-				asli_PM710[pm_dibaca].kvar = ftemp;
+				asli_PM710[pm_dibaca].kvar = ftemp;		// Temp 1
 				//data_PM710[pm_dibaca].kvar = ftemp;
 			}
 			if(i==6)	{
-				asli_PM710[pm_dibaca].pf = ftemp;
+				asli_PM710[pm_dibaca].pf = ftemp;		// Temp 2
 				//data_PM710[pm_dibaca].pf = ftemp;
 			}
 		}

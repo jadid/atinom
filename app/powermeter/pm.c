@@ -76,6 +76,9 @@ int sedot_pm() {
 	int ap;
 	struct t_sumber *p_sbrq;
 	p_sbrq = (char *) ALMT_SUMBER;
+	
+	struct t_env *env3;
+	
 	unsigned char tipe, alamatClient;
 	
 	#ifdef LIAT
@@ -84,6 +87,22 @@ int sedot_pm() {
 	
 	jmlPM++;		// kok ini kudu ada ????
 	if ( (k<JML_SUMBER) && (alamatClient>0) ) {
+		#ifdef TIPE_TFX_ULTRA
+			if (p_sbrq[k].tipe==TFX_ULTRA)	{	// 20
+				iCountTFX++;
+				nFlowTFXlama = data_f[];
+				if (iCountTFX==env3->intReset)	{
+					if (data_f[]<env3->intTole)	{
+						iCountTFX=0;
+						
+						
+					}
+				}
+			}
+		#endif
+		
+		
+		
 		if (p_sbrq[k].status==1)		// 1
 		{
 			tipe = p_sbrq[k].tipe;
@@ -101,6 +120,8 @@ int sedot_pm() {
 				memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
 				portEXIT_CRITICAL();
 			}
+			
+			
 			
 			#if 0
 			printf("data : %d : %.2f - %.2f\r\n", k*JML_SUMBER+0, asli_PM710[k].kwh,   data_f[k*JML_SUMBER+0]);

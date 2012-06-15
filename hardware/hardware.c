@@ -5,6 +5,8 @@
 #include "FreeRTOS.h"
 #include "hardware.h"
 
+//#include "uip/uip_task.c"
+
 /*
  * dipanggil pertama kali ketika booting 
  * 

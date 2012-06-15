@@ -313,6 +313,11 @@ float data_f [ (JML_SUMBER * PER_SUMBER) ];
 #endif
 //*/
 
+#ifdef TIPE_TFX_ULTRA
+	int iCountTFX=0;
+	unsigned int nFlowTFXlama;
+#endif
+
 struct t_data_float {
 	float data[PER_SUMBER];
 };

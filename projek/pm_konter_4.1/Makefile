@@ -96,6 +96,7 @@ THUMB_SOURCE= \
 
 UIP_SOURCE = \
 		../../app/monita/monita_uip.c \
+		../../modul/uip/uip_task.c \
 		../../modul/uip/clock.c \
 		../../modul/uip/lib/memb.c \
 		../../modul/uip/uip/uip.c \
@@ -105,7 +106,6 @@ UIP_SOURCE = \
 		../../modul/uip/uip/uip-fw.c \
 		../../modul/uip/uip/psock.c \
 		../../modul/uip/uip/uiplib.c \
-		../../modul/uip/uip_task.c \
 		../../modul/uip/apps/telnetd/telnetd.c	\
 		../../app/webserver/httpd.c \
 		../../app/webserver/httpd-fs.c \

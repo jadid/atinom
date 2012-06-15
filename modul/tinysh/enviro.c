@@ -429,6 +429,9 @@ void set_env_default() {
 	
 	env2->statusSerClient = 0;
 	env2->intSer = 5;				// 5 detik
+	env2->intReset = 60;
+	//env2->intTole = 208;			// 1 drum
+	env2->intTole = 3.785;			// 1 drum
 	
 	if (simpan_env( env2 ) < 0) {
 		vPortFree( env2 );

@@ -10,9 +10,9 @@
 #include "FreeRTOS.h"
 #include "hardware.h"
 
-#define LIAT
-#define LIAT_TX
-#define LIAT_RX
+//#define LIAT
+//#define LIAT_TX
+//#define LIAT_RX
 //#define CEK_PM
 #define TIMEOUT
 

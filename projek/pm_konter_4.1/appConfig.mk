@@ -51,7 +51,7 @@
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
-//		#define WEBCLIENT_DATA
+		#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS
 			#define WEBCLIENT_GPS
 		#endif

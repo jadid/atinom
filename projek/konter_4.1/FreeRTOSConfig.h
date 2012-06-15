@@ -98,13 +98,13 @@
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600
-	#define PAKAI_ETH_POWERDOWN
+//	#define PAKAI_ETH_POWERDOWN
 
 //	#define PAKAI_MODBUSTCP
 	#define SAMPURASUN_CLIENT
 //	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT
-	#define PAKE_TELNETD
+//	#define PAKE_TELNETD
 	#define PAKAI_HTTP
 //	
 	

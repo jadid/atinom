@@ -249,15 +249,18 @@ void buat_kepala() {
 void buat_bottom(void) {
 	char head_buf[256];
 	
-	unsigned int sec;
+	//char waktu[40];
+	//unsigned int sec;
 	unsigned int menit;
 	unsigned int jam;
 	unsigned int hari;
 	unsigned int tahun;
 	
 	/* data uptime */
-	uptime(&sec, &menit, &jam, &hari, &tahun);
+	//uptime(&sec, &menit, &jam, &hari, &tahun);
+	//cek_uptime_modul(1, &head_buf);
 	
+	/*
 	strcat(tot_buf, "<h4>Uptime = ");
 	if (tahun !=0)	{
 		sprintf(head_buf, "%d thn ", tahun);
@@ -275,9 +278,11 @@ void buat_bottom(void) {
 		sprintf(head_buf, "%d mnt ", menit);
 		strcat(tot_buf, head_buf);		
 	}
-		
+	
 	sprintf(head_buf, "%d dtk</h4>\n", sec);
-	strcat(tot_buf, head_buf);		
+	//*/
+	
+	strcat(tot_buf, head_buf);
 	
 	//sprintf(head_buf, "%s", LINK_BAWAH);
 	//strcat(tot_buf, head_buf);

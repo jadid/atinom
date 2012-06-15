@@ -23,7 +23,7 @@
 #include "semphr.h"
 #include "hardware.h"
 #include "monita/monita_uip.h"
-#include "sys.h"
+//#include "sys.h"
 
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -65,9 +65,7 @@ int main( void )	{
 	return 0;
 
 }
-void IdleTaskHook()	{
-	
-}
+
 
 void togle_led_utama(char tog)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");

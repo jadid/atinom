@@ -25,7 +25,7 @@
 #ifndef __SHELL__
 #define __SHELL__
 
-#include "serial_sh.c"
+//#include "serial_sh.c"
 
 #if (VERSI_KONFIG == 2)
 
@@ -286,9 +286,12 @@ void hitung_wkt(unsigned int w, int *wx)	{
 }
 
 
-void cek_uptime_modul()	{
-	extern unsigned int tot_idle;
+void cek_uptime_modul(int status, char * kata)	{
+	printf("stat: %d, kata: %s\r\n", status, kata);
+	return;
 	
+	extern unsigned int tot_idle;
+	char kalimat[80], *katakan;
 	int nW[5];
 	portTickType w;
 	portTickType qaz = (portTickType) (portMAX_DELAY/configTICK_RATE_HZ);
@@ -297,20 +300,39 @@ void cek_uptime_modul()	{
 	//printf(" TickCount : %d : %d : %d, ov: %d\r\n", xTaskGetTickCount(), w, qaz, uptime_ovflow );
 	
 	hitung_wkt(w, &nW);
-	printf(" Up  = ");
-	if (nW[4] !=0)
-		printf("%d thn ", nW[4]);
-	if (nW[3] !=0)
-		printf("%d hari ", nW[3]);		
-	if (nW[2] !=0)
-		printf("%d jam ", nW[2]);		
-	if (nW[1] !=0)
-		printf("%d mnt ", nW[1]);		
-	printf("%d dtk : idle = %d\r\n", nW[0], tot_idle);
+	//printf(" Up  = ");
+	strcpy(kalimat, "");
+	//sprintf(kata, " Up  = ");
+	strcat(kata, " Up  = ");
+	if (nW[4] !=0)	{
+		sprintf(katakan,"%d thn ", nW[4]);
+		strcat(kalimat, katakan);
+	}
+	if (nW[3] !=0)	{
+		sprintf(katakan, "%d hari ", nW[3]);
+		strcat(kalimat, katakan);
+	}
+	if (nW[2] !=0)	{
+		sprintf(katakan, "%d jam ", nW[2]);
+		strcat(kalimat, katakan);
+	}
+	if (nW[1] !=0)	{
+		sprintf(katakan, "%d mnt ", nW[1]);
+		strcat(kalimat, katakan);
+	}
+	
+	sprintf(katakan, "%d dtk : idle = %d\r\n", nW[0], tot_idle);
+	strcat(kalimat, katakan);
 	
 	#ifdef PAKAI_RTC
 		get_cal();
 	#endif
+	
+	if (status==1)	{
+		strcpy(kata, kalimat);
+	} else {
+		printf("%s", kalimat);
+	}
 	
 }
 
@@ -581,6 +603,17 @@ void display_args(int argc, char **argv)	{
     }
 }
 
+static void item_fnt(int argc, char **argv)		{
+	printf("item%d command called\n",(int)tinysh_get_arg());
+	display_args(argc,argv);
+}
+
+static tinysh_cmd_t ctxcmd={0,"ctx","contextual command","item1|item2", 0,0,0,0};
+static tinysh_cmd_t item1={&ctxcmd,"item1","first item","[args]",item_fnt, (void *)1,0,0};
+static tinysh_cmd_t item2={&ctxcmd,"item2","second item","[args]",item_fnt, (void *)2,0,0};
+
+//static tinysh_cmd_t atoxi_cmd={0,"atoxi","demonstrate atoxi support", "[args-to-convert]",atoxi_fnt,0,0,0};
+
 #ifdef CONTOH_SHELL
 static void foo_fnt(int argc, char **argv)
 {
@@ -588,8 +621,7 @@ static void foo_fnt(int argc, char **argv)
   display_args(argc,argv);
 }
 
-static tinysh_cmd_t myfoocmd={0,"foo","foo command","[args]",
-                              foo_fnt,0,0,0};
+static tinysh_cmd_t myfoocmd={0,"foo","foo command","[args]",  foo_fnt,0,0,0};
 
 static void item_fnt(int argc, char **argv)
 {
@@ -597,12 +629,9 @@ static void item_fnt(int argc, char **argv)
   display_args(argc,argv);
 }
 
-static tinysh_cmd_t ctxcmd={0,"ctx","contextual command","item1|item2",
-                            0,0,0,0};
-static tinysh_cmd_t item1={&ctxcmd,"item1","first item","[args]",item_fnt,
-                           (void *)1,0,0};
-static tinysh_cmd_t item2={&ctxcmd,"item2","second item","[args]",item_fnt,
-                           (void *)2,0,0};
+static tinysh_cmd_t ctxcmd={0,"ctx","contextual command","item1|item2", 0,0,0,0};
+static tinysh_cmd_t item1={&ctxcmd,"item1","first item","[args]",item_fnt, (void *)1,0,0};
+static tinysh_cmd_t item2={&ctxcmd,"item2","second item","[args]",item_fnt, (void *)2,0,0};
 
 static void reset_to_0(int argc, char **argv)
 {
@@ -760,7 +789,7 @@ portTASK_FUNCTION(shell, pvParameters )		{
 	tinysh_add_command(&uptime_cmd);
 	tinysh_add_command(&version_cmd);
 	
-	tinysh_add_command(&init_shell_cmd);
+//	tinysh_add_command(&init_shell_cmd);
 	
 #if defined(BOARD_KOMON_KONTER) || defined(BOARD_KOMON_KONTER_3_0)
 	tinysh_add_command(&cek_rpm_cmd);
@@ -938,9 +967,9 @@ vTaskDelay(100);
 #endif
 
 	/* add sub commands 	*/
-  	//tinysh_add_command(&ctxcmd);
-  	//tinysh_add_command(&item1);
-  	//tinysh_add_command(&item2);
+  	tinysh_add_command(&ctxcmd);
+  	tinysh_add_command(&item1);
+  	tinysh_add_command(&item2);
 
 	/* use a command from the stack
  	* !!! this is only possible because the shell will have exited

@@ -4,6 +4,7 @@
 
 
 void setup_hardware(void);
+void init_hardware(void);
 void dele(int dd);
 
 #define GESER_NM(N, M) (N << M)

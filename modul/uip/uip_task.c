@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "semphr.h"
 
 #ifdef PAKAI_ETH
 
@@ -882,12 +884,13 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	}
 }
 
+
 #ifdef BOARD_TAMPILAN
 	void start_ether(void)	{	//8
 		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 10), \
 			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
 	}
-#elif defined(BOARD_KOMON_KONTER_3_1 )
+#elif defined(BOARD_KOMON_KONTER_3_1)
 	void start_ether(void)	{	//8
 		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 20), \
 			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );

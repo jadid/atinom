@@ -57,6 +57,8 @@
 #define FLOAT		2
 #define DOUBLE		3
 
+
+
 //#define LITTLE_ENDIAN	1
 //#define BIG_ENDIAN
 
@@ -314,7 +316,7 @@ float data_f [ (JML_SUMBER * PER_SUMBER) ];
 //*/
 
 #ifdef TIPE_TFX_ULTRA
-	int iCountTFX=0;
+	int iCountTFX;
 	unsigned int nFlowTFXlama;
 #endif
 

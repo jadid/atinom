@@ -10,11 +10,11 @@
 #include "FreeRTOS.h"
 #include "hardware.h"
 
-//#define LIAT
-//#define LIAT_TX
-//#define LIAT_RX
+#define LIAT
+#define LIAT_TX
+#define LIAT_RX
 //#define CEK_PM
-//#define TIMEOUT
+#define TIMEOUT
 
 #ifdef AMBIL_PM
 
@@ -77,7 +77,9 @@ int sedot_pm() {
 	struct t_sumber *p_sbrq;
 	p_sbrq = (char *) ALMT_SUMBER;
 	
+	
 	struct t_env *env3;
+	env3 = (char *) ALMT_ENV;
 	
 	unsigned char tipe, alamatClient;
 	
@@ -90,9 +92,9 @@ int sedot_pm() {
 		#ifdef TIPE_TFX_ULTRA
 			if (p_sbrq[k].tipe==TFX_ULTRA)	{	// 20
 				iCountTFX++;
-				nFlowTFXlama = data_f[];
+				nFlowTFXlama = data_f[env3->netTot];
 				if (iCountTFX==env3->intReset)	{
-					if (data_f[]<env3->intTole)	{
+					if (data_f[env3->netTot]<env3->intTole)	{
 						iCountTFX=0;
 						
 						
@@ -120,7 +122,7 @@ int sedot_pm() {
 				memcpy( (char *) &data_f[k*PER_SUMBER], (char *) &asli_PM710[k], (PER_SUMBER*sizeof (float)) );
 				portEXIT_CRITICAL();
 			}
-			
+			//printf("****ap: %d _____ k: %d __ d3: %.2f -- %.2f\r\n", ap, k, data_f[3], asli_PM710[k].kw);
 			
 			
 			#if 0
@@ -150,6 +152,8 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	unsigned int jum_balik;
 	unsigned char *st;
 	int timeout=0, i;
+	
+	if (tipe==100)	return;
 	
 	#ifdef TIPE_PM710
 	if (tipe==0) {

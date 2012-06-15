@@ -86,7 +86,7 @@
 		//#define TIPE_PM710
 		//#define TIPE_MICOM_M300
 		//#define TIPE_MICOM_P127
-		//#define TIPE_TFX_ULTRA
+		#define TIPE_TFX_ULTRA
 	#endif
 #endif
 

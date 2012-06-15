@@ -58,6 +58,7 @@ extern char * judulnya_pm[];
 extern char * satuannya_pm[];
 #endif
 
+extern float data_f [];
 
 //static int simpan_data( struct t_dt_set *pgr);
 
@@ -86,7 +87,10 @@ int cek_data(int argc, char **argv)
 	if (argc == 1)		{
 		struct t_dt_set *p_dt;
 		p_dt = (char *) ALMT_DT_SET;
-
+		
+		printf("Argumen kurang !!!\r\n");
+		return;
+		
 		judul(" Data Setting\r\n");
 		printf("  No  :       Nama       :    Data    : Satuan");
 		#ifdef PAKAI_RELAY
@@ -127,15 +131,13 @@ int cek_data(int argc, char **argv)
 		return;
 	}
 	else if (argc > 1)	{
-		if (strcmp(argv[1], "help") == 0)
-		{
+		if (strcmp(argv[1], "help") == 0)		{
 				printf(" Perintah untuk menampilkan setting data !\r\n");
 				printf("    cek_data help  : untuk menampilkan ini.\r\n");
 				printf("    cek_data       : menampilkan seluruh setting data.\r\n");
 				printf("    cek_data 10    : manampikan data ke 10 sampai 30 (20 data saja).\r\n"); 
 		}		
-		else
-		{
+		else		{
 			sprintf(str_data, "%s", argv[1]);
 			struct t_sumber *sumber;
 			sumber = (char *) ALMT_SUMBER;
@@ -173,7 +175,8 @@ int cek_data(int argc, char **argv)
 							p_dt[(sumb-1)*PER_SUMBER+i].batas_bawah, p_dt[(sumb-1)*PER_SUMBER+i].batas_atas, (p_dt[(sumb-1)*PER_SUMBER+i].aktif==1)?"aktif":"mati");	
 					}					
 					#else
-					for (i=0; i<PER_SUMBER; i++) {
+					//for (i=0; i<PER_SUMBER; i++) {
+					for (i=0; i<20; i++) {
 						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
 						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
@@ -183,6 +186,8 @@ int cek_data(int argc, char **argv)
 						#ifdef TIPE_TFX_ULTRA
 							if (sumber[sumb-1].tipe==TFX_ULTRA)	{
 								//printf("jml : %d\r\n", sizeof (judulnya_tfx));
+								printf("data1: %.1f, 2: %.1f, 3: %.1f, 4: %.1f, 5: %.1f, 6: %.1f\r\n", \
+									data_f[0], data_f[1], data_f[2], data_f[3], data_f[4], data_f[5], data_f[6] );
 								for (i=0; i<7; i++) {
 									printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
 									judulnya_tfx[i], data_f[(sumb-1)*PER_SUMBER+i], \

@@ -2600,6 +2600,10 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 				asli_PM710[pm_dibaca].pf = ftemp;		// Temp 2
 				//data_PM710[pm_dibaca].pf = ftemp;
 			}
+			
+			//printf("sig: %.1f. flw: %.1f, net: %.1f, pos: %.1f, neg: %.1f\r\n", 			\
+			//	asli_PM710[pm_dibaca].kwh, asli_PM710[pm_dibaca].kvah, 			\
+			//	asli_PM710[pm_dibaca].kvarh, asli_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kva);
 		}
 		
 		//Hitung Rata-rata

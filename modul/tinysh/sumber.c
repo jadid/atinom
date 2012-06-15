@@ -65,6 +65,8 @@ void cek_sumber(void)
 			printf("%-6s :","810");
 		} else if(sumber[i].tipe==2 && sumber[i].alamat>0) {
 			printf("%-6s :","MICOM");
+		} else if(sumber[i].tipe==20 && sumber[i].alamat>0) {
+			printf("%-6s :","TFX");
 		} else {
 			printf("%-6s :","-");
 		}
@@ -83,7 +85,7 @@ void cek_sumber(void)
 		
 		if (sumber[i].status == 1) {
 			if (sumber[i].alamat>0) {
-				printf("%s\r\n","Power Meter");
+				printf("%s\r\n","Device Modbus");
 			} else if (sumber[i].alamat==0) {
 				printf("%s\r\n","Modul Monita");
 			} else {
@@ -263,7 +265,7 @@ void set_sumber(int argc, char **argv)
 				#ifdef TIPE_TFX_ULTRA
 					struct t_env *penv;
 					penv = (char *) ALMT_ENV;
-					penv->netTot=((sumb-1)*PER_SUMBER)+2;
+				//	penv->netTot=((sumb-1)*PER_SUMBER)+2;
 				#endif
 			/*
 			} else if ( strcmp(argv[3], "810")==0 || strcmp(argv[3], "1")==0) 	{

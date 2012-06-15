@@ -967,9 +967,9 @@ vTaskDelay(100);
 #endif
 
 	/* add sub commands 	*/
-  	tinysh_add_command(&ctxcmd);
-  	tinysh_add_command(&item1);
-  	tinysh_add_command(&item2);
+  	//tinysh_add_command(&ctxcmd);
+  	//tinysh_add_command(&item1);
+  	//tinysh_add_command(&item2);
 
 	/* use a command from the stack
  	* !!! this is only possible because the shell will have exited

@@ -80,10 +80,10 @@ CFLAGS= $(DEBUG) \
 		-fomit-frame-pointer \
 		-mthumb-interwork \
 
-								
 THUMB_SOURCE= \
 		main.c \
 		../../hardware/hardware.c \
+		../../hardware/sys.c	\
 		../../hardware/system/setup_cpu.c \
 		../../hardware/system/syscall.c \
 		../../hardware/system/reset_cpu.c \
@@ -109,6 +109,7 @@ ADC_SOURCE = \
 
 UIP_SOURCE = \
 		../../app/monita/monita_uip.c \
+		../../modul/uip/uip_task.c \
 		../../modul/uip/clock.c \
 		../../modul/uip/lib/memb.c \
 		../../modul/uip/uip/uip.c \
@@ -118,7 +119,6 @@ UIP_SOURCE = \
 		../../modul/uip/uip/uip-fw.c \
 		../../modul/uip/uip/psock.c \
 		../../modul/uip/uip/uiplib.c \
-		../../modul/uip/uip_task.c \
 		../../modul/uip/apps/telnetd/telnetd.c	\
 		../../app/webserver/httpd.c \
 		../../app/webserver/httpd-fs.c \
@@ -128,7 +128,6 @@ UIP_SOURCE = \
 ETH_SOURCE = \
 		../../modul/uip/hardware/enc28j60.c	\
 		../../modul/uip/hardware/ENCX24J600.c	\
-
 
 WEBCLIENT_SOURCE = \
 		../../app/webserver/webclient/webclient.c			\
@@ -146,7 +145,9 @@ GPS_SOURCE = \
 		../../app/gps/gps.c		\
 
 PM_SOURCE = \
-		../../app/powermeter/pm.c	\
+		../../modul/modbus/low_mod.c	\
+		../../modul/modbus/mbcrc.c	\
+#		../../app/powermeter/pm.c	\
 
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_LPC23xx/portISR.c \

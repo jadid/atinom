@@ -269,7 +269,7 @@ unsigned char webclient_get(char *host, u16_t port, char *file)
   
 	init_connection();
 
-	#if 1
+	#if 0
 	//printf("rport: %d\r\n",uip_conn->rport);
 	//printf("port: %d, host: %s, file: %s\r\n",s.port, s.host, s.file);
 

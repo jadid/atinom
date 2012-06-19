@@ -85,7 +85,9 @@ void cek_sumber(void)
 		
 		if (sumber[i].status == 1) {
 			if (sumber[i].alamat>0) {
-				printf("%s\r\n","Device Modbus");
+				#if defined(PAKAI_SERIAL_3)
+				printf("%s B%d\r\n","Device Modbus", PAKAI_SERIAL_3_P0);
+				#endif
 			} else if (sumber[i].alamat==0) {
 				printf("%s\r\n","Modul Monita");
 			} else {

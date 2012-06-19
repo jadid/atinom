@@ -1275,7 +1275,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if (nk==0) nk=1;
 		no = nk-1;
 		
-		printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
+		//printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
 
 		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 			if (pmx[no].alamat==0) {			// Modul Monita
@@ -1295,11 +1295,11 @@ void buat_file_index(unsigned int flag, char *kata) {
 			penv = (char *) ALMT_ENV;
 			
 			
-			printf("masuk sibni ...\r\n");
+			//printf("masuk sibni ...\r\n");
 			if (pmx[no].alamat==0) {			// Modul Monita
 				if ((pmx[no].tipe==100) && (pertamax)) {
 					
-					printf("****** masuk sibni ...\r\n");
+					//printf("****** masuk sibni ...\r\n");
 					for (i=0; i<KANALNYA; i++)	{
 						ket_konter(ket, penv->kalib[i].status, 0);
 						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%d</th>\n", (i*2+1), (i+1));
@@ -1323,7 +1323,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 	
 #ifdef PAKAI_PM
 	if ((pmx[no].tipe==0 || pmx[no].tipe==1 || pmx[no].tipe==2) && (pertamax) && (pmx[no].alamat>0)) {		// Power Meter
-		printf("_______masuk sibni ...\r\n");
+		//printf("_______masuk sibni ...\r\n");
 		for (i=0; i<PER_SUMBER; i++)	{
 			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
 			strcat(tot_buf, head_buf);

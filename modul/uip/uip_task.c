@@ -502,7 +502,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				}
 				jmlsumbernya++;
 				
-				#if 1
+				#if 0
 				if (ngitung%5)
 					printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
 				#endif
@@ -560,7 +560,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
 					
-					printf("datakeserver: %s\r\n",datakeserver);
+					//printf("datakeserver: %s\r\n",datakeserver);
 					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}

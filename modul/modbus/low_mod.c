@@ -1122,117 +1122,117 @@ void taruh_data_710(int no_slave, int urt)	{
 			// kwA, kwB, kwC, kw
 			data_PM710[pm_dibaca].kwA = buf[3+HD];
 			data_PM710[pm_dibaca].kwA = (data_PM710[pm_dibaca].kwA << 8) + buf[4+HD];
-			if (data_PM710[pm_dibaca].kwA == 32768)
-				asli_PM710[pm_dibaca].kwA = 0;
-			else
-				asli_PM710[pm_dibaca].kwA = (signed) data_PM710[pm_dibaca].kwA * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kwA == 32768)
+			//	asli_PM710[pm_dibaca].kwA = 0;
+			//else
+				asli_PM710[pm_dibaca].kwA = (signed short) (data_PM710[pm_dibaca].kwA) * satuan_kw[pm_dibaca];
 			#ifdef CEK_PM
-			printf("kwA: %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kwA, asli_PM710[pm_dibaca].kwA, satuan_kw[pm_dibaca]);
+			printf("kwA: %d = %.2d, satuan kW: %.1f\r\n", (signed short) data_PM710[pm_dibaca].kwA, asli_PM710[pm_dibaca].kwA, satuan_kw[pm_dibaca]);
 			#endif
 			data_PM710[pm_dibaca].kwB = buf[5+HD];
 			data_PM710[pm_dibaca].kwB = (data_PM710[pm_dibaca].kwB << 8) + buf[6+HD];
-			if (data_PM710[pm_dibaca].kwB == 32768)
-				asli_PM710[pm_dibaca].kwB = 0;
-			else
-				asli_PM710[pm_dibaca].kwB = (signed) data_PM710[pm_dibaca].kwB * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kwB == 32768)
+			//	asli_PM710[pm_dibaca].kwB = 0;
+			//else
+				asli_PM710[pm_dibaca].kwB = (signed short) (data_PM710[pm_dibaca].kwB * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
-			printf("kwB: %d - %.2f\r\n", data_PM710[pm_dibaca].kwB, asli_PM710[pm_dibaca].kwB);
+			printf("kwB: %d = %.2f, satuan kW: %f.1\r\n", (signed short) data_PM710[pm_dibaca].kwB, asli_PM710[pm_dibaca].kwB);
 			#endif
 			data_PM710[pm_dibaca].kwC = buf[7+HD];
 			data_PM710[pm_dibaca].kwC = (data_PM710[pm_dibaca].kwC << 8) + buf[8+HD];
-			if (data_PM710[pm_dibaca].kwC == 32768)
-				asli_PM710[pm_dibaca].kwC = 0;
-			else
-				asli_PM710[pm_dibaca].kwC = (signed) data_PM710[pm_dibaca].kwC * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kwC == 32768)
+			//	asli_PM710[pm_dibaca].kwC = 0;
+			//else
+				asli_PM710[pm_dibaca].kwC = (signed short) (data_PM710[pm_dibaca].kwC * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
-			printf("kwC: %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kwC, asli_PM710[pm_dibaca].kwC, satuan_kw[pm_dibaca]);
+			printf("kwC: %d = %.2f, satuan kW: %f.1\r\n", (signed short) data_PM710[pm_dibaca].kwC, asli_PM710[pm_dibaca].kwC, satuan_kw[pm_dibaca]);
 			#endif
 			data_PM710[pm_dibaca].kw = buf[9+HD];
 			data_PM710[pm_dibaca].kw = (data_PM710[pm_dibaca].kw << 8) + buf[10+HD];
-			if (data_PM710[pm_dibaca].kw == 32768)
-				asli_PM710[pm_dibaca].kw = 0;
-			else
-				asli_PM710[pm_dibaca].kw = (signed) data_PM710[pm_dibaca].kw * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kw == 32768)
+			//	asli_PM710[pm_dibaca].kw = 0;
+			//else
+				asli_PM710[pm_dibaca].kw = (signed short) (data_PM710[pm_dibaca].kw * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
-			printf("kw : %d - %.2f, satuan kW: %f\r\n", data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
+			printf("kw : %d - %.2f, satuan kW: %f\r\n", (signed short) data_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kw, satuan_kw[pm_dibaca]);
 			#endif
 			// kvarA, kvarB, kvarC, kvar
 			data_PM710[pm_dibaca].kvarA = buf[11+HD];
 			data_PM710[pm_dibaca].kvarA = (data_PM710[pm_dibaca].kvarA << 8) + buf[12+HD];
-			if (data_PM710[pm_dibaca].kvarA == 32768)
-				asli_PM710[pm_dibaca].kvarA = 0;
-			else
-				asli_PM710[pm_dibaca].kvarA = (signed short) data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvarA == 32768)
+			//	asli_PM710[pm_dibaca].kvarA = 0;
+			//else
+				asli_PM710[pm_dibaca].kvarA = (signed short) (data_PM710[pm_dibaca].kvarA * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
-			printf("kvarA: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarA, asli_PM710[pm_dibaca].kvarA);
+			printf("kvarA: %d - %.2f\r\n", (signed short) data_PM710[pm_dibaca].kvarA, asli_PM710[pm_dibaca].kvarA);
 			#endif
 			
 			data_PM710[pm_dibaca].kvarB = buf[13+HD];
 			data_PM710[pm_dibaca].kvarB = (data_PM710[pm_dibaca].kvarB << 8) + buf[14+HD];
-			if (data_PM710[pm_dibaca].kvarB == 32768)
-				asli_PM710[pm_dibaca].kvarB = 0;
-			else
-				asli_PM710[pm_dibaca].kvarB = (signed short) data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvarB == 32768)
+			//	asli_PM710[pm_dibaca].kvarB = 0;
+			//else
+				asli_PM710[pm_dibaca].kvarB = (signed short) (data_PM710[pm_dibaca].kvarB * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvarB: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarB, asli_PM710[pm_dibaca].kvarB);
 			#endif
 			
 			data_PM710[pm_dibaca].kvarC = buf[15+HD];
 			data_PM710[pm_dibaca].kvarC = (data_PM710[pm_dibaca].kvarC << 8) + buf[16+HD];
-			if (data_PM710[pm_dibaca].kvarC == 32768)
-				asli_PM710[pm_dibaca].kvarC = 0;
-			else
-				asli_PM710[pm_dibaca].kvarC = (signed short) data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvarC == 32768)
+			//	asli_PM710[pm_dibaca].kvarC = 0;
+			//else
+				asli_PM710[pm_dibaca].kvarC = (signed short) (data_PM710[pm_dibaca].kvarC * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvarC: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarC, asli_PM710[pm_dibaca].kvarC);
 			#endif
 			
 			data_PM710[pm_dibaca].kvar = buf[17+HD];
 			data_PM710[pm_dibaca].kvar = (data_PM710[pm_dibaca].kvar << 8) + buf[18+HD];
-			if (data_PM710[pm_dibaca].kvar == 32768)
-				asli_PM710[pm_dibaca].kvar = 0;
-			else
-				asli_PM710[pm_dibaca].kvar = (signed short) data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvar == 32768)
+			//	asli_PM710[pm_dibaca].kvar = 0;
+			//else
+				asli_PM710[pm_dibaca].kvar = (signed short) (data_PM710[pm_dibaca].kvar * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvar : %d - %.2f\r\n", data_PM710[pm_dibaca].kvar, asli_PM710[pm_dibaca].kvar);
 			#endif
 			// kvaA, kvaB, kvaC, kva
 			data_PM710[pm_dibaca].kvaA = buf[19+HD];
 			data_PM710[pm_dibaca].kvaA = (data_PM710[pm_dibaca].kvaA << 8) + buf[20+HD];
-			if (data_PM710[pm_dibaca].kvaA == 32768)
-				asli_PM710[pm_dibaca].kvaA = 0;
-			else
-				asli_PM710[pm_dibaca].kvaA = (signed) data_PM710[pm_dibaca].kvaA * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvaA == 32768)
+			//	asli_PM710[pm_dibaca].kvaA = 0;
+			//else
+				asli_PM710[pm_dibaca].kvaA = (signed short) (data_PM710[pm_dibaca].kvaA * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvarA: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarA, asli_PM710[pm_dibaca].kvarA);
 			#endif
 			
 			data_PM710[pm_dibaca].kvaB = buf[21+HD];
 			data_PM710[pm_dibaca].kvaB = (data_PM710[pm_dibaca].kvaB << 8) + buf[22+HD];
-			if (data_PM710[pm_dibaca].kvaB == 32768)
-				asli_PM710[pm_dibaca].kvaB = 0;
-			else
-				asli_PM710[pm_dibaca].kvaB = (signed) data_PM710[pm_dibaca].kvaB * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvaB == 32768)
+			//	asli_PM710[pm_dibaca].kvaB = 0;
+			//else
+				asli_PM710[pm_dibaca].kvaB = (signed short) (data_PM710[pm_dibaca].kvaB * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvarB: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarB, asli_PM710[pm_dibaca].kvarB);
 			#endif
 
 			data_PM710[pm_dibaca].kvaC = buf[23+HD];
 			data_PM710[pm_dibaca].kvaC = (data_PM710[pm_dibaca].kvaC << 8) + buf[24+HD];
-			if (data_PM710[pm_dibaca].kvaC == 32768)
-				asli_PM710[pm_dibaca].kvaC = 0;
-			else
-				asli_PM710[pm_dibaca].kvaC = (signed) data_PM710[pm_dibaca].kvaC * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kvaC == 32768)
+			//	asli_PM710[pm_dibaca].kvaC = 0;
+			//else
+				asli_PM710[pm_dibaca].kvaC = (signed short) (data_PM710[pm_dibaca].kvaC * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvarC: %d - %.2f\r\n", data_PM710[pm_dibaca].kvarC, asli_PM710[pm_dibaca].kvarC);
 			#endif
 
 			data_PM710[pm_dibaca].kva = buf[25+HD];
 			data_PM710[pm_dibaca].kva = (data_PM710[pm_dibaca].kva << 8) + buf[26+HD];
-			if (data_PM710[pm_dibaca].kva == 32768)
-				asli_PM710[pm_dibaca].kva = 0;
-			else
-				asli_PM710[pm_dibaca].kva = (signed) data_PM710[pm_dibaca].kva * satuan_kw[pm_dibaca];
+			//if (data_PM710[pm_dibaca].kva == 32768)
+			//	asli_PM710[pm_dibaca].kva = 0;
+			//else
+				asli_PM710[pm_dibaca].kva = (signed short) (data_PM710[pm_dibaca].kva * satuan_kw[pm_dibaca]);
 			#ifdef CEK_PM
 			printf("kvar : %d - %.2f\r\n", data_PM710[pm_dibaca].kvar, asli_PM710[pm_dibaca].kvar);
 			#endif

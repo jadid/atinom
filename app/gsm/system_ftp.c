@@ -277,7 +277,7 @@ int cek_awal(void) {
 int tanpa_cmd_balik() {
 	char cmd_ftp[20];
 
-	sprintf(cmd_ftp, "ATE0\r\n");
+	sprintf(cmd_ftp, "ATE0\r\n");		// ATE1
 	serX_putstring(PAKAI_GSM_FTP, cmd_ftp);
 	baca_serial(cmd_ftp, 20, 10);
 	#ifdef DEBUG_FTP

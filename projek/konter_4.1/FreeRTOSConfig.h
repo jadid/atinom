@@ -94,7 +94,7 @@
 	//#define TES_MEM_RTC
 #endif
 
-#define PAKAI_ETH
+//#define PAKAI_ETH
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600

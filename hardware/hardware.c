@@ -41,7 +41,9 @@ void setup_hardware() {
 
 	#ifdef PAKAI_SHELL
 		#ifdef PAKAI_KONTROL_RTC
+			#ifdef PAKAI_MODE_POWER
 			if (status_power()==0)
+			#endif
 				xSerialPortInitMinimal( BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE  );
 		#else
 			xSerialPortInitMinimal( BAUD_RATE_SHELL, configMINIMAL_STACK_SIZE  );

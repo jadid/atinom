@@ -93,7 +93,7 @@ void init_rtc()	{
 	#endif
 	
 	//printf("___________init selesai RTC_________\r\n");
-	printf("   init RTC ....\r\n");
+	printf("   init RTC() ....\r\n");
 }
 
 #ifdef PAKAI_KONTROL_RTC

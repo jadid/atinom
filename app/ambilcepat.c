@@ -98,8 +98,24 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		int sPM=0;
 		
 		#ifdef AMBIL_PM
-			printf("      Init ambil PM ..-ambilcepat-..!!!\r\n");
-			vTaskDelay(3000);
+			printf("    Init ambil PM ..-ambilcepat-..!!!\r\n");
+			printf("      Kompatibel : \r\n");
+			#ifdef TIPE_PM810
+				printf("         - %s\r\n", TIPE_PM810);
+			#endif
+			#ifdef TIPE_PM710
+				printf("         - %s\r\n", TIPE_PM710);
+			#endif
+			#ifdef TIPE_MICOM_M300 			
+				printf("         - %s\r\n", TIPE_MICOM_M300);
+			#endif
+			#ifdef TIPE_MICOM_P127
+				printf("         - %s\r\n", TIPE_MICOM_P127);
+			#endif
+			#ifdef TIPE_TFX_ULTRA
+				printf("         - %s\r\n", TIPE_TFX_ULTRA);
+			#endif
+			vTaskDelay(2500);
 		#endif
   	#endif
   	

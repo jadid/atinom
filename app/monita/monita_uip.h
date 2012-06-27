@@ -102,6 +102,21 @@
 	#endif
 #endif
 
+#ifdef PAKAI_MODEM_GSM
+	char flagModem;
+	char saat_gsm_aksi;
+	char status_modem;
+	char index_gsm;
+	
+	#define CEK_AT		100
+	#define M_SMS_PENUH	200
+	#define BACA_SMS	1
+	#define HAPUS_SMS	2
+	//#define			4
+	//#define			8
+	
+#endif
+
 #ifdef PAKAI_TIMER_2
 	char flagT2;
 	int  iTim2;
@@ -109,6 +124,10 @@
 
 #ifdef PAKAI_RTC
 	unsigned char flagRTCc;
+	unsigned char flagRTCs;
+	unsigned char flagRTCm;
+	unsigned char flagRTCh;
+	unsigned char flagRTCd;
 #endif
 
 #ifdef KIRIM_KE_SER_2

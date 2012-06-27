@@ -1399,7 +1399,7 @@ void taruh_data_301(int pm_dibaca, int urut)
    
     float ftemp;
     
-	if(urut==0)	{
+	if(urut==0)			{		// V_AN, V_BN, V_CN, V_AB, V_BC, V_AC
 		#ifdef LIAT
 		printf(">Voltage dalam Long\n");
 		#endif
@@ -1450,13 +1450,11 @@ void taruh_data_301(int pm_dibaca, int urut)
 			}
 		}
 	}
-	else if(urut==1)
-	{
+	else if(urut==1)	{		// I_A, I_B, I_C, I
 		#ifdef LIAT
 		printf(">DATA CURRENT dalam Long\n");
 		#endif
-		for(i=0;i<4;i++)
-		{
+		for(i=0;i<4;i++)		{
 			int j=i*2;
 			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
 			int k=j+1;
@@ -1490,8 +1488,7 @@ void taruh_data_301(int pm_dibaca, int urut)
 			}
 		}
 	}
-	else if(urut==2)
-	{
+	else if(urut==2)	{		// frek
 		temp1=(buf[shift+3]<< 8)+buf[shift+4];
 		temp2=(buf[shift+5]<< 8)+buf[shift+6];
 		
@@ -1510,16 +1507,14 @@ void taruh_data_301(int pm_dibaca, int urut)
 		#endif
 
 	}
-	else if(urut==3)
-	{
+	else if(urut==3)	{		// kW, kVAr, kVA
 		int i,j;
 		
 		#ifdef LIAT
 			printf(">DATA POWER \n");
 		#endif
 		
-		for(i=0;i<3;i++)
-		{
+		for(i=0;i<3;i++)	{
 			j=i*2;
 			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
 			int k=j+1;
@@ -1532,8 +1527,7 @@ void taruh_data_301(int pm_dibaca, int urut)
 			printf(" - Address 3%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",meter_power_micom+i*2, temp1, temp2,temp3,temp3,ftemp);
 			#endif
 			
-			if(i==0)
-			{
+			if(i==0)		{
 				
 				asli_PM710[pm_dibaca].kw = ftemp;
 				data_PM710[pm_dibaca].kw=ftemp;
@@ -1560,14 +1554,12 @@ void taruh_data_301(int pm_dibaca, int urut)
 		asli_PM710[pm_dibaca].pf = ftemp;
 			
 	}
-	else if(urut==4)
-	{
+	else if(urut==4)	{		// 
 		#ifdef LIAT
 		printf(">DATA ENERGY \n");
 		#endif
 		
-		for(i=0;i<4;i++)
-		{
+		for(i=0;i<4;i++)		{
 			int j=i*2;
 			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
 			int k=j+1;

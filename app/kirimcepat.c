@@ -34,11 +34,12 @@ void hitung_energinya()	{
 #endif
 
 portTASK_FUNCTION(kirimcepat, pvParameters )	{
-  	vTaskDelay(560);
+  	vTaskDelay(1060);
 
   	unsigned int qw=0, lb=0;
   	int dlama=0;
   	char ser2[100];
+  	char sedot[100];
   	
   	struct t_env *penv;
 	penv = (char *) ALMT_ENV;
@@ -50,7 +51,21 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	extern unsigned char flagRTCc;
   	#endif
   	
+  	#ifdef PAKAI_MODEM_GSM
+		extern int	 nRespM;
+		extern char sCmdM[];
+		extern char sRespM[];
+		extern char flagModem;
+		flagModem = 0;
+		init_mem_sms();
+  	#endif
+  	
+  	int lk = 0;
+  	int aa = 0, na = 0, mm, nn=0;
+  	char cM[2];
+  	
   	vTaskDelay(50);
+  	vTaskDelay(5000);
   	for(;;) {
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
@@ -73,6 +88,49 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#endif
 		
 		#ifdef KIRIM_KE_SER_2
+			#ifdef PAKAI_MODEM_GSM
+				if (flagModem)	{
+					perintah_modem(flagModem);
+				}
+				#if 0
+				if (lk>2000)	{
+					lk = 0;
+					
+					strcpy(sCmdM, "AT\r\n");
+					//printf("cmd : %s", sCmdM);
+					
+					kirimCmdModem(sCmdM, &sRespM);
+					/*
+					strcpy(sCmdM, "AT\r\n");
+					printf("===> kirim : %s", sCmdM);
+					ser2_putstring(sCmdM);
+					nRespM = 2;
+					nn=0;
+					do {
+						for (mm=0; mm<(nRespM+2); mm++)	{
+							if (ser2_getchar(1, &cM[0], 100 ) == pdTRUE)		{
+								//printf("%c", cM[0]);
+								if (cM[0]==0x0A)	{
+									//printf("-----0x0A---------------\r\n");
+									break;
+								} else if (cM[0]==0x0D)	{
+									continue;
+								} else {
+									nn++;
+									sRespM[mm] = cM[0];
+								}
+							}
+						}
+						sRespM[nn] = '\0';
+						//printf("Respon : %s\r\n", sRespM);
+					} while ( (strncmp(sRespM,sCmdM, nRespM)==0) || (strncmp(sRespM,"\r\n", 2)==0) );
+					//*/
+					printf(">>> Respon: %s \r\n", sRespM);
+				}
+				lk++;
+				#endif
+			#endif
+		
 		if (statKirimSer==1)	{
 			qw++;
 			#ifdef UNTUK_MONITA_KAPAL
@@ -95,6 +153,8 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#ifdef PAKAI_KONTROL_RTC
 			if (flagRTCc==1)	{
 				lb++;
+				
+				get_cal();
 				printf("counter : %d, tik: %ld\r\n", lb, xTaskGetTickCount());
 				flagRTCc=99;
 			}

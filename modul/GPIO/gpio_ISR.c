@@ -54,6 +54,7 @@ void rtc_ISR_Handler (void)	{
 //	RTC_ILR = BIT(1) | BIT(0);
 
 	if (RTC_ILR & RTC_ILR_RTCCIF)	{		// counter irq
+		//if (RTC_CIIR==)
 		flagRTCc = 1;
 		RTC_ILR = RTC_ILR_RTCCIF;
 	}
@@ -72,11 +73,13 @@ void rtc_ISR_Wrapper (void)	{
 	//init_PLLnya();
 	
 	portSAVE_CONTEXT ();
+	#ifdef PAKAI_MODE_POWER
 	if (status_power()!=0)	{
 		flagRTCc = 66;
-	} else	{
+	} else	
+	#endif
 		rtc_ISR_Handler ();
-	}
+
 	
 	portRESTORE_CONTEXT ();
 }

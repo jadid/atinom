@@ -135,14 +135,14 @@ extern struct d_pmod pmod;
 
 	#define comand_baca_micom 0x04
 	#define model_number 1
-	#define meter_voltage_micom 454
-	#define meter_current_micom 466
-	#define meter_frek_micom 474
+	#define meter_voltage_micom 		454		// 30454
+	#define meter_current_micom 		466		// 30466
+	#define meter_frek_micom 			474		// 30474
 
-	#define meter_power_micom     501
-	#define meter_pf_micom    507
+	#define meter_power_micom     		501		// 30501
+	#define meter_pf_micom    			507		// 30507
 
-	#define meter_energi_micom   508 
+	#define meter_energi_micom   		508 	// 30508
 
 	//pembacaan skaal VT/CT
 	#define reg_ct	42	//4044

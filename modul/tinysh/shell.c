@@ -127,10 +127,12 @@ int status_MMC=0;
 
 #ifdef PAKAI_RTC
 //#include "../modul/system/rtc.c"
-#include "mem_rtc.c"
+	#include "mem_rtc.c"
+	#include "rtc_sh.c"
+	
 	#ifdef PAKAI_KONTROL_RTC
 //		#include "../rtc/rtc.h"
-		#include "rtc_sh.c"
+		//#include "rtc_sh.c"
 	#endif
 #endif
 
@@ -153,6 +155,11 @@ int status_MMC=0;
 #ifdef PAKAI_SMS
 	#include "../../app/gsm/sms.c"
 #endif
+
+#ifdef PAKAI_MODEM_GSM
+	#include "modem_sh.c"
+#endif
+
 
 #ifdef PAKAI_CRON
 #include "cron.c"
@@ -278,32 +285,27 @@ void hitung_wkt(unsigned int w, int *wx)	{
 	
 	for (i=0; i<5; i++)	{
 		wx[i] = w /= (int) aW[i];
-		//printf("nW[%d]: %d, w:%d, aW[%d]\r\n",i,  nW[i], w, i, aW[i]);
+		//printf("wx[%d]: %d, w:%d, aW[%d]\r\n",i,  wx[i], w, i, aW[i]);
 		if (wx[i]>=aW[i+1] && i<4)
 			wx[i] %= aW[i+1];
-		//printf("nW[%d]: %d\r\n",i,  nW[i]);
+		//printf("wx[%d]: %d\r\n",i,  wx[i]);
 	}
 }
 
+extern unsigned int tot_idle;
+void cek_uptime_modul()	{
 
-void cek_uptime_modul(int status, char * kata)	{
-	printf("stat: %d, kata: %s\r\n", status, kata);
-	return;
-	
-	extern unsigned int tot_idle;
-	char kalimat[80], *katakan;
+	char kalimat[100], *katakan;
 	int nW[5];
 	portTickType w;
 	portTickType qaz = (portTickType) (portMAX_DELAY/configTICK_RATE_HZ);
 	
 	w = (xTaskGetTickCount()/configTICK_RATE_HZ) + (uptime_ovflow*qaz);
 	//printf(" TickCount : %d : %d : %d, ov: %d\r\n", xTaskGetTickCount(), w, qaz, uptime_ovflow );
-	
+
 	hitung_wkt(w, &nW);
-	//printf(" Up  = ");
-	strcpy(kalimat, "");
-	//sprintf(kata, " Up  = ");
-	strcat(kata, " Up  = ");
+	strcpy(kalimat, "  UP = ");
+	
 	if (nW[4] !=0)	{
 		sprintf(katakan,"%d thn ", nW[4]);
 		strcat(kalimat, katakan);
@@ -320,19 +322,19 @@ void cek_uptime_modul(int status, char * kata)	{
 		sprintf(katakan, "%d mnt ", nW[1]);
 		strcat(kalimat, katakan);
 	}
-	
-	sprintf(katakan, "%d dtk : idle = %d\r\n", nW[0], tot_idle);
-	strcat(kalimat, katakan);
-	
+	printf("%s %d dtk, idle = %d\r\n", kalimat, nW[0], tot_idle);
+
 	#ifdef PAKAI_RTC
 		get_cal();
 	#endif
-	
+
+	#if 0
 	if (status==1)	{
 		strcpy(kata, kalimat);
 	} else {
 		printf("%s", kalimat);
 	}
+	#endif
 	
 }
 
@@ -871,6 +873,12 @@ portTASK_FUNCTION(shell, pvParameters )		{
 	tinysh_add_command(&baca_sms_semua_cmd);
 	tinysh_add_command(&sms_monita_cmd);
 #endif 
+
+#ifdef PAKAI_MODEM_GSM
+	tinysh_add_command(&cek_sms_sh_cmd);
+	tinysh_add_command(&hapus_sms_sh_cmd);
+	//tinysh_add_command(&cek_AT_cmd);
+#endif
 
 #ifdef PAKAI_MODE_POWER
 	tinysh_add_command(&cek_power_cmd);

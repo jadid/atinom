@@ -82,11 +82,11 @@
 	#endif
 
 	#ifdef PAKAI_PM
-		#define TIPE_PM810
-		//#define TIPE_PM710
-		//#define TIPE_MICOM_M300
-		//#define TIPE_MICOM_P127
-		#define TIPE_TFX_ULTRA
+		#define TIPE_PM810		"Schneider Power Meter PM810"
+		//#define TIPE_PM710		"Schneider Power Meter PM710"
+		//#define TIPE_MICOM_M300		"MICOM Power Meter M300"
+		//#define TIPE_MICOM_P127		"MICOM Power Meter P127"
+		#define TIPE_TFX_ULTRA		"Dynasonics Flow Meter TFX Ultra"
 	#endif
 #endif
 

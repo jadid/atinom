@@ -223,8 +223,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 				jum_balik = get_M300(alamatPM, meter_frek_micom, 2);  //
 			} else if (urut_PM710==3)		{
 				jum_balik = get_M300(alamatPM, meter_power_micom, 7); //
-			}
-			else if (urut_PM710==4)			{
+			} else if (urut_PM710==4)			{
 				jum_balik = get_M300(alamatPM, meter_energi_micom, 6);
 			} else {
 				#ifdef LIAT

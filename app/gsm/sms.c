@@ -18,7 +18,7 @@
 #include "task.h"
 
 #include "modem.c"
-#include "../monita/monita_uip.h" 
+#include "monita/monita_uip.h"
 
 #define DEBUG_SMS
 #define PULSA_SIMPATI "*888#"
@@ -637,6 +637,7 @@ int sms_cron() {
 	jml=0;
 	status_modem = 0;
 }
+
 /*
 int baca_sms_cron() {
 	int no;

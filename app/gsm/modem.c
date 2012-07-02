@@ -10,6 +10,12 @@ char sRespM[200];
 #define CMD_DEL_SMS		"AT+CMGD="
 #define CMD_CEK_PULSA	"AT+CUSD=1,"
 #define CMD_BACA_SMS	"AT+CMGR="
+#define CMD_SMS_ASCII	"AT+CMGF=1\r\n"
+#define CMD_SMS_PDU		"AT+CMGF=0\r\n"
+#define CMD_KIRIM_SMS	"AT+CMGS="
+
+#define CTRL_Z			26
+#define HP_DEFAULT		"+6282114722505"
 
 #define PULSA_SIMPATI	"*888#"
 #define PULSA_AXIS		"*888#"
@@ -54,8 +60,11 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			hasil_modem = mengecek_pulsa();
 		if (cmd==BACA_SMS_TUNGGAL)
 			hasil_modem = ambil_sms_tunggal(index_gsm);
-		if (cmd==KIRIM_SMS)
-			hasil_modem = mengirim_sms();
+		if (cmd==KIRIM_SMS)	{
+			printf("kirim sms ...\r\n");
+			//hasil_modem = aksi_kirim_sms_ascii();
+			hasil_modem = aksi_kirim_sms_ascii(HP_DEFAULT, "coba kirim dari sini jo ... !!\n");
+		}
 		//printf("*******\r\n");
 		if (hasil_modem)
 			flagModem = 0;
@@ -171,6 +180,54 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 					al, mPesan[al].ix, mPesan[al].st, mPesan[al].nomor, mPesan[al].isi);
 			}
 		}
+	}
+	
+	int aksi_kirim_sms_ascii(char *no, char *isiee)	{
+		char xx=0, nn = 0;
+		
+		// set sbg ASCII
+		kirimCmdModem(CMD_SMS_ASCII,sRespM);		// mode ASCII
+		while ( (strncmp(sRespM,"OK", 2)!=0) && (xx<MAX_LOOP_MODEM) )	{
+			kirimCmdModem("",sRespM);
+			xx++;
+		}
+		if (xx==MAX_LOOP_MODEM)		return 0;
+		
+		// kirim pesan
+		xx=0;
+		sprintf(sCmdM, "%s\"%s\"\r\n", CMD_KIRIM_SMS, no);
+		//sprintf(sCmdM, "AT+CMGS=\"082114722505\"\r\n");
+		printf("sCmdM: %s", sCmdM);
+		kirimCmdModem(sCmdM,sRespM);		// mode ASCII
+		while ( (strncmp(sRespM,">", 1)!=0) && (xx<MAX_LOOP_MODEM) )	{
+			kirimCmdModem("",sRespM);
+			xx++;
+		}
+		if (xx==MAX_LOOP_MODEM)		return 0;
+		
+		//sprintf(sCmdM, "%s%c", "kirim dari modem airlink\nbaris ke-2\r\nsetelah rn", CTRL_Z);
+		sprintf(sCmdM, "%s%c", isiee, CTRL_Z);
+		kirimCmdModem(sCmdM, sRespM);		// mode ASCII
+		xx=0;
+		while ( (strncmp(sRespM,"+CMGS", 5)!=0) && (xx<MAX_LOOP_MODEM) )	{
+			kirimCmdModem("",sRespM);
+			xx++;
+		}
+		if (xx==MAX_LOOP_MODEM)		return 0;
+		
+		// terjemah +CMGS
+		if (strncmp(sRespM,"+CMGS", 5)==0)	{
+			printf("terjemah +CMGS: %s\r\n", sRespM);
+		}
+		
+		xx=0;
+		do {
+			kirimCmdModem("",sRespM);
+			xx++;
+		} while ( (strncmp(sRespM, "OK", 2)!=0) && (xx<MAX_LOOP_MODEM) );
+		
+		if (xx==MAX_LOOP_MODEM)		return 0;
+		else						return 1;
 	}
 	
 	void toLower(char *hsl, char *sbesar) {
@@ -465,9 +522,6 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 	}
 
 #endif
-
-
-
 
 
 #ifdef PAKAI_MODEM_SERIAL

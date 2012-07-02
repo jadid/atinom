@@ -879,6 +879,7 @@ portTASK_FUNCTION(shell, pvParameters )		{
 	tinysh_add_command(&hapus_sms_sh_cmd);
 	tinysh_add_command(&cek_pulsa_sh_cmd);
 	tinysh_add_command(&cek_sms_tunggal_sh_cmd);
+	tinysh_add_command(&kirim_sms_sh_cmd);
 	//tinysh_add_command(&cek_AT_cmd);
 #endif
 

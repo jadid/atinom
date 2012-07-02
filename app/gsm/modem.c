@@ -83,12 +83,14 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 	}
 	
 	int mengecek_pulsa()	{
-		//ambil_sms();
+		printf("pulsa: %d\r\n",ambil_pulsa());;
+		#if 0
 		if (ambil_pulsa())	
 			aksi_sms();
 		else {
 			printf("Tidak Ada balasan Pulsa !!\r\n");
 		}
+		#endif
 		return 1;
 	}
 
@@ -178,7 +180,18 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			if (mPesan[al].ix>0)	{
 				printf("al: %d, isi [%d] [%d] dari %s : %s\r\n", \
 					al, mPesan[al].ix, mPesan[al].st, mPesan[al].nomor, mPesan[al].isi);
+				balas_sms(al);
 			}
+		}
+	}
+	
+	void balas_sms(int idx)	{
+		int nosms=0;
+		printf("req: %s\r\n", mPesan[idx].isi);
+		if (strcmp(mPesan[idx].isi, "monita pulsa")==0)	{
+			nosms = ambil_pulsa();
+			printf("no: %d, sender: %s, isi: %s\r\n", nosms, mPesan[idx].nomor, mPesan[nosms].isi);
+			aksi_kirim_sms_ascii(mPesan[idx].nomor, mPesan[nosms].isi);
 		}
 	}
 	
@@ -256,7 +269,9 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			return xx;
 	}
 	
-	int ambil_pulsa(int idx)	{
+	//int ambil_pulsa(int idx)	{
+	int ambil_pulsa()	{
+		printf("__________%s()____________\r\n", __FUNCTION__);
 		int xx=0, nn=0;
 		char isine[180];
 		int *pi, *ps, id,  st;
@@ -276,7 +291,7 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 				mPesan[nn].st	= st;
 				strcpy(mPesan[nn].isi, isine);
 				
-				//printf("nn: %d, idx: %d, st: %d, isi: %s\r\n", nn, mPesan[nn].ix, mPesan[nn].st, mPesan[nn].isi);
+				printf("nn: %d, idx: %d, st: %d, isi: %s\r\n", nn, mPesan[nn].ix, mPesan[nn].st, mPesan[nn].isi);
 				return nn;
 			}
 		} while (xx<MAX_LOOP_MODEM);
@@ -430,7 +445,8 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			}
 			if (nm==1)	{		// READ/UNREAD
 				strncpy(ix, pchs+1, ak-aw-1);
-				ix[ak-aw-2] = '\0';
+				if (flagS==3)		ix[ak-aw-1] = '\0';
+				else				ix[ak-aw-2] = '\0';
 				//printf("ix: %s\r\n", ix);
 				if ( (flagS==1) || (flagS==3) )	{
 					if (strcmp(ix, "REC READ")==0)	{

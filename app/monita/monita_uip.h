@@ -108,12 +108,13 @@
 	char status_modem;
 	char index_gsm;
 	
-	#define CEK_AT		100
-	#define M_SMS_PENUH	200
-	#define BACA_SMS	1
-	#define HAPUS_SMS	2
-	//#define			4
-	//#define			8
+	#define CEK_AT				100
+	#define M_SMS_PENUH			200
+	#define BACA_SMS			1
+	#define HAPUS_SMS			2
+	#define CEK_PULSA			4
+	#define BACA_SMS_TUNGGAL	8
+	#define KIRIM_SMS			16
 	
 #endif
 

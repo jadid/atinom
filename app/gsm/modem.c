@@ -8,6 +8,14 @@ char sRespM[200];
 
 #define CMD_LIST_SMS	"AT+CMGL=\"ALL\"\r\n"
 #define CMD_DEL_SMS		"AT+CMGD="
+#define CMD_CEK_PULSA	"AT+CUSD=1,"
+#define CMD_BACA_SMS	"AT+CMGR="
+
+#define PULSA_SIMPATI	"*888#"
+#define PULSA_AXIS		"*888#"
+
+#define MAX_LOOP_MODEM	50
+char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 
 #ifdef PAKAI_MODEM_GSM
 	struct t_modem {
@@ -15,41 +23,62 @@ char sRespM[200];
 		char nomor[20];		// nomor pengirim sms
 		char st;			// status sms
 		char isi[170];
+		char balas;
 	};
 	
-	struct t_modem mPesan[JML_MEM_SMS];
-
+	struct t_modem mPesan[MAX_MEM_SMS];
 
 	void init_mem_sms()	{
 		int ax;
 		for (ax=0; ax<JML_MEM_SMS; ax++)	{
 			mPesan[ax].ix = 0;
+			mPesan[ax].balas = 0;
 		}
 	}
 
 	void perintah_modem(char cmd)	{
 		extern char index_gsm;
 		char hasil_modem=0;
+		
+		//printf("%s() masuk... ", __FUNCTION__);
+		
 		if (cmd==CEK_AT)
 			hasil_modem = cek_AT_cmd();
-		if (cmd==BACA_SMS)		
+		if (cmd==BACA_SMS)	{
+		//	printf("BACA SMS !  ");
 			hasil_modem = membaca_sms();
-		if (cmd==HAPUS_SMS)		{
-			hasil_modem = menghapus_sms(index_gsm);
-			printf("hasil modem: %d\r\n", hasil_modem);
 		}
-			//mengirim_sms();
-		
+		if (cmd==HAPUS_SMS)
+			hasil_modem = menghapus_sms(index_gsm);
+		if (cmd==CEK_PULSA)
+			hasil_modem = mengecek_pulsa();
+		if (cmd==BACA_SMS_TUNGGAL)
+			hasil_modem = ambil_sms_tunggal(index_gsm);
+		if (cmd==KIRIM_SMS)
+			hasil_modem = mengirim_sms();
+		//printf("*******\r\n");
 		if (hasil_modem)
 			flagModem = 0;
 	}
 
 	int membaca_sms()	{
 		//ambil_sms();
+		#if 1
 		if (ambil_sms())	
 			aksi_sms();
 		else {
 			printf("Tidak Ada SMS !!\r\n");
+		}
+		#endif
+		return 1;
+	}
+	
+	int mengecek_pulsa()	{
+		//ambil_sms();
+		if (ambil_pulsa())	
+			aksi_sms();
+		else {
+			printf("Tidak Ada balasan Pulsa !!\r\n");
 		}
 		return 1;
 	}
@@ -62,18 +91,18 @@ char sRespM[200];
 		while(strncmp(sRespM,"OK", 2)!=0)	{
 			if ( (strncmp(sRespM,"\r\n", 2)!=0) || (strcmp(sRespM,"")!=0) )	{
 				if (strncmp(sRespM, "+CMGL", 5)==0)	{
-					//sta = st; ind = in;
 					pi = &id;	ps = &st;
-					cari_pengirim(sRespM, pi, &mPesan[nn].nomor, ps);
-					//printf("status: %d, index: %d\r\n", st, id);
+					//cari_pengirim(sRespM, pi, &mPesan[nn].nomor, ps);
+					terjemah_sms(sRespM, pi, &mPesan[nn].nomor, ps);
+					printf("status: %d, index: %d\r\n", st, id);			// di printf baru nilai bener !!
 					mPesan[nn].st = (char) st;
 					mPesan[nn].ix = (char) id;
-					//printf("-----> nn: %d, ix: %d, nomor: %s, st: %d\r\n", 	\
-					//	nn, mPesan[nn].ix, mPesan[nn].nomor, mPesan[nn].st);
+					//printf("-----> nn: %d, st: %d, ix: %d, nomor: %s\r\n", 	\
+					//	nn, mPesan[nn].ix, mPesan[nn].st, mPesan[nn].nomor);
 					ix = 1;
 				} else {
 					ix = 0;
-					strcpy(mPesan[nn].isi, sRespM);
+					toLower(mPesan[nn].isi, sRespM);
 					//printf("=========> isi: %s\r\n", 	mPesan[nn].isi);
 					nn++;
 					//printf("  SMS : %s\r\n", sRespM);
@@ -84,16 +113,73 @@ char sRespM[200];
 		return nn;
 	}
 	
+	int ambil_sms_tunggal(int idx)	{
+		int xx=0, nn=0, fm=JML_MEM_SMS;
+		int *pi, *ps, id,  st;
+		pi = &id;	ps = &st;
+		strcpy(sRespM, "");
+		strcpy(mPesan[fm].isi,"");
+		sprintf(sCmdM, "%s%d\r\n", CMD_BACA_SMS, idx);
+		nn = kirimCmdModem(sCmdM, sRespM);		// +CMGD
+		
+		while ( (strncmp(sRespM,"+CMGR", 5)!=0) && (xx<MAX_LOOP_MODEM) )	{
+			nn = kirimCmdModem("", sRespM);		// +CMGD
+			xx++;
+		}
+		
+		if (xx==MAX_LOOP_MODEM)		return 0;			// biasanya langsung, xx=0
+		//printf("jml xx: %d, Resp: %s\r\n", xx, sRespM);
+
+		// masuk ke +CMGR
+		terjemah_sms(sRespM, pi, &mPesan[fm].nomor, ps);
+		//printf("status: %d, index: %d\r\n", st, id);
+		mPesan[fm].st = (char) st;
+		mPesan[fm].ix = (char) id;
+		
+		#if 0
+		nn = kirimCmdModem("", sRespM);
+		strcpy(mPesan[fm].isi, sRespM);
+		#endif
+		
+		#if 1
+		xx = 0;
+		while ( (strncmp(sRespM,"OK", 2)!=0) && (xx<MAX_LOOP_MODEM) )	{
+			nn = kirimCmdModem("", sRespM);
+			printf("nn: %d, %s\r\n", nn, sRespM);
+			if (nn>2)	{		// "OK"
+				//printf("nn: %d, %s\r\n", nn, sRespM);
+				strcpy(mPesan[fm].isi, sRespM);
+			}
+			xx++;
+		}
+		#endif
+		// masuk OK
+		if (strncmp(sRespM,"OK", 2)==0)	{
+			printf("_____Pesan: %s\r\n", mPesan[fm].isi);
+			return 1;
+		}
+		return 0;
+	}
+	
 	int aksi_sms()	{
 		int al = 0;
 		
 		printf("_________Aksi SMS____________\r\n");
 		for (al=0; al<JML_MEM_SMS; al++)	{
 			if (mPesan[al].ix>0)	{
-				printf("al: %d, isi [%d] dari %s : %s\r\n", \
-					al, mPesan[al].ix, mPesan[al].nomor, mPesan[al].isi);
+				printf("al: %d, isi [%d] [%d] dari %s : %s\r\n", \
+					al, mPesan[al].ix, mPesan[al].st, mPesan[al].nomor, mPesan[al].isi);
 			}
 		}
+	}
+	
+	void toLower(char *hsl, char *sbesar) {
+		int n = strlen(sbesar);
+		int q;
+
+		for (q=0; q<n; q++)
+			hsl[q] = (sbesar[q]>='A' && sbesar[q]<='Z')?('a'+sbesar[q]-'A'):sbesar[q];
+		hsl[n]='\0';
 	}
 	
 	int mengirim_sms()	{
@@ -113,64 +199,222 @@ char sRespM[200];
 			return xx;
 	}
 	
-int cari_pengirim(char *sms, int *idx, char *nomor, int *status) {
-	char * pchs, * pcht;
-	char ix[20];
-	int nm=0, aw, ak, nX;
-	
-	pchs=strstr(sms,":")+2;
-	do {
-		if (pchs!=NULL) {
-			aw = pchs-sms;
-			//printf("pchs: %s\r\n", pchs);
-			pcht=strstr(pchs+1,",");
-			if (pcht!=NULL)	{
-				ak = pcht-sms;
-				//printf("awal: %d, awal: %d\r\n", aw, ak);
+	int ambil_pulsa(int idx)	{
+		int xx=0, nn=0;
+		char isine[180];
+		int *pi, *ps, id,  st;
+		pi = &id;	ps = &st;
+		sprintf(sCmdM, "%s%s\r\n", CMD_CEK_PULSA, PULSA_AXIS);
+		kirimCmdModem(sCmdM, sRespM);		// +CMGD
+		do	{
+			kirimCmdModem("", sRespM);		// +CMGD
+			xx++;
+			if (strncmp(sRespM, "+CUSD", 5)==0)	{
+				terjemah_sms(sRespM, pi, &isine, ps);
+				while ((int)(mPesan[nn].ix)>0)	{
+					//printf("nn: %d\r\n", mPesan[nn].ix);
+					nn++;
+				}
+				mPesan[nn].ix	= id;
+				mPesan[nn].st	= st;
+				strcpy(mPesan[nn].isi, isine);
+				
+				//printf("nn: %d, idx: %d, st: %d, isi: %s\r\n", nn, mPesan[nn].ix, mPesan[nn].st, mPesan[nn].isi);
+				return nn;
 			}
+		} while (xx<MAX_LOOP_MODEM);
+		return 0;
+	}
+	
+	#if 0		// rusak
+	int terjemah_sms(char *sms, int *idx, char *nomor, int *status) {
+		char * pchs, * pcht;
+		char ix[180];
+		int nm=0, aw, ak, nX;
+		int loop, flagS;
+		if (strncmp(sms,"+CMGL",5)==0)	{
+			flagS = 1;
+			loop = 3;
+		}
+		if (strncmp(sms,"+CUSD",5)==0)	{
+			flagS = 2;
+			loop = 3;
+		}
+		if (strncmp(sms,"+CMGR",5)==0)	{
+			flagS = 3;
+			loop = 3;
 		}
 
-		if (nm==0)	{
-			strncpy(ix, pchs, ak-aw);
-			*idx = atoi (ix);
-			//printf("idx:__%d___,   ", *idx);
-		}
-		if (nm==1)	{
-			strncpy(ix, pchs+1, ak-aw-1);
-			ix[ak-aw-2] = 0;
-			//printf("ix: %s\r\n", ix);
-			//strcpy(status, ix);
-			#if 1
-			//printf("status:__%s___%s__%d\r\n", ix, status, strlen(ix));
-			if (strcmp(ix, "REC READ")==0)	{
-				*status = 1;
-				//printf("status %d !!!\r\n");
-			} else if (strcmp(ix, "REC UNREAD")==0)	{
-				*status = 2;
+		pchs=strstr(sms,":")+2;
+		do {
+			if (pchs!=NULL) {
+				aw = pchs-sms;
+				//printf("pchs: %s\r\n", pchs);
+				pcht=strstr(pchs+1,",");
+				if (pcht!=NULL)	{
+					ak = pcht-sms;
+					//printf("awal: %d, awal: %d\r\n", aw, ak);
+				} else {
+					ak = strlen(sms);
+				}
 			} else {
-				*status = 10;
+				printf("mentok disini !!!\r\n");
 			}
-			//printf("status:__%d\r\n", *status);
-			#endif
-		}
-		if (nm==2)	{
-			//printf("pchs: %s\r\n", pchs);
-			strncpy(ix, pchs+1, ak-aw);
-			ix[ak-aw-2] = '\0';
-			strcpy(nomor, ix);
-			//printf("no:__%s___\r\n", nomor);
-			//if (strcmp(nomor, "+6282114722505")==0)	{
-			//	printf("benar\r\n");
-			//}
-		}
-		nm++;
-		pchs=strstr(pchs,",")+1;
 
-	} while (nm<3);	
-  	return 1;
-}
-	
-	
+			if (nm==0)	{
+				if (flagS==3)	{		// baca SMS tunggal
+					*idx = 0;
+					nm++;
+					//strncpy(ix, pchs, ak-aw);
+					//printf("lanjut sajjah .... %s\r\n", ix);
+				} else {
+					strncpy(ix, pchs, ak-aw);
+					*idx = atoi (ix);
+					if (flagS==2)	{		// cek PULSA
+						if (*idx==4)	
+							return 0;
+					}
+					//printf("id: %d\r\n", *idx);
+				}
+			}
+			if (nm==1)	{
+				strncpy(ix, pchs+1, ak-aw-1);
+				ix[ak-aw-2] = '\0';
+				//printf("ix: %s\r\n", ix);
+				if ( (flagS==1) || (flagS==3) )	{
+					if (strcmp(ix, "REC READ")==0)	{
+						*status = 1;
+						//printf("status %d !!!\r\n");
+					} else if (strcmp(ix, "REC UNREAD")==0)	{
+						*status = 2;
+					} else {
+						*status = 10;
+					}
+					//return 0;
+					//printf("status:__%d\r\n", *status);
+				}
+				if (flagS==2)	{
+					strcpy(nomor, ix);
+				}
+				//return 0;
+			}
+			if (nm==2)	{
+				//printf("pchs: %s\r\n", pchs);
+				//vTaskDelay(100);
+				if ( (flagS==1) || (flagS==3) )	{
+					strncpy(ix, pchs+1, ak-aw);
+					//printf("st:__%s___\r\n", ix);
+					ix[ak-aw-2] = '\0';
+					//printf("st:__%s___\r\n", ix);
+					//return;
+					strcpy(nomor, ix);
+					//printf("no:__%s___\r\n", nomor);
+				}
+				if (flagS==2)	{
+					*status = atoi (pchs);
+					//printf("st:__%d___\r\n", *status);
+				}
+			}
+			nm++;
+			pchs=strstr(pchs,",")+1;
+		//} while (nm<3);
+		} while (nm<loop);
+		//printf("nomor: %s\r\n", nomor);
+		return 1;
+	}
+	#endif
+	#if 1
+	int terjemah_sms(char *sms, int *idx, char *nomor, int *status) {
+		char * pchs, * pcht;
+		char ix[180];
+		int nm=0, aw, ak, nX;
+		int loop, flagS;
+		if (strncmp(sms,"+CMGL",5)==0)	{		// list pesan
+			flagS = 1;
+			loop = 3;
+		}
+		if (strncmp(sms,"+CUSD",5)==0)	{		// pulsa
+			flagS = 2;
+			loop = 3;
+		}
+		if (strncmp(sms,"+CMGR",5)==0)	{		// baca sms tunggal
+			flagS = 3;
+			loop = 3;
+		}
+
+		pchs=strstr(sms,":")+2;
+		do {
+			if (pchs!=NULL) {
+				aw = pchs-sms;
+				//printf("pchs: %s\r\n", pchs);
+				pcht=strstr(pchs+1,",");
+				if (pcht!=NULL)	{
+					ak = pcht-sms;
+				//	printf("awal: %d, awal: %d\r\n", aw, ak);
+				} else {
+					ak = strlen(sms);
+				}
+			} else {
+				printf("mentok disini !!!\r\n");
+			}
+
+			if (nm==0)	{		// index
+				if (flagS==3)	{		// baca SMS tunggal
+					*idx = 0;
+					nm++;
+				} else {
+					strncpy(ix, pchs, ak-aw);
+					*idx = atoi (ix);
+					if (flagS==2)	{
+						if (*idx==4)	
+							return 0;
+					}
+				}
+			}
+			if (nm==1)	{		// READ/UNREAD
+				strncpy(ix, pchs+1, ak-aw-1);
+				ix[ak-aw-2] = '\0';
+				//printf("ix: %s\r\n", ix);
+				if ( (flagS==1) || (flagS==3) )	{
+					if (strcmp(ix, "REC READ")==0)	{
+						*status = 1;
+						//printf("status %d !!!\r\n");
+					} else if (strcmp(ix, "REC UNREAD")==0)	{
+						*status = 2;
+					} else {
+						*status = 10;
+					}
+					//printf("status:__%d\r\n", *status);
+				}
+				if (flagS==2)	{
+					strcpy(nomor, ix);
+				}
+			}
+			if (nm==2)	{
+				//printf("pchs: %s\r\n", pchs);
+				if ( (flagS==1) || (flagS==3) )	{
+					strncpy(ix, pchs+1, ak-aw);
+					//printf("st:__%s___\r\n", ix);
+					ix[ak-aw-2] = '\0';
+					//printf("st:__%s___\r\n", ix);
+					//return;
+					strcpy(nomor, ix);
+				//printf("no:__%s___\r\n", nomor);
+				}
+				if (flagS==2)	{
+					*status = atoi (pchs);
+					//printf("st:__%d___\r\n", *status);
+				}
+			}
+			nm++;
+			pchs=strstr(pchs,",")+1;
+		//} while (nm<3);
+		} while (nm<loop);
+		//printf("nomor: %s\r\n", nomor);
+		return 1;
+	}
+	#endif
+
 	int cek_AT_cmd()	{
 		kirimCmdModem("AT\r\n",sRespM);		// AT >> OK
 		while (strncmp(sRespM,"OK", 2)!=0)	{
@@ -182,9 +426,8 @@ int cari_pengirim(char *sms, int *idx, char *nomor, int *status) {
 		}
 		return 1;
 	}
-	
-	
-	void kirimCmdModem(char *psCmdM,char * psRespM)	{
+
+	int kirimCmdModem(char *psCmdM,char * psRespM)	{
 		int mm;
 		char cM[2];
 		int nn = 0, mx=0;
@@ -210,12 +453,13 @@ int cari_pengirim(char *sms, int *idx, char *nomor, int *status) {
 					}
 				}
 				psRespM[nn] = '\0';
-				//printf("Respon : %s\r\n", sRespM);
+				//printf(" +++++++ Respon : %s\r\n", sRespM);
 				mm = sizeof (psCmdM)-2;
 				mx++;
 				if (mx>50)	break;			// escape from SATAN LOOP !!!
 			} while ( (strncmp(psRespM, psCmdM, mm)==0) || (strncmp(psRespM,"\r\n", 2)==0) );
-			//printf(">>> Respon: %s \r\n", psRespM);
+			//printf(">>>>>>>>>> Respon: %s \r\n", psRespM);
+			return nn;
 		//}
 		//flagModem = 1;			// Tanda modem FREE !!!
 	}

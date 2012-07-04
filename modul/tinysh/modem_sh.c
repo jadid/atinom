@@ -70,7 +70,7 @@
 		}
 	
 		sscanf(argv[1], "%d", &idx);
-		printf(" hapus SMS ke-\r\n", idx);
+		printf(" menghapus SMS ke-%d\r\n", idx);
 		vTaskDelay(100);
 		flagModem = HAPUS_SMS;		// modem hapus SMS
 		index_gsm = idx;

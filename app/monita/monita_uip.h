@@ -23,6 +23,10 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
+
+char indexList[256], dataList[256];
+
+
 //#ifdef PAKAI_PM
 #ifdef BANYAK_SUMBER
 	// di sektor 26, harusnya bisa nyampe 120 sumber		--> masalahnya jml datanya terbatas

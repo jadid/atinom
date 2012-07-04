@@ -33,6 +33,76 @@ void hitung_energinya()	{
 }
 #endif
 
+int noawal;
+#if 1
+int kirimModulX(int burst, int sumber, int awal, char *il, char *dl) {
+	char id[16], dt[16];
+	int i=0,z=0;
+	int jmlAktif=0;
+		
+	struct t_setting *konfig;
+	konfig = (char *) ALMT_KONFIG;
+		
+	strcpy(il,"il=");
+	strcpy(dl,"dl=");
+	if (burst==1) {
+		struct t_sumber *psbr;
+		psbr = (char *) ALMT_SUMBER;
+		
+		for (z=0; z<JML_SUMBER; z++) {
+			if (psbr[z].status==1) {
+				for (i=0; i<PER_SUMBER; i++) {
+					if (konfig[(PER_SUMBER*z)+i].status==1) {
+						jmlAktif++;
+						//if (i==0) {
+						if (jmlAktif==1) {
+							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
+							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
+							sprintf(id, "%d", konfig[(PER_SUMBER*z)+i].id);
+							sprintf(dt, "%.2f", data_f[(PER_SUMBER*z)+i]);
+							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
+						} else {
+							//strcat(id, "~");
+							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
+							//strcat(dt, "~");
+							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
+							sprintf(id, "~%d", konfig[(PER_SUMBER*z)+i].id);
+							sprintf(dt, "~%.2f", data_f[(PER_SUMBER*z)+i]);
+							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
+						}
+						
+						strcat(il,id);
+						strcat(dl,dt);
+					}
+				}
+			}
+		}
+	} else {
+		for (i=noawal; i<PER_SUMBER; i++) {
+			noawal=i+1;
+			if (konfig[PER_SUMBER*sumber+i].status) {
+				jmlAktif++;
+				//if (i==0) {
+				if (jmlAktif==1) {
+					sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
+					sprintf(dt, "%.2f", data_f[PER_SUMBER*sumber+i]);
+				} else {
+					sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
+					sprintf(dt, "~%.2f", data_f[PER_SUMBER*sumber+i]);
+				}
+				strcat(il,id);
+				strcat(dl,dt);
+			} 
+			if (jmlAktif==12)
+				break; 
+				
+		}
+	}
+	//printf("no awal: %d\r\n", noawal);
+	return jmlAktif;
+}
+#endif
+
 portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	vTaskDelay(1060);
 
@@ -57,6 +127,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		extern char sRespM[];
 		extern char flagModem;
 		flagModem = 0;
+		status_modem = 0;
 		init_mem_sms();
   	#endif
   	
@@ -153,7 +224,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#ifdef PAKAI_KONTROL_RTC
 			if (flagRTCc==1)	{
 				lb++;
-				
+				flagModem = 1;
 				get_cal();
 				printf("counter : %d, tik: %ld\r\n", lb, xTaskGetTickCount());
 				flagRTCc=99;

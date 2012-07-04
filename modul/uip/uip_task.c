@@ -23,8 +23,8 @@
 
 
 #ifdef PAKAI_WEBCLIENT
-	//#include "../webserver/webclient/webclient.h"
-	#include "../../app/webserver/webclient/webclient.h"
+	#include "webserver/webclient/webclient.h"
+	//#include "../../app/webserver/webclient/webclient.h"
 #endif
 
 //#ifdef PAKAI_RESOLV

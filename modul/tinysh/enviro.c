@@ -389,6 +389,9 @@ void set_env_default() {
 
 	env2->magic1 = MAGIC_1;
 	env2->magic2 = MAGIC_2;
+	
+	sprintf(env2->passwd, "monita");
+	sprintf(env2->passwd, "+6282114722505");
 	sprintf(env2->SN, "-");
 	sprintf(env2->berkas, "/");
 	//printf("KANALNYA enviro.c : %d\r\n", KANALNYA);

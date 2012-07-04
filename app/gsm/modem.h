@@ -5,9 +5,9 @@
 
 #ifdef PAKAI_MODEM_GSM
 
-	#define nRespM 			200
-	#define JML_MEM_SMS		10
-	#define MAX_MEM_SMS		11
+	#define nRespM 			165
+	#define MAX_MEM_SMS		21
+	#define JML_MEM_SMS		(MAX_MEM_SMS-1)
 
 	void init_mem_sms();
 	int membaca_sms();

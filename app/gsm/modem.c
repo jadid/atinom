@@ -20,8 +20,9 @@ char sRespM[200];
 #define PULSA_SIMPATI	"*888#"
 #define PULSA_AXIS		"*888#"
 
-#define MAX_LOOP_MODEM	50
+#define MAX_LOOP_MODEM	5
 char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
+
 
 #ifdef PAKAI_MODEM_GSM
 	struct t_modem {
@@ -44,16 +45,22 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 
 	void perintah_modem(char cmd)	{
 		extern char index_gsm;
-		char hasil_modem=0;
+		extern char status_modem;
+
+		if (status_modem)	{
+			printf("Modem SIBUK !!! Tunggu dulu\r\n");
+			// masukkan antrian job modem !!
+			vTaskDelay(2000);
+			return 0;
+		}
 		
-		//printf("%s() masuk... ", __FUNCTION__);
-		
+		char hasil_modem=0;		
+		status_modem = 1;
+		bersih_bersih();
 		if (cmd==CEK_AT)
 			hasil_modem = cek_AT_cmd();
-		if (cmd==BACA_SMS)	{
-		//	printf("BACA SMS !  ");
+		if (cmd==BACA_SMS)
 			hasil_modem = membaca_sms();
-		}
 		if (cmd==HAPUS_SMS)
 			hasil_modem = menghapus_sms(index_gsm);
 		if (cmd==CEK_PULSA)
@@ -61,21 +68,23 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		if (cmd==BACA_SMS_TUNGGAL)
 			hasil_modem = ambil_sms_tunggal(index_gsm);
 		if (cmd==KIRIM_SMS)	{
-			printf("kirim sms ...\r\n");
-			//hasil_modem = aksi_kirim_sms_ascii();
 			hasil_modem = aksi_kirim_sms_ascii(HP_DEFAULT, "coba kirim dari sini jo ... !!\n");
 		}
-		//printf("*******\r\n");
 		if (hasil_modem)
 			flagModem = 0;
+		
+		status_modem = 0;
+		//printf("selesai perintah modem !!!\r\n");
 	}
 
 	int membaca_sms()	{
+		init_mem_sms();
 		//ambil_sms();
 		#if 1
-		if (ambil_sms())	
+		if (ambil_sms())	{
+			vTaskDelay(100);
 			aksi_sms();
-		else {
+		} else {
 			printf("Tidak Ada SMS !!\r\n");
 		}
 		#endif
@@ -91,18 +100,52 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			printf("Tidak Ada balasan Pulsa !!\r\n");
 		}
 		#endif
+		//printf(" >>>> selesai mengecek pulsa___\r\n");
 		return 1;
 	}
 
 	int ambil_sms()	{
-		char ix, nn = 0;
+		
+		char nn = 0, xx=0, mm=0;
+		char ppesan[180];
 		int *pi, *ps, id,  st;
 		
+		bersih_bersih();
 		kirimCmdModem(CMD_LIST_SMS,sRespM);		// +CMGL
-		while(strncmp(sRespM,"OK", 2)!=0)	{
+		do	{
+			//printf("Resp: %s\r\n", sRespM);
+			if (strncmp(sRespM,"OK", 2)==0)		return nn;
+
+			if (strncmp(sRespM,"+CMGL", 5)!=0)	{
+				if (mm==1)	{
+					toLower(ppesan, sRespM);
+					strcat(mPesan[nn-1].isi,ppesan);
+				}
+			} else {				// masuk +CMGL
+				mm=1;				// flag untuk mulai ada pesan
+				nn++;
+
+				pi = &id;	ps = &st;
+				terjemah_sms(sRespM, pi, &mPesan[nn-1].nomor, ps);
+				printf("status: %d, index: %d\r\n", st, id);			// diprintf, nilai baru bener !!
+				mPesan[nn-1].st = (char) st;
+				mPesan[nn-1].ix = (char) id;
+				//printf("-----> nn: %d, st: %d, ix: %d, nomor: %s\r\n", 	\
+				//	nn, mPesan[nn-1].ix, mPesan[nn-1].st, mPesan[nn-1].nomor);
+				strcpy(mPesan[nn-1].isi, "");
+			}
+			if (strncmp(sRespM,"ERROR", 5)==0)		return 0;
+			kirimCmdModem("", sRespM);		// +CMGD
+		} while (strncmp(sRespM,"OK", 2)!=0);
+		//printf("____________________-nn: %d\r\n", nn);
+		return nn;
+		
+		#if 0
+		while ((strncmp(sRespM,"OK", 2)!=0) && (xx<MAX_LOOP_MODEM) )	{
 			if ( (strncmp(sRespM,"\r\n", 2)!=0) || (strcmp(sRespM,"")!=0) )	{
 				if (strncmp(sRespM, "+CMGL", 5)==0)	{
 					pi = &id;	ps = &st;
+					nn++;
 					//cari_pengirim(sRespM, pi, &mPesan[nn].nomor, ps);
 					terjemah_sms(sRespM, pi, &mPesan[nn].nomor, ps);
 					printf("status: %d, index: %d\r\n", st, id);			// di printf baru nilai bener !!
@@ -110,18 +153,20 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 					mPesan[nn].ix = (char) id;
 					//printf("-----> nn: %d, st: %d, ix: %d, nomor: %s\r\n", 	\
 					//	nn, mPesan[nn].ix, mPesan[nn].st, mPesan[nn].nomor);
-					ix = 1;
+					strcpy(mPesan[nn].isi, "");
 				} else {
-					ix = 0;
-					toLower(mPesan[nn].isi, sRespM);
-					//printf("=========> isi: %s\r\n", 	mPesan[nn].isi);
-					nn++;
-					//printf("  SMS : %s\r\n", sRespM);
+					toLower(ppesan, sRespM);
+					strcat(mPesan[nn].isi,ppesan);
+					//printf("=========> isi: %s\r\n", 	mPesan[nn].isi, sRespM));
 				}
+			} else {
+				
 			}
 			kirimCmdModem("",sRespM);
+			xx++;
 		}
 		return nn;
+		#endif
 	}
 	
 	int ambil_sms_tunggal(int idx)	{
@@ -174,24 +219,59 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 	
 	int aksi_sms()	{
 		int al = 0;
+		char hasil_balas=0;
 		
 		printf("_________Aksi SMS____________\r\n");
 		for (al=0; al<JML_MEM_SMS; al++)	{
 			if (mPesan[al].ix>0)	{
 				printf("al: %d, isi [%d] [%d] dari %s : %s\r\n", \
 					al, mPesan[al].ix, mPesan[al].st, mPesan[al].nomor, mPesan[al].isi);
-				balas_sms(al);
+				hasil_balas = balas_sms(al);
+				vTaskDelay(100);
+				if (hasil_balas)	{
+					//menghapus_sms(mPesan[al].ix);
+					vTaskDelay(50);
+					//mPesan[al].ix = 0;		// reset sms
+				} else {
+					printf("balas : %d\r\n", hasil_balas);
+				}
 			}
 		}
 	}
-	
-	void balas_sms(int idx)	{
+
+	int balas_sms(int idx)	{
 		int nosms=0;
-		printf("req: %s\r\n", mPesan[idx].isi);
-		if (strcmp(mPesan[idx].isi, "monita pulsa")==0)	{
+		char hasil_balas = 0;
+		
+		printf("idx: %d-%d, req: %s\r\n", idx, mPesan[idx].ix, mPesan[idx].isi);
+		if (mPesan[idx].balas)		{		// ada yang belum terhapus
+			menghapus_sms(mPesan[idx].ix);
+			return 0;
+		}
+		
+		if (strncmp(mPesan[idx].isi, "monita pulsa", 12)==0)	{
 			nosms = ambil_pulsa();
-			printf("no: %d, sender: %s, isi: %s\r\n", nosms, mPesan[idx].nomor, mPesan[nosms].isi);
-			aksi_kirim_sms_ascii(mPesan[idx].nomor, mPesan[nosms].isi);
+			vTaskDelay(100);
+			printf("no: %d, sender: %s, st: %d, isi: %s\r\n", nosms, mPesan[idx].nomor, mPesan[idx].st, mPesan[nosms].isi);
+			if (mPesan[idx].st)	{
+				printf("balas SMS !!!\r\n");
+				hasil_balas = aksi_kirim_sms_ascii(mPesan[idx].nomor, mPesan[nosms].isi);
+			}
+			else
+				printf("ambil pulsa gagaL !!\r\n");
+			vTaskDelay(100);
+			if (hasil_balas)	{
+				mPesan[idx].balas = 1;
+				menghapus_sms(mPesan[idx].ix);
+			} else {
+				printf(" ^^^ error kirim sms !!! -----\r\n");
+			}
+			//if (nosms)		menghapus_sms(nosms);
+			vTaskDelay(50);
+			return (hasil_balas);
+		}
+		if (strncmp(mPesan[idx].isi, "monita data", 12)==0)	{
+			
 		}
 	}
 	
@@ -214,19 +294,31 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		kirimCmdModem(sCmdM,sRespM);		// mode ASCII
 		while ( (strncmp(sRespM,">", 1)!=0) && (xx<MAX_LOOP_MODEM) )	{
 			kirimCmdModem("",sRespM);
+			printf("1xx: %d, sRespM: %s\r\n", xx, sRespM);
 			xx++;
 		}
 		if (xx==MAX_LOOP_MODEM)		return 0;
+		printf("tanda > \r\n");
 		
 		//sprintf(sCmdM, "%s%c", "kirim dari modem airlink\nbaris ke-2\r\nsetelah rn", CTRL_Z);
-		sprintf(sCmdM, "%s%c", isiee, CTRL_Z);
+		sprintf(sCmdM, "%s", isiee);
+		//kirimCmdModem(sCmdM, sRespM);		// mode ASCII
+		kirimModemSaja(sCmdM);
+		sprintf(sCmdM, "%c", CTRL_Z);
 		kirimCmdModem(sCmdM, sRespM);		// mode ASCII
+		printf("2xx: %d, sRespM: %s\r\n", xx, sRespM);
+		if (strncmp(sRespM,"ERROR", 5)==0)	{
+			printf("ERROR tak bisa kirim SMS\r\n");
+			return 0;
+		}
 		xx=0;
 		while ( (strncmp(sRespM,"+CMGS", 5)!=0) && (xx<MAX_LOOP_MODEM) )	{
 			kirimCmdModem("",sRespM);
+			printf("xx: %d, sRespM: %s\r\n", xx, sRespM);
 			xx++;
 		}
 		if (xx==MAX_LOOP_MODEM)		return 0;
+		printf("cari +CMGS \r\n");
 		
 		// terjemah +CMGS
 		if (strncmp(sRespM,"+CMGS", 5)==0)	{
@@ -262,9 +354,12 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		kirimCmdModem(sCmdM, sRespM);		// +CMGD
 		while(strncmp(sRespM,"OK", 2)!=0)	{
 			kirimCmdModem("",sRespM);
+			xx++;
 		}
-		if (xx==0)
+		if (xx==0)	{
+			printf("   >> SMS-%d terhapus ....\r\n", idx);
 			return 1;
+		}
 		else
 			return xx;
 	}
@@ -274,26 +369,38 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		printf("__________%s()____________\r\n", __FUNCTION__);
 		int xx=0, nn=0;
 		char isine[180];
-		int *pi, *ps, id,  st;
+		int *pi, *ps, id,  st, fm = JML_MEM_SMS;
 		pi = &id;	ps = &st;
 		sprintf(sCmdM, "%s%s\r\n", CMD_CEK_PULSA, PULSA_AXIS);
 		kirimCmdModem(sCmdM, sRespM);		// +CMGD
 		do	{
 			kirimCmdModem("", sRespM);		// +CMGD
 			xx++;
+			//printf("sRespM: %s\r\n", sRespM);
 			if (strncmp(sRespM, "+CUSD", 5)==0)	{
 				terjemah_sms(sRespM, pi, &isine, ps);
+				#if 0
 				while ((int)(mPesan[nn].ix)>0)	{
 					//printf("nn: %d\r\n", mPesan[nn].ix);
 					nn++;
 				}
-				mPesan[nn].ix	= id;
-				mPesan[nn].st	= st;
-				strcpy(mPesan[nn].isi, isine);
+				#endif
 				
-				printf("nn: %d, idx: %d, st: %d, isi: %s\r\n", nn, mPesan[nn].ix, mPesan[nn].st, mPesan[nn].isi);
-				return nn;
+				mPesan[fm].ix	= id;
+				mPesan[fm].st	= st;
+				strcpy(mPesan[fm].isi, isine);
+				
+				#if 1
+				printf(" >>>>>>>>>> mPesan[%d].ix: %d\r\n", fm, mPesan[fm].ix);
+				printf("nn: %d, idx: %d, st: %d, isi: %s\r\n", fm, mPesan[fm].ix, mPesan[fm].st, mPesan[fm].isi);
+				#endif
+				
+				return fm;
 			}
+			if (strncmp(sRespM, "ERROR", 5)==0)	{
+				return 0;
+			}
+			//printf("%d ... ", xx);
 		} while (xx<MAX_LOOP_MODEM);
 		return 0;
 	}
@@ -407,7 +514,7 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		}
 		if (strncmp(sms,"+CUSD",5)==0)	{		// pulsa
 			flagS = 2;
-			loop = 3;
+			loop = 2;
 		}
 		if (strncmp(sms,"+CMGR",5)==0)	{		// baca sms tunggal
 			flagS = 3;
@@ -438,14 +545,15 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 					strncpy(ix, pchs, ak-aw);
 					*idx = atoi (ix);
 					if (flagS==2)	{
-						if (*idx==4)	
-							return 0;
+						if (*idx==4)	return (*status = 0);
+						else			*status = 1;
+						printf("status : %d\r\n", *status);
 					}
 				}
 			}
 			if (nm==1)	{		// READ/UNREAD
 				strncpy(ix, pchs+1, ak-aw-1);
-				if (flagS==3)		ix[ak-aw-1] = '\0';
+				if (flagS==2)		ix[ak-aw-1] = '\0';
 				else				ix[ak-aw-2] = '\0';
 				//printf("ix: %s\r\n", ix);
 				if ( (flagS==1) || (flagS==3) )	{
@@ -476,7 +584,7 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 				}
 				if (flagS==2)	{
 					*status = atoi (pchs);
-					//printf("st:__%d___\r\n", *status);
+					printf("st:__%d___\r\n", *status);
 				}
 			}
 			nm++;
@@ -500,6 +608,19 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		return 1;
 	}
 
+	int kirimModemSaja(char *psCmdM)	{
+		ser2_putstring(psCmdM);
+	}
+	
+	void bersih_bersih()	{
+		char cM[2];
+		char xx=0;
+		do	{
+			ser2_getchar(1, &cM[0], 100);	
+			xx++;
+		} while (xx<5);
+	}
+
 	int kirimCmdModem(char *psCmdM,char * psRespM)	{
 		int mm;
 		char cM[2];
@@ -511,8 +632,8 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		//	flagModem = 0;		// Tanda modem SIBUK !!!
 			ser2_putstring(psCmdM);
 			do {
-				for (mm=0; mm<nRespM; mm++)	{
-					if (ser2_getchar(1, &cM[0], 100 ) == pdTRUE)		{
+				for (mm=0; mm<nRespM; mm++)	{		// sebanyak jml karakter SMS
+					if (ser2_getchar(1, &cM[0], 50 ) == pdTRUE)		{
 						//printf("%c", cM[0]);
 						if (cM[0]==0x0A)	{
 							//printf("-----0x0A---------------\r\n");
@@ -524,12 +645,13 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 							sRespM[mm] = cM[0];
 						}
 					}
+					//printf(" +++++++ mm: %d\r\n", mm);
 				}
 				psRespM[nn] = '\0';
 				//printf(" +++++++ Respon : %s\r\n", sRespM);
 				mm = sizeof (psCmdM)-2;
 				mx++;
-				if (mx>50)	break;			// escape from SATAN LOOP !!!
+				if (mx>MAX_LOOP_MODEM)	break;			// escape from SATAN LOOP !!!
 			} while ( (strncmp(psRespM, psCmdM, mm)==0) || (strncmp(psRespM,"\r\n", 2)==0) );
 			//printf(">>>>>>>>>> Respon: %s \r\n", psRespM);
 			return nn;

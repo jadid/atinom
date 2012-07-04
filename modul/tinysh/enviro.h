@@ -89,6 +89,8 @@ struct t_env {
 	float	intTole;
 	int		netTot;
 	//#endif
+	char passwd[15];
+	char nohp[18];
 };
 
 //#define SEKTOR_ENV	24

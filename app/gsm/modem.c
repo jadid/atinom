@@ -13,6 +13,10 @@ char sRespM[200];
 #define CMD_SMS_ASCII	"AT+CMGF=1\r\n"
 #define CMD_SMS_PDU		"AT+CMGF=0\r\n"
 #define CMD_KIRIM_SMS	"AT+CMGS="
+#define CMD_RESET_MODEM	"AT+CFUN=1\r\n"
+#define CMD_SET_MODEM	"AT+CFUN=0\r\n"
+#define CMD_SIG_MODEM	"AT+CSQ\r\n"			// 11-31: mantap
+
 
 #define CTRL_Z			26
 #define HP_DEFAULT		"+6282114722505"
@@ -273,6 +277,21 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		if (strncmp(mPesan[idx].isi, "monita data", 12)==0)	{
 			
 		}
+		if (strncmp(mPesan[idx].isi, "monita reset", 12)==0)	{
+			#ifdef PAKAI_RELAY
+			
+			#endif
+		}
+		if (strncmp(mPesan[idx].isi, "monita on", 9)==0)	{
+			#ifdef PAKAI_RELAY
+			set_relay_sms(mPesan[idx].isi);
+			#endif
+		}
+		if (strncmp(mPesan[idx].isi, "monita off", 10)==0)	{
+			#ifdef PAKAI_RELAY
+			
+			#endif
+		}
 	}
 	
 	int aksi_kirim_sms_ascii(char *no, char *isiee)	{
@@ -302,8 +321,8 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 		
 		//sprintf(sCmdM, "%s%c", "kirim dari modem airlink\nbaris ke-2\r\nsetelah rn", CTRL_Z);
 		sprintf(sCmdM, "%s", isiee);
-		//kirimCmdModem(sCmdM, sRespM);		// mode ASCII
 		kirimModemSaja(sCmdM);
+		
 		sprintf(sCmdM, "%c", CTRL_Z);
 		kirimCmdModem(sCmdM, sRespM);		// mode ASCII
 		printf("2xx: %d, sRespM: %s\r\n", xx, sRespM);
@@ -317,7 +336,12 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			printf("xx: %d, sRespM: %s\r\n", xx, sRespM);
 			xx++;
 		}
-		if (xx==MAX_LOOP_MODEM)		return 0;
+		if (xx==MAX_LOOP_MODEM)		{
+			
+			sprintf(sCmdM, "%c", CTRL_Z);
+			kirimCmdModem(sCmdM, sRespM);		// mode ASCII
+			return 0;
+		}
 		printf("cari +CMGS \r\n");
 		
 		// terjemah +CMGS
@@ -520,6 +544,10 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 			flagS = 3;
 			loop = 3;
 		}
+		if (strncmp(sms,"+CSQ",4)==0)	{		// cek sinyal
+			flagS = 4;
+			loop = 2;
+		}
 
 		pchs=strstr(sms,":")+2;
 		do {
@@ -552,6 +580,10 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 				}
 			}
 			if (nm==1)	{		// READ/UNREAD
+				if (flagS==4)	{			//  channel bit error rate +CSQ
+					*status = atoi (ix);
+					return 1;
+				}
 				strncpy(ix, pchs+1, ak-aw-1);
 				if (flagS==2)		ix[ak-aw-1] = '\0';
 				else				ix[ak-aw-2] = '\0';
@@ -652,7 +684,7 @@ char * smsDibalas[] = {"pulsa", "data", "nama", "satuan"};
 				mm = sizeof (psCmdM)-2;
 				mx++;
 				if (mx>MAX_LOOP_MODEM)	break;			// escape from SATAN LOOP !!!
-			} while ( (strncmp(psRespM, psCmdM, mm)==0) || (strncmp(psRespM,"\r\n", 2)==0) );
+			} while ( (strncmp(psRespM, psCmdM, mm)==0) || (strncmp(psRespM,"\r\n", 2)==0)  || (strncmp(psRespM,"+WIND", 5)==0) );
 			//printf(">>>>>>>>>> Respon: %s \r\n", psRespM);
 			return nn;
 		//}

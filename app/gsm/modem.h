@@ -16,7 +16,7 @@
 	int menghapus_sms(int idx);
 	int ambil_sms_tunggal(int idx);
 	int proses_pulsa();
-	int  kirimCmdModem(char *psCmdM,char * psRespM);
+	int kirimCmdModem(char *psCmdM,char * psRespM);
 	int cek_AT_cmd();
 	
 

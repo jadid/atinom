@@ -91,6 +91,7 @@ struct t_env {
 	//#endif
 	char passwd[15];
 	char nohp[18];
+	char cron;
 };
 
 //#define SEKTOR_ENV	24

@@ -6,6 +6,40 @@
  */
 
 #include "FreeRTOS.h"
+#include "lpc23xx.h"
+#include "monita/monita_uip.h"
+
+#if 1
+#define RTC_ILR_RTCCIF  (0x00000001)
+#define RTC_ILR_RTCALF  (0x00000002)
+#define RTC_ILR_MASK    (0x00000003)
+
+#define RTC_CCR_CLKEN   (0x00000001)
+#define RTC_CCR_CTCRST  (0x00000002)
+#define RTC_CCR_TEST    (0x0000000c)
+#define RTC_CCR_CLKSRC  (0x00000010)
+
+#define RTC_CIIR_IMSEC  (0x00000001)
+#define RTC_CIIR_IMMIN  (0x00000002)
+#define RTC_CIIR_IMHOUR (0x00000004)
+#define RTC_CIIR_IMDOM  (0x00000008)
+#define RTC_CIIR_IMDOW  (0x00000010)
+#define RTC_CIIR_IMDOY  (0x00000020)
+#define RTC_CIIR_IMMON  (0x00000040)
+#define RTC_CIIR_IMYEAR (0x00000080)
+#define RTC_CIIR_IMMASK (0x000000ff)
+
+#define RTC_AMR_AMRSEC  (0x00000001)
+#define RTC_AMR_AMRMIN  (0x00000002)
+#define RTC_AMR_AMRHOUR (0x00000004)
+#define RTC_AMR_AMRDOM  (0x00000008)
+#define RTC_AMR_AMRDOW  (0x00000010)
+#define RTC_AMR_AMRDOY  (0x00000020)
+#define RTC_AMR_AMRMON  (0x00000040)
+#define RTC_AMR_AMRYEAR (0x00000080)
+#define RTC_AMR_AMRMASK (0x000000ff)
+#endif
+
 
 #if 1
 //*

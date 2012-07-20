@@ -125,6 +125,13 @@
 
 #define PAKAI_ALARM
 
+#ifdef PAKAI_RTC
+	//#define PAKAI_MEM_RTC
+	//#define PAKAI_KONTROL_RTC
+	//#define TES_MEM_RTC
+#endif
+
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *

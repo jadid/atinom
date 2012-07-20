@@ -224,7 +224,9 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#ifdef PAKAI_KONTROL_RTC
 			if (flagRTCc==1)	{
 				lb++;
+				#ifdef PAKAI_MODEM_GSM
 				flagModem = 1;
+				#endif
 				get_cal();
 				printf("counter : %d, tik: %ld\r\n", lb, xTaskGetTickCount());
 				flagRTCc=99;

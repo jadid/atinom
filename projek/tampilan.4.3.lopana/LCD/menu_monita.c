@@ -19,11 +19,12 @@
 #include "FreeRTOS.h"
 #include <stdio.h>
 
-#include "../../app/monita/monita_uip.h"
-#include "../../../tinysh/enviro.h"
+#include "monita/monita_uip.h"
+#include "tinysh/enviro.h"
 
 #ifdef PAKAI_RTC
-#include "../../../system/rtc.h"
+//#include "rtc/rtc.h"
+//#include "../../../system/rtc.h"
 #endif
 
 /*
@@ -279,7 +280,7 @@ void menu_pilih(unsigned char pilih, unsigned char grop, unsigned char flag)
 	
 	
 	/* JAM ditampilkan */
-	#ifdef PAKAI_RTC
+	#ifdef PAKAI_RTCx  		// jam ERROR
 	RTCTime wt;
 	
 	p_rtc_get_time( &wt );

@@ -101,7 +101,7 @@ THUMB_SOURCE= \
 		../../modul/tinysh/enviro.c \
 		../../modul/GPIO/gpio.c \
 		../../app/ambilcepat.c	\
-		../../app/kirimcepat.c	\
+#		../../app/kirimcepat.c	\
 		
 ADC_SOURCE = \
 		../../modul/adc/ad7708.c	\

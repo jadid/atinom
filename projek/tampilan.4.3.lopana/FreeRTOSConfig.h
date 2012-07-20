@@ -91,10 +91,10 @@
 
 #define PAKAI_SHELL
 
+#define PAKAI_TSC
 #define PAKAI_I2C
 #ifdef PAKAI_I2C
 	#define I2C_GPIO
-	#define PAKAI_TSC
 #endif
 
 #define PAKAI_ETH

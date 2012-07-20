@@ -456,7 +456,7 @@ void cek_stack(void)	{
 	#endif
 	
 	#ifdef PAKAI_RELAY
-		printf(" Relay       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
+	//	printf(" Relay       : %d\r\n", uxTaskGetStackHighWaterMark(hdl_relay));
 	#endif
 		
 	#if defined(PAKAI_GSM_FTP) || defined(PAKAI_SMS)

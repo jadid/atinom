@@ -23,7 +23,7 @@
 #include "tinysh/enviro.h"
 
 #ifdef PAKAI_RTC
-//#include "rtc/rtc.h"
+	#include "rtc/rtc.h"
 //#include "../../../system/rtc.h"
 #endif
 

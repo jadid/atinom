@@ -57,18 +57,21 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		printf(" Monita : Ambil cepat init !!\r\n");
   	#endif
   	
-  	#if defined(PAKAI_I2C) && defined(PAKAI_TSC)
-		unsigned char st_tsc=0;
-		char a;
-		int i;
-		int c=0;
-		
-		if (setup_fma())	printf(" NO ack !\r\n");
-		else	{			
-			printf("Init TSC OK ack !!!\r\n");
-			st_tsc = 1;
-		}
-  	#endif
+  	//#if defined(PAKAI_I2C)
+	//	#if defined (PAKAI_TSC)
+			unsigned char st_tsc=0;
+			char a;
+			int i;
+			int c=0;
+			
+			printf("mau setup fma ...\r\n");
+			if (setup_fma())	printf(" NO ack !\r\n");
+			else	{			
+				printf("Init TSC OK ack !!!\r\n");
+				st_tsc = 1;
+			}
+	//	#endif
+  	//#endif
   	
   	#ifdef PAKAI_CRON
 		printf("Init CRON OK !!!\r\n");

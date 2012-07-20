@@ -126,17 +126,17 @@ void init_hardware()	{
 		//init_rtc();
 	#endif
 
-	#ifdef PAKAI_ALARM	
-		init_task_alarm();
-	#endif
-	
 	#ifdef PAKAI_TAMPILAN
 		init_port_lcd();
 		init_lcd();
 		init_task_lcd();		// 1, +1
 		init_task_tampilan();
 	#endif
-	
+
+	#ifdef PAKAI_ALARM	
+		init_task_alarm();
+	#endif
+
 	#if 0
 		#if (defined(PAKAI_PM) && defined(AMBIL_PM))
 			init_task_pm();
@@ -165,9 +165,11 @@ void init_hardware()	{
  *						APLIKASI ada di sini 
  */
 //***************************************************************/
+	init_ambilcepat();
+	
 	#ifndef BLINK
 	#ifndef BOARD_TAMPILAN
-	init_ambilcepat();
+	
 	init_kirimcepat();
 	#endif
 	#endif

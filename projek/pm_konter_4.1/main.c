@@ -70,6 +70,7 @@ int main( void )	{
 void togle_led_utama(char tog)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");
 	FIO0PIN ^= LED_UTAMA;
+	//printf("tot idle: %d, loop_idle: %d\r\n", tot_idle, loop_idle);
 
 	if (tog)	{
 		/* kalkulasi idle loop */

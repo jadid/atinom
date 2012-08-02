@@ -58,6 +58,8 @@ extern struct t_adc st_adc;
 
 static unsigned int nomer_mesin=0;
 
+#include "monita/monita_uip.h"
+
 #ifdef BOARD_KOMON_420_SAJA
 #define BOARD_KOMON_WEB
 #endif
@@ -256,10 +258,32 @@ void buat_bottom(void) {
 	unsigned int hari;
 	unsigned int tahun;
 	
-	/* data uptime */
-	//uptime(&sec, &menit, &jam, &hari, &tahun);
-	//cek_uptime_modul(1, &head_buf);
+	char katakan[30];
+	int nW[5];
 	
+	portTickType w = waktudetik();
+	hitung_wkt(w, &nW);
+
+	strcat(tot_buf, "<h4>Uptime = ");
+	if (nW[4] > 0)	{
+		sprintf(katakan," %d thn ", nW[4]);
+		strcat(tot_buf, katakan);
+	}
+	if (nW[3] > 0)	{
+		sprintf(katakan, "%d hari ", nW[3]);
+		strcat(tot_buf, katakan);
+	}
+	if (nW[2] > 0)	{
+		sprintf(katakan, "%d jam ", nW[2]);
+		strcat(tot_buf, katakan);
+	}
+	if (nW[1] > 0)	{
+		sprintf(katakan, "%d mnt ", nW[1]);
+		strcat(tot_buf, katakan);
+	}
+	
+	sprintf(katakan, "%d dtk</h4>\r\n", nW[0]);
+	strcat(tot_buf, katakan);
 	/*
 	strcat(tot_buf, "<h4>Uptime = ");
 	if (tahun !=0)	{
@@ -282,7 +306,7 @@ void buat_bottom(void) {
 	sprintf(head_buf, "%d dtk</h4>\n", sec);
 	//*/
 	
-	strcat(tot_buf, head_buf);
+	//strcat(tot_buf, head_buf);
 	
 	//sprintf(head_buf, "%s", LINK_BAWAH);
 	//strcat(tot_buf, head_buf);
@@ -1756,12 +1780,14 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					sprintf(head_buf, "%d.%d.%d.%d", p_sbrw[i].IP0, p_sbrw[i].IP1, p_sbrw[i].IP2, p_sbrw[i].IP3);
 					ganti_karakter(ketr, head_buf);
 					
+					#if 0
+					/*
 					sprintf(head_buf, "<tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
 						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
 						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
 						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
-						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"7\"></td>\r\n" \
-						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"6\"></td>\r\n" \
+						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"></td>\r\n" \
+						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"2\"></td>\r\n" \
 						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"2\"></td>\r\n" \
 						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 <input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 "	\
@@ -1781,6 +1807,76 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked"), \
 						i+1 );
 					strcat(tot_buf, head_buf);
+					//*/
+					#endif
+					
+					sprintf(head_buf, "<tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
+						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
+						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
+						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"></td>\r\n" \
+						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"2\"></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"2\"></td>\r\n" \
+						"<td>", \
+						i+1, i+1, i+1, i+1, \
+						ket, \
+						ketr, \
+						p_sbrw[i].stack, \
+						p_sbrw[i].alamat);
+					strcat(tot_buf, head_buf);
+					
+					#ifdef TIPE_PM710
+					sprintf(head_buf, "<input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 ", \
+						PM710, (p_sbrw[i].tipe==PM710?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					#ifdef TIPE_PM810			// 1
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/>PM810 ", \
+						PM810, (p_sbrw[i].tipe==PM810?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					#ifdef TIPE_MICOM_M300		// 2
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/>M300 ", \
+						MICOM_M300, (p_sbrw[i].tipe==MICOM_M300?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					#ifdef TIPE_MICOM_P127		// 3
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/>P127 ", \
+						MICOM_P127, (p_sbrw[i].tipe==MICOM_P127?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					#ifdef TIPE_ION8600			// 4
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/>ION8600 ", \
+						ION8600, (p_sbrw[i].tipe==ION8600?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					#ifdef TIPE_A2000			// 5
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/>A2000 ", \
+						A2000, (p_sbrw[i].tipe==A2000?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					#ifdef TIPE_TFX_ULTRA		// 20
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/>TFX ULTRA ", \
+						TFX_ULTRA, (p_sbrw[i].tipe==TFX_ULTRA?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					#endif
+					
+					sprintf(head_buf, "<input type=\"radio\" name=\"g\" value=\"%d\" %s/>Modul Monita &nbsp;</td>\r\n" \
+						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif <input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td></td>\r\n" \
+						"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"/>\r\n</td>" \
+						"</form></tr>\r\n", \
+						MOD_MONITA, (p_sbrw[i].tipe==MOD_MONITA?"checked":" "),	\
+						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked"), \
+						i+1 );
+					strcat(tot_buf, head_buf);
+					
 					//printf("%2d. tipe: %d, status: %d\r\n", i+1, p_sbrw[i].tipe, p_sbrw[i].status);
 				}
 				strcat(tot_buf, "</tbody></table>\r\n");
@@ -2265,7 +2361,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			int z=0;
 			if (pertamax>0)	{
-				if (env2->IP3 == pmx[no].IP3)	{
+				if (env2->IP3 == pmx[no].IP3)	{		// modul MONITA
 					for (i=0; i<KANALNYA; i++)		{
 						#ifndef BOARD_KOMON_KONTER_3_1 
 						if (i>6)
@@ -2303,6 +2399,30 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						}
 					}
 				//*/
+				} else if ((pmx[no].alamat>0))	{		// POWER METER
+					#ifdef PAKAI_PM
+					for (i=0; i<PER_SUMBER; i++)	{	
+						if ((pmx[no].tipe<20)) {
+							ganti_karakter(ket, judulnya_pm[i]);
+							//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
+							sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+								"<td align=\"left\">%s</td>\n" \
+								"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+								"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+								"</form>\n</tr>", \
+								no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+								ket, \
+								(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+								(konfig[PER_SUMBER*no+i].status?" ":"checked") \
+								);
+							strcat(tot_buf, head_buf);
+						}
+					}
+					#endif
+
 				} else {
 					for (i=0; i<PER_SUMBER; i++)		{
 						ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
@@ -2446,7 +2566,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				
 				strcat(tot_buf, "<h3>Info Modul Sumber</h3>\n");				
 				strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\r\n" \
-						"<tr><th width=\"40\">No</th>\r\n<th width=\"150\">Nama Modul</th>\r\n" \
+						"<tr><th width=\"30\">No</th>\r\n<th width=\"150\">Nama Modul</th>\r\n" \
 						"<th width=\"100\">IP</th>\r\n<th width=\"50\">Stack</th>\r\n<th width=\"60\">Alamat</th>\r\n" \
 						"<th width=\"400\">Tipe</th>\r\n" \
 						"<th width=\"150\">Status</th>\r\n<th width=\"50\">Ganti</th></tr>\r\n");
@@ -2457,18 +2577,20 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					sprintf(head_buf, "%d.%d.%d.%d", p_sbrw[i].IP0, p_sbrw[i].IP1, p_sbrw[i].IP2, p_sbrw[i].IP3);
 					ganti_karakter(ketr, head_buf);
 					
+					//*
 					sprintf(head_buf, "<tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
 						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
 						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
 						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
-						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\"></td>\r\n" \
-						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
-						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\"></td>\r\n" \
-						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"3\"></td>\r\n" \
+						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=20></td>\r\n" \
+						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=20></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=3\"></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=3></td>\r\n" \
 						"<td><input type=\"radio\" name=\"g\" value=\"0\" %s/>PM710 "	\
 						"<input type=\"radio\" name=\"g\" value=\"1\" %s/>PM810 "		\
 						"<input type=\"radio\" name=\"g\" value=\"2\" %s/>MICOM M300 "	\
 						"<input type=\"radio\" name=\"g\" value=\"3\" %s/>MICOM P127 "	\
+						"<input type=\"radio\" name=\"g\" value=\"4\" %s/>ION 8600 "	\
 						"<input type=\"radio\" name=\"g\" value=\"100\" %s/>Modul Monita &nbsp;</td>\r\n" \
 						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif <input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td></td>\r\n" \
 						"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"/>\r\n</td>" \
@@ -2480,10 +2602,29 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						p_sbrw[i].alamat, \
 						(p_sbrw[i].tipe==0?"checked":" "), (p_sbrw[i].tipe==1?"checked":" "), \
 						(p_sbrw[i].tipe==2?"checked":" "), (p_sbrw[i].tipe==3?"checked":" "), \
-						(p_sbrw[i].tipe==100?"checked":" "), \
+						(p_sbrw[i].tipe==4?"checked":" "), (p_sbrw[i].tipe==100?"checked":" "), \
 						(p_sbrw[i].status?"checked":" "), (p_sbrw[i].status?" ":"checked"), \
 						i+1 );
+					
 					strcat(tot_buf, head_buf);
+					//*/
+					/*
+					sprintf(head_buf, "<tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
+						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
+						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
+						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=20></td>\r\n" \
+						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=20></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=3\"></td>\r\n" \
+						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=3></td>\r\n",
+							i+1, i+1, i+1, i+1, \
+							ket, \
+							ketr, \
+							p_sbrw[i].stack, \
+							p_sbrw[i].alamat, \
+						);
+					strcat(tot_buf, head_buf);
+					//*/
 					//printf("%2d. tipe: %d, status: %d\r\n", i+1, p_sbrw[i].tipe, p_sbrw[i].status);
 				}
 				strcat(tot_buf, "</tbody></table>\r\n");

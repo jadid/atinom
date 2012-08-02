@@ -57,8 +57,8 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		printf(" Monita : Ambil cepat init !!\r\n");
   	#endif
   	
-  	//#if defined(PAKAI_I2C)
-	//	#if defined (PAKAI_TSC)
+  	#if defined(PAKAI_I2C)
+		#if defined (PAKAI_TSC)
 			unsigned char st_tsc=0;
 			char a;
 			int i;
@@ -70,8 +70,8 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				printf("Init TSC OK ack !!!\r\n");
 				st_tsc = 1;
 			}
-	//	#endif
-  	//#endif
+		#endif
+  	#endif
   	
   	#ifdef PAKAI_CRON
 		printf("Init CRON OK !!!\r\n");
@@ -111,6 +111,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#endif
 			#ifdef TIPE_MICOM_M300 			
 				printf("         - %s\r\n", TIPE_MICOM_M300);
+			#endif
+			#ifdef TIPE_ION8600
+				printf("         - %s\r\n", TIPE_ION8600);
 			#endif
 			#ifdef TIPE_MICOM_P127
 				printf("         - %s\r\n", TIPE_MICOM_P127);

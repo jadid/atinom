@@ -293,37 +293,51 @@ void hitung_wkt(unsigned int w, int *wx)	{
 }
 
 extern unsigned int tot_idle;
+
+unsigned int waktudetik()	{
+	portTickType w;
+	portTickType qaz = (portTickType) (portMAX_DELAY/configTICK_RATE_HZ);
+	
+	w = (xTaskGetTickCount()/configTICK_RATE_HZ) + (uptime_ovflow*qaz);
+	return w;
+}
+
 void cek_uptime_modul()	{
 
-	char kalimat[100], *katakan;
+	char kalimat[100], katakan[30];
 	int nW[5];
+	/*
 	portTickType w;
 	portTickType qaz = (portTickType) (portMAX_DELAY/configTICK_RATE_HZ);
 	
 	w = (xTaskGetTickCount()/configTICK_RATE_HZ) + (uptime_ovflow*qaz);
 	//printf(" TickCount : %d : %d : %d, ov: %d\r\n", xTaskGetTickCount(), w, qaz, uptime_ovflow );
-
+	//*/
+	
+	portTickType w = waktudetik();
+	
 	hitung_wkt(w, &nW);
 	strcpy(kalimat, "  UP = ");
-	
-	if (nW[4] !=0)	{
-		sprintf(katakan,"%d thn ", nW[4]);
+
+	if (nW[4] > 0)	{
+		sprintf(katakan," %d thn ", nW[4]);
 		strcat(kalimat, katakan);
 	}
-	if (nW[3] !=0)	{
+	if (nW[3] > 0)	{
 		sprintf(katakan, "%d hari ", nW[3]);
 		strcat(kalimat, katakan);
 	}
-	if (nW[2] !=0)	{
+	if (nW[2] > 0)	{
 		sprintf(katakan, "%d jam ", nW[2]);
 		strcat(kalimat, katakan);
 	}
-	if (nW[1] !=0)	{
+	if (nW[1] > 0)	{
 		sprintf(katakan, "%d mnt ", nW[1]);
 		strcat(kalimat, katakan);
 	}
+	
 	printf("%s %d dtk, idle = %d\r\n", kalimat, nW[0], tot_idle);
-
+	
 	#ifdef PAKAI_RTC
 		get_cal();
 	#endif

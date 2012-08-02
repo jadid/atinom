@@ -55,7 +55,8 @@ char indexList[256], dataList[256];
 #define	MICOM_P127	3
 #define ION8600		4
 #define A2000		5
-#define TFX_ULTRA	20
+#define TFX_ULTRA	21
+#define MOD_MONITA	100
 
 #define INTEGER		1
 #define FLOAT		2

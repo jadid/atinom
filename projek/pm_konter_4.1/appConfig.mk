@@ -9,13 +9,13 @@
 
 #define PAKAI_SHELL
 #define PAKAI_LED_UTAMA
-#define PAKAI_MODE_POWER
+//#define PAKAI_MODE_POWER
 
 #define BANYAK_SUMBER
 #define CENDOL
 //#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
-#define PAKAI_PUSHBUTTON
+//#define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
 
 

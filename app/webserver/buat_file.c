@@ -284,37 +284,11 @@ void buat_bottom(void) {
 	
 	sprintf(katakan, "%d dtk</h4>\r\n", nW[0]);
 	strcat(tot_buf, katakan);
-	/*
-	strcat(tot_buf, "<h4>Uptime = ");
-	if (tahun !=0)	{
-		sprintf(head_buf, "%d thn ", tahun);
-		strcat(tot_buf, head_buf);	
-	}
-	if (hari !=0) 	{
-		sprintf(head_buf, "%d hari ", hari);
-		strcat(tot_buf, head_buf);		
-	}
-	if (jam !=0)	{
-		sprintf(head_buf, "%d jam ", jam);
-		strcat(tot_buf, head_buf);		
-	}
-	if (menit !=0) 	{
-		sprintf(head_buf, "%d mnt ", menit);
-		strcat(tot_buf, head_buf);		
-	}
-	
-	sprintf(head_buf, "%d dtk</h4>\n", sec);
-	//*/
-	
-	//strcat(tot_buf, head_buf);
-	
-	//sprintf(head_buf, "%s", LINK_BAWAH);
-	//strcat(tot_buf, head_buf);
 
-	/* sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__); */
+	/*sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__); */
 	sprintf(head_buf,"<h4>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "<br>%s, 60 MHz, FreeRTOS 5.1.1</h4>\n", uC);
+	sprintf(head_buf, "<br>%s, 60 MHz, FreeRTOS v%s</h4>\n", uC, tskKERNEL_VERSION_NUMBER);
 	strcat(tot_buf, head_buf);
 	
 	// close html
@@ -3072,10 +3046,12 @@ void buat_file_about(void)	{
 	
 	strcat(tot_buf, "<br><br>Dibuat oleh :");
 	strcat(tot_buf, "<br>&nbsp;&nbsp; Daun Biru Engineering");
-	strcat(tot_buf, "<br>&nbsp;&nbsp; jl Pelitur Raya 21 Kayu Putih");
-	strcat(tot_buf, "<br>&nbsp;&nbsp; Jakarta 13210");
-	strcat(tot_buf, "<br>&nbsp;&nbsp; (021) 4892155, fax (021) 47881750");
-		
+	//strcat(tot_buf, "<br>&nbsp;&nbsp; jl Pelitur Raya 21 Kayu Putih");
+	//strcat(tot_buf, "<br>&nbsp;&nbsp; Jakarta 13210");
+	//strcat(tot_buf, "<br>&nbsp;&nbsp; (021) 4892155, fax (021) 47881750");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; Jl Raya Pekapuran No 41");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; Tapos - Depok - Jawa Barat");
+	strcat(tot_buf, "<br>&nbsp;&nbsp; (021) 87743652, fax (021) 87743634");	
 	strcat(tot_buf,"</h4>");
 #endif
 	buat_bottom();

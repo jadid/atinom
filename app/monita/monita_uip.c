@@ -215,6 +215,7 @@ void monita_appcall(void)
 			portENTER_CRITICAL();
 			memcpy(str_monita, (char *) uip_appdata, 11);
 			portEXIT_CRITICAL();
+			printf("newdata = %d : %s\r\n", len, str_monita);
 			if (strncmp(str_monita, "sampurasun", 10) == 0)
 			{
 				loop_kirim++;

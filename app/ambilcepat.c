@@ -118,6 +118,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#ifdef TIPE_MICOM_P127
 				printf("         - %s\r\n", TIPE_MICOM_P127);
 			#endif
+			#ifdef TIPE_A2000
+				printf("         - %s\r\n", TIPE_A2000);
+			#endif
 			#ifdef TIPE_TFX_ULTRA
 				printf("         - %s\r\n", TIPE_TFX_ULTRA);
 			#endif

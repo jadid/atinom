@@ -9,17 +9,15 @@
 
 #define PAKAI_SHELL
 #define PAKAI_LED_UTAMA
-//#define PAKAI_MODE_POWER
+#define PAKAI_MODE_POWER
 
 #define BANYAK_SUMBER
 #define CENDOL
 //#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
-//#define PAKAI_PUSHBUTTON
+#define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
 
-//#define PAKAI_PUSHBUTTON
-//#define PAKAI_RELAY
 
 //#define PAKAI_TIMER_2		// CRON
 #ifdef  PAKAI_TIMER_2
@@ -28,6 +26,10 @@
 
 #ifdef PAKAI_MODE_POWER
 	#define PAKAI_RTC
+#endif
+
+#ifdef PAKAI_PUSHBUTTON
+	#define PAKAI_RELAY
 #endif
 
 #ifdef PAKAI_RTC
@@ -63,7 +65,7 @@
 	#endif
 #endif
 
-//#define PAKAI_SERIAL_3
+#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 //	#define PAKAI_SERIAL_3_P0	115200		// TES
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
@@ -87,7 +89,7 @@
 		#define TIPE_MICOM_M300		"MICOM Power Meter M300"
 		#define TIPE_MICOM_P127		"MICOM Power Meter P127"
 		#define TIPE_ION8600		"Power Logic ION 8600"
-		//#define TIPE_A2000		"Gossen MetraWatt A2000"
+		#define TIPE_A2000		"Gossen MetraWatt A2000"
 		//#define TIPE_TFX_ULTRA		"Dynasonics Flow Meter TFX Ultra"
 	#endif
 #endif

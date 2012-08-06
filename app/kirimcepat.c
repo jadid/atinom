@@ -43,8 +43,8 @@ int kirimModulX(int burst, int sumber, int awal, char *il, char *dl) {
 	struct t_setting *konfig;
 	konfig = (char *) ALMT_KONFIG;
 		
-	strcpy(il,"il=");
-	strcpy(dl,"dl=");
+	strcpy(il,"&il=");
+	strcpy(dl,"&dl=");
 	if (burst==1) {
 		struct t_sumber *psbr;
 		psbr = (char *) ALMT_SUMBER;

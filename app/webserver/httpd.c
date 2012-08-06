@@ -362,6 +362,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 				#endif
 			} else if (strncmp(s->filename,"/setting.html?smb=8",19)==0) {	// kalibrasi
 				buat_file_setting(8, s->filename);
+				#ifdef BOARD_KOMON_KONTER
+			} else if (strncmp(s->filename,"/setting.html?smb=9",19)==0) {	// alarm trip
+				buat_file_setting(9, s->filename);
+				#endif
 			#endif
 			} else {
 				buat_file_setting(0,"");

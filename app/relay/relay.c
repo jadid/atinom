@@ -30,7 +30,7 @@
 		
 		sscanf (cmd,"<html><body>%s %d %s", status, &inc, rel);
 		rel[8] = '0';
-		printf("cmd   : %s\r\n", rel);
+		//printf("cmd   : %s\r\n", rel);
 		
 		#if 0
 		printf("status: %s, n: %d\r\n", status, inc);

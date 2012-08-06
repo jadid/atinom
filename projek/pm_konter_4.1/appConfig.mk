@@ -17,6 +17,7 @@
 //#define PAKAI_ADC_ORI
 #define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
+//#define PAKAI_PILIHAN_FLOW
 
 
 //#define PAKAI_TIMER_2		// CRON

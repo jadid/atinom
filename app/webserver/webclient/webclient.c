@@ -244,7 +244,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 		//strcat(il,id);
 		strcat(dl,dt);
 	}
-	printf("data: %s\r\n", dl);
+	//printf("data: %s\r\n", dl);
 	return jmlAktif;
 }
 #endif

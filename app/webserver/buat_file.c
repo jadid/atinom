@@ -107,7 +107,7 @@ void ket_konter(char *ket, int status, int flag)	{
 		case  1:
 			strcpy(ket, "OnOff"); break;
 		case  2:
-			strcpy(ket, "OnOff PushButton"); break;
+			strcpy(ket, "PushButton"); break;
 		case  3:
 			strcpy(ket, "Selector"); break;
 		case  4:
@@ -762,6 +762,27 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbr);
 		#endif
 		return 1;
+	} else if (z==9) {	// kanal
+		struct t_env *p_sbr;
+		p_sbr = pvPortMalloc( sizeof (struct t_env) );
+		
+		portENTER_CRITICAL();
+		memcpy((char *) p_sbr, (char *) ALMT_ENV, (sizeof (struct t_env)));
+		portEXIT_CRITICAL();
+		
+		p_sbr->kalib[no-1].status = gg;
+		if (p_sbr == NULL) {
+			vPortFree(p_sbr);
+			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			return -1;
+		}
+		if (simpan_env(p_sbr) < 0) {
+			vPortFree(p_sbr);
+			return -1;
+		}		
+		vPortFree(p_sbr);
+		
+		return 1;
 	} else if (z==7) {	// alarm
 		//printf("%s(): str: %s\r\n", __FUNCTION__, str);
 		
@@ -1074,7 +1095,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 				nk = nks;
 				//printf("nks>0: %d\r\n", nks);
 			}
-			printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
+			//printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
 		}
 				
 		strcat(tot_buf, "<b>No Modul : </b>");
@@ -1607,6 +1628,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			#ifndef PAKAI_PM
 				strcat(tot_buf, ": <a href=\"setting.html?smb=8\">Info Kalibrasi</a> :");
 			#endif
+			#ifdef BOARD_KOMON_KONTER
+				strcat(tot_buf, ": <a href=\"setting.html?smb=9\">Info Kanal</a> :");
+			#endif
 		#endif
 		
 		
@@ -1706,7 +1730,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			//printf("kata: %s\r\n", kata);
 			pch=strchr(kata,'z');
 			if (pch!=NULL) {
-				i = atoi(pch+2);
+				flag = i = atoi(pch+2);
 				//printf("i: %d, pch: %s\r\n", i, pch+2);
 				if (i==3) {				// setting sumber
 					flag=3;
@@ -2025,7 +2049,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			strcat(tot_buf, "</tbody></table>\n");
 		#endif
-		} else if (flag==7)	{
+		} else if (flag==7)	{	// info alarm
 			//printf("setting alarm !!\r\n");
 			int pertamax=0, nk=0, nks=-1, ff=0;
 			int no=-1;
@@ -2183,6 +2207,75 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			}
 			#endif
 			strcat(tot_buf, "</tbody></table>\n");			
+		} else if (flag==9)	{	// info kanal
+			char sKan = 0;
+		
+			strcat(tot_buf, "<h3>Info Kanal</h3>\n");
+			struct t_sumber *pmx;
+			pmx = (char *) ALMT_SUMBER;
+			
+			struct t_env *env2ww;
+			env2ww = (char *) ALMT_ENV;
+			
+			/*
+			for (i=0; i<JML_SUMBER; i++)	{
+				if (pmx[i].status == 1) {
+					if ( (env2ww->IP2)==
+				}
+			}
+			//*/
+			strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\r\n" \
+					"<tr><th width=\"40\">Kanal</th>\r\n<th width=\"200\">Tipe</th>\r\n" \
+					"<th width=\"50\">Ganti</th></tr>\r\n");
+			
+			for (i=0; i<KANALNYA; i++) {
+				sprintf(head_buf, "<tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
+					"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+					"<input type=\"hidden\" name=\"z\" value=\"9\" />\r\n" \ 
+					"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
+					"<th>%d</th><td>",
+						i+1, i+1, i+1, i+1);
+				strcat(tot_buf, head_buf);
+				
+				#ifdef HITUNG_RPM				// 0
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/> RPM/Pulsa ", \
+						sRPM, (env2ww->kalib[i].status==sRPM?"checked":" ") );
+					strcat(tot_buf, head_buf);
+				#endif
+				
+				sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/> OnOff ", \
+						sONOFF, (env2ww->kalib[i].status==sONOFF?"checked":" ") );
+					strcat(tot_buf, head_buf);
+				
+				#ifdef PAKAI_PUSHBUTTON			// 2
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/> PushButton ", \
+						sPUSHBUTTON, (env2ww->kalib[i].status==sPUSHBUTTON?"checked":" ") );
+					strcat(tot_buf, head_buf);
+				#endif
+				
+				#ifdef PAKAI_PILIHAN_FLOW		// 3
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/> Flow 1 Pilihan ", \
+						sFLOW1, (env2ww->kalib[i].status==sFLOW1?"checked":" ") );
+					strcat(tot_buf, head_buf);
+					
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/> Flow 2 Pilihan ", \
+						sFLOW2, (env2ww->kalib[i].status==sFLOW2?"checked":" ") );
+					strcat(tot_buf, head_buf);
+				#endif
+				
+				#ifdef PAKAI_ADC_ORI
+					sprintf(head_buf, " <input type=\"radio\" name=\"g\" value=\"%d\" %s/> ADC Ori ", \
+						sADC_ORI, (env2ww->kalib[i].status==sADC_ORI?"checked":" ") );
+					strcat(tot_buf, head_buf);
+				#endif
+				sprintf(head_buf, "</td>\r\n" \
+					"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"/>\r\n</td>" \
+					"</form></tr>\r\n", \
+						i+1 );
+				strcat(tot_buf, head_buf);
+			}
+			
+			strcat(tot_buf, "</tbody></table>\r\n");
 		} else {
 			strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
 			int pertamax=0, nk=0, no=0;

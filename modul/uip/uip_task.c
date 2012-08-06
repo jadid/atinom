@@ -613,7 +613,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					}
 					
 					if (menit == tiapKirim) {
-						printf("webclient : %d\r\n", menit);
+						//printf("webclient : %d\r\n", menit);
 						menit=0;
 						jmlData=kirimModul(0, nos-1, 0, il, dl);
 					#if 1

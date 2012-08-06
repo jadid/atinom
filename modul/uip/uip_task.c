@@ -362,8 +362,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		unsigned char datakeserver[512];
 		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
-	#ifdef WEBCLIENT_DATA
 		char il[256], dl[256];
+	#ifdef WEBCLIENT_DATA
+		
 		char angkaangka[5];
 		#ifdef DEBUG_WEBCLIENT
 		char countwc[15];
@@ -614,10 +615,19 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					if (menit == tiapKirim) {
 						printf("webclient : %d\r\n", menit);
 						menit=0;
+						jmlData=kirimModul(0, nos-1, 0, il, dl);
 					#if 1
 						sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 						strcpy(datakeserver, envx->berkas);
-						printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
+						
+						strcat(datakeserver, "?i=");
+						strcat(datakeserver, envx->SN);
+						strcat(datakeserver, "&p=diesel&j=8");
+						//sprintf(angkaangka, "%d", jmlData);
+						//strcat(datakeserver, angkaangka);
+						strcat(datakeserver, il);
+						strcat(datakeserver, dl);
+						//printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
 						webclient_get(ipdest, PORT_HTTP, datakeserver);
 						
 					#endif

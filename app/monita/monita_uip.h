@@ -146,8 +146,9 @@ char indexList[256], dataList[256];
 #endif
 
 #ifdef PAKAI_PUSHBUTTON
-	#define DELAY_DEBOUND	3		// 2 * 500 ms
+	#define DELAY_DEBOUND	6		// 2 * 500 ms
 	unsigned int debound[KANALNYA];
+	char statPush [8];
 #endif
 
 #ifdef PAKAI_FILE_SIMPAN

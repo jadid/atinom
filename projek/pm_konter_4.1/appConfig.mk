@@ -15,7 +15,7 @@
 #define CENDOL
 //#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
-//#define PAKAI_PUSHBUTTON
+#define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
 
 
@@ -53,12 +53,12 @@
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
-		#define WEBCLIENT_DATA
+		//#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS
 			#define WEBCLIENT_GPS
 		#endif
 		
-		//#define PAKAI_WEBCLIENT_INTERNET
+		#define PAKAI_WEBCLIENT_INTERNET
 		#ifdef PAKAI_WEBCLIENT_INTERNET
 			#define PAKAI_RESOLV
 		#endif

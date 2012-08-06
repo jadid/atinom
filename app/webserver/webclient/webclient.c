@@ -220,6 +220,35 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 /*-----------------------------------------------------------------------------------*/
 //unsigned char webclient_get(char *host, u16_t port, char *file) __attribute__ ((naked));
 
+#ifdef PAKAI_WEBCLIENT_INTERNET
+int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
+	char jr;
+	char id[16], dt[16];
+	int jmlAktif=0;
+	
+	strcpy(il,"&il=12345");
+	strcpy(dl,"&dl=");
+	
+	for (jr=0; jr<JML_RELAY; jr++)	{
+		jmlAktif++;
+		sprintf(dt, "%.0f", data_f[(JML_SUMBER*PER_SUMBER)+jr]);
+		/*
+		if (jmlAktif==1) {
+		//	sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
+			sprintf(dt, "%.2f", data_f[(JML_SUMBER*PER_SUMBER)+jr]);
+		} else {
+		//	sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
+			sprintf(dt, "~%.2f", data_f[(JML_SUMBER*PER_SUMBER)+jr]);
+		}
+		//*/
+		//strcat(il,id);
+		strcat(dl,dt);
+	}
+	printf("data: %s\r\n", dl);
+	return jmlAktif;
+}
+#endif
+
 unsigned char webclient_get(char *host, u16_t port, char *file)
 {
 	int gg=0;

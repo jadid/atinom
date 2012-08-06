@@ -91,6 +91,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#endif
   	
   	#ifdef PAKAI_PUSHBUTTON
+		printf("    Init PushButton ..-ambilcepat-..!!!\r\n");
 		for (loopambil=0; loopambil<KANALNYA; loopambil++) {
 			debound[0] = 0;
 		}

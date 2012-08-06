@@ -18,7 +18,8 @@
 	void set_semuaRelay(char * rel)	{
 		char r;
 		for (r=0; r<JML_RELAY; r++) {
-			(rel[r]-'0')?set_selenoid(r+1):unset_selenoid(r+1);
+			if (debound[r]==0)
+				(rel[r]-'0')?set_selenoid(r+1):unset_selenoid(r+1);
 		}
 	}
 

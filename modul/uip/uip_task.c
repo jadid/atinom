@@ -559,8 +559,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
 					
-					printf("datakeserver: %s\r\n",datakeserver);
-					//webclient_get(ipdest, PORT_HTTP, datakeserver);
+					//printf("datakeserver: %s\r\n",datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}
 			}

@@ -214,14 +214,22 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 		}
 	}
 	#ifdef PAKAI_RELAY
-		strcat(il, "&kl=");
+		#define AWAL_RELAY (JML_SUMBER*PER_SUMBER)
+		//struct t_setting *konfigx;
+		//konfigx = (char *) ALMT_KONFIG;
+		
+		strcat(il, "&rl=");
+		strcat(dl, "&kl=");
 		for (i=0; i<JML_RELAY; i++)	{
 			if (i==0) {
-				sprintf(dt, "%d", data_f[(JML_SUMBER*PER_SUMBER)+i]);
+				sprintf(id, "%d", konfig[AWAL_RELAY+i].id);
+				sprintf(dt, "%.0f", data_f[AWAL_RELAY+i]);
 			} else {
-				sprintf(dt, "~%d", data_f[(JML_SUMBER*PER_SUMBER)+i]);
+				sprintf(id, "~%d", konfig[AWAL_RELAY+i].id);
+				sprintf(dt, "~%.0f", data_f[AWAL_RELAY+i]);
 			}
-			strcat(il,dt);
+			strcat(il,id);
+			strcat(dl,dt);
 		}
 	#endif
 	//printf("no awal: %d\r\n", noawal);

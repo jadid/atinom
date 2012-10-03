@@ -23,8 +23,18 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
+#define MAGIC_1	0x31
+#define MAGIC_2	0xEF
 
 char indexList[256], dataList[256];
+
+#ifdef PAKAI_RELAY
+//char kontrolList
+#endif
+
+#define BENAR 	1
+#define AKTIF 	1
+#define MATI	0
 
 
 //#ifdef PAKAI_PM
@@ -99,12 +109,13 @@ char indexList[256], dataList[256];
 	int status_modem;
 #endif
 
-#ifdef PAKAI_WEBCLIENT_INTERNET
+#ifdef PAKAI_RESOLV
 	int status_webc_i;
-	
-	#ifdef PAKAI_RESOLV
-		char urlweb[32];
-	#endif
+	char urlweb[32];
+#endif
+
+#ifdef PAKAI_WEBCLIENT_INTERNET
+
 #endif
 
 #ifdef PAKAI_MODEM_GSM
@@ -134,6 +145,57 @@ char indexList[256], dataList[256];
 	unsigned char flagRTCm;
 	unsigned char flagRTCh;
 	unsigned char flagRTCd;
+	
+typedef struct __attribute__ ((packed)) {
+	union  {
+		struct	{
+			unsigned int counter   : 14;
+			unsigned int rsvd15_31 : 18;
+		};
+		unsigned int i;
+	};
+} rtcCTC_t;
+
+typedef struct __attribute__ ((packed))	{
+	union	{
+		struct	{
+			unsigned int seconds   : 6;
+			unsigned int rsvd7_6   : 2;
+			unsigned int minutes   : 6;
+			unsigned int rsvd14_15 : 2;
+			unsigned int hours     : 5;
+			unsigned int rsvd21_23 : 3;
+			unsigned int dow       : 3;
+			unsigned int rsvd27_31 : 5;
+		};
+		unsigned int i;
+	};
+} rtcCTIME0_t;
+
+typedef struct __attribute__ ((packed))	{
+	union	{
+		struct	{
+			unsigned int dom       : 5;
+			unsigned int rsvd5_7   : 3;
+			unsigned int month     : 4;
+			unsigned int rsvd12_15 : 4;
+			unsigned int year      : 12;
+			unsigned int rsvd28_31 : 4;
+		};
+		unsigned int i;
+	};
+} rtcCTIME1_t;
+
+typedef struct __attribute__ ((packed))	{
+	union	{
+		struct 	{
+			unsigned int doy       : 12;
+			unsigned int rsvd12_31 : 20;
+		};
+		unsigned int i;
+	};
+} rtcCTIME2_t;
+	
 #endif
 
 #ifdef KIRIM_KE_SER_2

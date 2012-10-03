@@ -25,6 +25,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "monita/monita_uip.h"
 
 #ifdef PAKAI_CRON
 
@@ -49,18 +50,23 @@ int status_cron;
 
 static int simpan_cron( struct t_cron *pgr);
 
+#ifdef PAKAI_RTC
+
+
+#endif
 
 
 int cron(char * data, int cek) {
 	char str_cron[10];
 	char * pch;
-	//printf("__%s__%c__", data, data[2]);
+	//printf("__%s__%c__ cek: %d\r\b", data, data[2], cek);
 	if (data[1]=='/' || data[1]==37) {				// s/x		s%x
 		ganti_kata(str_cron, data);
 		pch=strchr(str_cron,'+');
 
 		if (pch!=NULL) { 			// s/x+y
-			if ((cek%atoi(str_cron)==atoi(pch+1))) {
+			//printf("cek%atoi(str_cron): %d == %d, \r\n", cek%atoi(str_cron), atoi(pch+1) );
+			if ((cek%atoi(str_cron)==atoi(pch+1))) {	
 				return 1;			// menit BENAR
 			} else {
 				return 0;
@@ -110,61 +116,82 @@ static tinysh_cmd_t cek_cron_cmd={0,"cek_cron","menampilkan konfigurasi cron",
 		"help default ",lihat_cron,0,0,0};
 
 int cekCron(struct t_cron tes) {
+	
+	rtcCTIME0_t ctime0;
+	rtcCTIME1_t ctime1;
+	rtcCTIME2_t ctime2;
+	ctime0.i = RTC_CTIME0; 
+	ctime1.i = RTC_CTIME1; 
+	ctime2.i = RTC_CTIME2;
+	
+	//printf(	"  Waktu : %s, %d-%s-%04d %d:%02d:%02d\r\n", 			\
+	//	hari[ctime0.dow], ctime1.dom, bln[ctime1.month], ctime1.year, 	\
+	//	ctime0.hours, ctime0.minutes, ctime0.seconds);		// ctime2.doy, 
+	
+	
 	//time_t rawtime;
 	//struct tm * timeinfo;
 	
 	//(void)time ( &rawtime );
 	//timeinfo = localtime ( &rawtime );
 	
-	time_t timeval;
-	struct tm timeinfo;
-	get_tm_time( &timeinfo );
-	timeval = mktime( &timeinfo );
+	//time_t timeval;
+	//struct tm timeinfo;
+	//get_tm_time( &timeinfo );
+	//timeval = mktime( &timeinfo );
 	// tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1
 	int flag=0;
 
-	if (tes.bln[0]=='s') {					// periodik bln
+	if (tes.bln[0]=='s' || tes.bln[0]=='*') {					// periodik bln
 		//printf("Blnsss: %d ", timeinfo.tm_mon);
-		flag = cron(tes.bln, timeinfo.tm_mon);
+		//flag = cron(tes.bln, timeinfo.tm_mon);
+		flag = cron(tes.bln, ctime1.month);
 	} else {								// tunjuk bln
 		//printf("Bln: %s ", tes.bln);
-		if (atoi(tes.bln) == timeinfo.tm_mon) {
+		//if (atoi(tes.bln) == timeinfo.tm_mon) {
+			if (atoi(tes.bln) == ctime1.month) {
 			flag = 1;						// bln BENAR, lanjut cek tgl
 		}  else {
 			return 0;						// cron bln SALAH
 		}
 	}
 	
-	if (tes.tgl[0]=='s') {					// periodik tgl
+	if (tes.tgl[0]=='s' || tes.tgl[0]=='*') {					// periodik tgl
 		//printf("Tglsss: %d ", timeinfo.tm_mday);
-		flag = cron(tes.tgl, timeinfo.tm_mday);
+		//flag = cron(tes.tgl, timeinfo.tm_mday);
+		flag = cron(tes.tgl, ctime1.dom);
 	} else {								// tunjuk tgl
 		//printf("Tgl: %s ", tes.tgl);
-		if (atoi(tes.tgl) == timeinfo.tm_mday) {
+		//if (atoi(tes.tgl) == timeinfo.tm_mday) {
+		if (atoi(tes.tgl) == ctime1.dom) {
 			flag = 1;						// tgl BENAR, lanjut cek jam
 		}  else {
 			return 0;						// cron tgl SALAH
 		}
 	}
 	
-	if (tes.jam[0]=='s') {					// periodik jam
+	if (tes.jam[0]=='s' || tes.jam[0]=='*') {					// periodik jam
 		//printf("Jamsss: %d ", timeinfo.tm_hour);
-		flag = cron(tes.jam, timeinfo.tm_hour);
+		//flag = cron(tes.jam, timeinfo.tm_hour);
+		flag = cron(tes.jam, ctime0.hours);
 	} else {								// tunjuk jam
 		//printf("Jam: %s ", tes.jam);
-		if (atoi(tes.jam) == timeinfo.tm_hour) {
+		//if (atoi(tes.jam) == timeinfo.tm_hour) {
+		if (atoi(tes.jam) == ctime0.hours) {
 			flag = 1;						// jam BENAR, lanjut cek menit
 		}  else {
 			return 0;						// cron JAM SALAH
 		}
 	}
 	
-	if (tes.mnt[0]=='s') {					// periodik menit
+	if (tes.mnt[0]=='s' || tes.mnt[0]=='*') {					// periodik menit
 		//printf("Menitsss: %d ", timeinfo.tm_min);
-		flag = cron(tes.mnt, timeinfo.tm_min);
+		//flag = cron(tes.mnt, timeinfo.tm_min);
+		flag = cron(tes.mnt, ctime0.minutes);
 	} else {								// periodik menit
 		//printf("Menit: %s ", tes.mnt);
-		if (atoi(tes.mnt) == timeinfo.tm_min) {
+		//if (atoi(tes.mnt) == timeinfo.tm_min) {
+		if (atoi(tes.mnt) == ctime0.minutes) {
 			flag = 1;						// menit BENAR
 		}  else {
 			return 0;						// cron menit SALAH
@@ -176,7 +203,75 @@ int cekCron(struct t_cron tes) {
 int hitung = 0;
 int hitung_lagi=0;
 
+//#define DEBUG_DATA
+
 void baca_cron() {
+	char ww;
+	rtcCTIME0_t ctime0;
+	rtcCTIME1_t ctime1;
+	rtcCTIME2_t ctime2;
+	ctime0.i = RTC_CTIME0; 
+	ctime1.i = RTC_CTIME1; 
+	ctime2.i = RTC_CTIME2;
+	
+	struct t_cron *p_dt;
+	p_dt = (char *) ALMT_CRON;
+	
+	for (ww=0; ww<JML_CRON; ww++)	{
+		if (p_dt[ww].set) {
+			//printf("ww: %d ==> ", ww);
+			if (cekCron(p_dt[ww])==BENAR) {
+				if (strcmp(p_dt[ww].cmd,"cek")==0) {
+					printf("...............cek_cron, printf ini !!!\r\n");
+				}
+				
+				#ifdef PAKAI_RELAY
+					//printf("RELAY !! ...");
+					if (strcmp(p_dt[ww].cmd,"relay")==0) {
+						//printf("cmd: RELAY ....%d ==> ");
+						if (p_dt[ww].status==1) {
+							set_selenoid((uint) p_dt[ww].alamat);
+							data_f[(PER_SUMBER*JML_SUMBER)+p_dt[ww].alamat] = 1;
+							#ifdef DEBUG_DATA
+								//set_selenoid(2);
+								printf(".......NYALA %d\r\n", p_dt[ww].alamat);
+							#endif
+						} else {
+							unset_selenoid((uint)p_dt[ww].alamat);
+							data_f[(PER_SUMBER*JML_SUMBER)+p_dt[ww].alamat] = 0;
+							#ifdef DEBUG_DATA
+								//unset_selenoid(2);
+								printf(".......MATI %d\r\n", p_dt[ww].alamat);
+							#endif
+						}
+						vTaskDelay(500);
+					} else if (strcmp(p_dt[ww].cmd,"reset")==0) {
+						printf("reset relay\r\n");
+						unset_selenoid((uint) p_dt[ww].alamat);
+						vTaskDelay(1000);
+						set_selenoid((uint) p_dt[ww].alamat);
+					}
+				#endif
+			}
+		}
+	}
+}
+
+#if 0
+void baca_cron() {
+	rtcCTIME0_t ctime0;
+	rtcCTIME1_t ctime1;
+	rtcCTIME2_t ctime2;
+	ctime0.i = RTC_CTIME0; 
+	ctime1.i = RTC_CTIME1; 
+	ctime2.i = RTC_CTIME2;
+	
+	//printf(	"  Waktu : %s, %d-%s-%04d %d:%02d:%02d\r\n", 			\
+	//	hari[ctime0.dow], ctime1.dom, bln[ctime1.month], ctime1.year, 	\
+	//	ctime0.hours, ctime0.minutes, ctime0.seconds);		// ctime2.doy, 
+	// flag cron dimatikan !!!!!
+	
+	/*
 	if (hitung_lagi==60) {			// tunggu sampai 120 untuk 1 menit, 60 untuk 30 detik, 
 		hitung_lagi=0;				// reset;
 	}
@@ -190,7 +285,7 @@ void baca_cron() {
 		if (hitung==JML_CRON) {
 			hitung=0;
 		}
-		//*
+		/*
 		time_t timeval;
 		struct tm timeinfo;
 		get_tm_time( &timeinfo );
@@ -198,16 +293,16 @@ void baca_cron() {
 		//*/
 		
 		
-			
-		if (cekCron(p_dt[hitung])==1) {	
+		/*
+		if (cekCron(p_dt[hitung])==1) {
 			
 			if (p_dt[hitung].set) {
 				printf(" %d:%02d:%02d %d-%d ",timeinfo.tm_hour,timeinfo.tm_min, timeinfo.tm_sec,timeinfo.tm_mday,timeinfo.tm_mon+1, (timeinfo.tm_year+1900)); //, bulan[], , , 
-				/*
+				//
 				//printf(" (%3d): %-5s : %-8s : %-8s : %-8s : %-8s : %-10s : %3d :  %s\r\n", (hitung+1), (p_dt[hitung].set)?"Aktif":"Mati", \
 				//		p_dt[hitung].mnt, p_dt[hitung].jam, p_dt[hitung].tgl, p_dt[hitung].bln, \ 
 				//		p_dt[hitung].cmd, p_dt[hitung].alamat, p_dt[hitung].status?"Aktif [1]":"Mati [0]");
-				//*/
+				//
 				//#ifdef PAKAI_SELENOID
 				#ifdef PAKAI_RELAY
 				if (strcmp(p_dt[hitung].cmd,"relay")==0) {
@@ -267,13 +362,13 @@ void baca_cron() {
 					printf("Hapus file !!!\r\n");
 					job_cron = 1;
 					/*
-					if (status_modem==1)		// biar nggak konflik baca file
-						return;
-					printf("......HAPUS file J-12\r\n");			
+					//if (status_modem==1)		// biar nggak konflik baca file
+					//	return;
+					//printf("......HAPUS file J-12\r\n");			
 					//cari_berkas("J-12", "lihat");
-					cari_berkas("J-12","hapus");
-					vTaskDelay(100);
-					//*/
+					//cari_berkas("J-12","hapus");
+					//vTaskDelay(100);
+					//
 				}
 				
 				if (strcmp(p_dt[hitung].cmd,"list")==0) {
@@ -289,10 +384,12 @@ void baca_cron() {
 			
 		}
 		hitung++;
+		//*/
 	//}
 	hitung_lagi++;
 	//printf("hitung lagi : %d\r\n", hitung_lagi);
 }
+#endif
 
 /*
  * struct t_cron {
@@ -477,7 +574,7 @@ int set_cron(int argc, char **argv)
 			return 0;
 		}
 		//*
-		#ifdef PAKAI_SELENOID
+		#ifdef PAKAI_RELAY
 		sprintf(str_cron, "%s", argv[7]);			// alamat
 		alamat = cek_nomer_valid(str_cron, JML_RELAY);
 		if (alamat <= 0)	{

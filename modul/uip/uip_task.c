@@ -555,14 +555,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 						sprintf(countwc, "%d", wc);
 						strcat(datakeserver, countwc);
 					#endif
-					strcat(datakeserver, "&");
 					strcat(datakeserver, il);
-					strcat(datakeserver, "&");
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
 					
-					//printf("datakeserver: %s\r\n",datakeserver);
-					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					printf("datakeserver: %s\r\n",datakeserver);
+					//webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}
 			}
@@ -677,9 +675,9 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		if (loop > 500) 		// 50, 40, 80		// aslinya 200
 		{
 			loop = 0;
-			
+
 			sambungan_connect(mul);	
-			
+
 			mul++;
 			if (mul > JML_SUMBER) mul = 0;
 			

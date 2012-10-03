@@ -219,7 +219,7 @@ clean : gpsclean
 #	touch Makefile
 	
 tulis :
-	$(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
+	sudo $(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB0 115200 14748
 
 tulis1 :
 	$(PENULIS) -hex $(NAMA_FILE).hex /dev/ttyUSB1 115200 14748

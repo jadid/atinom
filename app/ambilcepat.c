@@ -125,7 +125,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#ifdef TIPE_TFX_ULTRA
 				printf("         - %s\r\n", TIPE_TFX_ULTRA);
 			#endif
-			vTaskDelay(2500);
+			vTaskDelay(200);
 		#endif
   	#endif
   	
@@ -156,7 +156,10 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		//printf("*******************baca_mem_rtc*********************\r\n");
 		baca_mem_rtc();
 	#endif
-
+	
+	
+	
+	
   	#ifdef PAKAI_RTC
   	#if 1
 		printf(" Init RTC ....%d\r\n", xTaskGetTickCount());
@@ -165,7 +168,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		vTaskDelay(10);
 		start_rtc();
 		
-		
+		#ifndef BOARD_TAMPILAN
+		rtc_counter_irq_aktif(*(&MEM_RTC0+(100)));
+		#endif
 	#endif
   	#endif
   	

@@ -808,10 +808,15 @@ int ganti_setting(char *str) {
 		p_dtw[no-1].batas_atas	= t;
 		#endif
 		
+		// y : batas bawah		=> y
+		// n : alarmH			=> n
+		// r : alarmHH			=> r
+		// e : batas atas		=> t
+		
 		p_dtw[no-1].alarm_LL	= y;
 		p_dtw[no-1].alarm_L		= n;
-		p_dtw[no-1].alarm_H		= r;
-		p_dtw[no-1].alarm_HH	= t;
+		p_dtw[no-1].alarm_H		= n;
+		p_dtw[no-1].alarm_HH	= r;
 		
 		p_dtw[no-1].aktif		= atoi(stat);
 		

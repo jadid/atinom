@@ -16,6 +16,8 @@
 #include "monita/monita_uip.h"
 //#include "LCD/menu_monita.c"
 
+#define RELAY_ALARM		2
+#define RELAY_TRIP		4
 
 
 #ifdef PAKAI_ALARM
@@ -223,17 +225,17 @@ void lampu_mati() {
 void lampu_hijau() {
 	FIO1SET = BACKLIT;
 	#ifdef PAKAI_RELAY
-	unset_selenoid(1);
-	unset_selenoid(3);
+	unset_selenoid(RELAY_ALARM);		// unset_selenoid(1);
+	unset_selenoid(RELAY_TRIP);			// unset_selenoid(3);
 	#endif
 }
 
 void lampu_merah() {
 	FIO1SET = LED_PICKUP;	
 	#ifdef PAKAI_RELAY
-	set_selenoid(3);
+	set_selenoid(RELAY_TRIP);			// set_selenoid(3);
 	//vTaskDelay(1000);
-	unset_selenoid(1);
+	unset_selenoid(RELAY_ALARM);		// unset_selenoid(1);
 	#endif
 }
 
@@ -241,7 +243,7 @@ void lampu_kuning() {
 	FIO1SET = LED_PICKUP;
 	FIO1SET = BACKLIT;
 	#ifdef PAKAI_RELAY
-	set_selenoid(1);
+	set_selenoid(RELAY_ALARM);			//set_selenoid(1);
 	//vTaskDelay(1000);
 	//unset_selenoid(1);
 	//unset_selenoid(2);

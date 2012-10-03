@@ -37,6 +37,7 @@
 	#define PAKAI_MEM_RTC
 	#define PAKAI_KONTROL_RTC
 	//#define TES_MEM_RTC
+	#define PAKAI_CRON
 #endif
 
 #define PAKAI_ETH
@@ -51,22 +52,23 @@
 	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
+//	#define PAKAI_RESOLV
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
-		//#define WEBCLIENT_DATA
+		#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS
 			#define WEBCLIENT_GPS
 		#endif
 		
-		#define PAKAI_WEBCLIENT_INTERNET
+		//#define PAKAI_WEBCLIENT_INTERNET
 		#ifdef PAKAI_WEBCLIENT_INTERNET
 			#define PAKAI_RESOLV
 		#endif
 	#endif
 #endif
 
-#define PAKAI_SERIAL_3
+//#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 //	#define PAKAI_SERIAL_3_P0	115200		// TES
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400

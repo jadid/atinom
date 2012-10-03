@@ -158,8 +158,8 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	struct t_setting *konfig;
 	konfig = (char *) ALMT_KONFIG;
 		
-	strcpy(il,"il=");
-	strcpy(dl,"dl=");
+	strcpy(il,"&il=");
+	strcpy(dl,"&dl=");
 	if (burst==1) {
 		struct t_sumber *psbr;
 		psbr = (char *) ALMT_SUMBER;
@@ -213,6 +213,17 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 				
 		}
 	}
+	#ifdef PAKAI_RELAY
+		strcat(il, "&kl=");
+		for (i=0; i<JML_RELAY; i++)	{
+			if (i==0) {
+				sprintf(dt, "%d", data_f[(JML_SUMBER*PER_SUMBER)+i]);
+			} else {
+				sprintf(dt, "~%d", data_f[(JML_SUMBER*PER_SUMBER)+i]);
+			}
+			strcat(il,dt);
+		}
+	#endif
 	//printf("no awal: %d\r\n", noawal);
 	return jmlAktif;
 }

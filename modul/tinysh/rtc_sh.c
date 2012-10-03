@@ -127,55 +127,7 @@ void init_RTC_sh()	{
 
 static tinysh_cmd_t init_rtc_cmd={0,"irtc","","",  init_RTC_sh,0,0,0};
 
-typedef struct __attribute__ ((packed)) {
-	union  {
-		struct	{
-			unsigned int counter   : 14;
-			unsigned int rsvd15_31 : 18;
-		};
-		unsigned int i;
-	};
-} rtcCTC_t;
 
-typedef struct __attribute__ ((packed))	{
-	union	{
-		struct	{
-			unsigned int seconds   : 6;
-			unsigned int rsvd7_6   : 2;
-			unsigned int minutes   : 6;
-			unsigned int rsvd14_15 : 2;
-			unsigned int hours     : 5;
-			unsigned int rsvd21_23 : 3;
-			unsigned int dow       : 3;
-			unsigned int rsvd27_31 : 5;
-		};
-		unsigned int i;
-	};
-} rtcCTIME0_t;
-
-typedef struct __attribute__ ((packed))	{
-	union	{
-		struct	{
-			unsigned int dom       : 5;
-			unsigned int rsvd5_7   : 3;
-			unsigned int month     : 4;
-			unsigned int rsvd12_15 : 4;
-			unsigned int year      : 12;
-			unsigned int rsvd28_31 : 4;
-		};
-		unsigned int i;
-	};
-} rtcCTIME1_t;
-
-typedef struct __attribute__ ((packed))	{
-	union	{
-		struct 	{
-			unsigned int doy       : 12;
-			unsigned int rsvd12_31 : 20;
-		};
-		unsigned int i;
-	};
-} rtcCTIME2_t;
 
 void get_cal()	{
 	char* hari[] = {"Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"};
@@ -231,6 +183,7 @@ void set_rtc_counter_irq_sh(int argc, char **argv) {
 	printf("  Set interrupt RTC counter : 0x%02x\r\n", almx);
 	aaa = rtc_counter_irq_aktif(almx);
 	printf(" setting : 0x%04x, CCR: 0x%04x\r\n", aaa, RTC_CCR);
+	*(&MEM_RTC0+(100)) = almx;
 }
 
 static tinysh_cmd_t set_irq_rtcc_cmd={0,"set_irqrtc","set mode power", "help default ",set_rtc_counter_irq_sh,0,0,0};

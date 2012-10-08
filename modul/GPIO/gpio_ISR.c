@@ -69,7 +69,7 @@ void rtc_ISR_Handler (void)	{
 void rtc_ISR_Wrapper (void)	{
 	// cek apakah dari powerdown dari memRTC
 	//while(!cek_main_clk());
-	FIO0CLR = LED_UTAMA;
+	//FIO0CLR = LED_UTAMA;
 	//init_PLLnya();
 	
 	portSAVE_CONTEXT ();
@@ -463,12 +463,12 @@ void gpio_ISR_Handler( void )
 		if (IO2_INT_STAT_F & kont_3)	{
 			t = 2; zz = status_konter[t];
 			//set_konter(t, new_period);
-			if (status_konter[t]==0) {
+			if (zz==0) {
 				set_konter(t, new_period);
-			} else if (status_konter[t]==1) {
+			} else if (zz==1) {
 				set_konter_onoff(t, 1);
 			#ifdef PAKAI_PUSHBUTTON
-			} else if (status_konter[t]==2) {
+			} else if (zz==2) {
 				if (debound[t]==0) {
 					debound[t] = DELAY_DEBOUND;
 					#ifdef PAKAI_RELAY
@@ -481,6 +481,21 @@ void gpio_ISR_Handler( void )
 				set_konter_onoff(t, 1);
 			} else if (zz==202)	{
 				set_konter_flow_pilih(t, zz);
+			#endif
+			}
+			IO2_INT_CLR = kont_3;
+		}
+		if (IO2_INT_STAT_R & kont_3)	{
+			t = 2; zz = status_konter[t];
+			if (zz==1) {
+				set_konter_onoff(t, 0);
+			#ifdef PAKAI_PILIHAN_FLOW
+			} else if (zz==3)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==4)	{
+				set_konter_onoff(t, 0);
+			} else if (zz==201)	{
+				set_konter_onoff(t, 0);
 			#endif
 			}
 			IO2_INT_CLR = kont_3;

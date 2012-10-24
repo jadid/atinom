@@ -596,7 +596,7 @@ int ganti_setting(char *str) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(keta, ket+1);
 			y = stof(keta);
-			printf(" ket:%s, keta:%s,  y: %.3f\r\n", ket+1, keta, y);
+			//printf(" ket:%s, keta:%s,  y: %.3f\r\n", ket+1, keta, y);
 		}
 		//*
 		else if (strncmp(tmp, "n", 1)==0) {		// f,

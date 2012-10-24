@@ -241,6 +241,15 @@ void set_konter_onoff(int i, int onoff) {	// hanya menambah jml counter hit tiap
 	konter.t_konter[i].hit++;
 }
 
+void set_konter_hit(int i) {		// 
+	konter.t_konter[i].hit = (int) data_f[i*2+1];
+	//printf("%s() --> i: %d, fl: %f\r\n", __FUNCTION__, i, data_f[i*2+1]);
+	//printf("Hit: %d\r\n", konter.t_konter[i].hit);
+	//printf("-------------------------\r\n\r\n");
+	
+}
+
+
 #ifdef PAKAI_PILIHAN_FLOW
 void set_konter_flow_pilih(int i, int onoff)	{
 	

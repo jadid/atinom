@@ -169,9 +169,11 @@ int baca_env(char tampil)
 	
 			printf(" Nama board = "); 	printf("%s\r\n",env2->nama_board);
 			printf(" No Seri    = ");	printf("%s\r\n", env2->SN);
-			//printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
-			//printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
+			#ifdef PAKAI_ETH
+			printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
 			printf(" IP Server  = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
+			#endif
 			
 			#ifdef PAKAI_WEBCLIENT
 				printf(" WebClient   = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 

@@ -94,6 +94,8 @@ static unsigned int nomer_mesin=0;
 
 #define judul	"<html>\n<head>\n<title>Simple Monita Web Server</title>\n"
 
+extern float data_f[];
+
 #ifdef PAKAI_PM
 	extern char * judulnya_pm[];
 	extern char * satuannya_pm[];
@@ -556,7 +558,7 @@ int ganti_setting(char *str) {
 		else if (strncmp(tmp, "z", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
 			z = atoi(ids+1);
-			//printf("  z: %d, ids: %s\r\n", z, ids+1);
+			printf("  z: %d, ids: %s\r\n", z, ids+1);
 		}
 		else if (strncmp(tmp, "a", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
@@ -594,7 +596,7 @@ int ganti_setting(char *str) {
 			ket = strchr(tmp,'=');
 			ganti_karakter(keta, ket+1);
 			y = stof(keta);
-			//printf(" ket:%s, keta:%s,  y: %.3f\r\n", ket+1, keta, y);
+			printf(" ket:%s, keta:%s,  y: %.3f\r\n", ket+1, keta, y);
 		}
 		//*
 		else if (strncmp(tmp, "n", 1)==0) {		// f,
@@ -620,7 +622,7 @@ int ganti_setting(char *str) {
 	}
 	
 	
-	if (z==3) {			// sumber
+	if (z==3) {				// sumber
 		struct t_sumber *p_sbry;
 		//*	
 		p_sbry = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
@@ -658,7 +660,7 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbry);
 		//*/
 		return 1;
-	} else if (z==4) {	// env = modul
+	} else if (z==4) {		// env = modul
 		struct t_env *p_sbr;
 		
 		p_sbr = pvPortMalloc( sizeof (struct t_env) );
@@ -718,7 +720,7 @@ int ganti_setting(char *str) {
 		printf("Ganti Setting Modul\r\n");		
 		return 1;
 	#endif
-	} else if (z==5) {	// tess
+	} else if (z==5) {		// tess
 		#ifdef UNTUK_PLTD_LOPANA
 			printf("kanal: %d\r\n");
 			
@@ -734,7 +736,7 @@ int ganti_setting(char *str) {
 				
 			}
 		#endif
-	} else if (z==8) {	// kalibrasi
+	} else if (z==8) {		// kalibrasi
 		#if 1
 		struct t_env *p_sbr;
 		
@@ -762,7 +764,7 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbr);
 		#endif
 		return 1;
-	} else if (z==9) {	// kanal
+	} else if (z==9) {		// kanal
 		struct t_env *p_sbr;
 		p_sbr = pvPortMalloc( sizeof (struct t_env) );
 		
@@ -783,7 +785,13 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbr);
 		
 		return 1;
-	} else if (z==7) {	// alarm
+	} else if (z==wPULSA) {	// pulsa
+		no = no-1;
+		data_f[no*2+1] = y;
+		//printf("no: %d, data_f: %.2f, y: %f, x: %d\r\n", no, data_f[no*2+1], y, no*2+1);
+		set_konter_hit(no);		// ada di tinysh/rpm.c
+		return 1;
+	} else if (z==7) {		// alarm
 		//printf("%s(): str: %s\r\n", __FUNCTION__, str);
 		
 #if 1
@@ -2286,8 +2294,20 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			strcat(tot_buf, "</tbody></table>\r\n");
 		//#ifdef BOARD_KOMON_KONTER
-		} else if (flag==10)	{	// info pulsa
+		} else if (flag==wPULSA)	{	// info pulsa
 			char i;
+			
+			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
+					"<!--\r\n" \
+					"function gantiTitik(F){\r\n" \
+					"   var str;\r\n" \
+					"   var Fx=F;\r\n" \
+					"	str=Titik(Fx.y.value);\r\n" \
+					"	Fx.y.value = str;\r\n" \
+					"}\r\n" \
+					"-->\r\n" \
+					"</script>\r\n");
+			
 			strcat(tot_buf, "<h3>Info Pulsa</h3>\n");
 			strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
 			strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
@@ -2301,9 +2321,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
 						"<input type=\"hidden\" name=\"z\" value=\"10\" />\r\n" \ 
 						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
-						"<td>%d</td><td><input type=\"text\" name=\"p\" value=\"%.0f\" size=\"10\" style=\"text-align: right;\"></td>"	\
-						"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr> ", \
-					i+1, i+1, i+1, i+1, data_f[i*2+1]);
+						"<td>%d</td><td><input type=\"text\" name=\"y\" value=\"%.2f\" size=\"10\" style=\"text-align: right;\"></td>\r\n"	\
+						"<td><input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\" /></td></form>\n</tr> ", \
+					i+1, i+1, i+1, i+1, data_f[i*2+1], i+1);
 				strcat(tot_buf, head_buf);
 			}
 			

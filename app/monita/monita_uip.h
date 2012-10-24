@@ -74,6 +74,12 @@ char indexList[256], dataList[256];
 
 
 
+#define wALARM		7
+#define wKALIBRASI	8
+#define wKANAL		9
+#define wPULSA		10
+
+
 //#define LITTLE_ENDIAN	1
 //#define BIG_ENDIAN
 

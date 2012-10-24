@@ -103,7 +103,7 @@ static unsigned int nomer_mesin=0;
 void ket_konter(char *ket, int status, int flag)	{
 	switch (status)	{
 		case  0:
-			strcpy(ket, "RPM/Pulsa"); break;
+			strcpy(ket, "Putaran (rpm)"); break;
 		case  1:
 			strcpy(ket, "OnOff"); break;
 		case  2:
@@ -1321,9 +1321,8 @@ void buat_file_index(unsigned int flag, char *kata) {
 			
 			//printf("masuk sibni ...\r\n");
 			if (pmx[no].alamat==0) {			// Modul Monita
-				if ((pmx[no].tipe==100) && (pertamax)) {
-					
-					//printf("****** masuk sibni ...\r\n");
+				if ((pmx[no].tipe==MOD_MONITA) && (pertamax)) {
+
 					for (i=0; i<KANALNYA; i++)	{
 						ket_konter(ket, penv->kalib[i].status, 0);
 						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%d</th>\n", (i*2+1), (i+1));
@@ -1331,10 +1330,10 @@ void buat_file_index(unsigned int flag, char *kata) {
 						sprintf(head_buf, "<td>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[no*KANALNYA+(i*2)], ket);
 						strcat(tot_buf, head_buf);
 						
-						ket_konter(ket, penv->kalib[i].status, 1);
+						//ket_konter(ket, penv->kalib[i].status, 1);
 						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%d</th>\n", (i*2+2), (i+1));
 						strcat(tot_buf, head_buf);
-						sprintf(head_buf, "<td>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[no*KANALNYA+(i*2)+1], ket);		
+						sprintf(head_buf, "<td>%.0f</td><td align='left'>%s</td>\n</tr>\n", data_f[no*KANALNYA+(i*2)+1], "Jumlah Pulsa");
 						strcat(tot_buf, head_buf);
 					}
 					//strcat(tot_buf, "</table>\n");
@@ -1627,6 +1626,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			strcat(tot_buf, ": <a href=\"setting.html\">Info Data Sumber</a> :: <a href=\"setting.html?smb=7\">Info Alarm</a> :");
 		#else
 			strcat(tot_buf, ": <a href=\"setting.html\">Info Titik Ukur</a> :");
+			#ifdef BOARD_KOMON_KONTER
+				strcat(tot_buf, ": <a href=\"setting.html?smb=10\">Info Pulsa</a> :");
+			#endif
 			#ifdef PAKAI_RELAY
 				strcat(tot_buf, ": <a href=\"setting.html?smb=7\">Info Alarm</a> :");
 			#endif
@@ -1743,6 +1745,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					flag=4;
 				} else if (i==8) {		// setting kalibrasi
 					flag=8;
+				} else if (i==10) {		// setting kalibrasi
+					flag=10;
 				} else if (i==7) {		// setting alarm
 					flag=7;
 				#ifdef TES_GET_WEB
@@ -1969,7 +1973,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			sprintf(head_buf, "%d.%d.%d.%d", env2ww->wIP0, env2ww->wIP1, env2ww->wIP2, env2ww->wIP3);
 			ganti_karakter(ket, head_buf);
 			sprintf(head_buf, "<tr>" \
-					"<td>Gateway IP</td><td><input type=\"text\" name=\"t\" value=\"%s\"></td>" \
+					"<td>IP Server</td><td><input type=\"text\" name=\"t\" value=\"%s\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
 
@@ -2281,6 +2285,30 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			}
 			
 			strcat(tot_buf, "</tbody></table>\r\n");
+		//#ifdef BOARD_KOMON_KONTER
+		} else if (flag==10)	{	// info pulsa
+			char i;
+			strcat(tot_buf, "<h3>Info Pulsa</h3>\n");
+			strcat(tot_buf, "<table border=0 bgcolor=\"lightGray\">\n");
+			strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
+			strcat(tot_buf, "<tr>\n<th width=\"50px\">No</th>\n");
+			strcat(tot_buf, "<th width=\"50px\">Nilai Pulsa</th>\n");
+			strcat(tot_buf, "<th width=\"50px\">Ganti</th></tr>\n");
+			
+			//*
+			for (i=0; i<KANALNYA; i++)	{
+				sprintf(head_buf, " <tr><form action=\"setting.html\" name=\"mF%d\">\r\n" \
+						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+						"<input type=\"hidden\" name=\"z\" value=\"10\" />\r\n" \ 
+						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
+						"<td>%d</td><td><input type=\"text\" name=\"p\" value=\"%.0f\" size=\"10\" style=\"text-align: right;\"></td>"	\
+						"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr> ", \
+					i+1, i+1, i+1, i+1, data_f[i*2+1]);
+				strcat(tot_buf, head_buf);
+			}
+			
+			strcat(tot_buf, "</tbody></table>\r\n");
+		//#endif
 		} else {
 			strcat(tot_buf, "<h3>Info Titik Ukur</h3>\n");
 			int pertamax=0, nk=0, no=0;
@@ -2453,8 +2481,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 								(konfig[i*2].status?"":"checked"));
 							strcat(tot_buf, head_buf);
 							z++;
-							
-							ket_konter(ket, env2->kalib[i].status, 1);
+
+							//ket_konter(ket, env2->kalib[i].status, 1);
 							sprintf(head_buf, "<tr><form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 											"<td>%d</td><th>%d</th>\n<td><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
 											"<td align=\"left\">%s</td>\n" \
@@ -2462,7 +2490,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 											"<input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Mati</td>\n" \
 											"<td><input type=\"submit\" value=\"Ganti\" /></td></form>\n</tr>", \
 								no+1, z+1, i+1, i*2+2, konfig[i*2+1].id, \
-								ket, \
+								"Jumlah Pulsa", \
 								//data_f[i*2+1],
 								i+1, (konfig[i*2+1].status?"checked":""), \
 								i+1, (konfig[i*2+1].status?"":"checked"));
@@ -3101,7 +3129,8 @@ void buat_file_about(void)	{
 	char head_buf[512];
 	buat_head(0);
 #if 1
-	strcat(tot_buf, "<h4>Operating System FreeRTOS 5.1.1");
+	sprintf(head_buf, "<h4>Operating System FreeRTOS %s", tskKERNEL_VERSION_NUMBER);		// tskKERNEL_VERSION_NUMBER
+	strcat(tot_buf, head_buf);
 	sprintf(head_buf, "<br>Modul %s versi %s", NAMA_BOARD, VERSI_KOMON);
 	strcat(tot_buf, head_buf);
 	sprintf(head_buf, "<br>Prosesor %s %d MHz", uC, configCPU_CLOCK_HZ /1000000);
@@ -3140,6 +3169,8 @@ void buat_file_about(void)	{
 	sprintf(head_buf, "<br>&nbsp;&nbsp;IP       : %d.%d.%d.%d", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 	strcat(tot_buf, head_buf);   
 	sprintf(head_buf, "<br>&nbsp;&nbsp;Gateway  : %d.%d.%d.%d", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
+	strcat(tot_buf, head_buf);
+	sprintf(head_buf, "<br>&nbsp;&nbsp;IP Server : %d.%d.%d.%d", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
 	strcat(tot_buf, head_buf);
 	
 	strcat(tot_buf, "<br><br>Dibuat oleh :");

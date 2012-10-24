@@ -340,7 +340,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 #ifdef SAMPURASUN_SERVER
 	//printf(" MONITA : sambungan_aktif init\r\n");
 	sambungan_init();
-	printf(" Monita : sampurasun server init !!\n");	
+	printf(" Monita : sampurasun server init !!\r\n");	
 	mul = 0;
 #endif
 

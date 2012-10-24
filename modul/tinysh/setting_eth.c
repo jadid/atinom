@@ -379,7 +379,8 @@ void set_awal_konfig(void)	{
 		return;
 	}
 	
-	for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)	{
+	//for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)	{
+	for (i=0; i<jmlData; i++)	{
 		sprintf(p_stg[i].ket, "-");
 		p_stg[i].id = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_stg[i].status = 0;

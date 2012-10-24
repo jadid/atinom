@@ -88,8 +88,8 @@ int cek_data(int argc, char **argv)
 		struct t_dt_set *p_dt;
 		p_dt = (char *) ALMT_DT_SET;
 		
-		printf("Argumen kurang !!!\r\n");
-		return;
+		//printf("Argumen kurang !!!\r\n");
+		//return;
 		
 		judul(" Data Setting\r\n");
 		printf("  No  :       Nama       :    Data    : Satuan");
@@ -143,6 +143,9 @@ int cek_data(int argc, char **argv)
 			sumber = (char *) ALMT_SUMBER;
 			int jmlTitik=20;
 			
+			struct t_dt_set *p_dt;
+			p_dt = (char *) ALMT_DT_SET;
+			
 			sumb = cek_nomer_valid(str_data, JML_SUMBER);
 			if (sumber[sumb-1].status==0) {
 				printf("Sumber ke-%d TIDAK AKTIF\r\n", sumb);
@@ -150,9 +153,7 @@ int cek_data(int argc, char **argv)
 			}
 			
 			if (sumb > 0 && sumb < (JML_SUMBER+1)) {
-				struct t_dt_set *p_dt;
-				p_dt = (char *) ALMT_DT_SET;
-				
+
 				//judul(" Data Setting\r\n");
 				#ifdef UNTUK_PLTD_LOPANA
 					printf(" No : ID.  :       Nama       :    Data    : Satuan : alarmH : alarmHH : Bawah :  Atas  : Status\r\n");
@@ -161,7 +162,7 @@ int cek_data(int argc, char **argv)
 					}
 					printf("\r\n");
 				#else
-					printf(" No : ID.  :       Nama       :    Data    : Satuan : &Memory\r\n");
+					printf(" No : ID.  :       Nama       :      Data      : Satuan : &Memory\r\n");
 					garis_bawah();
 				#endif
 				
@@ -175,10 +176,12 @@ int cek_data(int argc, char **argv)
 							p_dt[(sumb-1)*PER_SUMBER+i].batas_bawah, p_dt[(sumb-1)*PER_SUMBER+i].batas_atas, (p_dt[(sumb-1)*PER_SUMBER+i].aktif==1)?"aktif":"mati");	
 					}					
 					#else
-					//for (i=0; i<PER_SUMBER; i++) {
-					for (i=0; i<20; i++) {
-						printf(" %2d : (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
-						p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
+					for (i=0; i<PER_SUMBER; i++) {
+						printf(" %2d : (%3d): %-16s : %14.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
+							p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, 12);
+					//for (i=0; i<20; i++) {
+						//printf(" %2d : (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", i+1, ((sumb-1)*PER_SUMBER+i+1), \
+						//p_dt[(sumb-1)*PER_SUMBER+i].nama, data_f[(sumb-1)*PER_SUMBER+i], p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 					}
 					#endif
 				} else if (sumber[sumb-1].alamat>0) {	// Modul Modbus
@@ -209,8 +212,7 @@ int cek_data(int argc, char **argv)
 							printf("Data Power Meter Alamat %d\r\n", sumber[sumb-1].alamat);
 						}
 					#endif
-					
-					
+
 				}
 			} else
 				printf(" ERR: Perintah tidak dikenali !\r\n");

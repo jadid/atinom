@@ -56,7 +56,9 @@ void cek_input_onoff(void)	{
 	
 	for (i=0; i<KANALNYA; i++)	{
 		ww = env2->kalib[i].status; 
-		if ( (ww==1) || (ww==2) || (ww==3) || (ww==4) || (ww==201) )	{
+		//if ( (ww==1) || (ww==2) || (ww==3) || (ww==4) || (ww==201) )	{
+		if ( (ww==sONOFF) || (ww==sPUSHBUTTON) || (ww==sFLOW1) || (ww==sFLOW2) || (ww==ssFLOW2) )	{
+		// 
 			switch (i)	{
 				case 0:	zzz = 5; break;
 				case 1: zzz = 6; break;
@@ -168,10 +170,15 @@ void baca_rtc_mem() {
 	int i,w;
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
+	int sts;
+	
+	
 	
 	for (i=0; i<KANALNYA; i++) {
+		sts = env2->kalib[i].status;
 		#if defined(PAKAI_PILIHAN_FLOW)
-			if ((env2->kalib[i].status==3) || (env2->kalib[i].status==100))	{
+			//if ((sts==3) || (sts==100))	{
+			if ((sts==sFLOW1) || (sts==nFLOW1))	{
 				if (i%2)	{	// 
 					konter.t_konter[i].hit  = *(&MEM_RTC0+(i*2));
 					konter.t_konter[i].hit2 = *(&MEM_RTC0+(i*2)+1);
@@ -183,13 +190,16 @@ void baca_rtc_mem() {
 					printf("   onoff %2d: %d : %d\r\n", \
 						i+1, konter.t_konter[i].onoff, konter.t_konter[i].hit);
 				}
-			} else if ((env2->kalib[i].status==4) || (env2->kalib[i].status==201) || (env2->kalib[i].status==202) || (env2->kalib[i].status==203))	{
-				if (env2->kalib[i].status==202)	{	// 
+			//} else if ((sts==4) || (sts==201) || (sts==202) || (sts==203))	{
+			} else if ((sts==sFLOW2) || (sts==ssFLOW2) || (sts==nFLOW2) || (sts==fFLOW))	{
+				//if (sts==202)	{	// 
+				if (sts==nFLOW2)	{	// 
 					konter.t_konter[i].hit  = *(&MEM_RTC0+(i*2));
 					konter.t_konter[i].hit2 = *(&MEM_RTC0+(i*2)+1);
 					printf("   hit   %2d: %d : %d\r\n", \
 						i+1, konter.t_konter[i].hit, konter.t_konter[i].hit2);
-				} else if (env2->kalib[i].status==203)	{
+				//} else if (sts==203)	{
+				} else if (sts==fFLOW)	{
 					konter.global_hit  = *(&MEM_RTC0+(i*2));
 				} else {		// 
 					konter.t_konter[i].onoff = *(&MEM_RTC0+(i*2));
@@ -199,17 +209,17 @@ void baca_rtc_mem() {
 				}
 			} 
 		#else
-			if (env2->kalib[i].status==0)	{
-				konter.t_konter[i*2].hit = *(&MEM_RTC0+i*2);
-				printf(" pulsa %d : %d\r\n", i+1, konter.t_konter[i*2].hit);
+			//if (sts==0)	{
+			if ( (sts==sRPM) || (sts==sONOFF) )	{
+				konter.t_konter[i].hit = *(&MEM_RTC0+i*2+1);
+				printf(" pulsa %d : %d\r\n", i+1, konter.t_konter[i].hit);
 			}
 		#endif
 	}
 	
 }
 
-void set_konter(int st, unsigned int period)
-{
+void set_konter(int st, unsigned int period)		{
 	//new_period = T1TC;
 	if (period > konter.t_konter[st].last_period)
 	{
@@ -260,31 +270,39 @@ void data_frek_rpm() {
 	
 	for (i=0; i<KANALNYA; i++)	{
 		status = env2->kalib[i].status;
-		if (status==0) 				// RPM
+		//if (status==0) 				// RPM
+		if (status==sRPM)
 //		if (i>6) 
 		{
 			if (data_putaran[i])	{
 				// cari frekuensi
 				temp_f = (float) 1000000000.00 / data_putaran[i]; // beda msh dlm nS
 				// rpm
-				temp_rpm = temp_f;		// ganti ke rps * 60;
+				temp_rpm = temp_f * 60;		// ganti ke rps * 60;
 				
+				#ifdef DEBUG_RPM
 				if (i==6) {
-					//printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
+					printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
 				}
+				#endif
 			}
 			else	{
 				temp_f = 0;
 				temp_rpm = 0;
 			}
 			
+			#ifdef DEBUG_RPM
 			if (i==6) {
-			//		printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
+					printf("data_putaran[%d]: %d, temp_f: %.3f\r\n", i, data_putaran[i], temp_f);
 			}
+			#endif
 			
 			data_f[(i*2)+1] = (konter.t_konter[i].hit*env2->kalib[i].m)+env2->kalib[i].C;
 			data_f[i*2] = (float) (temp_rpm*env2->kalib[i].m)+env2->kalib[i].C;
 			
+			#ifdef PAKAI_RTC
+			*(&MEM_RTC0+(i*2+1)) = (int) data_f[i*2+1];	// konter.t_konter[i].hit;
+			#endif
 			/*
 			qwe++;
 			if (qwe>2000)	{
@@ -312,6 +330,7 @@ void data_frek_rpm() {
 			//*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];		// konter.t_konter[i].hit;
 			#endif
 		}	else if (status==sONOFF || status==sFLOW1 || status==sFLOW2 || status==ssFLOW2) {		// OnOff
+			// 					
 			data_f[i*2] = (float) konter.t_konter[i].onoff;
 			data_f[i*2+1] = (float) konter.t_konter[i].hit;
 			
@@ -319,32 +338,7 @@ void data_frek_rpm() {
 			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
 			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
 			#endif
-		/*
-		} else if (status==3) {		// selector_flow
-			data_f[i*2]   = (float) konter.t_konter[i].onoff;
-			data_f[i*2+1] = (float) konter.t_konter[i].hit;
-			
-			#ifdef PAKAI_RTC
-			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
-			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
-			#endif
-			//printf("   %d : %d, %d : %d,", (i*2), *(&MEM_RTC0+(i*2)), (i*2+1), *(&MEM_RTC0+(i*2+1)));
-		//*/
-
-		/*
-		} else if (status==4) {		// selector_flow
-			data_f[i*2]   = (float) konter.t_konter[i].onoff;
-			data_f[i*2+1] = (float) konter.t_konter[i].hit;
-			
-			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
-			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
-		} else if (status==201) {		// selector_flow
-			data_f[i*2]   = (float) konter.t_konter[i].onoff;
-			data_f[i*2+1] = (float) konter.t_konter[i].hit;
-			
-			*(&MEM_RTC0+(i*2))	 = data_f[i*2];		// konter.t_konter[i].onoff;
-			*(&MEM_RTC0+(i*2+1)) = data_f[i*2+1];	// konter.t_konter[i].hit;
-		//*/
+		
 		#ifdef PAKAI_PILIHAN_FLOW
 		} else if (status==nFLOW1) {		// flow_setelah_selector
 			data_f[i*2]   = (float) konter.t_konter[i].hit;
@@ -363,7 +357,7 @@ void data_frek_rpm() {
 			data_f[i*2+1] = (konter.t_konter[i].hit2*env2->kalib[i].m)+env2->kalib[i].C;
 			
 			#if 1
-			if (data_f[i*2]>9999999.99)	{
+			if (data_f[i*2]>9999999.99)	{		// 
 				konter.t_konter[i].hit = 0;
 			}
 			

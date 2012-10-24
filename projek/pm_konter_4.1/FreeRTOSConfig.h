@@ -51,7 +51,7 @@
 	#define VERSI_KOMON		"3.01"
 #else
 	#define PROMPT 		"Konter@"
-	#define VERSI_KOMON		"2.01"
+	#define VERSI_KOMON		"2.02"		// 
 #endif
 
 #define NAMA_BOARD	"Babelan Komon Konter"

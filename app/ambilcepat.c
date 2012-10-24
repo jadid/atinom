@@ -169,7 +169,9 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		start_rtc();
 		
 		#ifndef BOARD_TAMPILAN
-		rtc_counter_irq_aktif(*(&MEM_RTC0+(100)));
+		#ifdef PAKAI_KONTROL_RTC
+			rtc_counter_irq_aktif(*(&MEM_RTC0+(100)));
+		#endif
 		#endif
 	#endif
   	#endif

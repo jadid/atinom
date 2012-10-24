@@ -13,7 +13,7 @@
 
 #define BANYAK_SUMBER
 #define CENDOL
-//#define PAKAI_RTC
+#define PAKAI_RTC
 //#define PAKAI_ADC_ORI
 #define PAKAI_PUSHBUTTON
 #define HITUNG_RPM
@@ -35,9 +35,9 @@
 
 #ifdef PAKAI_RTC
 	#define PAKAI_MEM_RTC
-	#define PAKAI_KONTROL_RTC
+	//#define PAKAI_KONTROL_RTC
 	//#define TES_MEM_RTC
-	#define PAKAI_CRON
+	//#define PAKAI_CRON
 #endif
 
 #define PAKAI_ETH

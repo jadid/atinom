@@ -340,6 +340,10 @@ PT_THREAD(handle_output(struct httpd_state *s))
 				rst = 1;
 				//printf(" rst: %d\r\n", rst);
 				buat_file_reset(s->filename);
+			#ifdef BOARD_KOMON_KONTER
+			} else if (strncmp(s->filename,"/setting.html?smb=10",20)==0) {	// alarm trip
+				buat_file_setting(10, s->filename);
+			#endif
 			} else if (strncmp(s->filename,"/setting.html?smb=1",19)==0) {
 				buat_file_setting(2, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=3",19)==0) {	// sumber

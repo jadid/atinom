@@ -1091,7 +1091,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 			strncpy(tmp, pch+1, nk);
 			tmp[nk]='\0';
 			nk = atoi(tmp);
-			//printf("nk: %d, tmp: %s, tmp: %d\r\n", nk, tmp, atoi(tmp)+111);
+			printf("nk: %d, tmp: %s, tmp: %d\r\n", nk, tmp, atoi(tmp)+111);
 		} else {
 			//printf("kata: %s\r\n", kata);
 			pch=strchr(kata,'&');
@@ -1108,11 +1108,17 @@ void buat_file_index(unsigned int flag, char *kata) {
 				nk = nks;
 				//printf("nks>0: %d\r\n", nks);
 			}
-			//printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
+			printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
 		}
 				
 		strcat(tot_buf, "<b>No Modul : </b>");
-		for (i=0; i<JML_SUMBER; i++)	{
+		
+		ff = JML_SUMBER;
+		#ifdef PAKAI_RELAY
+			ff++;
+		#endif
+		
+		for (i=0; i<ff; i++)	{
 			/* status */
 			if (pmx[i].status == 1) {
 				if (flag && (i+1)==nk) {
@@ -1130,6 +1136,11 @@ void buat_file_index(unsigned int flag, char *kata) {
 				strcat(tot_buf, head_buf);
 				pertamax++;
 			}
+			#ifdef PAKAI_RELAY
+				if ((i+1)==ff)	{
+					strcat(tot_buf, "[<a href=\"index.html?sbr=1&d=101\">Relay</a>] ");
+				}
+			#endif
 			/*
 			if (pmx[i].status == 1) {
 				if (flag && pmx[i].alamat==nk) {
@@ -1307,7 +1318,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if (nk==0) nk=1;
 		no = nk-1;
 		
-		//printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
+		printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
 
 		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 			if (pmx[no].alamat==0) {			// Modul Monita
@@ -1347,6 +1358,17 @@ void buat_file_index(unsigned int flag, char *kata) {
 					//strcat(tot_buf, "</table>\n");
 				}
 			}
+			#ifdef PAKAI_RELAY
+			
+			if (nk==101)	{
+				char rel = 0;
+				for (rel=0; rel<JML_RELAY; rel++)	{
+					sprintf(head_buf, "<tr align='center'>\n<td>%d</td><td>%d</td><td>%.0f</td><td align=\"left\">%s-%d</td></tr>\n", \
+						(rel+1), JML_SUMBER*PER_SUMBER+rel, data_f[JML_SUMBER*PER_SUMBER+rel],"Relay", rel+1);
+					strcat(tot_buf, head_buf);
+				}
+			}
+			#endif
 		#endif
 	#else
 
@@ -1635,23 +1657,23 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 		#else
 			strcat(tot_buf, ": <a href=\"setting.html\">Info Titik Ukur</a> :");
 			#ifdef BOARD_KOMON_KONTER
-				strcat(tot_buf, ": <a href=\"setting.html?smb=10\">Info Pulsa</a> :");
+				strcat(tot_buf, ": <a href=\"setting.html?smb=10\">Pulsa</a> :");
 			#endif
 			#ifdef PAKAI_RELAY
-				strcat(tot_buf, ": <a href=\"setting.html?smb=7\">Info Alarm</a> :");
+				strcat(tot_buf, ": <a href=\"setting.html?smb=7\">Alarm</a> :");
 			#endif
 			#ifndef PAKAI_PM
-				strcat(tot_buf, ": <a href=\"setting.html?smb=8\">Info Kalibrasi</a> :");
+				strcat(tot_buf, ": <a href=\"setting.html?smb=8\">Kalibrasi</a> :");
 			#endif
 			#ifdef BOARD_KOMON_KONTER
-				strcat(tot_buf, ": <a href=\"setting.html?smb=9\">Info Kanal</a> :");
+				strcat(tot_buf, ": <a href=\"setting.html?smb=9\">Kanal</a> :");
 			#endif
 		#endif
 		
 		
-		strcat(tot_buf, ": <a href=\"setting.html?smb=4\">Info Modul</a> :");
+		strcat(tot_buf, ": <a href=\"setting.html?smb=4\">Modul</a> :");
 	#ifdef BANYAK_SUMBER
-		strcat(tot_buf, ": <a href=\"setting.html?smb=3\">Info Sumber</a> :");
+		strcat(tot_buf, ": <a href=\"setting.html?smb=3\">Sumber</a> :");
 	#endif
 	
 	#ifdef TES_GET_WEB
@@ -2359,7 +2381,12 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				}
 				
 				strcat(tot_buf, "<b>Alamat Modul : </b>");
-				for (i=0; i<JML_SUMBER; i++)	{
+				akhir = JML_SUMBER;
+				#ifdef PAKAI_RELAY
+					akhir++;
+				#endif
+				for (i=0; i<akhir; i++)
+				{
 					if (pmx[i].status == 1) {
 						if (flag && (i+1)==nk) {
 							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", i+1);
@@ -2375,7 +2402,16 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						strcat(tot_buf, head_buf);
 						pertamax++;
 					}
+					#ifdef PAKAI_RELAY
+						if ((i+1)==akhir)	{
+							sprintf(head_buf, "[<a href=\"setting.html?smb=1&d=101\">Relay</a>] ", i+1);
+							strcat(tot_buf, head_buf);
+						}
+						
+					#endif
 				}
+				
+				
 				if (pertamax==0)
 					strcat(tot_buf, "<b>Tidak ada modul yang aktif</b><br/>");
 				

@@ -73,11 +73,13 @@ char indexList[256], dataList[256];
 #define DOUBLE		3
 
 
-
+#define wSUMBER		3
+#define wMODUL		4
 #define wALARM		7
 #define wKALIBRASI	8
 #define wKANAL		9
 #define wPULSA		10
+#define wRELAY		101
 
 
 //#define LITTLE_ENDIAN	1

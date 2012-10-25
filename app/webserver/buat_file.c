@@ -1091,7 +1091,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 			strncpy(tmp, pch+1, nk);
 			tmp[nk]='\0';
 			nk = atoi(tmp);
-			printf("nk: %d, tmp: %s, tmp: %d\r\n", nk, tmp, atoi(tmp)+111);
+			//printf("nk: %d, tmp: %s, tmp: %d\r\n", nk, tmp, atoi(tmp)+111);
 		} else {
 			//printf("kata: %s\r\n", kata);
 			pch=strchr(kata,'&');
@@ -1108,7 +1108,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 				nk = nks;
 				//printf("nks>0: %d\r\n", nks);
 			}
-			printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
+			//printf("nk: %d, nks: %d, tmp: %s, tmp: %d\r\n", nk, nks, tmp, atoi(tmp)+111);
 		}
 				
 		strcat(tot_buf, "<b>No Modul : </b>");
@@ -1138,23 +1138,12 @@ void buat_file_index(unsigned int flag, char *kata) {
 			}
 			#ifdef PAKAI_RELAY
 				if ((i+1)==ff)	{
-					strcat(tot_buf, "[<a href=\"index.html?sbr=1&d=101\">Relay</a>] ");
+					if (nk==wRELAY)
+						strcat(tot_buf, "<font color=\"red\" size=\"5\"><b>[Relay]</b></font> ");
+					else
+						strcat(tot_buf, "[<a href=\"index.html?sbr=1&d=101\">Relay</a>] ");
 				}
 			#endif
-			/*
-			if (pmx[i].status == 1) {
-				if (flag && pmx[i].alamat==nk) {
-					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
-					no = i;
-				} else if (pertamax==0 && flag==0) {
-					sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d]</b></font> ", pmx->pm[i].alamat);
-				} else {
-					sprintf(head_buf, "[<a href=\"index.html?pm=1&d=%d\">%d</a>] ", pmx[i].alamat, pmx[i].alamat);
-				}
-				strcat(tot_buf, head_buf);
-				pertamax++;
-			}
-			//*/
 		}
 		if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 	#endif
@@ -1318,7 +1307,7 @@ void buat_file_index(unsigned int flag, char *kata) {
 		if (nk==0) nk=1;
 		no = nk-1;
 		
-		printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
+		//printf("no: %d, alamat: %d, nk: %d, tipe: %d, pertamax: %d\r\n", no, pmx[no].alamat, nk, pmx[no].tipe, pertamax);
 
 		#if defined(BOARD_KOMON_420_SABANG) || defined(BOARD_KOMON_420_SABANG_2_3)
 			if (pmx[no].alamat==0) {			// Modul Monita
@@ -1769,26 +1758,28 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			if (pch!=NULL) {
 				flag = i = atoi(pch+2);
 				//printf("i: %d, pch: %s\r\n", i, pch+2);
-				if (i==3) {				// setting sumber
+				/*
+				if (i==3) {						// setting sumber
 					flag=3;
-				} else if (i==4) {		// setting modul
-					flag=4;
-				} else if (i==8) {		// setting kalibrasi
-					flag=8;
-				} else if (i==10) {		// setting kalibrasi
-					flag=10;
-				} else if (i==7) {		// setting alarm
-					flag=7;
+				} else if (i==wMODUL) {		// setting modul
+					flag=wMODUL;
+				} else if (i==wKALIBRASI) {	// setting kalibrasi
+					flag=wKALIBRASI;
+				} else if (i==wPULSA) {		// setting pulsa
+					flag=wPULSA;
+				} else if (i==wALARM) {		// setting alarm
+					flag=wALARM;
 				#ifdef TES_GET_WEB
-				} else if (i==5) {		// tes web
+				} else if (i==5) {				// tes web
 					flag=5;
 				#endif
 				}
+				//*/
 			} 
 		} else {
 			strcat(tot_buf, "<br/>");
 		}
-		if (flag==3) {			// konfig modul sumber 
+		if (flag==wSUMBER) {			// konfig modul sumber 
 			#ifdef BANYAK_SUMBER
 				struct t_sumber *p_sbrw;
 				p_sbrw = (char *) ALMT_SUMBER;
@@ -1925,7 +1916,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			
 		#endif
-		} else if (flag==4) {	// info modul
+		} else if (flag==wMODUL) 	{	// info modul
 			sprintf(head_buf, "\r\n<script type=\"text/javaScript\">\r\n" \
 				"<!--\r\n" \
 				"function gantiTitik(){\r\n" \
@@ -2088,7 +2079,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			strcat(tot_buf, "</tbody></table>\n");
 		#endif
-		} else if (flag==7)	{	// info alarm
+		} else if (flag==wALARM)	{	// info alarm
 			//printf("setting alarm !!\r\n");
 			int pertamax=0, nk=0, nks=-1, ff=0;
 			int no=-1;
@@ -2246,7 +2237,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			}
 			#endif
 			strcat(tot_buf, "</tbody></table>\n");			
-		} else if (flag==9)	{	// info kanal
+		} else if (flag==wKANAL)	{	// info kanal
 			char sKan = 0;
 		
 			strcat(tot_buf, "<h3>Info Kanal</h3>\n");
@@ -2404,7 +2395,10 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					}
 					#ifdef PAKAI_RELAY
 						if ((i+1)==akhir)	{
-							sprintf(head_buf, "[<a href=\"setting.html?smb=1&d=101\">Relay</a>] ", i+1);
+							if (nk==wRELAY)
+								sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[Relay]</b></font> ");
+							else
+								sprintf(head_buf, "[<a href=\"setting.html?smb=1&d=%d\">Relay</a>] ", wRELAY);
 							strcat(tot_buf, head_buf);
 						}
 						
@@ -2515,9 +2509,11 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			struct t_dt_set *p_dt;
 			p_dt = (char *) ALMT_DT_SET;
 			
+			printf("no: %d, nk: %d\r\n", no, nk);
+			
 			int z=0;
 			if (pertamax>0)	{
-				if (env2->IP3 == pmx[no].IP3)	{		// modul MONITA
+				if ( (nk<JML_SUMBER+1) && (env2->IP3==pmx[no].IP3) )	{		// modul MONITA
 					for (i=0; i<KANALNYA; i++)		{
 						#ifndef BOARD_KOMON_KONTER_3_1 
 						if (i>6)
@@ -2578,7 +2574,28 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						}
 					}
 					#endif
-
+				#ifdef PAKAI_RELAY
+				} else if (nk==wRELAY) {
+					int dx = JML_SUMBER*PER_SUMBER;
+					//printf("masuk relay !!!\r\n");
+					for (i=0; i<JML_RELAY; i++)		{
+						ganti_karakter(ket, p_dt[dx+i].nama);
+						sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=8/></td>\n" \
+								"<td align=\"left\"><input type=\"text\" name=\"k\" value=\"%s\" size=20/></td>\n" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s\" value=1 %s/>Aktif" \
+								"<input type=\"radio\" name=\"s\" value=0 %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+								"</form>\n</tr>", \
+								no+1, i+1, (dx+i)+1, (dx+i)+1, konfig[dx+i].id, \
+								strlen(ket)>0?ket:"-", \
+								(konfig[dx+i].status?"checked":" "), \
+								(konfig[dx+i].status?" ":"checked") \
+								);
+						strcat(tot_buf, head_buf);
+					}
+				#endif
 				} else {
 					for (i=0; i<PER_SUMBER; i++)		{
 						ganti_karakter(ket, p_dt[no*PER_SUMBER+i].nama);
@@ -2588,13 +2605,13 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
 								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=8/></td>\n" \
 								"<td align=\"left\"><input type=\"text\" name=\"k\" value=\"%s\" size=15/></td>\n" \
-								"<td><input type=\"radio\" name=\"s\" value=1 %s/>Aktif" \
+								"<td align=\"left\"><input type=\"radio\" name=\"s\" value=1 %s/>Aktif" \
 								"<input type=\"radio\" name=\"s\" value=0 %s/>Mati</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
 								"</form>\n</tr>", \
 								no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
 								strlen(ket)>0?ket:"-", \
-								(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+								(konfig[PER_SUMBER*JML_SUMBER+i].status?"checked":" "), \
 								(konfig[PER_SUMBER*no+i].status?" ":"checked") \
 								);
 						/*

@@ -45,7 +45,7 @@ char indexList[256], dataList[256];
 	#elif defined(UNTUK_PLTD_AMPENAN)
 		#define JML_SUMBER 12		// max 11 sumber tampilan bisa
 	#else
-		#define JML_SUMBER	5
+		#define JML_SUMBER	4
 	#endif
 	//#define JML_SUMBER	5
 	//#define JML_SUMBER	10
@@ -464,7 +464,7 @@ sumber status :
 struct t_setting {
 	int id;
 	char status;		// tidak aktif, timeout, dll
-	char ket[30];
+	//char ket[20];
 };
 
 struct t_sumber {
@@ -565,10 +565,10 @@ struct t_dt_set  {
 	char 	satuan[8];
 	float 	alarm_H;
 	float 	alarm_L;
-	#ifdef UNTUK_PLTD_LOPANA
+	//#ifdef UNTUK_PLTD_LOPANA
 		float batas_bawah;
 		float batas_atas;
-	#endif
+	//#endif
 };
 
 #ifdef PAKAI_FILE_SIMPAN

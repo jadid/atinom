@@ -102,6 +102,7 @@ int tes_baca_flash()
 
 int prepare_flash(int sektor_start, int sektor_end)
 {
+	printf("%s() masuk\r\n", __FUNCTION__);
 	unsigned int command[5]; // For Command Table
 	unsigned int result[2]; // For Result Table
 	IAP iap_entry;
@@ -126,6 +127,7 @@ int prepare_flash(int sektor_start, int sektor_end)
 
 int hapus_flash(int sektor_start, int sektor_end)
 {
+	printf("%s() masuk\r\n", __FUNCTION__);
 	unsigned int command[5]; // For Command Table
 	unsigned int result[2]; // For Result Table
 	IAP iap_entry;
@@ -151,6 +153,7 @@ int hapus_flash(int sektor_start, int sektor_end)
 
 int tulis_flash(int dst, int sektor_start, int sektor_end, unsigned short *data, int pjg)
 {
+	printf("%s() masuk\r\n", __FUNCTION__);
 	unsigned int command[5]; // For Command Table
 	unsigned int result[2]; // For Result Table
 	IAP iap_entry;
@@ -170,7 +173,7 @@ int tulis_flash(int dst, int sektor_start, int sektor_end, unsigned short *data,
 		if (pjg > 1024 && pjg < 4096) uk = 4096;
 
 
-		//printf(" uk=%d ", uk);
+		printf(" uk=%d ", uk);
 
 		command[0] = 51;
 		command[1] = dst+(posisi * 2); // tujuan flash (seuai dengan sektor flash)

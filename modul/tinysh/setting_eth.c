@@ -182,17 +182,17 @@ void cek_konfig(int argc, char **argv)	{
 		j--;
 		for (i=0; i<PER_SUMBER; i++)	{
 			//ganti_karakter(ket, konfig[i].ket);
-			if (p_sbr[j].tipe==100) 							// modul monita
-				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, konfig[j*PER_SUMBER+i].ket);
+			if (p_sbr[j].tipe==MOD_MONITA) 							// modul monita
+				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, p_dt[j*PER_SUMBER+i].nama);
 			#ifdef PAKAI_PM	
 			else if (p_sbr[j].tipe==0 || p_sbr[j].tipe==1)		// modbus
 				printf(" (%2d): %4d : %-16s : ", ((j*PER_SUMBER)+i+1), konfig[j*PER_SUMBER+i].id, judulnya_pm[i]);
 			#endif
 			// status //
-			if (konfig[j*PER_SUMBER+i].status == 0)				printf("%-16s","Tidak Aktif");
-			else if (konfig[j*PER_SUMBER+i].status == 1)		printf("%-16s","Aktif / Normal");
-			else if (konfig[j*PER_SUMBER+i].status == 2)		printf("%-16s","TimeOut");
-			else												printf("%-16s"," ");
+			if (konfig[j*PER_SUMBER+i].status == 0)				printf("%3d %-16s", konfig[j*PER_SUMBER+i].status, "Tidak Aktif");
+			else if (konfig[j*PER_SUMBER+i].status == 1)		printf("%3d %-16s", konfig[j*PER_SUMBER+i].status, "Aktif / Normal");
+			else if (konfig[j*PER_SUMBER+i].status == 2)		printf("%3d %-16s", konfig[j*PER_SUMBER+i].status, "TimeOut");
+			else												printf("%3d %-16s", konfig[j*PER_SUMBER+i].status, " ");
 			printf("\r\n");
 		}
 	}
@@ -220,7 +220,7 @@ void cek_konfig(int argc, char **argv)	{
 	} else  {//if (t==0) {
 		if (p_sbr[j-1].alamat==0) {		// Modul Monita
 			for (i=0; i<20; i++)	{
-				printf(" (%2d): %4d : %-16s : ", (((j-1)*PER_SUMBER)+i+1), konfig[(j-1)*PER_SUMBER+i].id, konfig[(j-1)*PER_SUMBER+i].ket );			// rata kiri
+				printf(" (%2d): %4d : %-16s : ", (((j-1)*PER_SUMBER)+i+1), konfig[(j-1)*PER_SUMBER+i].id, p_dt[(j-1)*PER_SUMBER+i].nama );			// rata kiri
 				
 				// status //
 				if (konfig[(j-1)*PER_SUMBER+i].status == 0)
@@ -320,6 +320,7 @@ void set_konfig(int argc, char **argv)		{
 			return;
 		}	
 	}
+	#if 0
 	else if (strcmp(argv[2], "nama") == 0)		{
 		//printf("masuk sini\r\n");
 		sprintf(str_eth, "%s", argv[1]);	
@@ -341,6 +342,7 @@ void set_konfig(int argc, char **argv)		{
 			return;
 		}	
 	}
+	#endif
 	else if (strcmp(argv[2], "status") == 0)	{
 		printf(" set status konfig\r\n");
 
@@ -410,7 +412,7 @@ void set_awal_konfig(void)	{
 	
 	//for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)	{
 	for (i=0; i<jmlData; i++)	{
-		sprintf(p_stg[i].ket, "-");
+		//sprintf(p_stg[i].ket, "-");
 		p_stg[i].id = 0;		/* default alamat = 0 : board Monita, PM = 1 s/d 247 / stack */
 		p_stg[i].status = 0;
 	}

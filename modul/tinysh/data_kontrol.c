@@ -115,12 +115,12 @@ int cek_data(int argc, char **argv)
 		judul(" Data Setting\r\n");
 		printf("  No  :       Nama       :    Data    : Satuan");
 		#ifdef PAKAI_RELAY
-			printf(" : Alr_LL : Alr_L  : Alr_H  : Alr_HH");
+			printf(" : Bawah : Alr_LL : Alr_L : Alr_H  : Alr_HH :  Atas ");
 			printf(" : Rly : ");
 		#endif
 		#ifdef UNTUK_PLTD_LOPANA
-			printf(": Bawah  :  Atas   : Status :");
-			printf("Rly : ");
+			printf(": Bawah  :  Atas  : Status :");
+			printf(" Rly ");
 		#endif
 		
 		printf(" : &Memory\r\n");
@@ -130,13 +130,17 @@ int cek_data(int argc, char **argv)
 		for (i=0; i<(sizeof(data_f)/sizeof(float)); i++)	{
 			#if 0
 			printf("%3d : (%5d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", i+1, (i+1), \
-				p_dt[i].nama, 6,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
+				p_dt[i].nama, 8,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \
 				p_dt[i].alarm_HH, p_dt[i].relay, &p_dt[i]);	
 			#endif
 			
-			#ifdef UNTUK_PLTD_LOPANA
-				printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : (%X)\r\n", (i+1), \
-					p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].batas_atas, &p_dt[i]);	
+			//#ifdef UNTUK_PLTD_LOPANA
+			#ifdef PAKAI_RELAY
+				printf(" (%3d): %-16s : % 10.2f : %-6s : % 4.1f : % 5.1f : % 4.1f : % 4.1f : % 4.1f : % 4.1f : %2d : (%X)\r\n", (i+1), \
+					p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].alarm_LL, p_dt[i].alarm_L, \
+					p_dt[i].alarm_H, p_dt[i].alarm_HH, p_dt[i].batas_atas, p_dt[i].relay, &p_dt[i]);	
+				//printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : (%X)\r\n", (i+1), \
+				//	p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].batas_bawah, p_dt[i].batas_atas, &p_dt[i]);	
 			#elif defined(UNTUK_UNSRI)
 				printf(" (%3d): %-16s : % 8.2f : %-6s : % 4.1f : % 4.1f : % 4.1f : % 4.1f : %2d : (%X)\r\n", (i+1), \
 					p_dt[i].nama, data_f[i], p_dt[i].satuan, p_dt[i].alarm_LL, p_dt[i].alarm_L, \
@@ -272,10 +276,10 @@ int set_data_default(void) {
 		p_gr[i].alarm_HH = 500.0;
 		p_gr[i].alarm_H = 400.0;
 		p_gr[i].aktif = 0;
-		#ifdef UNTUK_PLTD_LOPANA
+		//#ifdef UNTUK_PLTD_LOPANA
 		p_gr[i].batas_bawah = -40;
-		p_gr[i].batas_atas = 200;
-		#endif
+		p_gr[i].batas_atas = 1000;
+		//#endif
 	}
 	
 	#ifdef PAKAI_RELAY

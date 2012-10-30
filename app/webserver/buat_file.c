@@ -622,7 +622,7 @@ int ganti_setting(char *str) {
 	}
 	
 	
-	if (z==3) {				// sumber
+	if (z==wSUMBER) {				// 3: sumber
 		struct t_sumber *p_sbry;
 		//*	
 		p_sbry = pvPortMalloc( JML_SUMBER * sizeof (struct t_sumber) );
@@ -660,7 +660,7 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbry);
 		//*/
 		return 1;
-	} else if (z==4) {		// env = modul
+	} else if (z==wMODUL) {		// 4: env = modul
 		struct t_env *p_sbr;
 		
 		p_sbr = pvPortMalloc( sizeof (struct t_env) );
@@ -720,7 +720,7 @@ int ganti_setting(char *str) {
 		printf("Ganti Setting Modul\r\n");		
 		return 1;
 	#endif
-	} else if (z==5) {		// tess
+	} else if (z==wTES) {			// 5: tess
 		#ifdef UNTUK_PLTD_LOPANA
 			printf("kanal: %d\r\n");
 			
@@ -735,8 +735,9 @@ int ganti_setting(char *str) {
 			if (aa>=0 && aa<10) {
 				
 			}
+			vPortFree( p_dtq );
 		#endif
-	} else if (z==8) {		// kalibrasi
+	} else if (z==wKALIBRASI) {	// 8: kalibrasi
 		#if 1
 		struct t_env *p_sbr;
 		
@@ -764,7 +765,7 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbr);
 		#endif
 		return 1;
-	} else if (z==9) {		// kanal
+	} else if (z==wKANAL) {		// 9: kanal
 		struct t_env *p_sbr;
 		p_sbr = pvPortMalloc( sizeof (struct t_env) );
 		
@@ -785,13 +786,13 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbr);
 		
 		return 1;
-	} else if (z==wPULSA) {	// pulsa
+	} else if (z==wPULSA) {		// 10:pulsa
 		no = no-1;
 		data_f[no*2+1] = y;
 		//printf("no: %d, data_f: %.2f, y: %f, x: %d\r\n", no, data_f[no*2+1], y, no*2+1);
 		set_konter_hit(no);		// ada di tinysh/rpm.c
 		return 1;
-	} else if (z==7) {		// alarm
+	} else if (z==wALARM) {		// 7: alarm
 		//printf("%s(): str: %s\r\n", __FUNCTION__, str);
 		
 #if 1
@@ -803,6 +804,7 @@ int ganti_setting(char *str) {
 		
 		if (p_dtw == NULL)	{
 			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			vPortFree(p_dtw);
 			return;
 		}
 		printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_dtw);
@@ -849,6 +851,7 @@ int ganti_setting(char *str) {
 		
 		if (p_dtw == NULL)	{
 			printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+			vPortFree(p_dtw);
 			return;
 		}
 		printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_dtw);
@@ -870,21 +873,44 @@ int ganti_setting(char *str) {
 		vPortFree( p_dtw );
 	#else
 	} else {			// setting konfig
-		if (no>0) {
+		//printf("%s() --> no: %d\r\n", __FUNCTION__, no);
+		if (nk>0) {
 			int jmlData=0;
-			//#if (defined PAKAI_PM)
-				jmlData = (sizeof(data_f)/sizeof(float));
-			//#else
-			//	jmlData = KANALNYA;
-			//#endif
+			jmlData = (sizeof(data_f)/sizeof(float));
+
+			struct t_dt_set *p_dt;
+			p_dt = pvPortMalloc( jmlData * sizeof (struct t_dt_set) );
+
+			if (p_dt == NULL)		{
+				printf(" %s(): ERR memDATA gagal !\r\n", __FUNCTION__);
+				vPortFree( p_dt );
+				return;	// -1
+			}
+			//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
+
+			portENTER_CRITICAL();
+			memcpy((char *) p_dt, (char *) ALMT_DT_SET, (jmlData * sizeof (struct t_dt_set)));
+			portEXIT_CRITICAL();
 			
+			//sprintf(p_dt[no-1].nama, kets);
+			sprintf(p_dt[no-1].nama, kets);
+			//printf("Isi kanal:%d, nama: %s\r\n", no, p_dt[no-1].nama);
+			
+			#ifndef BOARD_TAMPILAN
+			if (simpan_data( p_dt ) < 0)	{
+				vPortFree( p_dt );
+				return;
+			}
+			#endif
+			vPortFree( p_dt );
+
 			struct t_setting *p_sbr;
 			//printf("Jml Data : %d\r\n", jmlData);
 			p_sbr = pvPortMalloc( jmlData * sizeof (struct t_setting) );
 			
 			if (p_sbr == NULL)
 			{
-				printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
+				printf(" %s(): ERR memKONFIG gagal !\r\n", __FUNCTION__);
 				vPortFree( p_sbr );
 				return;	// -1
 			}
@@ -897,7 +923,9 @@ int ganti_setting(char *str) {
 			p_sbr[no-1].id = titik;
 			//sprintf(p_sbr[no-1].ket, kets);
 			p_sbr[no-1].status = (atoi(stat))?1:0;
-			printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
+			
+			
+			//printf("Isi kanal:%d, Titik: %d, Ket: %s, Ket2: %s, Status: %s\r\n", no, p_sbr[no-1].id, p_sbr[no-1].ket, kets, (p_sbr[no-1].status)?"aktif":"mati");
 			
 			#ifndef BOARD_TAMPILAN
 			if (simpan_konfignya( p_sbr ) < 0)	{
@@ -906,33 +934,9 @@ int ganti_setting(char *str) {
 			}
 			vPortFree( p_sbr );
 			#endif
-			
-			struct t_dt_set *p_dt;
-			p_dt = pvPortMalloc( jmlData * sizeof (struct t_dt_set) );
-						
-			if (p_dt == NULL)
-			{
-				printf(" %s(): ERR allok memory gagal !\r\n", __FUNCTION__);
-				vPortFree( p_dt );
-				return;	// -1
-			}
-			//printf(" %s(): Mallok ok di %X\r\n", __FUNCTION__, p_sbr);
 
-			portENTER_CRITICAL();
-			memcpy((char *) p_dt, (char *) ALMT_DT_SET, (jmlData * sizeof (struct t_dt_set)));
-			portEXIT_CRITICAL();
-			
-			sprintf(p_dt[no-1].nama, kets);
-			//sprintf(p_sbr[no-1].ket, kets);
-			printf("Isi kanal:%d, nama: %s\r\n", no, p_dt[no-1].nama);
-			
-			#ifndef BOARD_TAMPILAN
-			if (simpan_data( p_dt ) < 0)	{
-				vPortFree( p_dt );
-				return;
-			}
-			vPortFree( p_dt );
-			#endif
+
+
 		}
 	#endif
 	}
@@ -1779,7 +1783,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 		} else {
 			strcat(tot_buf, "<br/>");
 		}
-		if (flag==wSUMBER) {			// konfig modul sumber 
+		if (flag==wSUMBER) 				{	// konfig modul sumber 
 			#ifdef BANYAK_SUMBER
 				struct t_sumber *p_sbrw;
 				p_sbrw = (char *) ALMT_SUMBER;
@@ -1916,7 +1920,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			
 		#endif
-		} else if (flag==wMODUL) 	{	// info modul
+		} else if (flag==wMODUL) 		{	// info modul
 			sprintf(head_buf, "\r\n<script type=\"text/javaScript\">\r\n" \
 				"<!--\r\n" \
 				"function gantiTitik(){\r\n" \
@@ -2027,7 +2031,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			#endif
 			
 		#if defined(PAKAI_ADC) || defined(BOARD_KOMON_KONTER)
-		} else if (flag==8) {	// info kalibrasi
+		} else if (flag==wKALIBRASI)	{	// info kalibrasi
 			//printf("setting kalibrasi !!\r\n");
 			
 			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
@@ -2079,7 +2083,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			strcat(tot_buf, "</tbody></table>\n");
 		#endif
-		} else if (flag==wALARM)	{	// info alarm
+		} else if (flag==wALARM)		{	// info alarm
 			//printf("setting alarm !!\r\n");
 			int pertamax=0, nk=0, nks=-1, ff=0;
 			int no=-1;
@@ -2237,7 +2241,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			}
 			#endif
 			strcat(tot_buf, "</tbody></table>\n");			
-		} else if (flag==wKANAL)	{	// info kanal
+		} else if (flag==wKANAL)		{	// info kanal
 			char sKan = 0;
 		
 			strcat(tot_buf, "<h3>Info Kanal</h3>\n");
@@ -2307,7 +2311,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			strcat(tot_buf, "</tbody></table>\r\n");
 		//#ifdef BOARD_KOMON_KONTER
-		} else if (flag==wPULSA)	{	// info pulsa
+		} else if (flag==wPULSA)		{	// info pulsa
 			char i;
 			
 			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
@@ -2588,7 +2592,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 								"<input type=\"radio\" name=\"s\" value=0 %s/>Mati</td>\n" \
 								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
 								"</form>\n</tr>", \
-								no+1, i+1, (dx+i)+1, (dx+i)+1, konfig[dx+i].id, \
+								wRELAY, i+1, (dx+i)+1, (dx+i)+1, konfig[dx+i].id, \
 								strlen(ket)>0?ket:"-", \
 								(konfig[dx+i].status?"checked":" "), \
 								(konfig[dx+i].status?" ":"checked") \
@@ -2642,7 +2646,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 	#ifdef BOARD_TAMPILAN
 		int pertamax=0, nk=0, nks=-1, ff=0;
 		int no=-1;
-		
+
 		struct t_sumber *pmx;
 		pmx = (char *) ALMT_SUMBER;
 		

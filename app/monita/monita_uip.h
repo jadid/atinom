@@ -75,6 +75,7 @@ char indexList[256], dataList[256];
 
 #define wSUMBER		3
 #define wMODUL		4
+#define wTES		5
 #define wALARM		7
 #define wKALIBRASI	8
 #define wKANAL		9

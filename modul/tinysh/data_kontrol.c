@@ -60,20 +60,41 @@ extern char * satuannya_pm[];
 
 extern float data_f [];
 
-//static int simpan_data( struct t_dt_set *pgr);
 
-/*	
-int reset_data_sumber(void)
-{
-	int i;
-	int y;
+void set_data_kitab()	{
+	printf(" Perintah untuk setting data !\r\n");
+	printf(" 1. set_data help/default\r\n");
+	printf("    help    : printout keterangan ini\r\n");
+	printf("    default : memberikan default setting data\r\n");
+	printf("\r\n");
 	
-	for (i=0; i< JML_SUMBER; i++)
-	{
-		for (y=0; y< PER_SUMBER; y++)			 
-			 data_sumber[i][y] = 0.00;
-	}
-}*/
+	printf(" 2. set_data x [opt1] [opt2]\r\n");
+	printf("    set_data x [nama|satuan|alarm|alarmLL|alarmL|alarmH|alarmHH] [nilainya]\r\n");
+	printf("    x    : nomer data\r\n");
+	printf("    opt1 : nama, set/aktif, desc/ket\r\n");
+	printf("\r\n");
+	
+	printf("    [opt1]\r\n");				
+	printf("    nama     : memberikan nama data yang akan ditampilkan\r\n");
+	printf("    misalnya : $ set_data 2 nama GMT_#4\r\n");
+	printf("    artinya memberikan nama data 1 dengan GMT_#4\r\n");
+	printf("\r\n");
+	
+	printf("    alarm    : memberikan setting batasan alarm data\r\n");
+	printf("    misalnya : $ set_data 2 alarmH 84.3\r\n");
+	printf("    artinya memberikan setting batasan alarm tinggi data 2 dengan nilai 84.3\r\n");
+	printf("    misalnya : $ set_data 5 alarmL 1.25\r\n");
+	printf("    artinya memberikan setting batasan alarm rendah data 5 dengan nilai 1.25\r\n");
+	printf("\r\n");
+	
+	printf("    relay : mengaktif/nonaktifkan relay pada kanal tertentu\r\n");
+	printf("    misalnya  : $ set_data 4 alarm [1|2|3|aktif|hidup|atas|bawah|semua] 7 \r\n");
+	printf("    artinya mengaktifkan relay untuk data ke 4 pada kanal 7\r\n");
+	printf("    misalnya  : $ set_group 8 alarm [0|mati] 2\r\n");
+	printf("    artinya me-nonaktifkan relay untuk data ke 8 pada kanal 2\r\n");
+	printf("\r\n");
+}
+
 int cek_data(int argc, char **argv)
 {
 	int i;
@@ -257,6 +278,8 @@ int set_data_default(void) {
 		#endif
 	}
 	
+	#ifdef PAKAI_RELAY
+	j=0;
 	for (i=JML_SUMBER*PER_SUMBER; i< (sizeof(data_f)/sizeof(float)) ; i++)
 	{
 		
@@ -273,7 +296,7 @@ int set_data_default(void) {
 		p_gr[i].aktif = 0;
 		j++;
 	}
-	
+	#endif
 	
 	
 	if (simpan_data( p_gr ) < 0)
@@ -297,45 +320,17 @@ int set_data(int argc, char **argv)
 	if (argc < 4) 	{
 		if (argc > 1)	{
 			if (strcmp(argv[1], "help") == 0)	{
-				printf(" Perintah untuk setting group !\r\n");
-				printf(" 1. set_data help/default\r\n");
-				printf("    help    : printout keterangan ini\r\n");
-				printf("    default : memberikan default setting data\r\n");
-				printf("\r\n");
-				
-				printf(" 2. set_data x [opt1] [opt2]\r\n");
-				printf("    x    : nomer data\r\n");
-				printf("    opt1 : nama, set/aktif, desc/ket\r\n");
-				printf("\r\n");
-				printf("    [opt1]\r\n");				
-				printf("    nama     : memberikan nama data yang akan ditampilkan\r\n");
-				printf("    misalnya : $ set_data 2 nama GMT_#4\r\n");
-				printf("    artinya memberikan nama data 1 dengan GMT_#4\r\n");
-				printf("\r\n");
-				printf("    alarm    : memberikan setting batasan alarm data\r\n");
-				printf("    misalnya : $ set_data 2 alarmH 84.3\r\n");
-				printf("    artinya memberikan setting batasan alarm tinggi data 2 dengan nilai 84.3\r\n");
-				printf("    misalnya : $ set_data 5 alarmL 1.25\r\n");
-				printf("    artinya memberikan setting batasan alarm rendah data 5 dengan nilai 1.25\r\n");
-				printf("\r\n");
-				printf("    relay : mengaktif/nonaktifkan relay pada kanal tertentu\r\n");
-				printf("    misalnya  : $ set_data 4 alarm [1|2|3|aktif|hidup|atas|bawah|semua] 7 \r\n");
-				printf("    artinya mengaktifkan relay untuk data ke 4 pada kanal 7\r\n");
-				printf("    misalnya  : $ set_group 8 alarm [0|mati] 2\r\n");
-				printf("    artinya me-nonaktifkan relay untuk data ke 8 pada kanal 2\r\n");
-				printf("\r\n");
-				
+				set_data_kitab();
 				return ;
 			}
 			else if (strcmp(argv[1], "default") == 0)	{
 				printf("set DATA dengan data default !\n");
 				set_data_default();
-				
 				return;
 			}		
 		}
 		printf(" ERR: argument kurang !\r\n");
-		printf(" coba set_group help \r\n");
+		printf(" coba set_data help \r\n");
 		return;	
 	}
 	
@@ -450,34 +445,6 @@ int set_data(int argc, char **argv)
 		}
 	}
 	#endif
-	/*
-	else if (strcmp(argv[2], "alarmL") == 0)
-	{
-		sprintf(str_data, "%s", argv[1]);	
-		sumb = cek_nomer_valid(str_data, (PER_SUMBER * JML_SUMBER));
-		if (sumb > 0)		
-		{
-			printf(" Data %d : Alarm low : %s\r\n", sumb, argv[3]);			
-			p_dt[sumb-1].alarm_L = atof(argv[3]);
-		} else {
-			vPortFree( p_dt );
-			return;
-		}
-	}
-	else if (strcmp(argv[2], "alarmLL") == 0)
-	{
-		sprintf(str_data, "%s", argv[1]);	
-		sumb = cek_nomer_valid(str_data, (PER_SUMBER * JML_SUMBER));
-		if (sumb > 0)		
-		{
-			printf(" Data %d : Alarm low low : %s\r\n", sumb, argv[3]);				
-			p_dt[sumb-1].alarm_LL = atof(argv[3]);
-		} else {
-			vPortFree( p_dt );
-			return;
-		}
-	}
-	//*/
 	else if (strcmp(argv[2], "alarm") == 0)		// 	set_data 4 relay [1|aktif] 7
 	{
 		int slot=0;
@@ -581,24 +548,27 @@ int set_data(int argc, char **argv)
 }
 
 static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin",
-		"help default nama satuan alarmH alarmL",set_data,0,0,0};
+		"help default nama satuan alarmHH alarmH alarmL alarmLL",set_data,0,0,0};
 
 //static 
 int simpan_data( struct t_dt_set *pgr)
 {
-	printf(" Save struct DATA_SET ke flash ..");
+	int j = (sizeof(data_f)/sizeof(float));
+	printf("%s(): j = %d, jx = %d\r\n", __FUNCTION__, j, (j*sizeof(struct t_dt_set)) );
+	
+	printf(" Save DATA_SET ke flash ");
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
-	printf("..");
+	//printf("..");
 	
 	if(hapus_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
-	printf("++");
+	//printf("++");
 	
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
-	printf("==");
+	//printf("==");
 	
 	if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET+1, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
 	
-	printf("## OK\r\n");
+	printf("OK\r\n");
 	return 0;
 }
 

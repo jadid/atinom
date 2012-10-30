@@ -19,7 +19,34 @@
 #ifdef PAKAI_PM	
 extern char * judulnya_pm[];	
 #endif
-			  
+
+
+void set_konfig_kitab()		{
+	printf(" Setting konfig data\r\n");
+	garis_bawah();
+	printf(" argument : id, ket, status, help\r\n");
+	printf("   help   : printout keterangan ini\r\n");
+	printf("   default : load sumber dengan default ip & setting\r\n");
+	printf(" \r\n");
+	printf("   id : memberikan alamat id pada sumber titik tertentu\r\n");
+	printf("     Power Meter tidak dipengaruhi setting ini\r\n");
+	printf("     misalnya : $ set_konfig 4 id 19\r\n");
+	printf("     artinya set setting nomer 4 dengan id 19\r\n");
+	printf(" \r\n");
+	printf("   ket : memberikan ket pada titik tertentu\r\n");
+	printf("     misalnya : $ set_konfig 4 ket RTD_SWD#2\r\n");
+	printf("     artinya sumber nomer 4 diberi ket RTD_SWD#2 (maks 10 karakter)\r\n");	
+	printf(" \r\n");
+	printf("   status : set pada sumber tertentu\r\n");
+	printf("     status 0 = tidak aktif, 1 = aktif\r\n");
+	printf("     aktif artinya sumber akan dikirim terus menerus !\r\n");			
+	printf("     misalnya : $ set_konfig 4 status 1\r\n");
+	printf("     artinya set nomer 4 supaya aktif\r\n");	
+	printf(" \r\n");	
+	return;
+	
+}
+  
 void cek_konfig(int argc, char **argv)	{
 	int i=0,j=0;
 	struct t_setting *konfig;
@@ -32,13 +59,24 @@ void cek_konfig(int argc, char **argv)	{
 	
 	struct t_sumber *p_sbr;
 	p_sbr = (char *) ALMT_SUMBER;
+	
+	struct t_dt_set *p_dt;
+	p_dt = (char *) ALMT_DT_SET;
 
 	if (argc < 3) {
-		printf("Perintah salah!!!\r\n");
-		printf("Gunakan : \r\n");
-		printf("cek_konfig alamat [alamat client Modbus] <---- khusus client Modbus\r\n");
-		printf("cek_konfig no     [urutan modul Sumber]\r\n");
-		return;
+		if (argc==2)	{
+			#ifdef PAKAI_RELAY
+			if (strcmp(argv[1], "relay") == 0)	{
+				
+			}
+			#endif
+		} else {
+			printf("Perintah salah!!!\r\n");
+			printf("Gunakan : \r\n");
+			printf("cek_konfig alamat [alamat client Modbus] <---- khusus client Modbus\r\n");
+			printf("cek_konfig no     [urutan modul Sumber]\r\n");
+			return;
+		}
 	} else {
 		if (strcmp(argv[1], "alamat") == 0)	{			// khusus modul MODBUS
 			sprintf(str_eth, "%s", argv[2]);	
@@ -68,7 +106,8 @@ void cek_konfig(int argc, char **argv)	{
 			} else	{
 				printf("Alamat tidak benar !!!\r\n");
 				return;
-			}	
+			}
+		
 		} else if (strcmp(argv[1], "no") == 0)	{
 			sprintf(str_eth, "%s", argv[2]);	
 
@@ -96,8 +135,19 @@ void cek_konfig(int argc, char **argv)	{
 	struct t_env *env2;
 	env2 = (char *) ALMT_ENV;
 	
+	#ifdef PAKAI_RELAY
+		if (strcmp(argv[1], "relay") == 0)	{
+			z = JML_SUMBER*PER_SUMBER;
+			for (i=0; i<JML_RELAY; i++)	{
+				printf("  %2d.  %-5d   %-16s    %d\r\n", (z+i), konfig[z+i].id, p_dt[z+i].nama, konfig[z+i].status);
+			}
+			return;
+		}
+	#endif
+	
+	
 	if (env2->IP3 == p_sbr[j-1].IP3) {
-		printf("Modul Konter !!\r\n");
+		//printf("Modul Konter !!\r\n");
 		for (i=0; i<KANALNYA; i++)	{
 			#ifndef BOARD_KOMON_KONTER_3_1 
 			if (i>6)
@@ -222,34 +272,13 @@ void set_konfig(int argc, char **argv)		{
 	if (argc < 4) 	{
 		if (argc > 1)	{
 			if (strcmp(argv[1], "help") == 0)	{
-				printf(" Setting konfig data\r\n");
-				garis_bawah();
-				printf(" argument : id, ket, status, help\r\n");
-				printf("   help   : printout keterangan ini\r\n");
-				printf("   default : load sumber dengan default ip & setting\r\n");
-				printf(" \r\n");
-				printf("   id : memberikan alamat id pada sumber titik tertentu\r\n");
-				printf("     Power Meter tidak dipengaruhi setting ini\r\n");
-				printf("     misalnya : $ set_konfig 4 id 19\r\n");
-				printf("     artinya set setting nomer 4 dengan id 19\r\n");
-				printf(" \r\n");
-				printf("   ket : memberikan ket pada titik tertentu\r\n");
-				printf("     misalnya : $ set_konfig 4 ket RTD_SWD#2\r\n");
-				printf("     artinya sumber nomer 4 diberi ket RTD_SWD#2 (maks 10 karakter)\r\n");	
-				printf(" \r\n");
-				printf("   status : set pada sumber tertentu\r\n");
-				printf("     status 0 = tidak aktif, 1 = aktif\r\n");
-				printf("     aktif artinya sumber akan dikirim terus menerus !\r\n");			
-				printf("     misalnya : $ set_konfig 4 status 1\r\n");
-				printf("     artinya set nomer 4 supaya aktif\r\n");	
-				printf(" \r\n");	
+				set_konfig_kitab();
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)
 			{
 				printf(" Set konfig dengan data default !\n");
 				set_awal_konfig();
-				
 				return;
 			}	
 		}

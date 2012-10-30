@@ -275,7 +275,7 @@ xBlockLink *pxLink;
 }
 /*-----------------------------------------------------------*/
 
-
+#if 0
 //#define awal_stack	0x7FD02000	/* USB RAM 0x7FD01000 juga OK*/
 #define awal_stack	0x7FD00400	/* USB RAM 0x7FD01000 juga OK*/
 //#define awal_stack 0x7FE00800
@@ -311,3 +311,4 @@ static unsigned int  stack_used = 0;
 
 
 }
+#endif

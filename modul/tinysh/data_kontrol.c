@@ -128,6 +128,7 @@ int cek_data(int argc, char **argv)
 		
 		//*
 		for (i=0; i<(sizeof(data_f)/sizeof(float)); i++)	{
+		//for (i=0; i<(PER_SUMBER*JML_SUMBER); i++)	{
 			#if 0
 			printf("%3d : (%5d): %-10s :  %*.2f   :  %d   : %-6s : %4.2f : %4.2f : %2d : (%X)\r\n", i+1, (i+1), \
 				p_dt[i].nama, 8,data_f[i], p_dt[i].aktif, p_dt[i].satuan, p_dt[i].alarm_H, \

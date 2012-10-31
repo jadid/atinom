@@ -341,34 +341,34 @@ PT_THREAD(handle_output(struct httpd_state *s))
 				//printf(" rst: %d\r\n", rst);
 				buat_file_reset(s->filename);
 			#ifdef BOARD_KOMON_KONTER
-			} else if (strncmp(s->filename,"/setting.html?smb=10",20)==0) {	// alarm trip
-				buat_file_setting(10, s->filename);
+			} else if (strncmp(s->filename,"/setting.html?smb=10",20)==0) {	// pulsa
+				buat_file_setting(wPULSA, s->filename);
 			#endif
 			} else if (strncmp(s->filename,"/setting.html?smb=1",19)==0) {
 				buat_file_setting(2, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=3",19)==0) {	// sumber
-				buat_file_setting(3, s->filename);
+				buat_file_setting(wSUMBER, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=4",19)==0) {	// modul
-				buat_file_setting(4, s->filename);
+				buat_file_setting(wMODUL, s->filename);
 			#ifdef TES_GET_WEB
 			} else if (strncmp(s->filename,"/setting.html?smb=5",19)==0) {	// 
-				buat_file_setting(5, s->filename);
+				buat_file_setting(wTES, s->filename);
 			#endif
 			#ifdef BOARD_TAMPILAN
 			} else if (strncmp(s->filename,"/setting.html?smb=6",19)==0) {	// group tampilan
-				buat_file_setting(6, s->filename);
+				buat_file_setting(wGROUP, s->filename);
 			} else if (strncmp(s->filename,"/setting.html?smb=7",19)==0) {	// alarm trip
-				buat_file_setting(7, s->filename);
+				buat_file_setting(wALARM, s->filename);
 			#else
 				#ifdef PAKAI_RELAY
 			} else if (strncmp(s->filename,"/setting.html?smb=7",19)==0) {	// alarm trip
-				buat_file_setting(7, s->filename);
+				buat_file_setting(wALARM, s->filename);
 				#endif
-			} else if (strncmp(s->filename,"/setting.html?smb=8",19)==0) {	// kalibrasi
-				buat_file_setting(8, s->filename);
+			} else if (strncmp(s->filename,"/setting.html?smb=8",19)==0) {	// kanal
+				buat_file_setting(wKALIBRASI, s->filename);
 				#ifdef BOARD_KOMON_KONTER
 			} else if (strncmp(s->filename,"/setting.html?smb=9",19)==0) {	// alarm trip
-				buat_file_setting(9, s->filename);
+				buat_file_setting(wKANAL, s->filename);
 				#endif
 			#endif
 			} else {

@@ -559,6 +559,7 @@ static tinysh_cmd_t set_data_cmd={0,"set_data","menampilkan konfigurasi mesin",
 int simpan_data( struct t_dt_set *pgr)
 {
 	int j = (sizeof(data_f)/sizeof(float));
+	int k =
 	printf("%s(): j = %d, jx = %d\r\n", __FUNCTION__, j, (j*sizeof(struct t_dt_set)) );
 	
 	printf(" Save DATA_SET ke flash ");
@@ -571,7 +572,10 @@ int simpan_data( struct t_dt_set *pgr)
 	if(prepare_flash(SEKTOR_DT_SET, SEKTOR_DT_SET)) return -1;
 	//printf("==");
 	
-	if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET+1, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
+	//(j*sizeof(struct t_dt_set))
+	//if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET+1, (unsigned short *) pgr, (sizeof (struct t_dt_set) * (PER_SUMBER * JML_SUMBER) ))) return -1;
+	if(tulis_flash(ALMT_DT_SET, SEKTOR_DT_SET, SEKTOR_DT_SET+1, \
+		(unsigned short *) pgr, (j*sizeof(struct t_dt_set)) )) return -1;
 	
 	printf("OK\r\n");
 	return 0;

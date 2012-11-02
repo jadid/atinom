@@ -1696,84 +1696,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 	strcat(tot_buf, ": <a href=\"setting.html?smb=5\">Info Tes</a> :");
 	#endif
 	strcat(tot_buf, "<br/>\n");
-	
-	#ifdef PAKAI_ADCx
-		strcat(tot_buf, "<h3>Faktor kalibrasi (y = mx + C)</h3>\n");
 
-		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
-		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
-		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
-		strcat(tot_buf, "<th width=\"60px\">m</th>\n");		// klo pake input 40 aja
-		strcat(tot_buf, "<th width=\"60px\">C</th>\n");		// klo pake input 40 aja
-		strcat(tot_buf, "<th width=\"220px\">Status</th>\n");
-		//strcat(tot_buf, "<th width=\"60px\">Ganti</th>\n");
-		strcat(tot_buf, "</tr>\n");
-		
-		for (i=0; i<KANALNYA; i++)	{
-			// Kanal, m & C
-			/* JANGAN DIHAPUS
-			sprintf(head_buf,	"<tr>\n<form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />\n" \
-								"<th>%d</th>\n<td><input type=\"text\" name=\"m%d\" value=\"%f\" size=\"10\"/></td>\n" \
-								"<td><input type=\"text\" name=\"c%d\" value=\"%f\" size=\"10\"/></td>\n" \
-								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Suhu/Tekanan" \
-								"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>OnOff</td>\n" \
-								"<td><input type=\"submit\" value=\"Ganti\" /></td></form></tr>\n", \
-				i+1, i+1, env2->kalib[i].m, \
-				i+1, env2->kalib[i].C, \
-				i+1, (env2->kalib[i].status==0)?"checked":"", \
-				i+1, (env2->kalib[i].status==0)?"":"checked");
-			//*/
-			sprintf(head_buf,	"<tr>\n<th>%d</th>\n<td align=\"right\">%6.3f\n" \
-								"<td align=\"right\">%6.3f</td>\n" \
-								"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Suhu/Tekanan" \
-								"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>OnOff</td>\n" \
-								"</tr>\n", \
-				i+1, env2->kalib[i].m, env2->kalib[i].C, \
-				i+1, (env2->kalib[i].status==0)?"checked":"", \
-				i+1, (env2->kalib[i].status==0)?"":"checked");
-			strcat(tot_buf, head_buf);
-		}
-		strcat(tot_buf, "</tbody>\n</table>\n");
-	#endif
-	
-	#ifdef BOARD_KOMON_KONTERx
-		//*
-		strcat(tot_buf, "<h3>Faktor kalibrasi (y = mx + C)</h3>\n");
-
-		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");
-		strcat(tot_buf, "<tbody align=\"center\" bgcolor=\"white\">\n");
-		strcat(tot_buf, "<tr>\n<th width=\"50px\">Kanal</th>\n");
-		strcat(tot_buf, "<th width=\"60px\">m</th>\n");		// klo pake input 40 aja
-		strcat(tot_buf, "<th width=\"60px\">C</th>\n");		// klo pake input 40 aja
-		//strcat(tot_buf, "<th width=\"60px\">Ganti</th>\n");
-		strcat(tot_buf, "</tr>\n");
-		
-		for (i=0; i<KANALNYA; i++)	{
-			if (i>6) {
-				// Kanal, m & C
-				/*
-				sprintf(head_buf,	"<tr>\n<form action=\"setting.html\"><input type=\"hidden\" name=\"u\" value=\"1\" />\n" \
-									"<th>%d</th>\n<td><input type=\"text\" name=\"m%d\" value=\"%f\" size=\"10\"/></td>\n" \
-									"<td><input type=\"text\" name=\"c%d\" value=\"%f\" size=\"10\"/></td>\n" \
-									"<td align=\"left\"><input type=\"radio\" name=\"s%d\" value=\"0\" %s/>Suhu/Tekanan" \
-									"<input type=\"radio\" name=\"s%d\" value=\"1\" %s/>OnOff</td>\n" \
-									"<td><input type=\"submit\" value=\"Ganti\" /></td></form></tr>\n", \
-					i+1, i+1, env2->kalib[i].m, \
-					i+1, env2->kalib[i].C, \
-					i+1, (env2->kalib[i].status==0)?"checked":"", \
-					i+1, (env2->kalib[i].status==0)?"":"checked");
-				//*/
-				sprintf(head_buf,	"<tr>\n<th>%d</th>\n<td align=\"right\">%6.3f\n" \
-									"<td align=\"right\">%6.3f</td>\n" \
-									"</tr>\n", \
-					i+1, env2->kalib[i].m, env2->kalib[i].C);
-				strcat(tot_buf, head_buf);
-			}
-		}
-		strcat(tot_buf, "</tbody>\n</table>\n");
-		//*/
-	#endif
-	
 	#ifdef CENDOL		// akses php
 
 		if (flag==1) {
@@ -1948,27 +1871,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				"-->\r\n" \
 				"</script>\r\n");
 			strcat(tot_buf, head_buf);
-			
-			#if 0
-			strcat(tot_buf, "\r\n<script language=\"JavaScript\">\r\n" \
-				"<!--\r\n" \
-				"function gantiTitik(){\r\n" \
-				"	var strx;\r\n" \
-				"	strx=document.mF.q.value;\r\n" \
-				"   document.mF.q.value=Titik(strx);\r\n" \
-				"	strx=document.mF.f.value;\r\n" \
-				"   document.mF.f.value=Titik(strx);\r\n" \
-				"	strx=document.mF.p.value;\r\n" \
-				"   document.mF.p.value=Titik(strx);\r\n" \
-				"	strx=document.mF.t.value;\r\n" \
-				"   document.mF.t.value=Titik(strx);\r\n" \
-				"	strx=document.mF.k.value;\r\n" \
-				"   document.mF.k.value=Titik(strx);\r\n" \
-				"}\r\n" \
-				"-->\r\n" \
-				"</script>\r\n");
-			#endif
-			
+
 			struct t_env *env2ww;
 			env2ww = (char *) ALMT_ENV;
 			
@@ -2112,14 +2015,16 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					"function gantiTitik(F){\r\n" \
 					"   var str;\r\n" \
 					"   var Fx=F;\r\n" \
-					"	str=Titik(Fx.y.value);\r\n" \
-					"	Fx.y.value = str;\r\n" \
-					"	str=Titik(Fx.n.value);\r\n" \
-					"	Fx.n.value = str;\r\n" \
-					"	str=Titik(Fx.e.value);\r\n" \
-					"	Fx.e.value = str;\r\n" \
+					"	str=Titik(Fx.q.value);\r\n" \
+					"	Fx.q.value = str;\r\n" \
+					"	str=Titik(Fx.w.value);\r\n" \
+					"	Fx.w.value = str;\r\n" \
 					"	str=Titik(Fx.r.value);\r\n" \
 					"	Fx.r.value = str;\r\n" \
+					"	str=Titik(Fx.t.value);\r\n" \
+					"	Fx.t.value = str;\r\n" \
+					"	str=Titik(Fx.n.value);\r\n" \
+					"	Fx.n.value = str;\r\n" \
 					"}\r\n" \
 					"-->\r\n" \
 					"</script>\r\n");
@@ -2132,41 +2037,42 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				/* status */
 				if (pmx[i].status == 1) {
 					ll = (int) nk/100;
+					
 					for (jj=0; jj<tt; jj++)	{
-						qq = nk%100;
+						qq = (int) nk%100;
 						//printf("nk: %d, i: %d, ll: %d\r\n", nk,  i, ll);
 						if ( ((i+1)==ll) && (qq==jj) ) {
-							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d%c]</b></font> ", i+1, 'A'+jj);
+							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d%c]</b></font> \n", i+1, 'A'+jj);
 							//printf("1Merah ==> nk: %d ", nk);
 						} else if (pertamax==0 && nk==0) {
-							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d%c]</b></font> ", i+1, 'A'+jj);
+							sprintf(head_buf, " <font color=\"red\" size=\"5\"><b>[%d%c]</b></font> \n", i+1, 'A'+jj);
 							//printf("2Merah ==> nk: %d ", nk);
 						} else {
 							qq = (i+1)*100+jj;
-							sprintf(head_buf, "[<a href=\"setting.html?smb=7&d=%d\">%d%c</a>] ", qq, i+1, 'A'+jj);
+							sprintf(head_buf, "[<a href=\"setting.html?smb=7&d=%d\">%d%c</a>] \n", qq, i+1, 'A'+jj);
 						}
 						strcat(tot_buf, head_buf);
 						pertamax++;
-						//printf("i: %d, flag: %d, pertamax: %d, nk: %d\r\n", flag, pertamax, nk);
 					}
 				}
-
 			}
 			//printf("setting alarm lagi !!\r\n");
 			if (!pertamax)	strcat(tot_buf, "Tidak ada Sumber Aktif</br>\n");
 			
+			sprintf(head_buf, "\n\n");
 			struct t_dt_set *p_dt;
 			p_dt = (char *) ALMT_DT_SET;
 			
+			qq = (int) nk%100;
+			//printf("ll: %d, qq: %d, nk: %d\r\n", ll, qq, nk);
+			
 			#ifdef BANYAK_SUMBER
-			if (nk==0) nk=1;
-			no = nk-1;
-			
-			
-			
+			//if (nk==0) nk=1;
+			//no = nk-1;
 
-			if (pmx[no].alamat==0) {			// Modul Monita
-				//#ifdef UNTUK_PLTD_LOPANA
+			//if (pmx[no].alamat==0) 
+			{			// Modul Monita
+
 				strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\n");
 				strcat(tot_buf, "<tr>\n<th width=\"40px\">No</th>\n<th width=\"60px\">Kanal</th>\n");
 				strcat(tot_buf, "<th width=\"150px\">Keterangan</th>\n" \
@@ -2175,50 +2081,58 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 								"<th width=\"60px\">Trip High High</th>\n<th width=\"60px\">Range Max</th>\n" \
 								"<th width=\"120px\">Status</th>\n" \
 								"<th width=\"55px\">Ganti</th>\n</tr>\n");
+				
+				//printf("pertamax: %d, tt: %d, ll: %d, qq: %d\r\n", pertamax, tt, ll, qq);
+				if (nk!=0)	ll--;
+				tt = (ll*PER_SUMBER)+(qq*KANALNYA);
+				int ktr=0;
 
-				tt = (JML_SUMBER*PER_SUMBER)/KANALNYA;
-				//for (i=0; i<2; i++)	{
-					qq = KANALNYA*i;
-					//printf("\r\n");
-					for (jj=0; jj<KANALNYA; jj++)	{
-						//if ()
-						
-						
-						ganti_karakter(ket, p_dt[qq+jj].nama);
-						//printf("%d %-8s : ", qq+jj, ket);
-						// else
-						#if 1
-						sprintf(head_buf, "\n<tr>\n<form action=\"setting.html\" name=\"mF%d\">\r\n" \
-							"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
-							"<input type=\"hidden\" name=\"d\" value=\"%d\" />\r\n" \ 
-							"<input type=\"hidden\" name=\"z\" value=\"7\" />\r\n" \ 
-							"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
-							"<th>%d</th><th>%d</th><td align=\"left\">%s</td>",	\
-							(qq+jj+1), nk, (qq+jj+1), (qq+jj+1), \
-							jj+1, (qq+jj+1), ket);
-						//printf("%s", head_buf);
-						strcat(tot_buf, head_buf);
-						sprintf(head_buf, \
-							"<td><input type=\"text\" size=\"3\" name=\"n\" value=\"%.1f\"></td>\n"	\
-							"<td><input type=\"text\" size=\"3\" name=\"q\" value=\"%.1f\"></td>\n"	\
-							"<td><input type=\"text\" size=\"3\" name=\"w\" value=\"%.1f\"></td>\n"	\
-							"<td><input type=\"text\" size=\"3\" name=\"r\" value=\"%.1f\"></td>\n"	\
-							"<td><input type=\"text\" size=\"3\" name=\"t\" value=\"%.1f\"></td>\n"	\
-							"<td><input type=\"text\" size=\"3\" name=\"q\" value=\"%.1f\"></td>\n"	\
-							"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
-							"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n"	\
-							"<td><input type=\"Submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"></td>",	\
-							p_dt[qq+jj].batas_bawah, p_dt[qq+jj].alarm_L, p_dt[qq+jj].alarm_L,	\
-							p_dt[qq+jj].alarm_H, p_dt[qq+jj].alarm_HH, p_dt[qq+jj].batas_atas, 	\
-							((p_dt[qq+jj].aktif)?"checked":""), ((p_dt[qq+jj].aktif==0)?"checked":""), \
-							(qq+jj+1));
-						//printf("%s", head_buf);
-						strcat(tot_buf, head_buf);
-						strcat(tot_buf, "\n</form></tr>\n");
-						#endif
-						
+				#if 1
+				for (jj=0; jj<KANALNYA; jj++)	{
+					if (pmx[ll].IP3!=env2->IP3)
+						ganti_karakter(ket, p_dt[tt+jj].nama);
+					else {
+						ktr = (int) ((jj/2)+1);
+						if (qq)	ktr+=5;
+						if (jj%2)
+							sprintf(ket, "Pulsa-%d", ktr);
+						else	{						
+							sprintf(ket, "RPM/OnOff-%d", ktr);
+						}
 					}
-				//#endif
+						
+					//printf("%d %-8s : ", qq+jj, ket);
+					// else
+					sprintf(head_buf, "\n<tr>\n<form action=\"setting.html\" name=\"mF%d\">\r\n" \
+						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
+						"<input type=\"hidden\" name=\"d\" value=\"%d\" />\r\n" \ 
+						"<input type=\"hidden\" name=\"z\" value=\"7\" />\r\n" \ 
+						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
+						"<th>%d</th><th>%d</th><td align=\"left\">%s</td>",	\
+						(tt+jj+1), nk, (tt+jj+1), (tt+jj+1), \
+						jj+1, (tt+jj+1), ket);
+					//printf("%s", head_buf);
+					strcat(tot_buf, head_buf);
+					sprintf(head_buf, \
+						"<td><input type=\"text\" size=\"3\" name=\"n\" value=\"%.1f\"></td>\n"	\
+						"<td><input type=\"text\" size=\"3\" name=\"q\" value=\"%.1f\"></td>\n"	\
+						"<td><input type=\"text\" size=\"3\" name=\"w\" value=\"%.1f\"></td>\n"	\
+						"<td><input type=\"text\" size=\"3\" name=\"r\" value=\"%.1f\"></td>\n"	\
+						"<td><input type=\"text\" size=\"3\" name=\"t\" value=\"%.1f\"></td>\n"	\
+						"<td><input type=\"text\" size=\"3\" name=\"q\" value=\"%.1f\"></td>\n"	\
+						"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+						"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n"	\
+						"<td><input type=\"Submit\" value=\"Ganti\" onClick=\"gantiTitik(mF%d)\"></td>",	\
+						p_dt[tt+jj].batas_bawah, p_dt[tt+jj].alarm_L, p_dt[tt+jj].alarm_L,	\
+						p_dt[tt+jj].alarm_H, p_dt[tt+jj].alarm_HH, p_dt[tt+jj].batas_atas, 	\
+						((p_dt[tt+jj].aktif)?"checked":""), ((p_dt[tt+jj].aktif==0)?"checked":""), \
+						(tt+jj+1));
+					//printf("%s", head_buf);
+					strcat(tot_buf, head_buf);
+					strcat(tot_buf, "\n</form></tr>\n");
+					
+				}
+				#endif
 				#if defined(UNTUK_UNSRI)
 				strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\"><tbody bgcolor=\"white\">\n");
 				strcat(tot_buf, "<tr>\n<th width=\"40px\">No</th>\n<th width=\"80px\">Kanal</th>\n");
@@ -2633,7 +2547,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 								"</form>\n</tr>", \
 								no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
 								strlen(ket)>0?ket:"-", \
-								((int) konfig[PER_SUMBER*JML_SUMBER+i].status?"checked":" "), \
+								((int) konfig[PER_SUMBER*no+i].status?"checked":" "), \
 								((int) konfig[PER_SUMBER*no+i].status?" ":"checked") \
 								);
 						strcat(tot_buf, head_buf);

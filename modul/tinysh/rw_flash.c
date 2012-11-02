@@ -77,6 +77,7 @@ int tes_tulis_flash()
 
 }
 
+
 int tes_baca_flash()
 {
 	unsigned long i,j;
@@ -102,7 +103,9 @@ int tes_baca_flash()
 
 int prepare_flash(int sektor_start, int sektor_end)
 {
-	printf("%s() masuk\r\n", __FUNCTION__);
+	
+	 __e_iap_status iap_status;
+	//printf("%s() masuk\r\n", __FUNCTION__);
 	unsigned int command[5]; // For Command Table
 	unsigned int result[2]; // For Result Table
 	IAP iap_entry;
@@ -127,7 +130,7 @@ int prepare_flash(int sektor_start, int sektor_end)
 
 int hapus_flash(int sektor_start, int sektor_end)
 {
-	printf("%s() masuk\r\n", __FUNCTION__);
+	//printf("%s() masuk\r\n", __FUNCTION__);
 	unsigned int command[5]; // For Command Table
 	unsigned int result[2]; // For Result Table
 	IAP iap_entry;
@@ -153,7 +156,7 @@ int hapus_flash(int sektor_start, int sektor_end)
 
 int tulis_flash(int dst, int sektor_start, int sektor_end, unsigned short *data, int pjg)
 {
-	printf("%s() masuk\r\n", __FUNCTION__);
+	//printf("%s() masuk\r\n", __FUNCTION__);
 	unsigned int command[5]; // For Command Table
 	unsigned int result[2]; // For Result Table
 	IAP iap_entry;
@@ -163,23 +166,24 @@ int tulis_flash(int dst, int sektor_start, int sektor_end, unsigned short *data,
 	iap_entry = (IAP)IAP_LOCATION; // Set Function Pointer
 
 	printf("\r\npjg = %d, pos=%X\r\n", pjg, &data[posisi]);
-
+	char i=0;
+	
 	while(pjg > 0)
 	{
 		uk=256;
 
 		if (pjg > 256) uk = 512;
 		if (pjg > 512) uk = 1024;
-		if (pjg > 1024 && pjg < 4096) uk = 4096;
-
-
-		printf(" uk=%d ", uk);
-
+		//if (pjg > 1024 && pjg < 4096) uk = 4096;
+		if (pjg > 1024) uk = 4096;
+		
 		command[0] = 51;
 		command[1] = dst+(posisi * 2); // tujuan flash (seuai dengan sektor flash)
 		command[2] = (unsigned short *) &data[posisi]; // source ram
 		command[3] = uk;
 		command[4] = 60000;// PCLK = 60000 KHz
+
+		printf("Tulis %d ---> uk=%d/%d di %d:%ld\r\n", ++i, uk, pjg, posisi, dst+(posisi * 2));
 
 		taskENTER_CRITICAL();
 		iap_entry(command,result);
@@ -189,7 +193,7 @@ int tulis_flash(int dst, int sektor_start, int sektor_end, unsigned short *data,
 			printf(" flash write error %d!\r\n", result[0]);
 			return result[0];
 		}
-		printf("%%%%");
+		//printf("%%%%: %d", uk);
 		posisi = posisi + (uk / 2); // karena dalam word / short
 		pjg = pjg - uk;
 

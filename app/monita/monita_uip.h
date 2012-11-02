@@ -23,7 +23,7 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
-#define MAGIC_1	0x31
+#define MAGIC_1	0x32
 #define MAGIC_2	0xEF
 
 char indexList[256], dataList[256];
@@ -45,7 +45,7 @@ char indexList[256], dataList[256];
 	#elif defined(UNTUK_PLTD_AMPENAN)
 		#define JML_SUMBER 12		// max 11 sumber tampilan bisa
 	#else
-		#define JML_SUMBER	4
+		#define JML_SUMBER	5
 	#endif
 	//#define JML_SUMBER	5
 	//#define JML_SUMBER	10
@@ -106,6 +106,21 @@ char indexList[256], dataList[256];
 //unsigned int loop_idle=0;
 //unsigned int idle_lama;
 //unsigned int tot_idle;
+
+typedef enum {
+    CMD_SUCCESS = 0,
+    INVALID_COMMAND,
+    SRC_ADDR_ERROR,
+    DST_ADDR_ERROR,
+    SRC_ADDR_NOT_MAPPED,
+    DST_ADDR_NOT_MAPPED,
+    COUNT_ERROR,
+    INVALID_SECTOR,
+    SECTOR_NOT_BLANK,
+    SECTOR_NOT_PREPARED_FOR_WRITE_OPERATION,
+    COMPARE_ERROR,
+    BUSY,
+} __e_iap_status;
 
 
 

@@ -360,9 +360,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		webclient_init();
 		printf(" Monita : webclient init !! [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
 		unsigned char datakeserver[512];
-		int wclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
+		int wclient=0, subwclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
 		char il[256], dl[256];
+		char ayokirim = 0;
 	#ifdef WEBCLIENT_DATA
 		
 		char angkaangka[5];
@@ -377,7 +378,12 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		
 		int selang=0;
 		char ipdest[15];
-		int tiapKirim=950;		
+		//int tiapKirim=950;
+		int tiapKirim;
+		
+		if (envx->intKirim==1)			tiapKirim = 990;
+		else							tiapKirim = (envx->intKirim-1)*1000+990;
+		printf("Periode Kirim : tiapKirim = %d\r\n", tiapKirim);
 	#endif
 	
 	#ifdef PAKAI_WEBCLIENT_INTERNET
@@ -421,7 +427,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 #endif
 
 	//printf("UIP_LLH_LEN: %d\r\n", UIP_LLH_LEN);
-	
+
 	//  Initialise the local timers //
 	xStartTime = xTaskGetTickCount ();
 	xARPTimer = 0;
@@ -485,9 +491,28 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				//*/
 			}
 			
-			#ifdef WEBCLIENT_DATA
-			if (wclient == tiapKirim) {
+			if (flag_nos)	{
 				ngitung++;
+				if ( (wclient>0) && (ngitung%205) )	{
+					ayokirim = 1;
+				}
+			}
+			
+			#ifdef WEBCLIENT_DATA
+			if ( (wclient==tiapKirim) || (ayokirim==1) ) {
+				#if 0
+				printf("wclient: %d, tiapKirim: %d, jmlData: %d, ngitung: %d\r\n", wclient, tiapKirim, jmlData, ngitung);
+				#endif
+				wclient = 0;	// reset counter periode !!!
+				ngitung=0;
+				ayokirim = 0;
+				
+				selang++;
+				if (selang>10)	{
+					selang = 0;
+					if (envx->intKirim==1)	tiapKirim = 990;
+					else					tiapKirim = (envx->intKirim-1)*1000+990;
+				}
 				
 				struct t_sumber *sumber;
 				sumber = (char *) ALMT_SUMBER;
@@ -525,6 +550,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				
 				// hitung jml loop kirim ke server
 				//*
+				#if 0 // dimatikan dulu cari penyebab jadi 1 detik !!!
 				if (flag_sumber<jmlsumbernya) {
 					flag_sumber=jmlsumbernya;
 					tiapKirim=950/jmlsumbernya;
@@ -533,9 +559,10 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 						//tiapKirim = 410;
 					//tiapKirim=2000/jmlsumbernya;
 				}
+				#endif
 				//*/
 				
-				wclient = 0;				
+							
 
 				if (jmlData>0) {
 					
@@ -558,8 +585,8 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, il);
 					strcat(datakeserver, dl);
 					//portEXIT_CRITICAL();
-					
-					//printf("datakeserver: %s\r\n",datakeserver);
+					//get_cal();
+					//printf("%s @%s ---> datakeserver: %s\r\n", __FUNCTION__, __FILE__, datakeserver);
 					webclient_get(ipdest, PORT_HTTP, datakeserver);
 					
 				}

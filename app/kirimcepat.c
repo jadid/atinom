@@ -222,6 +222,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#endif
 		
 		#ifdef PAKAI_KONTROL_RTC
+			/*
 			if (flagRTCc==1)	{
 				lb++;
 				#ifdef PAKAI_MODEM_GSM
@@ -236,9 +237,10 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			}
 			if (flagRTCc==2)	{
 				lb =lb+2;
-				printf("alarm	 : %d\r\n", lb);
+				//printf("alarm	 : %d\r\n", lb);
 				flagRTCc=99;
 			}
+			//*/
 		#endif
 		
 		#if 1

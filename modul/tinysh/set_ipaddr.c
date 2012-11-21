@@ -201,12 +201,29 @@ static void setenv_fnt(int argc, char **argv)
 		}
 		printf(" Status serialclient : %s\r\n", (p_sbr->statusSerClient==1)?"aktif":"mati");
 	}
-	else if (strcmp(argv[1], "intclient") == 0)	{
-		printf(" set periode serclient\r\n");
-  		p_sbr->intSer = atoi(argv[2]);
-		printf(" %d detik\r\n", p_sbr->intSer);
-	}
 	#endif
+	else if (strcmp(argv[1], "periode") == 0)	{
+		printf(" set periode kirim client\r\n");
+  		p_sbr->intKirim = atoi(argv[2]);
+  		
+  		if (argc==4)	{
+			if (strcmp(argv[3],"jam")==0)		{
+				p_sbr->intKirim *= 3600;
+			}
+			else if (strcmp(argv[3],"menit")==0)		{
+				p_sbr->intKirim *= 60; 
+			}
+		}
+  		if (argc==3)	{
+			if (p_sbr->intKirim > 3600)
+				printf(" %d jam\r\n", (int) p_sbr->intKirim/3600);
+			else if (p_sbr->intKirim > 60)
+				printf(" %d menit\r\n", (int) p_sbr->intKirim/60);
+			else
+				printf(" %d detik\r\n", p_sbr->intKirim);
+		}
+	}
+	
 	#ifdef PAKAI_WEBCLIENT
 	else if (strcmp(argv[1], "file") == 0)	{
 		printf(" set file");

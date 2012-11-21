@@ -14,33 +14,57 @@
 
 #ifdef PAKAI_RELAY
 
-#ifdef PAKAI_WEBCLIENT_INTERNET
-	void set_semuaRelay(char * rel)	{
-		char r;
-		for (r=0; r<JML_RELAY; r++) {
-			if (debound[r]==0)
-				(rel[r]-'0')?set_selenoid(r+1):unset_selenoid(r+1);
+//#ifdef PAKAI_WEBCLIENT_INTERNET
+	void set_semuaRelay(int id, int nilai)	{
+		int r=0, p=0, rm = PER_SUMBER*JML_SUMBER;
+		struct t_setting *konfig;
+		konfig = (char *) ALMT_KONFIG;
+		
+		for (r=0; r<JML_RELAY; r++)	{
+			if (id==konfig[rm+r].id)	{
+				p = r+1;
+				//printf("id: %d, konfig: %d, p: %d, nilai: %d\r\n", id, konfig[rm+r].id, p, nilai);
+				break;
+			}
 		}
+		
+		if (nilai == 1)		
+			set_selenoid(p);
+		else unset_selenoid(p);
 	}
 
 	void parsing_cmd(char * cmd)	{
 		//printf("cmdnya: %s\r\n", cmd);
-		char status[30], rel[30];
+		char status[30], rel[100];
+		char *pch;
+		int id, nilai;
 		int inc;
 		
 		sscanf (cmd,"<html><body>%s %d %s", status, &inc, rel);
-		rel[8] = '0';
+		pch = strrchr (rel,';');		
+		rel[pch-rel] = 0;
 		//printf("cmd   : %s\r\n", rel);
 		
+		pch = strtok (rel,";");
+		while (pch != NULL)	{
+			//printf ("isi: %s\n",pch);
+			sscanf (pch,"%d,%d", &id, &nilai);
+			//printf("id: %d, nilai: %d\r\n", id, nilai);
+			set_semuaRelay(id, nilai);
+			pch = strtok (NULL, ";");
+		}
+		
 		#if 0
+		rel[8] = '0';
+		printf("%d : cmd   : %s\r\n", inc, rel);		// 3 101,0;102,1;103,1
 		printf("status: %s, n: %d\r\n", status, inc);
 		printf("1: %d\r\n", (int)(rel[0]-'0'));
 		printf("2: %d\r\n", (int)(rel[1]-'0'));
 		printf("3: %d\r\n", (int)(rel[2]-'0'));
 		#endif
-		set_semuaRelay(rel);
+		
 	}
-#endif
+//#endif
 
 void set_selenoid( unsigned int no )	{
 	#if 1

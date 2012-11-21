@@ -84,7 +84,7 @@ struct t_env {
 	#endif
 	//#ifdef KIRIM_KE_SER_2
 	char	statusSerClient;
-	int		intSer;
+	int		intKirim;
 	int		intReset;
 	float	intTole;
 	int		netTot;

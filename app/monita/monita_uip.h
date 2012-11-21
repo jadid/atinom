@@ -23,7 +23,7 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
-#define MAGIC_1	0x32
+#define MAGIC_1	0x34
 #define MAGIC_2	0xEF
 
 char indexList[256], dataList[256];
@@ -317,8 +317,9 @@ typedef struct __attribute__ ((packed))	{
 	#define JML_CRON	10		// baca_cron() setiap 1/2 detik mulai detik ke 5
 								// ubah mulai baca_cron di tinysh/cron.c
 								// max JML_CRON = 108.
-	#define SEKTOR_CRON	20		// 32 kB/64 = 512.
-	#define ALMT_CRON	0x68000
+	#define SEKTOR_CRON	22		// 32 kB/64 = 512.
+	//#define ALMT_CRON	0x68000
+	#define ALMT_CRON	ALMT_SEKTOR_22
 #endif
 
 //#ifdef PAKAI_SELENOID

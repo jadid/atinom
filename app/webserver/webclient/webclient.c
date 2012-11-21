@@ -213,7 +213,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 				
 		}
 	}
-	#ifdef PAKAI_RELAY
+	#ifdef PAKAI_RELAYx
 		#define AWAL_RELAY (JML_SUMBER*PER_SUMBER)
 		//struct t_setting *konfigx;
 		//konfigx = (char *) ALMT_KONFIG;
@@ -268,8 +268,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 }
 #endif
 
-unsigned char webclient_get(char *host, u16_t port, char *file)
-{
+unsigned char webclient_get(char *host, u16_t port, char *file)		{
 	int gg=0;
   struct uip_conn *conn;
   uip_ipaddr_t *ipaddr;
@@ -744,7 +743,8 @@ void webclient_datahandler(char *data, u16_t len)
 	
 	//if (len == 0)
 	//	printf("\r\n");
-	#ifdef PAKAI_WEBCLIENT_INTERNET
+	//#ifdef PAKAI_WEBCLIENT_INTERNET
+	#ifdef WEBCLIENT_DATA
 	
 	if (len>0)	{
 

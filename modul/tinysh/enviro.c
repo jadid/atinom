@@ -146,7 +146,7 @@ int baca_env(char tampil)
 {
 	struct t_env *ev;
 	int i;
-	//char teku[128];
+	char ketper[30];
 	
 	if (tampil == 1)
 	{
@@ -176,17 +176,21 @@ int baca_env(char tampil)
 			#endif
 			
 			#ifdef PAKAI_WEBCLIENT
-				printf(" WebClient   = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati"); 
+				printf(" WebClient  = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati");
+				if (env2->intKirim<60) sprintf(ketper, "%d detik", env2->intKirim);
+				else if (env2->intKirim<3600) sprintf(ketper, "%d menit", env2->intKirim/60);
+				else sprintf(ketper, "%d jam", env2->intKirim/3600);
+				printf(" Periode    = %s : %d\r\n", ketper, env2->intKirim);
 				#ifdef PAKAI_WEBCLIENT_INTERNET
 				printf(" WebInternet = %s\r\n", (env2->statusWebClientI==1)?"Aktif":"mati"); 
 				#endif
-				printf(" File        = %s\r\n", env2->berkas); 
-				printf(" Mode Burst  = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
+				printf(" File       = %s\r\n", env2->berkas); 
+				//printf(" Mode Burst = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
 			#endif
 			
 			#ifdef KIRIM_KE_SER_2
 				printf(" serclient  = %s\r\n", (env2->statusSerClient==1)?"Aktif":"mati"); 
-				printf(" intclient  = %d\r\n", env2->intSer);
+				//printf(" intclient  = %d\r\n", env2->intKirim);
 			#endif
 			
 			garis_bawah();
@@ -434,7 +438,7 @@ void set_env_default() {
 	env2->burst = 0;
 	
 	env2->statusSerClient = 0;
-	env2->intSer = 5;				// 5 detik
+	env2->intKirim = 1;				// 5 detik
 	env2->intReset = 60;
 	//env2->intTole = 208;			// 1 drum
 	env2->intTole = 3.785;			// 1 drum

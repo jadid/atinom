@@ -115,8 +115,67 @@ int lihat_cron(int argc, char **argv)
 static tinysh_cmd_t cek_cron_cmd={0,"cek_cron","menampilkan konfigurasi cron",
 		"help default ",lihat_cron,0,0,0};
 
-int cekCron(struct t_cron tes) {
+int banding_waktu(char *waktu, int j)	{
+	int bs=0;
+	int ba, bb;
+	char *pch, *pch2;
 	
+	//printf("waktu: %s\r\n", waktu);
+	pch=strchr(waktu,'-');
+	if (pch!=NULL)	{
+		bb = atoi(waktu); ba = atoi(pch+1);
+		//printf("%s\r\n", pch+1);
+		//printf("antara !!!: %d-%d\r\n", bb, ba);
+		if ( (j>=bb) && (j<=ba) )		return 1;
+		else return 0;
+	}
+	pch = strchr(waktu,'>');
+	if (pch!=NULL)	{
+		pch2 = strchr(pch,'=');
+		//printf("isi %s\r\n", pch2);
+		if (pch2!=NULL)	{		// >=
+			ba = atoi(pch2+1);
+			//printf("BESAR SAMA >= ----> %d>=%d\r\n", j, ba);
+			if (j>=ba) return 1;
+			
+		} else {					// >
+			ba = atoi(pch+1);
+			//printf("BESAR > ----> %d>=%d\r\n", j, ba);
+			if (j>ba) return 1;
+		}
+		return 0;
+	}
+	pch = strchr(waktu,'<');
+	if (pch!=NULL)	{
+		pch2 = strchr(pch,'=');
+		//printf("isi %s\r\n", pch2);
+		if (pch2!=NULL)	{		// <=
+			bb = atoi(pch2+1);
+			//printf("KECIL SAMA <= %s %d\r\n", pch2+1, bb);
+			if (j<=bb) return 1;
+		} else {	
+			bb = atoi(pch+1);		// <
+			//printf("KECIL < %s %d\r\n", pch+1, bb);
+			if (j<bb) return 1;
+		}
+		return 0;
+	}
+	pch = strtok (waktu,",");
+	while (pch != NULL)	{
+		//printf ("%s\n",pch);
+		if (atoi(pch)==j)	return 1;
+		pch = strtok (NULL, ",");
+	}
+	bs = atoi(waktu);
+	//printf("PAS %d\r\n", bs);
+	if (j==bs) return 1;
+	
+	return 0;
+}
+
+int cekCron(struct t_cron tes) {
+	//printf("=====================================================\r\n");
+	//printf("mnt : %s, jam: %s, tgl: %s\r\n", tes.mnt, tes.jam, tes.tgl);
 	rtcCTIME0_t ctime0;
 	rtcCTIME1_t ctime1;
 	rtcCTIME2_t ctime2;
@@ -140,63 +199,92 @@ int cekCron(struct t_cron tes) {
 	//get_tm_time( &timeinfo );
 	//timeval = mktime( &timeinfo );
 	// tw.tm_year+1900), bulan[tw.tm_mon], tw.tm_mday, tw.tm_hour-1
-	int flag=0;
+	int flag=0, cf=0;
 
 	if (tes.bln[0]=='s' || tes.bln[0]=='*') {					// periodik bln
 		//printf("Blnsss: %d ", timeinfo.tm_mon);
 		//flag = cron(tes.bln, timeinfo.tm_mon);
 		flag = cron(tes.bln, ctime1.month);
+		if (flag)	cf = 1;
 	} else {								// tunjuk bln
 		//printf("Bln: %s ", tes.bln);
+		flag = banding_waktu(tes.bln, ctime1.month);
+		if (flag)	cf = 2;
 		//if (atoi(tes.bln) == timeinfo.tm_mon) {
-			if (atoi(tes.bln) == ctime1.month) {
+		/*
+		if (atoi(tes.bln) == ctime1.month) {
 			flag = 1;						// bln BENAR, lanjut cek tgl
 		}  else {
 			return 0;						// cron bln SALAH
 		}
+		//*/
 	}
+	//printf(" bln : %d --> ", flag);
+	if (flag==0)	return 0;
 	
 	if (tes.tgl[0]=='s' || tes.tgl[0]=='*') {					// periodik tgl
 		//printf("Tglsss: %d ", timeinfo.tm_mday);
 		//flag = cron(tes.tgl, timeinfo.tm_mday);
 		flag = cron(tes.tgl, ctime1.dom);
+		if (flag)	cf = 3;
 	} else {								// tunjuk tgl
 		//printf("Tgl: %s ", tes.tgl);
+		flag = banding_waktu(tes.tgl, ctime1.dom);
+		if (flag)	cf = 4;
 		//if (atoi(tes.tgl) == timeinfo.tm_mday) {
+		/*
 		if (atoi(tes.tgl) == ctime1.dom) {
 			flag = 1;						// tgl BENAR, lanjut cek jam
 		}  else {
 			return 0;						// cron tgl SALAH
 		}
+		//*/
 	}
+	//printf(" tgl : %d --> ", flag);
+	if (flag==0)	return 0;
 	
 	if (tes.jam[0]=='s' || tes.jam[0]=='*') {					// periodik jam
 		//printf("Jamsss: %d ", timeinfo.tm_hour);
 		//flag = cron(tes.jam, timeinfo.tm_hour);
 		flag = cron(tes.jam, ctime0.hours);
+		if (flag)	cf = 5;
 	} else {								// tunjuk jam
 		//printf("Jam: %s ", tes.jam);
+		flag = banding_waktu(tes.jam, ctime0.hours);
+		if (flag)	cf = 6;
 		//if (atoi(tes.jam) == timeinfo.tm_hour) {
+		/*
 		if (atoi(tes.jam) == ctime0.hours) {
-			flag = 1;						// jam BENAR, lanjut cek menit
+			flag = 1;						// jam BENAR, lanjut cek jam
 		}  else {
 			return 0;						// cron JAM SALAH
 		}
+		//*/
 	}
+	//printf(" jam : %d --> ", flag);
+	if (flag==0)	return 0;
 	
 	if (tes.mnt[0]=='s' || tes.mnt[0]=='*') {					// periodik menit
 		//printf("Menitsss: %d ", timeinfo.tm_min);
 		//flag = cron(tes.mnt, timeinfo.tm_min);
 		flag = cron(tes.mnt, ctime0.minutes);
+		if (flag)	cf = 7;
 	} else {								// periodik menit
 		//printf("Menit: %s ", tes.mnt);
 		//if (atoi(tes.mnt) == timeinfo.tm_min) {
+		flag = banding_waktu(tes.mnt, ctime0.minutes);
+		if (flag)	cf = 8;
+		
+		/*
 		if (atoi(tes.mnt) == ctime0.minutes) {
 			flag = 1;						// menit BENAR
 		}  else {
 			return 0;						// cron menit SALAH
 		}
+		//*/
 	}
+	//printf(" menit : %d --> ", flag);
+	//printf("CF: %d\r\n", cf);
 	return flag;
 }
 
@@ -218,13 +306,17 @@ void baca_cron() {
 	p_dt = (char *) ALMT_CRON;
 	
 	for (ww=0; ww<JML_CRON; ww++)	{
-		if (p_dt[ww].set) {
-			//printf("ww: %d ==> ", ww);
-			if (cekCron(p_dt[ww])==BENAR) {
+		if (p_dt[ww].set==1) {
+			//printf("ww: %d ============================================\r\n", ww+1);
+			//get_cal();
+			//printf("ww: %d, aktif : %d, %s\r\n", ww, p_dt[ww].set, p_dt[ww].mnt);
+			if (cekCron(p_dt[ww])==1) {
+				
+				//printf("ww: %d JALAN, aktif : %d, %s\r\n", ww+1, p_dt[ww].set, p_dt[ww].mnt);
 				if (strcmp(p_dt[ww].cmd,"cek")==0) {
 					printf("...............cek_cron, printf ini !!!\r\n");
 				}
-				
+
 				#ifdef PAKAI_RELAY
 					//printf("RELAY !! ...");
 					if (strcmp(p_dt[ww].cmd,"relay")==0) {

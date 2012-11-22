@@ -27,44 +27,26 @@
 				break;
 			}
 		}
-		
-		if (nilai == 1)		
-			set_selenoid(p);
-		else unset_selenoid(p);
+		if ((p>0) && (p<JML_RELAY+1))	{
+			if (nilai==1)	set_selenoid(p);
+			else 			unset_selenoid(p);
+		}
 	}
 
-	void parsing_cmd(char * cmd)	{
-		//printf("cmdnya: %s\r\n", cmd);
-		char status[30], rel[100];
+	int set_relaynya(int xData, char *rel)	{
 		char *pch;
 		int id, nilai;
-		int inc;
-		
-		sscanf (cmd,"<html><body>%s %d %s", status, &inc, rel);
-		pch = strrchr (rel,';');		
-		rel[pch-rel] = 0;
-		//printf("cmd   : %s\r\n", rel);
 		
 		pch = strtok (rel,";");
 		while (pch != NULL)	{
 			//printf ("isi: %s\n",pch);
 			sscanf (pch,"%d,%d", &id, &nilai);
 			//printf("id: %d, nilai: %d\r\n", id, nilai);
-			set_semuaRelay(id, nilai);
+			if (nilai>0)
+				set_semuaRelay(id, nilai);
 			pch = strtok (NULL, ";");
 		}
-		
-		#if 0
-		rel[8] = '0';
-		printf("%d : cmd   : %s\r\n", inc, rel);		// 3 101,0;102,1;103,1
-		printf("status: %s, n: %d\r\n", status, inc);
-		printf("1: %d\r\n", (int)(rel[0]-'0'));
-		printf("2: %d\r\n", (int)(rel[1]-'0'));
-		printf("3: %d\r\n", (int)(rel[2]-'0'));
-		#endif
-		
 	}
-//#endif
 
 void set_selenoid( unsigned int no )	{
 	#if 1

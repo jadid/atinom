@@ -534,7 +534,7 @@ newdata(void)
   if(len > 0 && s.state == WEBCLIENT_STATE_DATA &&
      s.httpflag != HTTPFLAG_MOVED) {
     webclient_datahandler((char *)uip_appdata, len);		// 2
-    printf("len : %d : WEBCLIENT_STATE_DATA\r\n", len);
+    //printf("len : %d : WEBCLIENT_STATE_DATA\r\n", len);
   }
 }
 /*-----------------------------------------------------------------------------------*/
@@ -617,24 +617,65 @@ void webclient_connected() {
 	//printf("%s() masuk\r\n", __FUNCTION__);
 }
 
+	void parsing_cmd(char * cmd, int len)	{
+		//printf("-------------------> %s\r\n", __FUNCTION__);
+		//char *isi, *rel, *header;
+		char *pch, *pch2, *pch3, *srelay, *swaktu;
+		int xData=0, nLoop;
+		//int inc;
+
+		pch=strstr(cmd,"OK");
+		
+		if (pch==NULL)	{
+			//printf("Respoon : TIDAK OK !!!\r\n");
+			return;
+		}
+		
+		//printf("MANTAP !!!\r\n");
+		
+		pch2 = strtok (pch,"#");
+		while (pch2 != NULL)	{
+			//printf ("%s\n",pch2);
+			pch3 = strchr(pch2,':')+1;
+			if (strstr(pch2,"c") != NULL)  	nLoop = atoi(pch3);
+			if (strstr(pch2,"data") != NULL) 	xData = atoi(pch3);//	printf("---> pch3 : %s\r\n", pch3);
+			if (strstr(pch2,"relay") != NULL) 	srelay = pch3;//	printf("---> pch3 : %s\r\n", pch3);
+			if (strstr(pch2,"time") != NULL) 	swaktu = pch3;//	printf("---> pch3 : %s\r\n", pch3);
+			
+			pch2 = strtok (NULL, "#");
+		}
+		
+		#ifdef PAKAI_RELAY
+		set_relaynya(xData, srelay);
+		#endif
+
+		return;
+	}
+
+
 void webclient_datahandler(char *data, u16_t len)
 {
 	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
 	//tulis_foto( data, len );
+	
+	int panjang = uip_len-s.nData-1;
 
 	#ifdef WEBCLIENT_DATA
-	
+
 	if (len>0)	{
 		char *isi = &data[s.nData];
-		//isi[uip_len-s.nData]='\0';
-		isi[uip_len-s.nData-10]='\0';
-		printf("isinya: %s\r\n", isi);
-		#ifdef PAKAI_RELAY
-		//parsing_cmd(isi);		// file @ app/relay/relay.c
-		#endif
+		isi[panjang+1] = 0;
 		
+		//printf("panjang : %d\r\n", panjang);
+		//printf("isinya: %c %c %c\r\n", isi[0], isi[1], isi[2]);
+		//printf("isinya: %c %c %c\r\n", isi[panjang-2], isi[panjang-1], isi[panjang]);
+		//printf("isi: %s\r\n");		// klo diprintf malah ngehang !!!
+		//#ifdef PAKAI_RELAY
+		parsing_cmd(isi, panjang);		// file @ app/relay/relay.c
+		//#endif
+
 	#if 0
 		int wli=0, eqe=64, awal, akhir;
 		awal  = len;
@@ -678,7 +719,7 @@ void webclient_datahandler(char *data, u16_t len)
 		}
 	#endif
 	}
-	printf("\r\n+++++++++++\r\n");
+	//printf("\r\n+++++++++++\r\n");
 	#endif	
 }
 #endif

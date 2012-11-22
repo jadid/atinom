@@ -623,10 +623,10 @@ struct t_gsm_ftp {
 
 #ifdef PAKAI_CRON
 struct t_cron {
-	char 	mnt[10];
-	char 	jam[10];
-	char	tgl[10];
-	char	bln[10];
+	char 	mnt[20];
+	char 	jam[20];
+	char	tgl[20];
+	char	bln[20];
 	char	cmd[20];
 	char 	alamat;
 	char	status;			// status perintahnya : suruh dihidup ato mati

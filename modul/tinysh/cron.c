@@ -125,8 +125,11 @@ int banding_waktu(char *waktu, int j)	{
 	if (pch!=NULL)	{
 		bb = atoi(waktu); ba = atoi(pch+1);
 		//printf("%s\r\n", pch+1);
-		//printf("antara !!!: %d-%d\r\n", bb, ba);
-		if ( (j>=bb) && (j<=ba) )		return 1;
+		
+		if ( (j>=bb) && (j<=ba) )	{
+			//printf("antara !!!: %d-%d\r\n", bb, ba);
+			return 1;
+		}
 		else return 0;
 	}
 	pch = strchr(waktu,'>');
@@ -304,11 +307,12 @@ void baca_cron() {
 	
 	struct t_cron *p_dt;
 	p_dt = (char *) ALMT_CRON;
+	//get_cal();
 	
 	for (ww=0; ww<JML_CRON; ww++)	{
 		if (p_dt[ww].set==1) {
 			//printf("ww: %d ============================================\r\n", ww+1);
-			//get_cal();
+			
 			//printf("ww: %d, aktif : %d, %s\r\n", ww, p_dt[ww].set, p_dt[ww].mnt);
 			if (cekCron(p_dt[ww])==1) {
 				
@@ -318,7 +322,9 @@ void baca_cron() {
 				}
 
 				#ifdef PAKAI_RELAY
-					//printf("RELAY !! ...");
+					#ifdef DEBUG_DATA
+					printf("RELAY !! ...");
+					#endif
 					if (strcmp(p_dt[ww].cmd,"relay")==0) {
 						//printf("cmd: RELAY ....%d ==> ");
 						if (p_dt[ww].status==1) {

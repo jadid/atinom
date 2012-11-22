@@ -77,7 +77,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	int lk = 0, cKirim=0, dKirim;
   	char iList[256], dList[256];
   	
-  	int jmlData=0,nos=0, ngitung=0, selang=0;
+  	int jmlData=0,nos=0, ngitung=0, selang=0, sumber=0;
   	char flag_nos;
   	int aa = 0, na = 0, mm, nn=0;
   	char cM[2];
@@ -152,7 +152,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#endif
 		
 		#ifdef PAKAI_KONTROL_RTC
-			/*
+			//*
 			if (flagRTCc==1)	{
 				lb++;
 				#ifdef PAKAI_MODEM_GSM
@@ -184,7 +184,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				//printf("ngitung: %d, tambahan %d !!!!\r\n", ngitung, ayokirim);
 			}
 		}
-		
+
 		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
 			ayokirim &= (~1);
 			jmlData=kirimModul(0, nos, noawal, iList, dList);

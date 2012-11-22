@@ -187,7 +187,8 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				//printf("ngitung: %d, tambahan %d !!!!\r\n", ngitung, ayokirim);
 			}
 		}
-
+		
+		printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
 		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
 			ayokirim &= (~1);
 			printf("----------------------sumber: %d, noawal: %d, %s\r\n", nos, noawal, iList);
@@ -216,12 +217,14 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			cKirim = 0;
 			//ayokirim = 0;
 			
-			if ( (nos<JML_SUMBER) && (flag_nos==MATI) && (p_sbr[nos].status==AKTIF) ) {
+			//if ( (nos<JML_SUMBER) && (flag_nos==MATI) && (p_sbr[nos].status==AKTIF) ) {
+			if ( (nos<JML_SUMBER) && (flag_nos==MATI) ) {
 				flag_nos = AKTIF;
 			#ifdef PAKAI_RELAY
 			} else if (nos==JML_SUMBER)	{
 				flag_nos = AKTIF;
 				sumber = wRELAY;
+				printf("===========>  ini bagian relay !!!\r\n");
 			#endif
 			} else {
 				nos=0;
@@ -255,15 +258,14 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	struct t_setting *konfig;
 	konfig = (char *) ALMT_KONFIG;
 	
+	
+	strcpy(il,"&il="); 	strcpy(dl,"&dl=");
 	#ifdef PAKAI_RELAY
 	if (sumber==wRELAY)		{
 		strcpy(il,"&rl="); 	strcpy(dl,"&kl=");
 		sumber = JML_SUMBER;
 	} else
 	#endif
-	{
-		strcpy(il,"&il="); 	strcpy(dl,"&dl=");
-	}
 	
 	if (burst==AKTIF) {
 		struct t_sumber *psbr;

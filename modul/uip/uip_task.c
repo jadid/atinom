@@ -439,31 +439,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
 			#ifdef WEBCLIENT_DATA
-			if ((ayokirim >> 1) & 1) {
 				ayokirim &= (~2);
+			if ((ayokirim >> 1) & 1) {
 				sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 				strcpy(kirim_eth, envx->berkas);
 				strcat(kirim_eth, datakeserver);
-				//printf("%s @%s ---> %s : %s\r\n", __FUNCTION__, __FILE__, ipdest, kirim_eth);
+				printf("%s @%s ---> %s : %s\r\n", __FUNCTION__, __FILE__, ipdest, kirim_eth);
 				webclient_get(ipdest, PORT_HTTP, kirim_eth);
 			}
-				/*
-				if (!flag_nos) {
-					printf("sampe sini 1A ..\r\n");
-					nos++;
-					while(sumber[nos-1].status!=1) {	// cari modul sumber aktif
-						printf("sampe sini 111 %d..\r\n", nos);
-						if (nos>JML_SUMBER) {
-							nos=0;
-							jmlsumbernya=0;
-						}
-						if (nos>JML_SUMBER) break;
-						nos++;
-						//sum++;
-					}
-				}
-				jmlsumbernya++;
-				//*/
 			#endif
 		}
 

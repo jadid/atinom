@@ -57,6 +57,9 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	struct t_env *penv;
 	penv = (char *) ALMT_ENV;
 	
+	struct t_sumber *p_sbr;
+	p_sbr = (char *) ALMT_SUMBER;
+	
 	#ifdef PAKAI_SHELL
 		printf(" Monita : Kirim cepat init !!\r\n");
   	#endif
@@ -187,6 +190,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 
 		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
 			ayokirim &= (~1);
+			printf("----------------------sumber: %d, noawal: %d, %s\r\n", nos, noawal, iList);
 			jmlData=kirimModul(0, nos, noawal, iList, dList);
 			susun_kirim(jmlData, iList, dList);
 			//printf("%s datakirim : %s\r\n", __FUNCTION__, datakeserver);
@@ -195,7 +199,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			} else {		// sudah habis, reset ke 0
 				flag_nos=0;
 				noawal=0;
-				//printf("----------------------------------------------\r\n");
+				nos++;
 			}
 
 			#ifdef WEBCLIENT_DATA
@@ -211,6 +215,17 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			ngitung=0;
 			cKirim = 0;
 			//ayokirim = 0;
+			
+			if ( (nos<JML_SUMBER) && (flag_nos==MATI) && (p_sbr[nos].status==AKTIF) ) {
+				flag_nos = AKTIF;
+			#ifdef PAKAI_RELAY
+			} else if (nos==JML_SUMBER)	{
+				flag_nos = AKTIF;
+				sumber = wRELAY;
+			#endif
+			} else {
+				nos=0;
+			}
 			
 			selang++;
 			if (selang>10)	{
@@ -246,9 +261,11 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 		sumber = JML_SUMBER;
 	} else
 	#endif
-	strcpy(il,"&il="); 	strcpy(dl,"&dl=");
+	{
+		strcpy(il,"&il="); 	strcpy(dl,"&dl=");
+	}
 	
-	if (burst==1) {
+	if (burst==AKTIF) {
 		struct t_sumber *psbr;
 		psbr = (char *) ALMT_SUMBER;
 		

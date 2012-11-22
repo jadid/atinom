@@ -350,40 +350,25 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
     printf(" Monita : sampurasun client init !\r\n");
 #endif
 
-#ifdef PAKAI_WEBCLIENT_INTERNET
-	webclient_init();
-	printf(" Monita : webclient internet init !! [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
-#endif
-
 #ifdef PAKAI_WEBCLIENT
 		int ngitung=0;
 		webclient_init();
 		printf(" Monita : webclient init !! [%d:%s]\r\n", envx->statusWebClient, (envx->statusWebClient?"aktif":"mati"));
-		unsigned char datakeserver[512];
+		//unsigned char datakeserver[512];
 		int wclient=0, subwclient=0, jmlData=0, nos=0, flag_nos=0, flag_sumber=0, jmlsumbernya=0;
 		//int noPMaktif[JML_SUMBER];
-		char il[256], dl[256];
-		char ayokirim = 0;
+		char kirim_eth[512];
+		
 	#ifdef WEBCLIENT_DATA
 		
-		char angkaangka[5];
 		#ifdef DEBUG_WEBCLIENT
 		char countwc[15];
 		int wc=0;
 		#endif
-		int maxkirim=12;
-		extern int kirimURL;
-		extern char terkirimURL;
-		extern int  noawal;
-		
-		int selang=0;
+		int maxkirim=12;		
 		char ipdest[15];
-		//int tiapKirim=950;
-		int tiapKirim;
+		extern char ayokirim;
 		
-		if (envx->intKirim==1)			tiapKirim = 990;
-		else							tiapKirim = (envx->intKirim-1)*1000+990;
-		printf("Periode Kirim : tiapKirim = %d\r\n", tiapKirim);
 	#endif
 	
 	#ifdef PAKAI_WEBCLIENT_INTERNET
@@ -405,10 +390,6 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			
 			//double lintang=0.0, bujur=0.0;
 		#endif
-	#endif
-	
-	#ifdef PAKAI_WEBCLIENT_INTERNET
-
 	#endif
 #endif
 
@@ -457,142 +438,36 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		//portYIELD();
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
-			wclient++;
-			if (envx->burst==1) {
-				#ifdef WEBCLIENT_DATA
-					jmlData=kirimModul(1, 0, 0, il, dl);
-					//jmlsumbernya=1;
-					tiapKirim = 500;
-				#endif
-			} else 
-			{			// kirim 1-1
-				/*
-				#ifdef BANYAK_SUMBER
-					struct t_sumber *pmx;
-					pmx = (char *) ALMT_SUMBER;
-					jmlsumbernya=0;
-					for(selang=0; selang<JML_SUMBER; selang++) {
-						if (pmx[selang].status==1) {
-							//printf("selang: %d, status: %d\r\n", selang, pmx[selang].status);
-							//noPMaktif[jmlsumbernya]=selang;
-							jmlsumbernya++;
-						}
-					}
-					if (jmlsumbernya==0) {
-						jmlsumbernya=1;
-					}
-					//jmlData=kirimModul(0, noPMaktif[sumbernya], 0, il, dl);
-					//printf("jml Data: %d, sumbernya: %d\r\n", jmlData, jmlsumbernya);
-					// kenapa ini ??? harusnya tiap detik, knapa jadi tiap 4 detik ????
-					//tiapKirim = (int) (100/jmlsumbernya);
-					tiapKirim = (int) (1900/jmlsumbernya);
-					//printf("wclient: %d\r\n", wclient);
-				#endif
-				//*/
-			}
-			
-			if (flag_nos)	{
-				ngitung++;
-				if ( (wclient>0) && (ngitung%205) )	{
-					ayokirim = 1;
-				}
-			}
-			
 			#ifdef WEBCLIENT_DATA
-			if ( (wclient==tiapKirim) || (ayokirim==1) ) {
-				#if 0
-				printf("wclient: %d, tiapKirim: %d, jmlData: %d, ngitung: %d\r\n", wclient, tiapKirim, jmlData, ngitung);
-				#endif
-				wclient = 0;	// reset counter periode !!!
-				ngitung=0;
-				ayokirim = 0;
-				
-				selang++;
-				if (selang>10)	{
-					selang = 0;
-					if (envx->intKirim==1)	tiapKirim = 990;
-					else					tiapKirim = (envx->intKirim-1)*1000+990;
-				}
-				
-				struct t_sumber *sumber;
-				sumber = (char *) ALMT_SUMBER;
+			if ((ayokirim >> 1) & 1) {
+				ayokirim &= (~2);
+				sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
+				strcpy(kirim_eth, envx->berkas);
+				strcat(kirim_eth, datakeserver);
+				printf("%s @%s ---> %s : %s\r\n", __FUNCTION__, __FILE__, ipdest, kirim_eth);
+				webclient_get(ipdest, PORT_HTTP, kirim_eth);
+			}
+				/*
 				if (!flag_nos) {
+					printf("sampe sini 1A ..\r\n");
 					nos++;
 					while(sumber[nos-1].status!=1) {	// cari modul sumber aktif
+						printf("sampe sini 111 %d..\r\n", nos);
 						if (nos>JML_SUMBER) {
 							nos=0;
 							jmlsumbernya=0;
 						}
+						if (nos>JML_SUMBER) break;
 						nos++;
+						//sum++;
 					}
 				}
 				jmlsumbernya++;
-				
-				#if 0
-				if (ngitung%5)
-					printf("kirim: %5d, nos: %d, wclient: %d, sumber.status: %d, jmlsumbernya: %d\r\n", ngitung, nos-1, wclient, sumber[nos-1].status, jmlsumbernya);
-				#endif
-
-				// cek datanya PM ?? // <--- ternyata gak cuma PM, modul lain juga bisa
-				if (sumber[nos-1].tipe==0 || sumber[nos-1].tipe==1 || sumber[nos-1].tipe==2 || sumber[nos-1].tipe==100)	{	// PM710 || PM810
-					jmlData=kirimModul(0, nos-1, noawal, il, dl);
-					if (jmlData==12) {
-						flag_nos=1;
-					} else {		// sudah habis, reset ke 0
-						flag_nos=0;
-						noawal=0;
-					}
-					//printf("nilai noawal: %d, flagnos: %d\r\n", noawal, flag_nos);
-				} else	{
-					jmlData=kirimModul(0, nos-1, 0, il, dl);
-					noawal=0;
-				}
-				
-				// hitung jml loop kirim ke server
-				//*
-				#if 0 // dimatikan dulu cari penyebab jadi 1 detik !!!
-				if (flag_sumber<jmlsumbernya) {
-					flag_sumber=jmlsumbernya;
-					tiapKirim=950/jmlsumbernya;
-					if (tiapKirim<200)
-						tiapKirim = 205;
-						//tiapKirim = 410;
-					//tiapKirim=2000/jmlsumbernya;
-				}
-				#endif
 				//*/
-				
-							
-
-				if (jmlData>0) {
-					
-					//sprintf(ipdest, "%d.%d.%d.%d", envx->GW0, envx->GW1, envx->GW2, envx->GW3);
-					sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
-					//portENTER_CRITICAL();
-					//sprintf(datakeserver, "%s?i=%s&p=diesel&j=%d&%s&%s", envx->berkas, envx->SN, jmlData, il, dl);
-					strcpy(datakeserver, envx->berkas);
-					strcat(datakeserver, "?i=");
-					strcat(datakeserver, envx->SN);
-					strcat(datakeserver, "&p=diesel&j=");
-					sprintf(angkaangka, "%d", jmlData);
-					strcat(datakeserver, angkaangka);
-					#ifdef DEBUG_WEBCLIENT
-						strcat(datakeserver, "&cc=");
-						wc++;
-						sprintf(countwc, "%d", wc);
-						strcat(datakeserver, countwc);
-					#endif
-					strcat(datakeserver, il);
-					strcat(datakeserver, dl);
-					//portEXIT_CRITICAL();
-					//get_cal();
-					//printf("%s @%s ---> datakeserver: %s\r\n", __FUNCTION__, __FILE__, datakeserver);
-					webclient_get(ipdest, PORT_HTTP, datakeserver);
-					
-				}
-			}
 			#endif
-			
+		}
+
+
 			#ifdef WEBCLIENT_GPS
 				if (wclient>1000) {		// 1 detik, 60000 = 60 detik = 1 menit
 					wclient=0;
@@ -630,36 +505,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 			#endif
 			
 			#ifdef PAKAI_WEBCLIENT_INTERNET
-				if (envx->statusWebClientI==1) {
-					if (wclient>1000) {		// 1 detik, 60000 = 60 detik = 1 menit
-						wclient=0;
-						menit++;
-						
-					}
-					
-					if (menit == tiapKirim) {
-						//printf("webclient : %d\r\n", menit);
-						menit=0;
-						jmlData=kirimModul(0, nos-1, 0, il, dl);
-					#if 1
-						sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
-						strcpy(datakeserver, envx->berkas);
-						
-						strcat(datakeserver, "?i=");
-						strcat(datakeserver, envx->SN);
-						strcat(datakeserver, "&p=diesel&j=8");
-						//sprintf(angkaangka, "%d", jmlData);
-						//strcat(datakeserver, angkaangka);
-						strcat(datakeserver, il);
-						strcat(datakeserver, dl);
-						//printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
-						webclient_get(ipdest, PORT_HTTP, datakeserver);
-						
-					#endif
-					}
-					
-				}
-				
+
 				if (status_webc_i==1)	{
 					sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 					strcpy(datakeserver, envx->berkas);
@@ -692,7 +538,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				}
 				#endif
 			#endif
-		}
+		//}
 		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 

@@ -148,125 +148,10 @@ webclient_close(void)
 {
   s.state = WEBCLIENT_STATE_CLOSE;
 }
-/*-----------------------------------------------------------------------------------*/
-#ifdef WEBCLIENT_DATA
-int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
-	char id[16], dt[16];
-	int i=0,z=0;
-	int jmlAktif=0;
-		
-	struct t_setting *konfig;
-	konfig = (char *) ALMT_KONFIG;
-		
-	strcpy(il,"&il=");
-	strcpy(dl,"&dl=");
-	if (burst==1) {
-		struct t_sumber *psbr;
-		psbr = (char *) ALMT_SUMBER;
-		
-		for (z=0; z<JML_SUMBER; z++) {
-			if (psbr[z].status==1) {
-				for (i=0; i<PER_SUMBER; i++) {
-					if (konfig[(PER_SUMBER*z)+i].status==1) {
-						jmlAktif++;
-						//if (i==0) {
-						if (jmlAktif==1) {
-							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
-							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
-							sprintf(id, "%d", konfig[(PER_SUMBER*z)+i].id);
-							sprintf(dt, "%.2f", data_f[(PER_SUMBER*z)+i]);
-							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
-						} else {
-							//strcat(id, "~");
-							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
-							//strcat(dt, "~");
-							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
-							sprintf(id, "~%d", konfig[(PER_SUMBER*z)+i].id);
-							sprintf(dt, "~%.2f", data_f[(PER_SUMBER*z)+i]);
-							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
-						}
-						
-						strcat(il,id);
-						strcat(dl,dt);
-					}
-				}
-			}
-		}
-	} else {
-		for (i=noawal; i<PER_SUMBER; i++) {
-			noawal=i+1;
-			if (konfig[PER_SUMBER*sumber+i].status) {
-				jmlAktif++;
-				//if (i==0) {
-				if (jmlAktif==1) {
-					sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
-					sprintf(dt, "%.2f", data_f[PER_SUMBER*sumber+i]);
-				} else {
-					sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
-					sprintf(dt, "~%.2f", data_f[PER_SUMBER*sumber+i]);
-				}
-				strcat(il,id);
-				strcat(dl,dt);
-			} 
-			if (jmlAktif==12)
-				break; 
-				
-		}
-	}
-	#ifdef PAKAI_RELAYx
-		#define AWAL_RELAY (JML_SUMBER*PER_SUMBER)
-		//struct t_setting *konfigx;
-		//konfigx = (char *) ALMT_KONFIG;
-		
-		strcat(il, "&rl=");
-		strcat(dl, "&kl=");
-		for (i=0; i<JML_RELAY; i++)	{
-			if (i==0) {
-				sprintf(id, "%d", konfig[AWAL_RELAY+i].id);
-				sprintf(dt, "%.0f", data_f[AWAL_RELAY+i]);
-			} else {
-				sprintf(id, "~%d", konfig[AWAL_RELAY+i].id);
-				sprintf(dt, "~%.0f", data_f[AWAL_RELAY+i]);
-			}
-			strcat(il,id);
-			strcat(dl,dt);
-		}
-	#endif
-	//printf("no awal: %d\r\n", noawal);
-	return jmlAktif;
-}
-#endif
+
 /*-----------------------------------------------------------------------------------*/
 //unsigned char webclient_get(char *host, u16_t port, char *file) __attribute__ ((naked));
 
-#ifdef PAKAI_WEBCLIENT_INTERNET
-int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
-	char jr;
-	char id[16], dt[16];
-	int jmlAktif=0;
-	
-	strcpy(il,"&il=12345");
-	strcpy(dl,"&dl=");
-	
-	for (jr=0; jr<JML_RELAY; jr++)	{
-		jmlAktif++;
-		sprintf(dt, "%.0f", data_f[(JML_SUMBER*PER_SUMBER)+jr]);
-		/*
-		if (jmlAktif==1) {
-		//	sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
-			sprintf(dt, "%.2f", data_f[(JML_SUMBER*PER_SUMBER)+jr]);
-		} else {
-		//	sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
-			sprintf(dt, "~%.2f", data_f[(JML_SUMBER*PER_SUMBER)+jr]);
-		}
-		//*/
-		//strcat(il,id);
-		strcat(dl,dt);
-	}
-	//printf("data: %s\r\n", dl);
-	return jmlAktif;
-}
-#endif
 
 unsigned char webclient_get(char *host, u16_t port, char *file)		{
 	int gg=0;
@@ -649,7 +534,7 @@ newdata(void)
   if(len > 0 && s.state == WEBCLIENT_STATE_DATA &&
      s.httpflag != HTTPFLAG_MOVED) {
     webclient_datahandler((char *)uip_appdata, len);		// 2
-    //printf("len : %d : WEBCLIENT_STATE_DATA\r\n", len);
+    printf("len : %d : WEBCLIENT_STATE_DATA\r\n", len);
   }
 }
 /*-----------------------------------------------------------------------------------*/
@@ -737,22 +622,17 @@ void webclient_datahandler(char *data, u16_t len)
 	#if 0
 		printf("%s() masuk\r\n", __FUNCTION__);
 	#endif
-	//printf("%s", __FUNCTION__);
-	
 	//tulis_foto( data, len );
-	
-	//if (len == 0)
-	//	printf("\r\n");
-	//#ifdef PAKAI_WEBCLIENT_INTERNET
+
 	#ifdef WEBCLIENT_DATA
 	
 	if (len>0)	{
-
 		char *isi = &data[s.nData];
-		isi[uip_len-s.nData]='\0';
-		//printf("isinya: %s\r\n", isi);
+		//isi[uip_len-s.nData]='\0';
+		isi[uip_len-s.nData-10]='\0';
+		printf("isinya: %s\r\n", isi);
 		#ifdef PAKAI_RELAY
-		parsing_cmd(isi);		// file @ app/relay/relay.c
+		//parsing_cmd(isi);		// file @ app/relay/relay.c
 		#endif
 		
 	#if 0
@@ -798,7 +678,7 @@ void webclient_datahandler(char *data, u16_t len)
 		}
 	#endif
 	}
-	//printf("\r\n+++++++++++\r\n");
+	printf("\r\n+++++++++++\r\n");
 	#endif	
 }
 #endif

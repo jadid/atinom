@@ -23,10 +23,12 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
-#define MAGIC_1	0x34
+#define MAGIC_1	0x35
 #define MAGIC_2	0xEF
 
-char indexList[256], dataList[256];
+
+char ayokirim;
+unsigned char datakeserver[512];
 
 #ifdef PAKAI_RELAY
 //char kontrolList

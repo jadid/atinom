@@ -342,11 +342,11 @@ void baca_cron() {
 								printf(".......MATI %d\r\n", p_dt[ww].alamat);
 							#endif
 						}
-						vTaskDelay(500);
+						//vTaskDelay(500);
 					} else if (strcmp(p_dt[ww].cmd,"reset")==0) {
 						printf("reset relay\r\n");
 						unset_selenoid((uint) p_dt[ww].alamat);
-						vTaskDelay(1000);
+						//vTaskDelay(1000);
 						set_selenoid((uint) p_dt[ww].alamat);
 					}
 				#endif

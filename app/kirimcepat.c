@@ -180,7 +180,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		vTaskDelay(1);
 		#endif
 		
-		if (flag_nos==AKTIF)	{		// data dikirim > 12, flag_nos aktif
+		if (flag_nos==AKTIF)	{		// persumber, data dikirim > 12, flag_nos aktif
 			ngitung++;
 			if ( (cKirim>0) && (ngitung%205) )	{
 				ayokirim |= 1;
@@ -188,46 +188,41 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			}
 		}
 		
-		printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
+		//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
 		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
 			ayokirim &= (~1);
-			printf("----------------------sumber: %d, noawal: %d, %s\r\n", nos, noawal, iList);
-			jmlData=kirimModul(0, nos, noawal, iList, dList);
-			susun_kirim(jmlData, iList, dList);
-			//printf("%s datakirim : %s\r\n", __FUNCTION__, datakeserver);
-			if (jmlData==12) {
-				flag_nos=1;
-			} else {		// sudah habis, reset ke 0
-				flag_nos=0;
-				noawal=0;
-				nos++;
-			}
+			//printf("jmlData : %d, susun_kirim : %s\r\n", jmlData, iList);
+			if (jmlData>0)	{
+				susun_kirim(jmlData, iList, dList);
+				printf("susun_kirim : %s\r\n", iList);
 
-			#ifdef WEBCLIENT_DATA
-				ayokirim |= 2;
-				//printf("ayokirim : %d\r\n", ayokirim);
-				
-			#endif
+				#ifdef WEBCLIENT_DATA
+					ayokirim |= 2;
+					//printf("ayokirim : %d\r\n", ayokirim);
+				#endif
+
+				#ifdef KIRIM_KE_SER_2
+					ayokirim += 4;
+				#endif
+			} 
+			//printf("----------------------sumber: %d, jml: %d, noawal: %d, %s\r\n", nos, jmlData, noawal, iList);
 			
-			#ifdef KIRIM_KE_SER_2
-				ayokirim += 4;
-			#endif
+			flag_nos = AKTIF;
+			if (jmlData<12)	{
+				nos++;
+				noawal=0;
+			}
 			
-			ngitung=0;
-			cKirim = 0;
-			//ayokirim = 0;
-			
-			//if ( (nos<JML_SUMBER) && (flag_nos==MATI) && (p_sbr[nos].status==AKTIF) ) {
-			if ( (nos<JML_SUMBER) && (flag_nos==MATI) ) {
-				flag_nos = AKTIF;
+			if (nos>JML_SUMBER) {
+				nos=0;
+				flag_nos = MATI;
 			#ifdef PAKAI_RELAY
 			} else if (nos==JML_SUMBER)	{
 				flag_nos = AKTIF;
-				sumber = wRELAY;
-				printf("===========>  ini bagian relay !!!\r\n");
+				nos = wRELAY;
+				noawal = PER_SUMBER * JML_SUMBER;
+				//printf("===========>  ini bagian relay !!!\r\n");
 			#endif
-			} else {
-				nos=0;
 			}
 			
 			selang++;
@@ -236,35 +231,34 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				if (penv->intKirim==1)	dKirim = 990;
 				else					dKirim = (penv->intKirim-1)*1000+990;
 			}
-			
-			//printf("==================================================\r\n");
+
+			ngitung=0;
+			cKirim = 0;
 		}
-		
-		
+
 		#if 0
 		vTaskDelay(1000);
 		//printf("data0: %.1f,2: %.1f,3: %.1f\r\n", data_f[0], data_f[2], data_f[3]);
 		#endif
-		
+
 		cKirim++;
 	}
 }
 
 int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	char id[16], dt[16];
-	int i=0,z=0;
+	int i=0,z=0, qq = PER_SUMBER*sumber;
 	int jmlAktif=0;
 		
 	struct t_setting *konfig;
 	konfig = (char *) ALMT_KONFIG;
-	
-	
+
 	strcpy(il,"&il="); 	strcpy(dl,"&dl=");
 	#ifdef PAKAI_RELAY
 	if (sumber==wRELAY)		{
 		strcpy(il,"&rl="); 	strcpy(dl,"&kl=");
 		sumber = JML_SUMBER;
-	} else
+	}
 	#endif
 	
 	if (burst==AKTIF) {
@@ -300,24 +294,45 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 			}
 		}
 	} else {
-		for (i=noawal; i<PER_SUMBER; i++) {
-			noawal=i+1;
-			if (konfig[PER_SUMBER*sumber+i].status==AKTIF) {
-				jmlAktif++;
-				//if (i==0) {
-				if (jmlAktif==1) {
-					sprintf(id, "%d", konfig[PER_SUMBER*sumber+i].id);
-					sprintf(dt, "%.2f", data_f[PER_SUMBER*sumber+i]);
-				} else {
-					sprintf(id, "~%d", konfig[PER_SUMBER*sumber+i].id);
-					sprintf(dt, "~%.2f", data_f[PER_SUMBER*sumber+i]);
+		//printf("-------> sumber: %d\r\n", sumber);
+		if (sumber<JML_SUMBER)		{
+			for (i=noawal; i<PER_SUMBER; i++) {
+				noawal=i+1;
+				if (konfig[qq+i].status==AKTIF) {
+					jmlAktif++;
+					//if (i==0) {
+					if (jmlAktif==1) {
+						sprintf(id, "%d", konfig[qq+i].id);
+						sprintf(dt, "%.2f", data_f[qq+i]);
+					} else {
+						sprintf(id, "~%d", konfig[qq+i].id);
+						sprintf(dt, "~%.2f", data_f[qq+i]);
+					}
+					strcat(il,id);
+					strcat(dl,dt);
 				}
-				strcat(il,id);
-				strcat(dl,dt);
-			} 
-			if (jmlAktif==12)
-				break; 
-				
+				if (jmlAktif==12)
+					break; 
+			}
+		#ifdef PAKAI_RELAY
+		} else {
+			for (i=noawal; i<noawal+JML_RELAY; i++) {
+				if (konfig[i].status==AKTIF) {
+					jmlAktif++;
+					//if (i==0) {
+					if (jmlAktif==1) {
+						sprintf(id, "%d", konfig[i].id);
+						sprintf(dt, "%.2f", data_f[i]);
+					} else {
+						sprintf(id, "~%d", konfig[i].id);
+						sprintf(dt, "~%.2f", data_f[i]);
+					}
+					strcat(il,id);
+					strcat(dl,dt);
+				} 
+			}
+			//printf("il relay: %s, dl: %s\r\n", il, dl);
+		#endif
 		}
 	}
 	//printf("no awal: %d\r\n", noawal);

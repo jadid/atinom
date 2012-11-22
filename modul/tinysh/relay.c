@@ -23,7 +23,9 @@ int cek_relays(int argc, char **argv)	{
 		konfig = (char *) ALMT_KONFIG;
 		
 		for (sumb=0; sumb<JML_RELAY; sumb++) {
-			printf("  Relay-%-2d : ID: %5d : %s\r\n", sumb+1, konfig[AWAL_RELAY+sumb].id, (data_f[(AWAL_RELAY)+sumb]==1)?"Aktif":"Mati");
+			printf("  Relay-%-2d : ID: %5d : %4s : %s\r\n", \
+				sumb+1, konfig[AWAL_RELAY+sumb].id, (data_f[(AWAL_RELAY)+sumb]==1)?"On":"Off", \
+				(konfig[AWAL_RELAY+sumb].status)?"Aktif":"Mati");
 		}
 		return 0;
 	}

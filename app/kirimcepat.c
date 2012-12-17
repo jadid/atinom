@@ -191,10 +191,13 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
 		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
 			ayokirim &= (~1);
+			
+			if ( (nos==wRELAY) || (p_sbr[nos].status==AKTIF))
+				jmlData=kirimModul(0, nos, noawal, iList, dList);
 			//printf("jmlData : %d, susun_kirim : %s\r\n", jmlData, iList);
 			if (jmlData>0)	{
 				susun_kirim(jmlData, iList, dList);
-				printf("susun_kirim : %s\r\n", iList);
+				//printf("susun_kirim : %s\r\n", iList);
 
 				#ifdef WEBCLIENT_DATA
 					ayokirim |= 2;
@@ -202,7 +205,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				#endif
 
 				#ifdef KIRIM_KE_SER_2
-					ayokirim += 4;
+					ayokirim |= 4;
 				#endif
 			} 
 			//printf("----------------------sumber: %d, jml: %d, noawal: %d, %s\r\n", nos, jmlData, noawal, iList);
@@ -221,7 +224,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				flag_nos = AKTIF;
 				nos = wRELAY;
 				noawal = PER_SUMBER * JML_SUMBER;
-				//printf("===========>  ini bagian relay !!!\r\n");
+				//printf("===========>  ini bagian relay : %d !!!\r\n", nos);
 			#endif
 			}
 			

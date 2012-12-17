@@ -499,7 +499,8 @@ void baca_cron() {
 	char 	alamat;
 	char 	status;
 //*/
-static int set_cron_default(void)
+//static 
+int set_cron_default(void)
 {
 	int i;
 	struct t_cron * p_gr;

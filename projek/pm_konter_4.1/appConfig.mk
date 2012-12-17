@@ -37,7 +37,7 @@
 	#define PAKAI_MEM_RTC
 	#define PAKAI_KONTROL_RTC
 	//#define TES_MEM_RTC
-	#define PAKAI_CRON
+	//#define PAKAI_CRON
 #endif
 
 #define PAKAI_ETH

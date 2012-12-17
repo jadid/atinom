@@ -45,9 +45,9 @@ xTaskHandle hdl_ambilcepat;
 #endif
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
+  	//baca_env(0);
   	vTaskDelay(500);
-  	baca_env(0);	
-  	
+
   	vTaskDelay(50);
   	unsigned int loopambil=0, lm=0, lb=0;
   	char ser2[50];
@@ -170,7 +170,8 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		#ifndef BOARD_TAMPILAN
 		#ifdef PAKAI_KONTROL_RTC
-			rtc_counter_irq_aktif(*(&MEM_RTC0+(100)));
+			//rtc_counter_irq_aktif(*(&MEM_RTC0+(100)));
+			rtc_counter_irq_aktif(*(&MEM_RTC0+(MEM_RTC_CRON)));
 		#endif
 		#endif
 	#endif

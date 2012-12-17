@@ -164,7 +164,7 @@ char kalibrasi_adc1(int fdy)
 			if (loop < 50) 
 			{	
 				
-				printf(" try = %d (OK)\n", loop);
+				printf(" try = %d (OK)\r\n", loop);
 				ada_adc_1 = true;
 			}
 

@@ -438,13 +438,14 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		//portYIELD();
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
+			
 			#ifdef WEBCLIENT_DATA
-			ayokirim &= (~2);
 			if ((ayokirim >> 1) & 1) {
+				ayokirim &= (~2);
 				sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 				strcpy(kirim_eth, envx->berkas);
 				strcat(kirim_eth, datakeserver);
-				printf("%s @%s ---> %s : %s\r\n", __FUNCTION__, __FILE__, ipdest, kirim_eth);
+				//printf("%s @%s ---> %s : %s\r\n", __FUNCTION__, __FILE__, ipdest, kirim_eth);
 				webclient_get(ipdest, PORT_HTTP, kirim_eth);
 			}
 			#endif

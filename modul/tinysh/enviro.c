@@ -148,6 +148,9 @@ int baca_env(char tampil)
 	int i;
 	char ketper[30];
 	
+	
+	
+	
 	if (tampil == 1)
 	{
 		printf(" Data Environment\r\n");
@@ -160,7 +163,7 @@ int baca_env(char tampil)
 		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
-	//printf("magic1: %02X, magic2: %02X\r\n", ev->magic1, ev->magic2);
+	printf("m1: 0x%02X, M1: 0x%02X, m2: 0x%02X, M2: 0x%02X\r\n", ev->magic1, MAGIC_1, ev->magic2, MAGIC_2);
 	
 	if (ev->magic1 == MAGIC_1)	{
 		if (ev->magic2 == MAGIC_2)		{			
@@ -285,7 +288,7 @@ int baca_env(char tampil)
 	else	{
 		printf(" Magic number1 salah !\r\n");		
 		//set_default_ip();
-		set_env_default();
+		
 
 		#ifdef BOARD_TAMPILAN 
 		//	set_group_default();
@@ -298,6 +301,14 @@ int baca_env(char tampil)
 				set_awal_konfig();
 			#endif
 			
+			#ifdef PAKAI_CRON
+				set_cron_default();
+			#endif
+			
+			#ifdef PAKAI_KONTROL_RTC
+				reset_mem_rtc();
+				*(&MEM_RTC0+MEM_RTC_CRON) = 1;
+			#endif
 
 			
 			struct t_setting *konfig;
@@ -313,6 +324,8 @@ int baca_env(char tampil)
 			//set_magic_no();
 			#endif
 		#endif
+		
+		set_env_default();
 		
 		return -1;
 	}
@@ -398,7 +411,7 @@ void set_env_default() {
 	env2->magic2 = MAGIC_2;
 	
 	sprintf(env2->passwd, "monita");
-	sprintf(env2->passwd, "+6282114722505");
+	//sprintf(env2->passwd, "+6282114722505");
 	sprintf(env2->SN, "-");
 	sprintf(env2->berkas, "/");
 	//printf("KANALNYA enviro.c : %d\r\n", KANALNYA);

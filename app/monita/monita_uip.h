@@ -23,9 +23,11 @@
 #ifndef MONITA_UIP_H_
 #define MONITA_UIP_H_
 
-#define MAGIC_1	0x35
-#define MAGIC_2	0xEF
+#define MAGIC_1	0x33
+#define MAGIC_2	0x81
 
+
+#define MEM_RTC_CRON	100
 
 char ayokirim;
 unsigned char datakeserver[512];
@@ -298,8 +300,8 @@ typedef struct __attribute__ ((packed))	{
 #define ALMT_TITIK		ALMT_SEKTOR_21
 
 // pengakses: tinysh/setting_eth.c, dipindah dari sektor 26 ke 21
-#define SEKTOR_KONFIG	21			// konfig id titik ukur
-#define ALMT_KONFIG		ALMT_SEKTOR_21
+#define SEKTOR_KONFIG	19			// konfig id titik ukur
+#define ALMT_KONFIG		ALMT_SEKTOR_19
 //------------------------------------------------------------//
 
 #define SEKTOR_DT_SET	20			// 32 kB

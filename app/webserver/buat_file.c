@@ -799,12 +799,14 @@ int ganti_setting(char *str) {
 		vPortFree(p_sbr);
 		
 		return 1;
+	#ifdef BOARD_KOMON_KONTER
 	} else if (z==wPULSA) {		// 10:pulsa
 		no = no-1;
 		data_f[no*2+1] = y;
 		//printf("no: %d, data_f: %.2f, y: %f, x: %d\r\n", no, data_f[no*2+1], y, no*2+1);
 		set_konter_hit(no);		// ada di tinysh/rpm.c
 		return 1;
+	#endif
 	} else if (z==wALARM) {		// 7: alarm
 		//printf("%s(): str: %s\r\n", __FUNCTION__, str);
 

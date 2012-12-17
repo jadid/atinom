@@ -747,6 +747,7 @@ static tinysh_cmd_t gsm_ftp_cmd={0,"gsm_ftp_exe","proses gsm_ftp","[args]",
 
 extern int usb_terup;
 portTASK_FUNCTION(shell, pvParameters )		{
+	
   	int c;
   	//xTaskHandle xHandle;
   	//printf("\n%s v%s\r\n", NAMA_BOARD, VERSI_KOMON);
@@ -762,6 +763,7 @@ portTASK_FUNCTION(shell, pvParameters )		{
   	printf(" FreeRTOS versinya: %s\r\n", tskKERNEL_VERSION_NUMBER);
   	//vTaskDelay(2000);
 
+	baca_env(0);
 
   	#if 0
 		unsigned short qws=33742, wws;

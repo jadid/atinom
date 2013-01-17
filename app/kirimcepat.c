@@ -1,9 +1,10 @@
 	
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-
+#include "hardware.h"
 
 #ifndef __KIRIMCEPAT__
 #define __KIRIMCEPAT__
@@ -45,6 +46,9 @@ int susun_kirim(int jmlData, char *iList, char *dList)	{
 	}
 }
 
+char sping[50];
+int np;
+void parsing_ping(int ch);
 
 portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	vTaskDelay(1060);
@@ -95,6 +99,29 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	
   	vTaskDelay(50);
   	vTaskDelay(5000);
+  	//char ch[2];
+	int ch;
+	np = 0;
+  	
+  	for(;;)	{
+		//vTaskDelay(1);
+		//FIO0CLR  = BIT(5);	// TX mati 
+		//FIO0CLR  = BIT(4);	// RX aktif 
+		FIO0CLR = TXDE;		// on	---> bisa kirim
+		FIO0CLR = RXDE;
+		
+		#if 1
+		if (ser3_getchar(1, &ch, 50) == pdTRUE)	  {
+			//printf("%c", ch);
+			parsing_ping(ch);
+		}
+		//FIO0SET  = BIT(5);	// TX kirim
+		FIO0SET  = TXDE;	// TX kirim
+		#endif
+		
+	}
+  	
+  	
   	for(;;) {
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
@@ -176,6 +203,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			//*/
 		#endif
 		
+		
 		#if 1
 		vTaskDelay(1);
 		#endif
@@ -189,8 +217,12 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		}
 		
 		//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
+		#if 0
 		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
+			//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
 			ayokirim &= (~1);
+			
+			
 			
 			if ( (nos==wRELAY) || (p_sbr[nos].status==AKTIF))
 				jmlData=kirimModul(0, nos, noawal, iList, dList);
@@ -207,6 +239,8 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				#ifdef KIRIM_KE_SER_2
 					ayokirim |= 4;
 				#endif
+				
+				
 			} 
 			//printf("----------------------sumber: %d, jml: %d, noawal: %d, %s\r\n", nos, jmlData, noawal, iList);
 			
@@ -238,14 +272,64 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			ngitung=0;
 			cKirim = 0;
 		}
+		#endif
 
 		#if 0
 		vTaskDelay(1000);
 		//printf("data0: %.1f,2: %.1f,3: %.1f\r\n", data_f[0], data_f[2], data_f[3]);
 		#endif
 
+		#if 0
+		#ifdef SEBAGAI_SLAVE
+			//printf("kirim ke serial\r\n");
+			if (cKirim==500)	{
+				//ser3_putstring("1234567890123");
+				cKirim=0;
+			}
+			if (ser3_getchar(1, &ch[0], 5 ) == pdTRUE)	  {
+				printf("%02x ", ch[0]);
+				//tinysh_char_in((unsigned char)c);
+			}
+		#endif
+		#endif
+
 		cKirim++;
 	}
+}
+
+
+
+void parsing_ping(int ch)	{
+	char x = (char) ch;
+	int hsl=0;
+	char stmp[50];
+	
+	struct t_env *penv;
+	penv = (char *) ALMT_ENV;	
+	
+	if (np<50)	{
+		if ( (x=='\r') || (x=='\n') )	{
+			//printf("+++++++++ lengkap : %s\r\n", sping);
+			if (strncmp(sping, "PING", 4)==0)	{
+				sscanf(sping, "%s%d", stmp, &hsl);
+				data_f[0] = (float) (penv->kalib[0].m * -hsl)+penv->kalib[0].C;
+				data_f[1] = (float) (penv->kalib[0].m * hsl)+penv->kalib[0].C;
+				//printf("hasil: %d : %f\r\n", hsl, data_f[0]);
+				np = 0;
+			}
+			sping[np] = '\0';
+		} else {
+			//printf("  ---> kumpul ch: %c, np: %d\r\n", x, np);
+			sping[np] = x;
+			sping[np+1] = '\0';
+			//printf("######## : %s\r\n", sping);
+			np++;
+		}
+	} else {
+		np = 0;
+		strcpy(sping, "");
+	}
+	
 }
 
 int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
@@ -342,13 +426,14 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	return jmlAktif;
 }
 
-int nKirimCepat=10;
+int nKirimCepat=15;
 
 void init_kirimcepat(void)	{
 	#ifdef BOARD_TAMPILAN
 		xTaskCreate( kirimcepat, "kirimcepat_task", (configMINIMAL_STACK_SIZE * nKirimCepat), NULL, tskIDLE_PRIORITY+8, ( xTaskHandle * ) &hdl_kirimcepat);
 	#else
-		xTaskCreate( kirimcepat, "kirimcepat_task", (configMINIMAL_STACK_SIZE * nKirimCepat), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_kirimcepat);
+		//xTaskCreate( kirimcepat, "kirimcepat_task", (configMINIMAL_STACK_SIZE * nKirimCepat), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_kirimcepat);
+		xTaskCreate( kirimcepat, "kirimcepat_task", (configMINIMAL_STACK_SIZE * nKirimCepat), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_kirimcepat);
 	#endif
 }
 

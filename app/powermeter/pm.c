@@ -14,7 +14,7 @@
 //#define LIAT_TX
 //#define LIAT_RX
 //#define CEK_PM
-#define TIMEOUT
+//#define TIMEOUT
 
 #ifdef AMBIL_PM
 
@@ -77,7 +77,7 @@ int sedot_pm() {
 	struct t_sumber *p_sbrq;
 	p_sbrq = (char *) ALMT_SUMBER;
 	
-	
+	printf("+++++++++++++++++++++++ %s\r\n", __FUNCTION__);
 	struct t_env *env3;
 	env3 = (char *) ALMT_ENV;
 	
@@ -175,7 +175,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		}
 	}
 	#endif
-	
+
 	#ifdef TIPE_PM810
 	if (tipe==PM810) {					// 1
 	#ifdef LIAT
@@ -266,6 +266,34 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		}
 	#endif
 	
+	#ifdef TIPE_ION8600
+		if (tipe==ION8600) {			// 4
+		#ifdef LIAT
+		//printf("___MICOM P127 .. edit disini ....\n");
+		#endif
+			if (urut_PM710==0)    {		// ada 5 sequen
+				//jum_balik = get_ION8600(alamatPM, meter_vrms_p127, 6);			// 
+				jum_balik = get_ION8600(alamatPM, meter_current_ION8600, 6);		// 
+			} else if (urut_PM710==1)	{	
+				jum_balik = get_ION8600(alamatPM, meter_voltage_ION8600, 4);		// 
+			} else if (urut_PM710==2)	{
+				jum_balik = get_ION8600(alamatPM, meter_power_ION8600, 8);  		//
+			} else if (urut_PM710==3)	{
+				jum_balik = get_ION8600(alamatPM, meter_faktor_ION8600, 2);  		//
+			} else if (urut_PM710==4)	{
+				jum_balik = get_ION8600(alamatPM, meter_energi_ION8600, 6); //meter_power_p127, 7); //
+			} else if (urut_PM710==5)	{
+				jum_balik = get_ION8600(alamatPM, meter_energi_ION8600, 6); //meter_power_p127, 7); //
+			}
+			else
+			{
+				#ifdef LIAT
+				//printf("jml balik POwer urut 3: %d \r\n", jum_balik);
+				#endif
+			}
+		}
+	#endif
+	
 	#ifdef TIPE_TFX_ULTRA
 	if (tipe==TFX_ULTRA) 	{
 		#ifdef LIAT
@@ -308,6 +336,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	#endif
 	
 	i=0;
+
 	#if 1
 	while(1)	{
 		#if (PAKAI_PM == 1) 
@@ -350,7 +379,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	#endif
 	
 	vTaskDelay(1);
-	FIO0SET = RXDE;
+	//FIO0SET = RXDE;		// matikan dulu
 	if (pm_sukses) {
 		return i;
 	} else {
@@ -370,7 +399,7 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 	printf("Ambil data Power Meter ke-%d - %d sequen\r\n", no+1, sequen);
 	#endif
 
-	//FIO0CLR = RXDE;		// mode brutal
+	FIO0CLR = RXDE;		// mode brutal
 	while(i<sequen) {
 		vTaskDelay(20);			// MIN: 2, -delay10=5PM- -delay4=8PM-
 		#ifdef LIAT
@@ -468,7 +497,7 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 	}
 	return 1;
 }
-
+#if 0
 void cek_coil(unsigned char almx, int regx, int jmlx)	{
 	struct d_pmod pmodx;
 	unsigned char *stx, *x;	
@@ -532,6 +561,8 @@ void set_coil(unsigned char almx, int regx, int jmlx)	{
 	modbus_rtu(&x, almx, 0x05, regx, jmlx);
    	return (3 + jmlx + 2);	// slave address, function, bytecount, data, crc
 }
+#endif
+
 
 #if 0
 void data_pm() {

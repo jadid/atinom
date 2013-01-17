@@ -402,6 +402,7 @@ static volatile portLONG *plTHREEmpty3;
 
 xComPortHandle serial3_init( unsigned portLONG ulWantedBaud, unsigned portBASE_TYPE uxQueueLength )
 {
+	printf("%s -->", __FUNCTION__);
 	unsigned portLONG ulDivisor, ulWantedClock;
 	xComPortHandle xReturn = serHANDLE;
 	extern void ( vUART3_ISR_Wrapper )( void );
@@ -436,9 +437,9 @@ xComPortHandle serial3_init( unsigned portLONG ulWantedBaud, unsigned portBASE_T
 			/* Setup transmission format. */
 			U3LCR = serNO_PARITY | ser1_STOP_BIT | ser8_BIT_CHARS;
 
-//#define serUART0_VIC_CHANNEL			( ( unsigned portLONG ) 0x0006 )
-//#define serUART0_VIC_CHANNEL_BIT		( ( unsigned portLONG ) 0x0040 )
-//#define serUART0_VIC_ENABLE				( ( unsigned portLONG ) 0x0020 )
+			//#define serUART0_VIC_CHANNEL			( ( unsigned portLONG ) 0x0006 )
+			//#define serUART0_VIC_CHANNEL_BIT		( ( unsigned portLONG ) 0x0040 )
+			//#define serUART0_VIC_ENABLE				( ( unsigned portLONG ) 0x0020 )
 
 			/* Setup the VIC for the UART. */
 			//VICIntSelect &= ~( serUART0_VIC_CHANNEL_BIT );

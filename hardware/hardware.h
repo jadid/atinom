@@ -468,7 +468,7 @@ void dele(int dd);
 										FIO0DIR |= TXDE;					\
 										FIO0SET  = TXDE;						\
 										FIO0DIR |= RXDE;					\
-										FIO0SET  = RXDE;					\
+										FIO0CLR  = RXDE;					\
 									} while(0)
 	#endif	
 	

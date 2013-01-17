@@ -437,10 +437,9 @@ void kirim_serial (int argc, char **argv) {
 	
 }
 
-static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]",
-                              kirim_serial,0,0,0};
+static tinysh_cmd_t kirim_serial_cmd={0,"serial","mengirim string ke serial","[args]", kirim_serial,0,0,0};
 #endif
-							  
+
 void cek_stack(void)	{
 	printf("Jml task: %d\r\n", uxTaskGetNumberOfTasks);
 	printf("Sisa stack masing2 task (bytes)\r\n");
@@ -876,9 +875,12 @@ portTASK_FUNCTION(shell, pvParameters )		{
 #endif	
 
 #ifdef PAKAI_MODBUS_RTU
-	tinysh_add_command(&cek_coil_cmd);
-	tinysh_add_command(&set_coil_cmd);
-	tinysh_add_command(&cek_holding_cmd);
+	//#ifdef PAKAI_PM
+	#if 0
+		tinysh_add_command(&cek_coil_cmd);
+		tinysh_add_command(&set_coil_cmd);
+		tinysh_add_command(&cek_holding_cmd);
+	#endif
 #endif
 
 #ifdef PAKAI_SMS

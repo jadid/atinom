@@ -15,8 +15,8 @@ void setup_hardware() {
 	sysInit();
 	
 	/* USB Power dinyalakan supaya memory USB bisa dipakai */
-	PCONP |= 0x80000000;
-	FIO1DIR = 0xFFFFFFFF;
+	PCONP   |= 0x80000000;
+	FIO1DIR  = 0xFFFFFFFF;
 	
 	#ifdef PAKAI_RELAY
 		setup_relay();
@@ -98,6 +98,7 @@ void setup_hardware() {
 }
 
 void init_hardware()	{
+	int hsl = 0;
 	#ifdef PAKAI_ADC
 		init_gpio_mmc();
 		init_spi_mmc(0);		// untuk adc dan mmc
@@ -148,7 +149,10 @@ void init_hardware()	{
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3_P0
-		serial3_init( PAKAI_SERIAL_3_P0, (1 * configMINIMAL_STACK_SIZE) );
+		hsl = serial3_init( PAKAI_SERIAL_3_P0, (1 * configMINIMAL_STACK_SIZE) );
+
+		printf("init serial 3 .... %d : SUKSES\r\n", hsl);
+		//ser3_putstring("kirim via 3\r\n");
 	#endif
 	
 	#ifdef PAKAI_I2C

@@ -3,7 +3,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-
+#include "hardware.h"
 
 #ifndef __AMBILCEPAT__
 #define __AMBILCEPAT__
@@ -44,6 +44,8 @@ xTaskHandle hdl_ambilcepat;
 	extern struct t2_konter konter;
 #endif
 
+
+
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	//baca_env(0);
   	vTaskDelay(500);
@@ -54,7 +56,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
 	
 	#ifdef PAKAI_SHELL
-		printf(" Monita : Ambil cepat init !!\r\n");
+		printf(" Monita : Ambil cepat init __ PRIO: %d !!\r\n", tskIDLE_PRIORITY);
   	#endif
   	
   	#if defined(PAKAI_I2C)
@@ -97,12 +99,16 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		}
 	#endif
 	
+	#ifdef SEBAGAI_SLAVE
+		printf("    Init slave modbus !!!\r\n");
+	#endif
+	
   	#ifdef PAKAI_PM
 		int almtSumber=0;
 		int sPM=0;
 		
 		#ifdef AMBIL_PM
-			printf("    Init ambil PM ..-ambilcepat-..!!!\r\n");
+			printf("    Init ambil PM : %d..-ambilcepat-.. !!!\r\n", PAKAI_SERIAL_3_P0);
 			printf("      Kompatibel : \r\n");
 			#ifdef TIPE_PM810
 				printf("         - %s\r\n", TIPE_PM810);
@@ -162,7 +168,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	
   	#ifdef PAKAI_RTC
   	#if 1
-		printf(" Init RTC ....%d\r\n", xTaskGetTickCount());
+		printf(" Init RTC ....\r\n");
 		flagRTCc = 5;
 		init_rtc();
 		vTaskDelay(10);
@@ -177,8 +183,14 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	#endif
   	#endif
   	
+
+	
+	
   	vTaskDelay(50);
-  	for(;;) {		
+  	for(;;) {
+		
+		
+			
 		#ifdef DATA_RANDOM
 			data_f[loopambil%10] = (float) ((rand() % 100));
 			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
@@ -208,7 +220,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 
 		#ifdef PAKAI_PM
 			#ifdef AMBIL_PM			// AMBIL_PM
-				sedot_pm();
+	//			sedot_pm();			// app/powermeter/pm.c
 			#endif
 		#endif
 		
@@ -413,6 +425,15 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		vTaskDelay(1);
 		#endif
 		
+		#if 0
+		if (ser3_getchar(1, &ch, 10) == pdTRUE)	  {
+			printf("%c", ch);
+			parsing_ping(ch);
+		}
+		//FIO0SET  = BIT(5);	// TX kirim
+		FIO0SET  = TXDE;	// TX kirim
+		#endif
+		
 		lm++;
 	}
 
@@ -420,6 +441,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		deinit_gps();
 	#endif
 }
+
 
 
 
@@ -432,7 +454,7 @@ void init_ambilcepat(void)	{
 	#ifdef BOARD_TAMPILAN
 		xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+8, ( xTaskHandle * ) &hdl_ambilcepat);
 	#else
-		xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_ambilcepat);
+		xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+1, ( xTaskHandle * ) &hdl_ambilcepat);
 	#endif
 }
 

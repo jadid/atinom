@@ -69,6 +69,8 @@
 	#include "setting_eth.c"
 #endif
 
+
+
 //#ifdef BOARD_TAMPILAN
 #ifdef CARI_SUMBER
 #include "mesin.c"
@@ -207,6 +209,10 @@ extern xTaskHandle *hdl_lcd;
 
 #ifdef PAKAI_LED_UTAMA 
 	extern xTaskHandle *hdl_led;
+#endif
+
+#ifdef PAKAI_MODBUS_SLAVE
+	extern xTaskHandle *hdl_modbus;
 #endif
 
 #ifdef PAKAI_TAMPILAN
@@ -492,6 +498,11 @@ void cek_stack(void)	{
 	
 	#ifndef BOARD_TAMPILAN
 	printf(    " KirimCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_kirimcepat));
+	#endif
+	
+	
+	#ifdef PAKAI_MODBUS_SLAVE
+	printf(    " ModbuSlave : %d\r\n", uxTaskGetStackHighWaterMark(hdl_modbus));
 	#endif
 }							 
 

@@ -152,7 +152,7 @@ void init_hardware()	{
 		hsl = serial3_init( PAKAI_SERIAL_3_P0, (1 * configMINIMAL_STACK_SIZE) );
 
 		printf("init serial 3 .... %d : SUKSES\r\n", hsl);
-		//ser3_putstring("kirim via 3\r\n");
+		//ser3_putstring("init kirim via 3\r\n");
 	#endif
 	
 	#ifdef PAKAI_I2C
@@ -176,6 +176,10 @@ void init_hardware()	{
 	
 	init_kirimcepat();
 	#endif
+	#endif
+	
+	#ifdef PAKAI_MODBUS_SLAVE
+		init_task_modbus();
 	#endif
 }
 

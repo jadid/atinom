@@ -19,7 +19,7 @@
  * File: $Id: portserial.c,v 1.1 2007/04/24 23:15:18 wolti Exp $
  */
 
-#include "../lpc23xx.h"
+#include "lpc23xx.h"
 
 #include "FreeRTOS.h" 
 #include "queue.h"
@@ -71,7 +71,7 @@ BOOL xMBPortSerialInit( UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBPar
     //ULONG           reload = ( ( PCLK / ulBaudRate ) / 16UL );
     ULONG           reload = ( ( CCLK / ulBaudRate ) / 16UL );
     volatile char   dummy;
-	printf("serial 3 init...reload: %d\r\n", reload);
+	printf("serial 3 init...reload: %s\r\n", __FUNCTION__);
 	
     ( void )ucPORT;
 

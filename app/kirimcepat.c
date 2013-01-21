@@ -85,7 +85,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	char iList[256], dList[256];
   	
   	int jmlData=0,nos=0, ngitung=0, selang=0, sumber=0;
-  	char flag_nos;
+  	char flag_nos, sumbers=0;
   	int aa = 0, na = 0, mm, nn=0;
   	char cM[2];
   	
@@ -93,6 +93,10 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	if (penv->intKirim==1)			dKirim = 990;
 	else							dKirim = (penv->intKirim-1)*1000+990;
 	printf("Periode Kirim : tiapKirim = %d\r\n", dKirim);
+  	
+  	#ifdef WEBCLIENT_DATA
+		statwc = 0;
+  	#endif
   	
   	noawal = 0;
   	nos = 0;
@@ -102,25 +106,17 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	//char ch[2];
 	int ch;
 	np = 0;
+
+	FIO0CLR = TXDE;
+	FIO0CLR = RXDE;
+
   	
-  	for(;;)	{
-		//vTaskDelay(1);
-		//FIO0CLR  = BIT(5);	// TX mati 
-		//FIO0CLR  = BIT(4);	// RX aktif 
-		FIO0CLR = TXDE;		// on	---> bisa kirim
-		FIO0CLR = RXDE;
-		
-		#if 1
+  	for(;;) {
 		if (ser3_getchar(1, &ch, 50) == pdTRUE)	  {
-			//printf("%c", ch);
-			parsing_ping(ch);
+			printf("%c", ch);
+			//parsing_ping(ch);
 		}
-		//FIO0SET  = BIT(5);	// TX kirim
-		FIO0SET  = TXDE;	// TX kirim
-		#endif
-		
-	}
-  	
+  	}
   	
   	for(;;) {
 		#ifdef PAKAI_TIMER_2
@@ -208,74 +204,99 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		vTaskDelay(1);
 		#endif
 		
-		if (flag_nos==AKTIF)	{		// persumber, data dikirim > 12, flag_nos aktif
-			ngitung++;
-			if ( (cKirim>0) && (ngitung%205) )	{
-				ayokirim |= 1;
-				//printf("ngitung: %d, tambahan %d !!!!\r\n", ngitung, ayokirim);
-			}
-		}
 		
-		//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
-		#if 0
-		if ( (cKirim==dKirim) || (ayokirim & 1) ) 	{
+		//printf("%d", statwc);
+		
+			//printf("++++");
+			if (flag_nos==AKTIF)	{		// persumber, data dikirim > 12, flag_nos aktif
+				ngitung++;
+				//if ( (cKirim>0) && (ngitung%205) )	{
+				if ( (cKirim>0) && (ngitung%505) )	{
+					ayokirim |= 1;
+					//printf("ngitung: %d, tambahan %d !!!!\r\n", ngitung, ayokirim);
+				}
+			}
+
 			//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
-			ayokirim &= (~1);
-			
-			
-			
-			if ( (nos==wRELAY) || (p_sbr[nos].status==AKTIF))
-				jmlData=kirimModul(0, nos, noawal, iList, dList);
-			//printf("jmlData : %d, susun_kirim : %s\r\n", jmlData, iList);
-			if (jmlData>0)	{
-				susun_kirim(jmlData, iList, dList);
-				//printf("susun_kirim : %s\r\n", iList);
+			#if 0
+			if (penv->statusWebClient == 1)	
+			{
+				if ( (cKirim>=dKirim) || (ayokirim & 1) ) 	{
+					//printf("cKirim %d, dKirim: %d, ayoKirim: %d\r\n", cKirim, dKirim, ayokirim);
+					ayokirim &= (~1);
+					
+					
+					
+					if ( (nos==wRELAY) || (p_sbr[nos].status==AKTIF))	{
+						
+						jmlData=kirimModul(0, nos, noawal, iList, dList);
+						//printf("____nos: %d   jmlData : %d, susun_kirim : %s\r\n", nos, jmlData, iList);
+					}
+					#if 1
+					if (jmlData>0)	{
+						susun_kirim(jmlData, iList, dList);
+						//printf("susun_kirim : %s\r\n", iList);
 
-				#ifdef WEBCLIENT_DATA
-					ayokirim |= 2;
-					//printf("ayokirim : %d\r\n", ayokirim);
-				#endif
+						#ifdef WEBCLIENT_DATA
+							ayokirim |= 2;
+							//printf("ayokirim : %d\r\n", ayokirim);
+						#endif
 
-				#ifdef KIRIM_KE_SER_2
-					ayokirim |= 4;
-				#endif
-				
-				
-			} 
-			//printf("----------------------sumber: %d, jml: %d, noawal: %d, %s\r\n", nos, jmlData, noawal, iList);
-			
-			flag_nos = AKTIF;
-			if (jmlData<12)	{
-				nos++;
-				noawal=0;
-			}
-			
-			if (nos>JML_SUMBER) {
+						#ifdef KIRIM_KE_SER_2
+							ayokirim |= 4;
+						#endif
+						
+						
+					} 
+					#endif
+					//printf("----------------------sumber: %d, jml: %d, noawal: %d, %s\r\n", nos, jmlData, noawal, iList);
+					
+					flag_nos = AKTIF;
+					if (jmlData<12)	{			// cari data aktif di sumber berikutnya
+						
+						nos++;
+						//printf("nos: %d -->", nos);
+						//jmlData = 0;
+						//noawal = nos*PER_SUMBER;
+						noawal = 0;
+						//printf("nowawal: %d\r\n", noawal);
+					}
+					
+					if (nos>JML_SUMBER) {
+						nos=0;
+						flag_nos = MATI;
+						noawal = 0;
+						//printf("================ ++++++++++++ reset ke sumber 0\r\n");
+					#ifdef PAKAI_RELAY
+					} else if (nos==JML_SUMBER)	{
+						flag_nos = AKTIF;
+						nos = wRELAY;
+						noawal = PER_SUMBER * JML_SUMBER;
+						//printf("===========>  ini bagian relay : %d !!!\r\n", nos);
+					#endif
+					}
+					
+					selang++;
+					if (selang>10)	{
+						selang = 0;
+						if (penv->intKirim==1)	dKirim = 990;
+						else					dKirim = (penv->intKirim-1)*1000+990;
+					}
+
+					ngitung=0;
+					cKirim = 0;
+				}
+			} else {
 				nos=0;
-				flag_nos = MATI;
-			#ifdef PAKAI_RELAY
-			} else if (nos==JML_SUMBER)	{
-				flag_nos = AKTIF;
-				nos = wRELAY;
-				noawal = PER_SUMBER * JML_SUMBER;
-				//printf("===========>  ini bagian relay : %d !!!\r\n", nos);
+			}
 			#endif
-			}
-			
-			selang++;
-			if (selang>10)	{
-				selang = 0;
-				if (penv->intKirim==1)	dKirim = 990;
-				else					dKirim = (penv->intKirim-1)*1000+990;
-			}
+		
 
-			ngitung=0;
-			cKirim = 0;
-		}
-		#endif
-
-		#if 0
+		#if 1
+		FIO0SET = TXDE;
+		FIO0CLR = RXDE;
 		vTaskDelay(1000);
+		ser3_putstring("serial 3 cout\r\n");
 		//printf("data0: %.1f,2: %.1f,3: %.1f\r\n", data_f[0], data_f[2], data_f[3]);
 		#endif
 
@@ -293,19 +314,34 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#endif
 		#endif
 
+		//#ifdef PAKAI_SENSOR_JARAK
+		#if 0
+		//FIO0CLR = TXDE;		// on	---> bisa kirim
+		FIO0CLR = RXDE;
+		
+		
+		if (ser3_getchar(1, &ch, 50) == pdTRUE)	  {
+			printf("%c", ch);
+			//parsing_ping(ch);
+		}
+		//FIO0SET  = BIT(5);	// TX kirim
+		FIO0SET  = TXDE;	// TX kirim
+		#endif
+
+
 		cKirim++;
 	}
 }
 
 
-
+#ifdef PAKAI_SENSOR_JARAK
 void parsing_ping(int ch)	{
 	char x = (char) ch;
 	int hsl=0;
 	char stmp[50];
 	
 	struct t_env *penv;
-	penv = (char *) ALMT_ENV;	
+	penv = (char *) ALMT_ENV;
 	
 	if (np<50)	{
 		if ( (x=='\r') || (x=='\n') )	{
@@ -331,6 +367,8 @@ void parsing_ping(int ch)	{
 	}
 	
 }
+#endif
+
 
 int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	char id[16], dt[16];
@@ -381,7 +419,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 			}
 		}
 	} else {
-		//printf("-------> sumber: %d\r\n", sumber);
+		//printf("-------> sumber: %d --- qq: %d\r\n", sumber, qq);
 		if (sumber<JML_SUMBER)		{
 			for (i=noawal; i<PER_SUMBER; i++) {
 				noawal=i+1;
@@ -426,7 +464,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	return jmlAktif;
 }
 
-int nKirimCepat=15;
+int nKirimCepat=10;
 
 void init_kirimcepat(void)	{
 	#ifdef BOARD_TAMPILAN

@@ -24,6 +24,7 @@
 
 #ifdef PAKAI_WEBCLIENT
 	#include "webserver/webclient/webclient.h"
+	extern char statwc;
 	//#include "../../app/webserver/webclient/webclient.h"
 #endif
 
@@ -435,22 +436,23 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	//printf("mau loop for\r\n");
 	for (;;)	{
 		vTaskDelay(1);
+		//printf("_________setelah delay !!!\r\n");
 		//portYIELD();
 		#ifdef PAKAI_WEBCLIENT
 		if (envx->statusWebClient==1) {
 			
 			#ifdef WEBCLIENT_DATA
 			if ((ayokirim >> 1) & 1) {
-				ayokirim &= (~2);
+				statwc = 1;
 				sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
-				strcpy(kirim_eth, envx->berkas);
-				strcat(kirim_eth, datakeserver);
+				strcpy(kirim_eth, envx->berkas);		strcat(kirim_eth, datakeserver);
 				//printf("%s @%s ---> %s : %s\r\n", __FUNCTION__, __FILE__, ipdest, kirim_eth);
-				webclient_get(ipdest, PORT_HTTP, kirim_eth);
+				webclient_get(ipdest, PORT_HTTP, kirim_eth);		 // data
+				ayokirim &= (~2);
 			}
 			#endif
 		}
-
+		//printf("_________setelah webclient !!!\r\n");
 
 			#ifdef WEBCLIENT_GPS
 				if (wclient>1000) {		// 1 detik, 60000 = 60 detik = 1 menit
@@ -484,7 +486,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					strcat(datakeserver, arah);
 
 					//printf("datakeserver: %d : %s\r\n",strlen(datakeserver), datakeserver);
-					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);		// gps
 				}
 			#endif
 			
@@ -494,7 +496,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 					sprintf(ipdest, "%d.%d.%d.%d", envx->wIP0, envx->wIP1, envx->wIP2, envx->wIP3);
 					strcpy(datakeserver, envx->berkas);
 					printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
-					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);		// PAKAI_WEBCLIENT_INTERNET
 					status_webc_i = 0;
 				}
 				
@@ -509,7 +511,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 				if (status_webc_i==3)	{
 					printf("Tes webclient ...\r\n");
 					printf("%s : %d : %s\r\n", ipdest, PORT_HTTP, datakeserver);
-					webclient_get(ipdest, PORT_HTTP, datakeserver);
+					webclient_get(ipdest, PORT_HTTP, datakeserver);		// tes PAKAI_WEBCLIENT_INTERNET
 					status_webc_i = 0;
 				}
 				
@@ -526,13 +528,15 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 		#endif
 		
 		//#if defined(BOARD_TAMPILAN) || defined (TAMPILAN_MALINGPING) 
+		//printf("sambungan server masuk : %d\r\n", mul);
 		#ifdef SAMPURASUN_SERVER
 		//#ifdef CARI_SUMBERNYA
 		loop++;
 		if (loop > 500) 		// 50, 40, 80		// aslinya 200
 		{
 			loop = 0;
-
+			//printf("sambungan konek : %d\r\n", mul);
+			vTaskDelay(500);
 			sambungan_connect(mul);	
 
 			mul++;
@@ -757,7 +761,7 @@ static portTASK_FUNCTION( tunggu, pvParameters )	{
 	}
 #elif defined(BOARD_KOMON_KONTER_3_1)
 	void start_ether(void)	{	//8
-		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 20), \
+		xTaskCreate( tunggu, ( signed portCHAR * ) "UIP/TCP", (configMINIMAL_STACK_SIZE * 15), \
 			NULL, tskIDLE_PRIORITY + 1, ( xTaskHandle * ) &hdl_ether );
 	}
 #else

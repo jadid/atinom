@@ -56,9 +56,11 @@
  */
 //#ifdef PAKAI_WEBCLIENT
 #if 1
+#include "FreeRTOS.h"
 #include "uip.h"
 #include "uiplib.h"
 #include "webclient.h"
+#include "monita/monita_uip.h"
 //#include "resolv.h"
 
 #include <string.h>
@@ -85,9 +87,11 @@ int kirimURL=0;
 char terkirimURL=0;
 int noawal;
 
+
 static struct webclient_state s;
 
 extern int noawal;
+extern char statwc;
 
 /*-----------------------------------------------------------------------------------*/
 char *
@@ -116,9 +120,11 @@ webclient_port(void)
 /*-----------------------------------------------------------------------------------*/
 void webclient_init(void) {
 	kirimURL=0;
+	printf(" ********** %s\r\n", __FUNCTION__);
 }
 /*-----------------------------------------------------------------------------------*/
 static void init_connection(void) {
+	printf("*********** %s\r\n", __FUNCTION__);
   s.state = WEBCLIENT_STATE_STATUSLINE;
 
   s.getrequestleft = sizeof(http_get) - 1 + 1 +
@@ -139,6 +145,7 @@ webclient_close(void)
   s.state = WEBCLIENT_STATE_CLOSE;
 }
 /*-----------------------------------------------------------------------------------*/
+#if 0
 int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	char id[16], dt[16];
 	int i=0,z=0;
@@ -205,7 +212,7 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	//printf("no awal: %d\r\n", noawal);
 	return jmlAktif;
 }
-
+#endif
 /*-----------------------------------------------------------------------------------*/
 unsigned char
 webclient_get(char *host, u16_t port, char *file)
@@ -217,7 +224,8 @@ webclient_get(char *host, u16_t port, char *file)
   uip_ipaddr_t ip_modul;
 	unsigned int ret_ip;
 	ret_ip = baca_ip(host);	
-
+	statwc = 2;
+	//printf("  ============== masuk %s\r\n", __FUNCTION__);
   //uip_ipaddr(ip_modul, 192,168, 1, 75);
   uip_ipaddr(ip_modul, (uchr)(ret_ip >> 24), (uchr)(ret_ip >> 16), (uchr)(ret_ip >> 8), (uchr)(ret_ip));
 
@@ -475,29 +483,31 @@ newdata(void)
 void
 webclient_appcall(void)
 {
+	statwc = 0;
+	printf("______%s masuk !!!\r\n", __FUNCTION__);
   if(uip_connected()) {
     s.timer = 0;
     s.state = WEBCLIENT_STATE_STATUSLINE;
     senddata();
     //webclient_connected();
-    //printf("%s(): Connected\r\n", __FUNCTION__);
+    printf("%s(): Connected\r\n", __FUNCTION__);
 	return;
   }
 
   if(s.state == WEBCLIENT_STATE_CLOSE) {
     //webclient_closed();
-    //printf("%s(): Closed\r\n", __FUNCTION__);
+    printf("%s(): Closed\r\n", __FUNCTION__);
 	uip_abort();
     return;
   }
 
   if(uip_aborted()) {	 
     //webclient_aborted();
-	 //printf("%s(): Aborted\r\n", __FUNCTION__);
+	 printf("%s(): Aborted\r\n", __FUNCTION__);
   }
   if(uip_timedout()) {
     //webclient_timedout();
-	 //printf("%s(): Timeout 1\r\n", __FUNCTION__);
+	 printf("%s(): Timeout 1\r\n", __FUNCTION__);
   }
 
   
@@ -546,7 +556,7 @@ void tulis_foto(char *data, unsigned int len);
 
 void webclient_datahandler(char *data, u16_t len)
 {
-	//printf("%s", __FUNCTION__);
+	printf(" ++++++++++++ %s\r\n", __FUNCTION__);
 	
 	//tulis_foto( data, len );
 	

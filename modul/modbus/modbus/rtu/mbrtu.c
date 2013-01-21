@@ -78,7 +78,7 @@ static volatile USHORT usSndBufferCount;
 
 static volatile USHORT usRcvBufferPos;
 
-extern int berhitung_serial3;
+//extern int berhitung_serial3;
 
 /* ----------------------- Start implementation -----------------------------*/
 eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, eMBParity eParity ) {
@@ -115,7 +115,7 @@ eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, e
             usTimerT35_50us = ( 7UL * 220000UL ) / ( 2UL * ulBaudRate );
         }
         
-        printf("usTimerT35_50us: %d, eSTATUS: %d\r\n", usTimerT35_50us, eStatus);
+        printf(">>>>>>>>>>>>>>>> usTimerT35_50us: %d, eSTATUS: %d\r\n", usTimerT35_50us, eStatus);
         if( xMBPortTimersInit( ( USHORT ) usTimerT35_50us ) != TRUE )
         //if(FALSE)
         {
@@ -129,7 +129,12 @@ eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, e
 
 void eMBRTUStart( void ) {
     //ENTER_CRITICAL_SECTION(  );
+    #ifdef DEBUG_MODBUS_SLAVE
+    printf(" masuk %s", __FUNCTION__);
+    #endif
+    
     portENTER_CRITICAL();
+    
     /* Initially the receiver is in the state STATE_RX_INIT. we start
      * the timer and if no character is received within t3.5 we change
      * to STATE_RX_IDLE. This makes sure that we delay startup of the
@@ -142,18 +147,22 @@ void eMBRTUStart( void ) {
 
     //EXIT_CRITICAL_SECTION(  );
     portEXIT_CRITICAL();
-    berhitung_serial3+=3;
+    //berhitung_serial3+=3;
 }
 
 void eMBRTUStop( void ) {
     //ENTER_CRITICAL_SECTION(  );
+    #if 0
+    printf("______pit STOP %s\r\n", __FUNCTION__);
+    #endif
+    
     portENTER_CRITICAL();
     vMBPortSerialEnable( FALSE, FALSE );
     vMBPortTimersDisable(  );
     portEXIT_CRITICAL();
     //EXIT_CRITICAL_SECTION(  );
     
-    berhitung_serial3+=4;
+    //berhitung_serial3+=4;
 }
 
 eMBErrorCode eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLength ) {
@@ -223,7 +232,7 @@ eMBErrorCode eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT us
     //EXIT_CRITICAL_SECTION(  );
     portEXIT_CRITICAL();
     
-    berhitung_serial3+=5;
+    //berhitung_serial3+=5;
     return eStatus;
 }
 

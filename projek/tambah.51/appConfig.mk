@@ -74,15 +74,18 @@
 //	#define PAKAI_SERIAL_3_P0	115200		// TES
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400
 //	#define PAKAI_SERIAL_3_P0	19200		// max MICOM: 19200
-//	#define PAKAI_SERIAL_3_P0	9600		// max TFX  :  9600
-	#define PAKAI_SERIAL_3_P0	4800		// max TFX  :  4800
+	#define PAKAI_SERIAL_3_P0	9600		// max TFX  :  9600
+//	#define PAKAI_SERIAL_3_P0	4800		// max TFX  :  4800
 
 	#define PAKAI_MODBUS
 	#define PAKAI_MODBUS_RTU
 	#define PAKAI_MAX485		1
 	
+	
 	//#define SEBAGAI_MASTER
 	#define SEBAGAI_SLAVE
+	
+	#define PAKAI_SENSOR_JARAK
 	
 	//#define AMBIL_PM
 	//#define PAKAI_PM			3

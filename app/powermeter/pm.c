@@ -76,8 +76,7 @@ int sedot_pm() {
 	int ap;
 	struct t_sumber *p_sbrq;
 	p_sbrq = (char *) ALMT_SUMBER;
-	
-	printf("+++++++++++++++++++++++ %s\r\n", __FUNCTION__);
+
 	struct t_env *env3;
 	env3 = (char *) ALMT_ENV;
 	
@@ -334,9 +333,9 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	printf("\r\n");
 	printf("  Terima data .. \r\n");
 	#endif
-	
+	//vTaskDelay(1);
 	i=0;
-
+	//FIO0CLR = TXDE;		// on	---> bisa kirim
 	#if 1
 	while(1)	{
 		#if (PAKAI_PM == 1) 

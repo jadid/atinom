@@ -24,7 +24,7 @@
 #define MONITA_UIP_H_
 
 #define MAGIC_1	0x33
-#define MAGIC_2	0x81
+#define MAGIC_2	0x83
 
 
 #define MEM_RTC_CRON	100
@@ -146,6 +146,7 @@ typedef enum {
 #ifdef PAKAI_WEBCLIENT_INTERNET
 
 #endif
+	
 
 #ifdef PAKAI_MODEM_GSM
 	char flagModem;
@@ -229,6 +230,11 @@ typedef struct __attribute__ ((packed))	{
 
 #ifdef KIRIM_KE_SER_2
 	char statKirimSer;
+#endif
+
+#ifdef WEBCLIENT_DATA
+	char statKirimEth;
+	char statwc;
 #endif
 
 #ifdef BOARD_KOMON_KONTER

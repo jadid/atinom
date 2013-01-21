@@ -53,8 +53,8 @@
 #define _printf	printf2
 #define printf	printf2
 
-//#define PAKAI_MULTI_SERIAL
-//#define PAKAI_ADC
+#define PAKAI_MULTI_SERIAL
+#define PAKAI_ADC
 
 
 #define PAKAI_SERIAL_3
@@ -76,17 +76,17 @@
 	#ifdef PAKAI_PM
 		#define TIPE_PM810			"Schneider Power Meter PM810"
 		//#define TIPE_PM710		"Schneider Power Meter PM710"
-		#define TIPE_MICOM_M300		"MICOM Power Meter M300"
-		#define TIPE_MICOM_P127		"MICOM Power Meter P127"
+		//#define TIPE_MICOM_M300		"MICOM Power Meter M300"
+		//#define TIPE_MICOM_P127		"MICOM Power Meter P127"
 		//#define TIPE_TFX_ULTRA		"Dynasonics Flow Meter TFX Ultra"
-		#define TIPE_ION8600		"Schneider ION 8600"
+		//#define TIPE_ION8600		"Schneider ION 8600"
 	#endif
 #endif
 
 
 //#define TES_GET_WEB
 
-#define PROMPT 		"RTD@"
+#define PROMPT 		"PM420@"
 #define NAMA_BOARD	"Babelan Komon-420"
 
 #define PAKAI_LED_UTAMA
@@ -107,7 +107,7 @@
 
 //	#define PAKAI_MODBUSTCP
 	#define SAMPURASUN_CLIENT
-//	#define SAMPURASUN_SERVER
+	#define SAMPURASUN_SERVER
 	#define PAKAI_WEBCLIENT
 	#define PAKE_TELNETD
 	#define PAKAI_HTTP
@@ -119,8 +119,6 @@
 		#endif
 	#endif
 #endif
-
-//#define PAKAI_ADC
 
 /*-----------------------------------------------------------
  * Application specific definitions.

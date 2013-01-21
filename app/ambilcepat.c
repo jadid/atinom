@@ -184,7 +184,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	#endif
   	
 
-	
+	int ch;
 	
   	vTaskDelay(50);
   	for(;;) {
@@ -220,7 +220,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 
 		#ifdef PAKAI_PM
 			#ifdef AMBIL_PM			// AMBIL_PM
-	//			sedot_pm();			// app/powermeter/pm.c
+//				sedot_pm();			// app/powermeter/pm.c
 			#endif
 		#endif
 		
@@ -235,15 +235,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				simpan_ke_data_f();
 			}
 		#endif
-		
-		//#ifdef UNTUK_UNSRI
-		if (loopambil%500==0) {			// 1 detik ambil data
-			//FIO0PIN ^= BIT(27);
-			//hitung_energi();
-			//printf("T2MR0: %d, T2TC: %d\r\n", T2MR0, T2TC);
-		}
-		//#endif
-		
+
 		/*
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
@@ -269,7 +261,11 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		
 		#ifdef BOARD_KOMON_KONTER
 			#ifdef HITUNG_RPM
+				#ifdef PAKAI_SENSOR_JARAK
+				if (loopambil%10==0) {				// 1.5 detik ambil data
+				#else
 				if (loopambil%150==0) {				// 1.5 detik ambil data
+				#endif
 					cek_input_onoff();				// ada di tinysh/rpm.c
 					hitung_rpm();
 				}
@@ -425,12 +421,16 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		vTaskDelay(1);
 		#endif
 		
-		#if 0
-		if (ser3_getchar(1, &ch, 10) == pdTRUE)	  {
-			printf("%c", ch);
+		//#if 1
+		#ifdef PAKAI_SENSOR_JARAK 
+		//printf(".");
+		FIO0CLR = TXDE;		// on	---> bisa kirim
+		FIO0CLR = RXDE;
+		
+		if (ser3_getchar(1, &ch, 50) == pdTRUE)	  {
+			//printf("%c", ch);
 			parsing_ping(ch);
 		}
-		//FIO0SET  = BIT(5);	// TX kirim
 		FIO0SET  = TXDE;	// TX kirim
 		#endif
 		

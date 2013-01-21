@@ -1099,7 +1099,7 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 	#endif
 	strcat(tot_buf, "<br/>\n");
 	
-	#ifdef PAKAI_ADCx
+	#ifdef PAKAI_ADC
 		strcat(tot_buf, "<h3>Faktor kalibrasi (y = mx + C)</h3>\n");
 
 		strcat(tot_buf, "<table border=\"0\" bgcolor=\"lightGray\">\n");

@@ -34,14 +34,24 @@
 
 /* ----------------------- Platform includes --------------------------------*/
 #include "port.h"
-#include "../port/port.c"
+//#include "../port/port.c"
 //#include "../port/portevent.c"
-#include "../modbus/modbus/functions/mbfunccoils.c"
-#include "../modbus/modbus/functions/mbfuncholding.c"
-#include "../modbus/modbus/functions/mbfuncother.c"
-#include "../modbus/modbus/functions/mbfuncinput.c"
-#include "../modbus/modbus/functions/mbfuncdisc.c"
-#include "../modbus/modbus/functions/mbutils.c"
+
+#if 0
+#include "functions/mbfunccoils.c"
+#include "functions/mbfuncholding.c"
+#include "functions/mbfuncother.c"
+#include "functions/mbfuncinput.c"
+#include "functions/mbfuncdisc.c"
+#include "functions/mbutils.c"
+#endif
+
+//#include "../modbus/modbus/functions/mbfunccoils.c"
+//#include "../modbus/modbus/functions/mbfuncholding.c"
+//#include "../modbus/modbus/functions/mbfuncother.c"
+//#include "../modbus/modbus/functions/mbfuncinput.c"
+//#include "../modbus/modbus/functions/mbfuncdisc.c"
+//#include "../modbus/modbus/functions/mbutils.c"
 
 /* ----------------------- Modbus includes ----------------------------------*/
 #include "mb.h"
@@ -180,6 +190,10 @@ eMBErrorCode eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG u
         default:
             eStatus = MB_EINVAL;
         }
+        
+        #ifdef DEBUG_MODBUS_SLAVE
+        //printf("status %s: %d\r\n", __FUNCTION__, eStatus);
+        #endif
 
         if( eStatus == MB_ENOERR )         {
             if( !xMBPortEventInit(  ) )    {
@@ -223,7 +237,8 @@ eMBErrorCode eMBRegisterCB( UCHAR ucFunctionCode, pxMBFunctionHandler pxHandler 
 
     if( ( 0 < ucFunctionCode ) && ( ucFunctionCode <= 127 ) )
     {
-        ENTER_CRITICAL_SECTION(  );
+        portENTER_CRITICAL();
+        //ENTER_CRITICAL_SECTION(  );
         if( pxHandler != NULL )
         {
             for( i = 0; i < MB_FUNC_HANDLERS_MAX; i++ )
@@ -252,7 +267,8 @@ eMBErrorCode eMBRegisterCB( UCHAR ucFunctionCode, pxMBFunctionHandler pxHandler 
             /* Remove can't fail. */
             eStatus = MB_ENOERR;
         }
-        EXIT_CRITICAL_SECTION(  );
+        //EXIT_CRITICAL_SECTION(  );
+        portEXIT_CRITICAL();
     }
     else
     {
@@ -290,6 +306,7 @@ eMBErrorCode eMBEnable( void ) {
     } else {
         eStatus = MB_EILLSTATE;
     }
+    printf(" masuk %s: %d\r\n", __FUNCTION__, eStatus);
     return eStatus;
 }
 

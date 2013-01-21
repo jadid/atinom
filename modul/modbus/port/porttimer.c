@@ -21,7 +21,7 @@
 
 /* ----------------------- Platform includes --------------------------------*/
 //#include <LPC214X.h>
-#include "../lpc23xx.h"
+
 
 #include "FreeRTOS.h" 
 #include "queue.h"

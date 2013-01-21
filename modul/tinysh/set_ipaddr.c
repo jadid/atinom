@@ -54,6 +54,9 @@ static void setenv_fnt(int argc, char **argv)
 				printf("   webclient : aktivasi pengiriman data via webclient\r\n");
 				printf("     misalnya $ set_env webclient [0|mati|1|aktif]\r\n");
 				printf(" \r\n");
+				printf("   webclientip : IP server untuk penyimpanan data\r\n");
+				printf("     misalnya $ set_env webclientip 192.168.1.99\r\n");
+				printf(" \r\n");
 				printf("   file : tujuan file pengiriman data via webclient\r\n");
 				printf("     misalnya $ set_env file /monita3/monita_loket.php\r\n");
 				printf(" \r\n");

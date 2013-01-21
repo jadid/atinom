@@ -43,6 +43,7 @@ void dele(int dd);
 	
 	#ifdef PAKAI_SERIAL_3_P0
 		#define setup_serial3_P0()	do 	{	\
+										PCONP |= BIT(25);	\
 										PINSEL1 &= ~(BIT(18) | BIT(19) | BIT(20) | BIT(21));		\
 										PINSEL1 |= (BIT(18) | BIT(19));								\
 										PINSEL1 |= (BIT(20) | BIT(21));								\

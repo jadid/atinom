@@ -22,7 +22,7 @@
 /* ----------------------- Platform includes --------------------------------*/
 #include <stdlib.h>
 
-#include "../lpc23xx.h"
+#include "lpc23xx.h"
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
@@ -53,7 +53,7 @@ void sio_irq( void ) {
     volatile char   dummy;
     volatile char   IIR;
 	
-	berhitung_serial3++;
+	//berhitung_serial3++;
     while( ( ( IIR = U3IIR ) & 0x01 ) == 0 )
     {
         switch ( IIR & 0x0E )
@@ -90,7 +90,7 @@ void prvvTIMERExpiredISR( void ) {
 	( void )pxMBPortCBTimerExpired(  );
 
     T3IR = 0xFF;
-    berhitung_timer3++;
+    //berhitung_timer3++;
 	
 	VICVectAddr = serCLEAR_VIC_INTERRUPT;         // Acknowledge Interrupt //
     portRESTORE_CONTEXT();

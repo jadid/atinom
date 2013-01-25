@@ -115,12 +115,13 @@ eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, e
             usTimerT35_50us = ( 7UL * 220000UL ) / ( 2UL * ulBaudRate );
         }
         
-        printf(">>>>>>>>>>>>>>>> usTimerT35_50us: %d, eSTATUS: %d\r\n", usTimerT35_50us, eStatus);
+        printf(">>>>>>>>>>>>>>>> usTimerT35_50us: %d, eSTATUS: %d --> ", usTimerT35_50us, eStatus);
         if( xMBPortTimersInit( ( USHORT ) usTimerT35_50us ) != TRUE )
         //if(FALSE)
         {
             eStatus = MB_EPORTERR;
         }
+        printf("%s eStatus: %d/%d\r\n", __FUNCTION__, eStatus, MB_EPORTERR);
     }
     //EXIT_CRITICAL_SECTION(  );
 	portEXIT_CRITICAL();
@@ -130,7 +131,7 @@ eMBErrorCode eMBRTUInit( UCHAR ucSlaveAddress, UCHAR ucPort, ULONG ulBaudRate, e
 void eMBRTUStart( void ) {
     //ENTER_CRITICAL_SECTION(  );
     #ifdef DEBUG_MODBUS_SLAVE
-    printf(" masuk %s", __FUNCTION__);
+    printf(" masuk %s() --> ", __FUNCTION__);
     #endif
     
     portENTER_CRITICAL();
@@ -152,7 +153,7 @@ void eMBRTUStart( void ) {
 
 void eMBRTUStop( void ) {
     //ENTER_CRITICAL_SECTION(  );
-    #if 0
+    #if 1
     printf("______pit STOP %s\r\n", __FUNCTION__);
     #endif
     
@@ -170,7 +171,7 @@ eMBErrorCode eMBRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * p
     eMBErrorCode    eStatus = MB_ENOERR;
 
     //ENTER_CRITICAL_SECTION(  );
-    
+    printf(" %s -- ", __FUNCTION__);
     assert( usRcvBufferPos < MB_SER_PDU_SIZE_MAX );
 	portENTER_CRITICAL();
     /* Length and CRC check */
@@ -240,11 +241,12 @@ BOOL xMBRTUReceiveFSM( void ) {
     BOOL            xTaskNeedSwitch = FALSE;
     UCHAR           ucByte;
 
+	printf(" >> %s -- ", __FUNCTION__);
     assert( eSndState == STATE_TX_IDLE );
 	
     /* Always read the character. */
     ( void )xMBPortSerialGetByte( ( CHAR * ) & ucByte );
-	//printf("%c", ucByte);
+	printf("%c", ucByte);
     switch ( eRcvState ) {
         /* If we have received a character in the init state we have to
          * wait until the frame is finished.

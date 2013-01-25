@@ -286,6 +286,36 @@ static void setenv_fnt(int argc, char **argv)
 		printf(" Status burst : %s\r\n", (p_sbr->burst==1)?"aktif":"mati");
 	}
 	#endif
+	#ifdef PAKAI_MODBUS_SLAVE
+	else if (strcmp(argv[1], "idslave") == 0)	{
+		unsigned char id;
+		unsigned char strx[8];
+		int a;
+		
+		sprintf(strx, "%s", argv[2]);
+		id = atoi(argv[2]);
+		printf("a: %d, id: %d\r\n", a, id);
+		if ( (id>0) && (id<128) )	{
+			p_sbr->almtSlave = id;
+		} else {
+			p_sbr->almtSlave = 0;
+		}
+		printf(" ID modbus Slave : %d\r\n", p_sbr->almtSlave);
+	} else if (strcmp(argv[1], "statusslave") == 0)	{
+		printf(" set status modbus slave --> ");
+  		if (( argv[2][0] == '1') || (argv[2][0] == '0')) {
+			p_sbr->statusSlave = (argv[2][0] - '0');
+		} 
+		else if (strcmp(argv[2], "aktif")==0 || strcmp(argv[2], "hidup")==0) {
+			p_sbr->statusSlave = 1;
+		} else if (strcmp(argv[2], "mati")==0)  {
+			p_sbr->statusSlave = 0;
+		} else {
+			p_sbr->statusSlave = 0;
+		}
+		printf(" Status : %s\r\n", (p_sbr->statusSlave==1)?"aktif":"mati");
+	}
+	#endif
 	else if (strcmp(argv[1], "kanal") == 0)	{
 		int kanal;
 		

@@ -31,6 +31,7 @@ static BOOL     xEventInQueue;
 BOOL
 xMBPortEventInit( void )
 {
+	printf(" --monggo %s\r\n", __FUNCTION__);
     xEventInQueue = FALSE;
     return TRUE;
 }

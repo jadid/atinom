@@ -96,8 +96,8 @@ USHORT usMBCRC16( UCHAR * pucFrame, USHORT usLen, UCHAR debug )
     UCHAR           ucCRCLo = 0xFF;
     int             iIndex;
     
-    #if 0
-    printf("masuk %s...!!!, debug: %d, %02X %02X %02X %02X\r\n", __FUNCTION__, debug, pucFrame[0], pucFrame[1], pucFrame[2], pucFrame[3]);
+    #if 1
+    //printf("masuk %s...!!!, debug: %d, %02X %02X %02X %02X\r\n", __FUNCTION__, debug, pucFrame[0], pucFrame[1], pucFrame[2], pucFrame[3]);
     if (debug) {
 		printf("%s(): len: %d\r\n", __FUNCTION__, usLen);
 		for (iIndex=0; iIndex<usLen; iIndex++) {

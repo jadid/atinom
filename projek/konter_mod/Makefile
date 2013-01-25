@@ -157,6 +157,7 @@ MODBUS_SOURCE = \
 		../../modul/modbus/modbus/functions/mbfuncother.c \
 		../../modul/modbus/modbus/functions/mbfuncdisc.c \
 		../../modul/modbus/modbus/functions/mbutils.c \
+#		../../modul/modbus/port/modbus_ISR.c \
 
 PM_SOURCE = \
 		../../modul/modbus/low_mod.c	\

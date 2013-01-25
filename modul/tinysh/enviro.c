@@ -170,24 +170,29 @@ int baca_env(char tampil)
 			struct t_env *env2;
 			env2 = (char *) ALMT_ENV;
 	
-			printf(" Nama board = "); 	printf("%s\r\n",env2->nama_board);
-			printf(" No Seri    = ");	printf("%s\r\n", env2->SN);
+			printf(" Nama board   = "); 	printf("%s\r\n",env2->nama_board);
+			printf(" No Seri      = ");	printf("%s\r\n", env2->SN);
 			#ifdef PAKAI_ETH
-			printf(" IP Address = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
-			printf(" Gateway IP = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
-			printf(" IP Server  = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
+			printf(" IP Address   = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
+			printf(" Gateway IP   = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
+			printf(" IP Server    = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
+			#endif
+			
+			#ifdef PAKAI_MODBUS_SLAVE
+			printf(" ID Slave     = "); printf("%d\r\n",env2->almtSlave);
+			printf(" Status Slave = ");	printf("%d : %s\r\n", env2->statusSlave, (env2->statusSlave?"aktif":"mati") );
 			#endif
 			
 			#ifdef PAKAI_WEBCLIENT
-				printf(" WebClient  = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati");
+				printf(" WebClient    = %s\r\n", (env2->statusWebClient==1)?"Aktif":"mati");
 				if (env2->intKirim<60) sprintf(ketper, "%d detik", env2->intKirim);
 				else if (env2->intKirim<3600) sprintf(ketper, "%d menit", env2->intKirim/60);
 				else sprintf(ketper, "%d jam", env2->intKirim/3600);
-				printf(" Periode    = %s : %d\r\n", ketper, env2->intKirim);
+				printf(" Periode      = %s : %d\r\n", ketper, env2->intKirim);
 				#ifdef PAKAI_WEBCLIENT_INTERNET
-				printf(" WebInternet = %s\r\n", (env2->statusWebClientI==1)?"Aktif":"mati"); 
+				printf(" WebInternet  = %s\r\n", (env2->statusWebClientI==1)?"Aktif":"mati"); 
 				#endif
-				printf(" File       = %s\r\n", env2->berkas); 
+				printf(" File         = %s\r\n", env2->berkas); 
 				//printf(" Mode Burst = %s\r\n", (env2->burst==1)?"Aktif":"mati"); 
 			#endif
 			
@@ -455,6 +460,9 @@ void set_env_default() {
 	env2->intReset = 60;
 	//env2->intTole = 208;			// 1 drum
 	env2->intTole = 3.785;			// 1 drum
+	
+	env2->almtSlave = 0;
+	env2->statusSlave = 0;
 	
 	if (simpan_env( env2 ) < 0) {
 		vPortFree( env2 );

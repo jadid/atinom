@@ -46,9 +46,15 @@ int susun_kirim(int jmlData, char *iList, char *dList)	{
 	}
 }
 
-char sping[50];
+char sping[256];
 int np;
-void parsing_ping(int ch);
+char flag_ms;
+//int alamat_slave;
+//void parsing_ping(int ch);
+void sedot_mod(int ch);
+void pr_mod(unsigned char *jud, unsigned char *x, int jml);
+//struct d_pmod resp_modx;
+struct	st_mod_slave p_mod_sl;
 
 portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	vTaskDelay(1060);
@@ -106,16 +112,27 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	//char ch[2];
 	int ch;
 	np = 0;
-
-	FIO0CLR = TXDE;
-	FIO0CLR = RXDE;
-
+	flag_ms = 0;
+	//alamat_slave = 5;
   	
   	for(;;) {
-		if (ser3_getchar(1, &ch, 50) == pdTRUE)	  {
-			printf("%c", ch);
-			//parsing_ping(ch);
+		#if 1
+		//#ifdef PAKAI_MODBUS_SLAVE
+		FIO0CLR = TXDE;
+		FIO0CLR = RXDE;
+		if (ser3_getchar(1, &ch, 40) == pdTRUE)	  {		// 100
+			flag_ms = 1;
+			//printf("%02x ", (char) ch);
+			sedot_mod(ch);
+		} else {
+			//printf("&");
+			if (flag_ms==1)	{
+				proses_mod_cmd();
+			}
+			flag_ms = 0;
+			np=0;
 		}
+		#endif
   	}
   	
   	for(;;) {
@@ -301,7 +318,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#endif
 
 		#if 0
-		#ifdef SEBAGAI_SLAVE
+		#ifdef PAKAI_MODBUS_SLAVE
 			//printf("kirim ke serial\r\n");
 			if (cKirim==500)	{
 				//ser3_putstring("1234567890123");
@@ -320,8 +337,8 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		FIO0CLR = RXDE;
 		
 		
-		if (ser3_getchar(1, &ch, 50) == pdTRUE)	  {
-			printf("%c", ch);
+		if (ser3_getchar(1, &ch, 30) == pdTRUE)	  {
+			//printf("%c", ch);
 			//parsing_ping(ch);
 		}
 		//FIO0SET  = BIT(5);	// TX kirim
@@ -333,6 +350,154 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 	}
 }
 
+void pr_mod(unsigned char *jud, unsigned char *x, int jml)	{
+	int i=0;
+	printf("%s: %3d -->", jud, jml);
+	for (i=0; i<jml; i++)	{
+		printf(" %02x", x[i]);
+	}
+	printf("\r\n");
+}
+
+int cek_crc_mod(unsigned char *x)	{
+	unsigned char lo, hi;
+	unsigned short mbhcrc;
+	mbhcrc = usMBCRC16((unsigned char *) x, 6, 0);
+	hi = ((mbhcrc&0xFF00)>>8);	lo = (mbhcrc&0xFF);
+	//printf(">>> %s hi: %02x, lo: %02x -->", __FUNCTION__, hi, lo);
+	
+	if (hi==sping[7] && lo==sping[6]) {
+		//printf("SIP crc\r\n");
+		return 1;
+	}
+	return 0;
+}
+
+int parsing_mod(unsigned char *x)	{
+	struct t_env *p_env3;
+	p_env3 = (char *) ALMT_ENV;
+	
+	p_mod_sl.almt = x[0];
+	p_mod_sl.cmd  = x[1];
+	p_mod_sl.reg  = (x[2] << 8) + x[3]; 
+	p_mod_sl.jml  = ((x[4]<<8)+x[5])/4;
+	//printf("al: %d, cmd: %d, reg: %d, jml: %d\r\n", p_mod_sl.almt, p_mod_sl.cmd, p_mod_sl.reg, p_mod_sl.jml);
+	
+	if (p_mod_sl.almt==p_env3->almtSlave)	{		// untuk sendiri
+		return 1;
+	}
+	return 0;
+}
+
+int respon_modbus()	{
+	struct t_setting *p_kfg;
+	p_kfg = (char *) ALMT_KONFIG;
+	int i, n=0, ix;
+	unsigned char dtmod[256];
+	unsigned short mbhcrc;
+	int jmlData = (sizeof(data_f)/sizeof(float));
+	unsigned char *w;
+	char fk=0;
+	
+	//printf("reg: %d\r\n", p_mod_sl.reg);
+	for (i=0; i<jmlData; i++)	{
+		if (p_mod_sl.reg == p_kfg[i].id)	{
+			n = i;
+			break;
+		}
+	}
+	//printf("mulai id: %d, jml: %d, data: %f, sizedataf: %d\r\n", n, p_mod_sl.jml, data_f[n], sizeof(float));
+	
+	dtmod[0] = p_mod_sl.almt;
+	dtmod[1] = p_mod_sl.cmd;
+	dtmod[2] = p_mod_sl.jml*4;
+	for (i=0; i<p_mod_sl.jml; i++)		{
+		memcpy( (char *) &ix, (char *) &data_f[n+i], 4);
+		dtmod[4+i*4] = (unsigned char) ( (ix>>24) & 0xff );		// 3
+		dtmod[3+i*4] = (unsigned char) ( (ix>>16) & 0xff );		// 2
+		dtmod[6+i*4] = (unsigned char) ( (ix>>8)  & 0xff );		// 1
+		dtmod[5+i*4] = (unsigned char) (  ix & 0xff );			// 0
+	}
+	ix = 3+4*p_mod_sl.jml;
+	
+	#if 1
+	mbhcrc = usMBCRC16((unsigned char *) dtmod, ix, 0);
+	dtmod[ix+1] = ((mbhcrc&0xFF00)>>8);	dtmod[ix] = (mbhcrc&0xFF);
+	ix += 2;
+	#endif
+	
+	//printf(">>>>> BALAS: %d -->", ix);
+	FIO0SET = TXDE;
+	FIO0SET = RXDE;
+	
+	w = (char *) &dtmod;
+	for (i=0; i<ix; i++)	{
+		serX_putchar(3, w++, 80);			// 150
+		//xSerialPutChar3(1, *w++, 150);
+		//printf("%02hX ", *w);
+		//
+	}
+	//printf("\r\n");	
+	vTaskDelay(80);
+	return ix;
+
+}
+
+int proses_mod_cmd()	{
+	int hsl=0;
+	//pr_mod("\r\n>> BACA: ", sping, np);
+	hsl = cek_crc_mod(sping);
+	if (hsl==1)	{
+		//printf(" > LULUS < !!!\r\n");
+		if (parsing_mod(sping)==1)	{
+			//printf("__PROSES DATA KITA !!\r\n");
+			respon_modbus();
+		}	
+	}
+}
+
+void sedot_mod(int ch)	{
+	unsigned char lo, hi;
+	unsigned short mbhcrc;
+	char x = (char) ch;
+	int hsl=0, r;
+	//char stmp[50];
+	
+	sping[np] = x;
+	sping[np+1] = '\0';
+	
+	#if 0
+	if (np==0)	{
+		printf("m: ");
+	}
+	#endif
+	
+	np++;
+	#if 0
+	if (np>7)	{
+		#if 1
+		printf("#### : ");
+		for (r=0; r<np; r++)	{
+			printf("%02x ", sping[r]);
+		}
+		printf("\r\n");
+		#endif
+
+		hsl = cek_crc_mod(sping);
+		if (hsl==1)	{
+			//printf(" > LULUS < !!!\r\n");
+			if (parsing_mod(sping)==1)	{
+				//printf("__PROSES DATA KITA !!\r\n");
+				respon_modbus();
+			}
+			
+		}
+		
+		//printf("######## : %s--\r\n", sping);
+		np=0;
+	}
+	#endif
+}
 
 #ifdef PAKAI_SENSOR_JARAK
 void parsing_ping(int ch)	{

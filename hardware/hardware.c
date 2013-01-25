@@ -179,7 +179,7 @@ void init_hardware()	{
 	#endif
 	
 	#ifdef PAKAI_MODBUS_SLAVE
-		init_task_modbus();
+	//	init_task_modbus();
 	#endif
 }
 

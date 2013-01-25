@@ -558,7 +558,7 @@ int ganti_setting(char *str) {
 		else if (strncmp(tmp, "z", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
 			z = atoi(ids+1);
-			//printf("  z: %d, ids: %s\r\n", z, ids+1);
+			printf("  z: %d, ids: %s\r\n", z, ids+1);
 		}
 		else if (strncmp(tmp, "a", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
@@ -712,6 +712,9 @@ int ganti_setting(char *str) {
 		
 		#endif
 		//*/
+		
+		p_sbr->almtSlave = gg;
+		printf("z: %d, almt: %d\r\n", gg, p_sbr->almtSlave);
 		
 		p_sbr->statusWebClient = aa;
 		p_sbr->burst = bb;
@@ -1866,6 +1869,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				"   document.mF.t.value=Titik(strx);\r\n" \
 				"	strx=document.mF.k.value;\r\n" \
 				"   document.mF.k.value=Titik(strx);\r\n" \
+				"	strx=document.mF.g.value;\r\n" \
+				"   document.mF.g.value=Titik(strx);\r\n" \
 				"}\r\n" \
 				"function reset(){\r\n" \
 				"	window.location=\"/index.html\";\r\n" \
@@ -1928,6 +1933,12 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					"<td>Lokasi File</td><td><input type=\"text\" name=\"f\" value=\"%s\" size=\"30\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
+			#ifdef PAKAI_MODBUS_SLAVE
+			sprintf(head_buf, "<tr>" \
+					"<td>ID Slave Modbus</td><td><input type=\"text\" name=\"g\" value=\"%d\" size=\"30\"></td>" \
+					"</tr>\r\n", env2ww->almtSlave);
+			strcat(tot_buf, head_buf);
+			#endif
 			//*/
 			strcat(tot_buf, "</tbody></table>\r\n");
 			strcat(tot_buf, "<input type=\"submit\" value=\"Ganti\" onClick=\"gantiTitik()\"/>\r\n</form>\r\n");

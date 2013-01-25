@@ -14,7 +14,7 @@
 #define RXDE	BIT(23)
 
 #define REG_INPUT_START 1000
-#define REG_INPUT_NREGS 4
+#define REG_INPUT_NREGS 16
 #define REG_HOLDING_START 2000
 #define REG_HOLDING_NREGS 130
 
@@ -39,11 +39,11 @@ static portTASK_FUNCTION(task_modbus, pvParameters )
 	
 	eMBInit( MB_RTU, 0x01, 19200, 1, MB_PAR_NONE );
     
-    //eMBEnable();
+    eMBEnable();
     vTaskDelay(500);
 	
 	for (;;)	{
-	//	eMBPoll();
+		eMBPoll();
 		vTaskDelay(1);
 
 	}

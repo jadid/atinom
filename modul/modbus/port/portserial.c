@@ -27,6 +27,7 @@
 
 #include "port.h"
 #include "portserial.h"
+//#include "modbus_ISR.c"		// tidak mau
 
 
 /* ----------------------- Modbus includes ----------------------------------*/
@@ -104,23 +105,43 @@ BOOL xMBPortSerialInit( UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBPar
     }
 
     if( bInitialized )     {
+		
         U3LCR = cfg;            // set Data Bits and Parity 8 data, 1 stop, parity none: 0x07 //
         U3IER = 0;              // Disable UART3 Interrupts //
 
         U3LCR |= 0x80;          // Set DLAB		//
+        
+        #if 0	// dulu
         U3DLL = (reload & (unsigned portLONG) 0xff);         // Set Baud		//
         U3DLM = ((reload >> 8) & (unsigned portLONG) 0xff);  // Set Baud		//
         U3FCR = ( serFIFO_ON | serCLEAR_FIFO );
         U3LCR &= ~0x80;         // Clear DLAB, dipasang iki malah ga bisa//
-
+		#endif
+		
+		U3DLL = reload;         /* Set Baud     */
+        U3DLM = reload >> 8;    /* Set Baud */
+        U3LCR &= ~0x80;         /* Clear DLAB */
+		
         /* Configure UART3 Interrupt */
-        VICIntSelect &= ~BIT(29);		// VIC
+        #if 1		// dulu
+        VICIntSelect &= ~BIT(29);		// VIC as IRQ, not FIQ
         extern void (sio_irq)( void );
         VICVectAddr29 = (portLONG) sio_irq;
-        //VICVectCntl29 = 3;
+        VICVectCntl29 = 3;				// VIC priority 0-15, 15 low priority
         //VICIntEnable = 1 << 29;
 		VICIntEnable |= BIT(29);  /* Enable UART3 Interrupt */
         dummy = U3IIR;          /* Required to Get Interrupts Started */
+        #endif
+        
+        #if 0
+        VICVectAddr0 = ( unsigned long ) sio_irq;
+        VICVectCntl0 = 0x20 | 7;
+        VICIntEnable = 1 << 7;  /* Enable UART3 Interrupt */
+
+        dummy = U3IIR;          // Required to Get Interrupts Started
+        #endif
+        
+        printf(" ------> %s() masuk : %d !!\r\n", __FUNCTION__, bInitialized);
     }
     return bInitialized;
 }

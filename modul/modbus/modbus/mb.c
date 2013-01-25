@@ -192,16 +192,18 @@ eMBErrorCode eMBInit( eMBMode eMode, UCHAR ucSlaveAddress, UCHAR ucPort, ULONG u
         }
         
         #ifdef DEBUG_MODBUS_SLAVE
-        //printf("status %s: %d\r\n", __FUNCTION__, eStatus);
+        printf("status %s(): %d/%d\r\n", __FUNCTION__, eStatus, MB_ENOERR);
         #endif
 
         if( eStatus == MB_ENOERR )         {
             if( !xMBPortEventInit(  ) )    {
                 /* port dependent event module initalization failed. */
                 eStatus = MB_EPORTERR;
+                printf("port ERROR !!\r\n");
             } else {
                 eMBCurrentMode = eMode;
                 eMBState = STATE_DISABLED;
+                printf("eMode: %d -- state: %d !!\r\n", eMode, eMBState);
             }
         }
     }
@@ -306,7 +308,7 @@ eMBErrorCode eMBEnable( void ) {
     } else {
         eStatus = MB_EILLSTATE;
     }
-    printf(" masuk %s: %d\r\n", __FUNCTION__, eStatus);
+    printf(" masuk %s(): %d\r\n", __FUNCTION__, eStatus);
     return eStatus;
 }
 
@@ -341,6 +343,8 @@ eMBErrorCode eMBPoll( void ) {
     eMBErrorCode    eStatus = MB_ENOERR;
     eMBEventType    eEvent;
 
+	//printf("%d -", eMBState+20);
+
     /* Check if the protocol stack is ready. */
     if( eMBState != STATE_ENABLED )
     {
@@ -351,12 +355,15 @@ eMBErrorCode eMBPoll( void ) {
      * Otherwise we will handle the event. */
     if( xMBPortEventGet( &eEvent ) == TRUE )
     {
+		printf("EV:%d ", eEvent);
         switch ( eEvent )
         {
         case EV_READY:
+			printf("EV_READY !!\r\n");
             break;
 
         case EV_FRAME_RECEIVED:
+			printf("EV_FRAME_RECEIVED !!\r\n");
             eStatus = peMBFrameReceiveCur( &ucRcvAddress, &ucMBFrame, &usLength );
             if( eStatus == MB_ENOERR )
             {
@@ -369,6 +376,7 @@ eMBErrorCode eMBPoll( void ) {
             }
             break;
         case EV_EXECUTE:
+			printf("EV_EXECUTE !!\r\n");
             ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF];
             eException = MB_EX_ILLEGAL_FUNCTION;
             for( i = 0; i < MB_FUNC_HANDLERS_MAX; i++ )
@@ -399,6 +407,7 @@ eMBErrorCode eMBPoll( void ) {
             break;
 
         case EV_FRAME_SENT:
+			printf("EV_FRAME_SENT\r\n");
             break;
         }
     }

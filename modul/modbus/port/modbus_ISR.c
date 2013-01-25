@@ -38,7 +38,7 @@ void prvvTIMERExpiredISR( void ) __attribute__ ((naked));
 void sio_irq( void )			 __attribute__ ((naked));
 /* ----------------------- Start implementation -----------------------------*/
 
-extern int berhitung_timer3;
+//extern int berhitung_timer3;
 extern int berhitung_serial3;
 
 extern void prvvUARTRxISR();
@@ -53,7 +53,7 @@ void sio_irq( void ) {
     volatile char   dummy;
     volatile char   IIR;
 	
-	//berhitung_serial3++;
+	berhitung_serial3++;
     while( ( ( IIR = U3IIR ) & 0x01 ) == 0 )
     {
         switch ( IIR & 0x0E )
@@ -65,6 +65,7 @@ void sio_irq( void ) {
         case 0x04:             // Receive Data Available //
         case 0x0C:             // Character Time-Out //
             prvvUARTRxISR();
+            printf(" @@");
             break;
 
         case 0x02:             // THRE Interrupt //

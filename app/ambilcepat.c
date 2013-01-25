@@ -381,6 +381,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 
 		#endif
 		
+		#if 0
 		//printf("isi memRTC0: %d, loopambil: %d\r\n", MEM_RTC0, loopambil);
 		if (loopambil>10000) {
 			#ifdef TES_MEM_RTC
@@ -393,6 +394,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			#endif
 			loopambil=0;
 		}
+		#endif
 		
 		#ifdef PAKAI_GPIO_DIMMER
 			//remangkan();

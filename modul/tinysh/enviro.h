@@ -92,6 +92,8 @@ struct t_env {
 	char passwd[15];
 	char nohp[18];
 	char cron;
+	unsigned char almtSlave;
+	char statusSlave;
 };
 
 //#define SEKTOR_ENV	24

@@ -27,6 +27,8 @@
 #define MAGIC_2	0x83
 
 
+int berhitung_serial3;
+
 #define MEM_RTC_CRON	100
 
 char ayokirim;
@@ -146,7 +148,16 @@ typedef enum {
 #ifdef PAKAI_WEBCLIENT_INTERNET
 
 #endif
-	
+
+#ifdef PAKAI_MODBUS_SLAVE
+	struct	st_mod_slave	{
+		unsigned char almt;
+		unsigned char cmd;
+		int reg;
+		int jml;
+	};
+#endif
+
 
 #ifdef PAKAI_MODEM_GSM
 	char flagModem;

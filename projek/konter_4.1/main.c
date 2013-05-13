@@ -24,6 +24,7 @@
 #include "hardware.h"
 #include "monita/monita_uip.h"
 #include "sys.h"
+#include "tinysh/enviro.h"
 
 unsigned int loop_idle=0;
 unsigned int idle_lama;
@@ -56,7 +57,7 @@ int main( void )	{
 
 	init_led_utama();
 	init_hardware();
-
+	init_ambillama();
 	vTaskStartScheduler();
 
 	printf("Keluar dari Scheduler !!!!\r\n");
@@ -64,9 +65,6 @@ int main( void )	{
     /* Will only get here if there was insufficient memory to create the idle task. */
 	return 0;
 
-}
-void IdleTaskHook()	{
-	
 }
 
 void togle_led_utama(char tog)	{
@@ -99,10 +97,20 @@ extern xTaskHandle hdl_kirimcepat;
 extern xTaskHandle hdl_ambilcepat;
 
 static portTASK_FUNCTION(task_led2, pvParameters )	{
+	portTickType xLastWakeTime;
+	const portTickType xFrequency = 490;
+	
 	static char tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
+	xLastWakeTime = xTaskGetTickCount();
+	int itung = 0;
+	
+	struct t_env *penv;
+	penv = (char *) ALMT_ENV;
+	
 	for (;;)	{
+		#if 0
 		if (status_power()>0)	{
 			vTaskSuspend( hdl_kirimcepat );
 			vTaskSuspend( hdl_ambilcepat );
@@ -120,16 +128,26 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 			set_power_rtc(0);
 			printf("  kembali normal.... !!\r\n");
 		}
-		
+		#endif
 		
 		togle_led_utama(tog=1-tog);
 		cek_tik();
+		
+		if (penv->statusSerClient == 1)		{
+			itung++;
+			if (itung > penv->intKirim)	{
+				statKirimSer = 1;
+				itung = 0;
+			}
+		}
 		
 		#ifdef PAKAI_PUSHBUTTON
 			kurangi_delay_push();
 		#endif
 		
-		vTaskDelay(500);
+		//vTaskDelay(498);
+		//ser2_putstring("coba 2\r\n");
+		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 		//printf(" - Tanggal   : %d-%d-%d\r\n", infoGPS.utc.day, infoGPS.utc.mon, infoGPS.utc.year);
 	}
 }

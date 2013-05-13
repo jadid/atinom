@@ -51,10 +51,12 @@ int np;
 char flag_ms;
 //int alamat_slave;
 //void parsing_ping(int ch);
+#if 0
 void sedot_mod(int ch);
 void pr_mod(unsigned char *jud, unsigned char *x, int jml);
 //struct d_pmod resp_modx;
 struct	st_mod_slave p_mod_sl;
+#endif
 
 portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	vTaskDelay(1060);
@@ -89,16 +91,24 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	
   	int lk = 0, cKirim=0, dKirim;
   	char iList[256], dList[256];
+  	int jmlKirim=0;
   	
   	int jmlData=0,nos=0, ngitung=0, selang=0, sumber=0;
   	char flag_nos, sumbers=0;
   	int aa = 0, na = 0, mm, nn=0;
   	char cM[2];
   	
+  	#if 0
   	ayokirim = 0;	
   	if (penv->intKirim==1)			dKirim = 990;
 	else							dKirim = (penv->intKirim-1)*1000+990;
 	printf("Periode Kirim : tiapKirim = %d\r\n", dKirim);
+  	#endif
+  	
+  	portTickType xLastWakeTime;
+	const portTickType xFrequency = 490;
+	
+  	
   	
   	#ifdef WEBCLIENT_DATA
 		statwc = 0;
@@ -108,16 +118,16 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	nos = 0;
   	
   	vTaskDelay(50);
-  	vTaskDelay(5000);
+  	vTaskDelay(2000);
   	//char ch[2];
 	int ch;
 	np = 0;
 	flag_ms = 0;
 	//alamat_slave = 5;
-  	
+  	#if 0
   	for(;;) {
-		#if 1
-		//#ifdef PAKAI_MODBUS_SLAVE
+		//#if 1
+		#ifdef PAKAI_MODBUS_SLAVE
 		FIO0CLR = TXDE;
 		FIO0CLR = RXDE;
 		if (ser3_getchar(1, &ch, 40) == pdTRUE)	  {		// 100
@@ -134,8 +144,14 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		}
 		#endif
   	}
+  	#endif
   	
+  	xLastWakeTime = xTaskGetTickCount();
+  	
+  	
+  	statKirimSer = 1;		// kirim dulu awalan
   	for(;;) {
+		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
 				lb++;
@@ -178,21 +194,19 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		if (statKirimSer==1)	{
 			qw++;
 			#ifdef UNTUK_MONITA_KAPAL
-			//printf("kirim ser 2 : %d\r\n", qw);
-			sprintf(ser2, "%.1f,%.1f\r\n", data_f[0], data_f[2]);	
-			vTaskDelay(1);
-			//printf("%s\r\n", ser2);
-			ser2_putstring(ser2);
-
-			//cek_ngisi_minyak(dlama);
-			//dlama = data_f[2];
-			vTaskDelay(50);
+			//sprintf(ser2, "%.1f,%.1f\r\n", data_f[1], data_f[3]);
+			jmlKirim = kirimModul( 1, 0, 0, iList, dList);
+			strcat(dList, "\r\n");
+			//printf("dList: %s\r\n", iList);			printf("dList: %s\r\n", dList);
+			ser2_putstring(dList);
 			#endif
 
-			//cek_PM(5);
 			statKirimSer = 0;
 		}
 		#endif
+		
+		//sprintf(ser2, "coba 2 : %d\r\n",  statKirimSer);
+		//ser2_putstring(ser2);
 		
 		#ifdef PAKAI_KONTROL_RTC
 			//*
@@ -215,13 +229,10 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			}
 			//*/
 		#endif
+
 		
 		
-		#if 1
-		vTaskDelay(1);
-		#endif
-		
-		
+		#if 0
 		//printf("%d", statwc);
 		
 			//printf("++++");
@@ -307,9 +318,9 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 				nos=0;
 			}
 			#endif
-		
+		#endif
 
-		#if 1
+		#if 0
 		FIO0SET = TXDE;
 		FIO0CLR = RXDE;
 		vTaskDelay(1000);
@@ -345,11 +356,11 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		FIO0SET  = TXDE;	// TX kirim
 		#endif
 
-
+		
 		cKirim++;
 	}
 }
-
+#if 0
 void pr_mod(unsigned char *jud, unsigned char *x, int jml)	{
 	int i=0;
 	printf("%s: %3d -->", jud, jml);
@@ -498,6 +509,7 @@ void sedot_mod(int ch)	{
 	}
 	#endif
 }
+#endif
 
 #ifdef PAKAI_SENSOR_JARAK
 void parsing_ping(int ch)	{
@@ -543,7 +555,8 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 	struct t_setting *konfig;
 	konfig = (char *) ALMT_KONFIG;
 
-	strcpy(il,"&il="); 	strcpy(dl,"&dl=");
+	strcpy(il,"&il="); 	
+	strcpy(dl,"");
 	#ifdef PAKAI_RELAY
 	if (sumber==wRELAY)		{
 		strcpy(il,"&rl="); 	strcpy(dl,"&kl=");
@@ -572,8 +585,8 @@ int kirimModul(int burst, int sumber, int awal, char *il, char *dl) {
 							//strcat(id, konfig[(PER_SUMBER*z)+i].id);
 							//strcat(dt, "~");
 							//strcat(dt, data_f[(PER_SUMBER*z)+i]);
-							sprintf(id, "~%d", konfig[(PER_SUMBER*z)+i].id);
-							sprintf(dt, "~%.2f", data_f[(PER_SUMBER*z)+i]);
+							sprintf(id, ",%d", konfig[(PER_SUMBER*z)+i].id);
+							sprintf(dt, ",%.2f", data_f[(PER_SUMBER*z)+i]);
 							//printf("no: %d, id: %d, data: %d\r\n",(PER_SUMBER*z)+i,  konfig[(PER_SUMBER*z)+i].id, data_f[(PER_SUMBER*z)+i]);
 						}
 						

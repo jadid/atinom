@@ -124,7 +124,7 @@ void hitung_rpm(void)	{
 		{
 			//konter.t_konter[giliran].beda = 0;		
 			data_putaran[giliran] = 0;
-			data_hit[giliran] = konter.t_konter[giliran].hit;
+			//data_hit[giliran] = konter.t_konter[giliran].hit;
 		}
 		else
 		{
@@ -133,13 +133,13 @@ void hitung_rpm(void)	{
 			
 			/* rpm */
 			data_putaran[giliran] = konter.t_konter[giliran].beda;
-			data_hit[giliran] = konter.t_konter[giliran].hit;
+			//data_hit[giliran] = konter.t_konter[giliran].hit;
 			
 			//if (giliran==6)
 			//printf("data_putaran[%d]: %d\r\n", giliran, data_putaran[giliran]);
 		}
 		
-		konter.t_konter[giliran].hit_lama = konter.t_konter[giliran].hit; 
+		konter.t_konter[giliran].hit_lama = data_hit[giliran] = konter.t_konter[giliran].hit; 
 		#ifdef PAKAI_PILIHAN_FLOW
 		
 		konter.t_konter[giliran].hit_lama2 = konter.t_konter[giliran].hit2; 

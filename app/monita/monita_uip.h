@@ -24,7 +24,7 @@
 #define MONITA_UIP_H_
 
 #define MAGIC_1	0x33
-#define MAGIC_2	0x83
+#define MAGIC_2	0x87
 
 
 int berhitung_serial3;
@@ -50,6 +50,8 @@ unsigned char datakeserver[512];
 		#define JML_SUMBER	15
 	#elif defined(UNTUK_PLTD_AMPENAN)
 		#define JML_SUMBER 12		// max 11 sumber tampilan bisa
+	#elif defined(UNTUK_MONITA_KAPAL)
+		#define JML_SUMBER	2
 	#else
 		#define JML_SUMBER	5
 	#endif

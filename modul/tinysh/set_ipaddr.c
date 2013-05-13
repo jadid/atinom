@@ -66,6 +66,14 @@ static void setenv_fnt(int argc, char **argv)
 				printf("     misalnya $ set_env burst [0|mati|1|aktif]\r\n");
 				printf(" \r\n");
 				#endif
+				#ifdef UNTUK_MONITA_KAPAL
+				printf("   periode : periode pengiriman data (dalam detik)\r\n");
+				printf("     misalnya $ set_env periode 10\r\n");
+				printf(" \r\n");
+				printf("   serclient : Aktivasi pengiriman data serial 2\r\n");
+				printf("     misalnya $ set_env serclient [0|mati|1|aktif]\r\n");
+				printf(" \r\n");
+				#endif
 				return;
 			} 
 			else if (strcmp(argv[1], "default") == 0)			{
@@ -225,6 +233,8 @@ static void setenv_fnt(int argc, char **argv)
 			else
 				printf(" %d detik\r\n", p_sbr->intKirim);
 		}
+		if (p_sbr->intKirim>0)
+			p_sbr->intKirim *= 2;
 	}
 	
 	#ifdef PAKAI_WEBCLIENT

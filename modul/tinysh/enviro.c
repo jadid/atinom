@@ -163,7 +163,7 @@ int baca_env(char tampil)
 		//memcpy((char *)&env2, (char *) 0x7A000, sizeof (env2));	
 	}
 	
-	printf("m1: 0x%02X, M1: 0x%02X, m2: 0x%02X, M2: 0x%02X\r\n", ev->magic1, MAGIC_1, ev->magic2, MAGIC_2);
+	//printf("m1: 0x%02X, M1: 0x%02X, m2: 0x%02X, M2: 0x%02X\r\n", ev->magic1, MAGIC_1, ev->magic2, MAGIC_2);
 	
 	if (ev->magic1 == MAGIC_1)	{
 		if (ev->magic2 == MAGIC_2)		{			
@@ -175,7 +175,7 @@ int baca_env(char tampil)
 			#ifdef PAKAI_ETH
 			printf(" IP Address   = ");	printf("%d.%d.%d.%d\r\n", env2->IP0, env2->IP1, env2->IP2, env2->IP3);
 			printf(" Gateway IP   = ");	printf("%d.%d.%d.%d\r\n", env2->GW0, env2->GW1, env2->GW2, env2->GW3); 
-			printf(" IP Server    = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
+				printf(" IP Server    = ");	printf("%d.%d.%d.%d\r\n", env2->wIP0, env2->wIP1, env2->wIP2, env2->wIP3); 
 			#endif
 			
 			#ifdef PAKAI_MODBUS_SLAVE
@@ -197,8 +197,8 @@ int baca_env(char tampil)
 			#endif
 			
 			#ifdef KIRIM_KE_SER_2
-				printf(" serclient  = %s\r\n", (env2->statusSerClient==1)?"Aktif":"mati"); 
-				//printf(" intclient  = %d\r\n", env2->intKirim);
+				printf(" serClient    = %s\r\n", (env2->statusSerClient==1)?"Aktif":"mati"); 
+				printf(" intClient    = %d detik\r\n", (int) env2->intKirim/2);
 			#endif
 			
 			garis_bawah();
@@ -456,7 +456,7 @@ void set_env_default() {
 	env2->burst = 0;
 	
 	env2->statusSerClient = 0;
-	env2->intKirim = 1;				// 5 detik
+	env2->intKirim = 20;			// 20/2 = 10 detik
 	env2->intReset = 60;
 	//env2->intTole = 208;			// 1 drum
 	env2->intTole = 3.785;			// 1 drum

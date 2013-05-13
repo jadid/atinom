@@ -10,8 +10,9 @@
 
 #include "monita/monita_uip.h"
 xTaskHandle hdl_ambilcepat;
+xTaskHandle hdl_ambillama;
 
-#define TES_MEM_RTC
+//#define TES_MEM_RTC
 
 #ifdef PAKAI_MODEM_SERIAL
 	
@@ -56,7 +57,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	
 	
 	#ifdef PAKAI_SHELL
-		printf(" Monita : Ambil cepat init __ PRIO: %d !!\r\n", tskIDLE_PRIORITY);
+	//	printf(" Monita : Ambil cepat init __ PRIO: %d !!\r\n", tskIDLE_PRIORITY);
   	#endif
   	
   	#if defined(PAKAI_I2C)
@@ -103,37 +104,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		printf("    Init slave modbus !!!\r\n");
 	#endif
 	
-  	#ifdef PAKAI_PM
-		int almtSumber=0;
-		int sPM=0;
-		
-		#ifdef AMBIL_PM
-			printf("    Init ambil PM : %d..-ambilcepat-.. !!!\r\n", PAKAI_SERIAL_3_P0);
-			printf("      Kompatibel : \r\n");
-			#ifdef TIPE_PM810
-				printf("         - %s\r\n", TIPE_PM810);
-			#endif
-			#ifdef TIPE_PM710
-				printf("         - %s\r\n", TIPE_PM710);
-			#endif
-			#ifdef TIPE_MICOM_M300 			
-				printf("         - %s\r\n", TIPE_MICOM_M300);
-			#endif
-			#ifdef TIPE_ION8600
-				printf("         - %s\r\n", TIPE_ION8600);
-			#endif
-			#ifdef TIPE_MICOM_P127
-				printf("         - %s\r\n", TIPE_MICOM_P127);
-			#endif
-			#ifdef TIPE_A2000
-				printf("         - %s\r\n", TIPE_A2000);
-			#endif
-			#ifdef TIPE_TFX_ULTRA
-				printf("         - %s\r\n", TIPE_TFX_ULTRA);
-			#endif
-			vTaskDelay(200);
-		#endif
-  	#endif
+  	
   	
   	#ifdef PAKAI_ADC_ORI
 		printf("  ADC ori dipakai !!\r\n");
@@ -218,11 +189,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			}
 		#endif
 
-		#ifdef PAKAI_PM
-			#ifdef AMBIL_PM			// AMBIL_PM
-//				sedot_pm();			// app/powermeter/pm.c
-			#endif
-		#endif
+
 		
 		#ifdef PAKAI_ADC
 			if (status_adcnya) {
@@ -452,13 +419,57 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 #endif
 
 void init_ambilcepat(void)	{
-	int nAmbilCepat=10;
-	#ifdef BOARD_TAMPILAN
-		xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+8, ( xTaskHandle * ) &hdl_ambilcepat);
-	#else
-		xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * nAmbilCepat), NULL, tskIDLE_PRIORITY+1, ( xTaskHandle * ) &hdl_ambilcepat);
-	#endif
+	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_ambilcepat);
 }
 
 #endif
 
+portTASK_FUNCTION(ambillama, pvParameters )	{
+  	//baca_env(0);
+  	vTaskDelay(600);
+  	#ifdef PAKAI_PM
+		int almtSumber=0;
+		int sPM=0;
+		
+		#ifdef AMBIL_PM
+			printf("    Init ambil PM : %d !!!\r\n", PAKAI_SERIAL_3_P0);
+			printf("      Kompatibel : \r\n");
+			#ifdef TIPE_PM810
+				printf("         - %s\r\n", TIPE_PM810);
+			#endif
+			#ifdef TIPE_PM710
+				printf("         - %s\r\n", TIPE_PM710);
+			#endif
+			#ifdef TIPE_MICOM_M300 			
+				printf("         - %s\r\n", TIPE_MICOM_M300);
+			#endif
+			#ifdef TIPE_ION8600
+				printf("         - %s\r\n", TIPE_ION8600);
+			#endif
+			#ifdef TIPE_MICOM_P127
+				printf("         - %s\r\n", TIPE_MICOM_P127);
+			#endif
+			#ifdef TIPE_A2000
+				printf("         - %s\r\n", TIPE_A2000);
+			#endif
+			#ifdef TIPE_TFX_ULTRA
+				printf("         - %s\r\n", TIPE_TFX_ULTRA);
+			#endif
+			vTaskDelay(200);
+		#endif
+  	#endif
+  	
+  	for(;;) {
+		vTaskDelay(10);
+		#ifdef PAKAI_PM
+			#ifdef AMBIL_PM			// AMBIL_PM
+				sedot_pm();			// app/powermeter/pm.c
+			#endif
+		#endif
+	}
+}
+
+
+void init_ambillama(void)	{
+	xTaskCreate( ambillama, "ambillama_task", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_ambillama);
+}

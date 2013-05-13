@@ -290,7 +290,7 @@ void buat_bottom(void) {
 	/*sprintf(head_buf,"<hr>\n<h5>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__); */
 	sprintf(head_buf,"<h4>ARM-GCC %s : %s : %s\n", __VERSION__, __DATE__, __TIME__);
 	strcat(tot_buf, head_buf);
-	sprintf(head_buf, "<br>%s, 60 MHz, FreeRTOS v%s</h4>\n", uC, tskKERNEL_VERSION_NUMBER);
+	sprintf(head_buf, "<br>%s, 60 MHz, FreeRTOS %s</h4>\n", uC, tskKERNEL_VERSION_NUMBER);
 	strcat(tot_buf, head_buf);
 	
 	// close html
@@ -465,6 +465,38 @@ float stof(char * str) {
 int ubah_setting() {
 	
 }
+#ifdef UNTUK_MONITA_KAPAL
+struct st_w {
+	int w;
+	int f;
+};
+
+struct st_w pWaktu(int w)	{
+	printf("w: %d\r\n", w);
+	struct st_w pw;
+	pw.f = 0;			// detik
+	pw.w = w;
+	
+	if ((w%3600)==0)	{
+		pw.f = 2;		// jam
+		pw.w = (int) (w/3600);
+	} else if ((w%60)==0)	{
+		pw.f = 1;		// menit
+		pw.w = (int) (w/60);
+	}
+	
+	printf("w: %d pw.f: %d\r\n", pw.w, pw.f);
+	return pw;
+}
+
+int uWaktu(int w, int f)	{
+	int a = w;
+	if (f==2)		a *= 3600;
+	else if (f==1)	a *= 60;
+	return a;
+}
+#endif
+
 
 int ganti_setting(char *str) {
 //#ifndef BANYAK_SUMBER
@@ -474,7 +506,7 @@ int ganti_setting(char *str) {
 	unsigned int ret_ip;
 	
 	int nk=0, no=0, titik=0, z=0;
-	char aa=0, bb=0, cc=0, gg=0;
+	int aa=0, bb=0, cc=0, gg=0;
 	int kanal=0; 
 	float m=0.0, c=0.0, l=0.0, y=0.0, n=0.0, r=0.0, t=0.0, q=0.0, w=0.0;
 	char statnya=0;
@@ -691,7 +723,7 @@ int ganti_setting(char *str) {
 		
 		//printf("ketb: %s, SN: %s\r\n", ketb, p_sbr->SN);
 		//printf("ip: %s\r\n", ketip);
-		#if 1
+		#if 0
 		ret_ip = baca_ip(ketip);	
 		p_sbr->IP0 = (unsigned char)(ret_ip >> 24);
 		p_sbr->IP1 = (unsigned char)(ret_ip >> 16);
@@ -716,8 +748,16 @@ int ganti_setting(char *str) {
 		p_sbr->almtSlave = gg;
 		printf("z: %d, almt: %d\r\n", gg, p_sbr->almtSlave);
 		
+		#ifdef PAKAI_WEBCLIENT
 		p_sbr->statusWebClient = aa;
 		p_sbr->burst = bb;
+		#endif
+		
+		#ifdef UNTUK_MONITA_KAPAL
+		p_sbr->intKirim = uWaktu(aa, bb)*2;
+		p_sbr->statusSerClient = gg;
+		printf("p_sbr->intKirim: %d, status : %d\r\n", p_sbr->intKirim, p_sbr->statusSerClient);
+		#endif
 		
 		if (p_sbr == NULL) {
 			vPortFree(p_sbr);
@@ -1584,6 +1624,8 @@ void buat_file_setting_server(char *kata)	{
 }
 #endif
 
+
+
 #if 1
 void buat_file_setting(unsigned int flag, char *kata)	{
 	int i=0;
@@ -1683,9 +1725,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			#ifdef PAKAI_RELAY
 				strcat(tot_buf, ": <a href=\"setting.html?smb=7\">Alarm</a> :");
 			#endif
-			#ifndef PAKAI_PM
+			//#ifndef PAKAI_PM
 				strcat(tot_buf, ": <a href=\"setting.html?smb=8\">Kalibrasi</a> :");
-			#endif
+			//#endif
 			#ifdef BOARD_KOMON_KONTER
 				strcat(tot_buf, ": <a href=\"setting.html?smb=9\">Kanal</a> :");
 			#endif
@@ -1780,14 +1822,18 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 						"<input type=\"hidden\" name=\"u\" value=\"1\" />\r\n" \
 						"<input type=\"hidden\" name=\"z\" value=\"3\" />\r\n" \ 
 						"<input type=\"hidden\" name=\"i%d\" value=\"%d\" />\r\n" \ 
-						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"></td>\r\n" \
-						"<td align=\"right\"> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n" \
-						"<td align=\"center\"><input type=\"text\" name=\"a\" value=\"%d\" size=\"2\"></td>\r\n" \
-						"<td align=\"center\"><input type=\"text\" name=\"b\" value=\"%d\" size=\"2\"></td>\r\n" \
+						"<th>%d</th><td><input type=\"text\" name=\"k\" value=\"%s\" size=\"20\"></td>\r\n",	\
+							i+1, i+1, i+1, i+1, ket);
+					strcat(tot_buf, head_buf);
+					#ifdef UNTUK_MONITA_KAPAL
+						sprintf(head_buf, "<td>%s</td>\r\n", "-");		// ketr
+					#else
+						sprintf(head_buf, "<td> <input type=\"text\" name=\"p\" value=\"%s\" size=\"10\"></td>\r\n", ketr);
+					#endif
+					strcat(tot_buf, head_buf);
+					sprintf(head_buf, "<td><input type=\"text\" name=\"a\" value=\"%d\" size=\"2\"></td>\r\n" \
+						"<td><input type=\"text\" name=\"b\" value=\"%d\" size=\"2\"></td>\r\n" \
 						"<td>", \
-						i+1, i+1, i+1, i+1, \
-						ket, \
-						ketr, \
 						p_sbrw[i].stack, \
 						p_sbrw[i].alamat);
 					strcat(tot_buf, head_buf);
@@ -1899,20 +1945,22 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			ganti_karakter(ket, env2ww->SN);
 			sprintf(head_buf, "<tr>" \
-					"<td>No Seri</td><td><input type=\"text\" name=\"q\" value=\"%s\" size=\"30\"></td>" \
+					"<td>No Seri</td>  <td><input type=\"text\" name=\"q\" value=\"%s\" size=\"30\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
-
+			#if 0
 			sprintf(head_buf, "%d.%d.%d.%d", env2ww->IP0, env2ww->IP1, env2ww->IP2, env2ww->IP3);
 			ganti_karakter(ket, head_buf);
 			sprintf(head_buf, "<tr>" \ 
-					"<td>Alamat IP</td><td><input type=\"text\" name=\"p\" value=\"%s\"></td>" \
+					"<td>Alamat IP</td><td><input type=\"text\" name=\"p\" value=\"%s\" size=\"30\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
-		
+			#endif
 			//sprintf(head_buf, "%d.%d.%d.%d", env2ww->GW0, env2ww->GW1, env2ww->GW2, env2ww->GW3);
 			sprintf(head_buf, "%d.%d.%d.%d", env2ww->wIP0, env2ww->wIP1, env2ww->wIP2, env2ww->wIP3);
 			ganti_karakter(ket, head_buf);
+			
+			#ifdef PAKAI_WEBCLIENT
 			sprintf(head_buf, "<tr>" \
 					"<td>IP Server</td><td><input type=\"text\" name=\"t\" value=\"%s\"></td>" \
 					"</tr>\r\n", ket);
@@ -1933,10 +1981,29 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					"<td>Lokasi File</td><td><input type=\"text\" name=\"f\" value=\"%s\" size=\"30\"></td>" \
 					"</tr>\r\n", ket);
 			strcat(tot_buf, head_buf);
+			#endif
 			#ifdef PAKAI_MODBUS_SLAVE
 			sprintf(head_buf, "<tr>" \
 					"<td>ID Slave Modbus</td><td><input type=\"text\" name=\"g\" value=\"%d\" size=\"30\"></td>" \
 					"</tr>\r\n", env2ww->almtSlave);
+			strcat(tot_buf, head_buf);
+			#endif
+			
+			#ifdef UNTUK_MONITA_KAPAL
+			struct st_w pw;
+			pw = pWaktu( (int) (env2ww->intKirim/2) );
+			
+			sprintf(head_buf, "<tr>" \
+					"<td>Periode Kirim</td><td><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\">"	\
+					"<input type=\"radio\" name=\"b\" value=\"0\" %s>detik "	\
+					"<input type=\"radio\" name=\"b\" value=\"1\" %s>menit "	\
+					"<input type=\"radio\" name=\"b\" value=\"2\" %s>jam"	\
+					"</td>" \
+					"</tr>\r\n", pw.w, (pw.f==0)?"checked":"", (pw.f==1)?"checked":"", (pw.f==2)?"checked":"");
+			strcat(tot_buf, head_buf);
+			sprintf(head_buf, "<tr>" \
+					"<td>Status Kirim</td><td><input type=\"radio\" name=\"g\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"g\" value=\"0\" %s>Mati</td>" \
+					"</tr>\r\n", env2ww->statusSerClient?"checked":" ", env2ww->statusSerClient?" ":"checked");
 			strcat(tot_buf, head_buf);
 			#endif
 			//*/
@@ -2195,6 +2262,15 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 		#endif	
 		} else if (flag==wKANAL)		{	// info kanal
 			char sKan = 0;
+			
+			sprintf(head_buf, "\r\n<script type=\"text/javaScript\">\r\n" \
+				"<!--\r\n" \
+				"function reset(){\r\n" \
+				"	window.location=\"/index.html\";\r\n" \
+				"}\r\n" \
+				"-->\r\n" \
+				"</script>\r\n");
+			strcat(tot_buf, head_buf);
 		
 			strcat(tot_buf, "<h3>Info Kanal</h3>\n");
 			struct t_sumber *pmx;
@@ -2255,6 +2331,9 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			}
 			
 			strcat(tot_buf, "</tbody></table>\r\n");
+			strcat(tot_buf, "<input type=\"submit\" value=\"Restart Modul\" onClick=\"setTimeout('reset()',2000);\"/>\r\n</form>\r\n");
+			strcat(tot_buf, " Reboot setelah ganti setting kanal\r\n");
+			
 		//#ifdef BOARD_KOMON_KONTER
 		} else if (flag==wPULSA)		{	// info pulsa
 			char i;
@@ -2462,7 +2541,8 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			
 			int z=0;
 			if (pertamax>0)	{
-				if ( (nk<JML_SUMBER+1) && (env2->IP3==pmx[no].IP3) )	{		// modul MONITA
+				//if ( (nk<JML_SUMBER+1) && (env2->IP3==pmx[no].IP3) )	{		// modul MONITA
+				if ( (nk<JML_SUMBER+1) && (pmx[no].tipe==MOD_MONITA) )	{		// modul MONITA
 					for (i=0; i<KANALNYA; i++)		{
 						#ifndef BOARD_KOMON_KONTER_3_1 
 						if (i>6)

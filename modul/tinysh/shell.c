@@ -14,6 +14,8 @@
 #include "hardware.h"
 #include "utils.c"
 
+#include "aksi.c"
+
 #ifndef BOARD_TAMPILAN
 	extern xTaskHandle *hdl_kirimcepat;
 #endif
@@ -1006,6 +1008,10 @@ vTaskDelay(100);
 	tinysh_add_command(&cek_dimmer_cmd);
 #endif
 
+#ifdef TIPE_TFX_ULTRA
+	tinysh_add_command(&ambil_waktu_cmd);
+#endif
+
 	/* add sub commands 	*/
   	//tinysh_add_command(&ctxcmd);
   	//tinysh_add_command(&item1);
@@ -1273,7 +1279,7 @@ vTaskDelay(100);
 
 void init_shell(void)	{
 	//xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 6), 
-	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY+2, ( xTaskHandle * ) &hdl_shell);
+	xTaskCreate( shell, "UsrTsk1", (configMINIMAL_STACK_SIZE * 17), NULL, tskIDLE_PRIORITY+1, ( xTaskHandle * ) &hdl_shell);
 }
 #endif
 

@@ -458,6 +458,7 @@ void set_env_default() {
 	env2->statusSerClient = 0;
 	env2->intKirim = 20;			// 20/2 = 10 detik
 	env2->intReset = 60;
+	env2->jedaResetTFX = 60;		// 60 detik
 	//env2->intTole = 208;			// 1 drum
 	env2->intTole = 3.785;			// 1 drum
 	

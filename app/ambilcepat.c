@@ -60,6 +60,11 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	//	printf(" Monita : Ambil cepat init __ PRIO: %d !!\r\n", tskIDLE_PRIORITY);
   	#endif
   	
+  	#ifdef TIPE_TFX_ULTRA
+		resetTFX = 0;
+		flagWtfx = 0;
+  	#endif
+  	
   	#if defined(PAKAI_I2C)
 		#if defined (PAKAI_TSC)
 			unsigned char st_tsc=0;

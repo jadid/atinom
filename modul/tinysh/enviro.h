@@ -94,6 +94,7 @@ struct t_env {
 	char cron;
 	unsigned char almtSlave;
 	char statusSlave;
+	int	  jedaResetTFX;
 };
 
 //#define SEKTOR_ENV	24

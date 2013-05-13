@@ -73,6 +73,8 @@ unsigned char datakeserver[512];
 #define	MICOM_P127	3
 #define ION8600		4
 #define A2000		5
+
+#define nPOWER		20
 #define TFX_ULTRA	21
 #define MOD_MONITA	100
 
@@ -455,6 +457,9 @@ float data_f [ (JML_SUMBER * PER_SUMBER) ];
 #ifdef TIPE_TFX_ULTRA
 	int iCountTFX;
 	unsigned int nFlowTFXlama;
+	char resetTFX, flagWtfx;
+	struct tm awalWaktuTFX;
+	struct tm akhirWaktuTFX;
 #endif
 
 struct t_data_float {

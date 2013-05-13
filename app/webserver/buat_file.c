@@ -14,6 +14,7 @@
 #include "task.h"
 #include "queue.h"
 #include "hardware.h"
+//#include "tinysh/utils.c"
 
 #ifdef BOARD_TAMPILAN
 //	#include "../tinysh/data_kontrol.c"
@@ -99,6 +100,11 @@ extern float data_f[];
 #ifdef PAKAI_PM
 	extern char * judulnya_pm[];
 	extern char * satuannya_pm[];
+#endif
+
+#ifdef TIPE_TFX_ULTRA
+	extern char * judulnya_tfx[];
+	extern char * satuannya_tfx[];
 #endif
 
 #ifdef BOARD_KOMON_KONTER
@@ -1388,11 +1394,29 @@ void buat_file_index(unsigned int flag, char *kata) {
 			penv = (char *) ALMT_ENV;
 			int qq;
 			
-			//printf("masuk sibni ...\r\n");
-			if (pmx[no].alamat==0) {			// Modul Monita
-				if ((pmx[no].tipe==MOD_MONITA) && (pertamax)) {
-					if (penv->IP3==pmx[no].IP3)	{			// ambil data dari input sendiri
-						qq = no*PER_SUMBER;
+			//printf("masuk sini no: %d ...\r\n", no);
+			//printf("pertamax: %d, nk: %d, no: %d, tipe: %d, alamat: %d\r\n", nk, pertamax, no, pmx[no].tipe, pmx[no].alamat);
+			qq = no*PER_SUMBER;
+			//if (pmx[no].alamat==0) {
+			if (pmx[no].tipe==MOD_MONITA)		{			// Modul Monita
+				if ((pertamax)) {
+					#ifdef UNTUK_MONITA_KAPAL
+					for (i=0; i<KANALNYA; i++)	{
+						ket_konter(ket, penv->kalib[i].status, 0);
+						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%dA</th>\n", ((i*2)+1), (qq+i+1));
+						strcat(tot_buf, head_buf);
+						sprintf(head_buf, "<td>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[qq+(i*2)], ket);
+						strcat(tot_buf, head_buf);
+							
+						//ket_konter(ket, penv->kalib[i].status, 1);
+						sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%dB</th>\n", (qq+(i*2)+2), (qq+i+1));
+						strcat(tot_buf, head_buf);
+						sprintf(head_buf, "<td>%.0f</td><td align='left'>%s</td>\n</tr>\n", data_f[qq+(i*2)+1], "Jumlah Pulsa");
+						strcat(tot_buf, head_buf);
+					}
+					#else
+					if (penv->IP3==pmx[no].IP3)			{			// ambil data dari input sendiri
+						//qq = no*PER_SUMBER;
 						for (i=0; i<KANALNYA; i++)	{
 							ket_konter(ket, penv->kalib[i].status, 0);
 							sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%dA</th>\n", ((i*2)+1), (qq+i+1));
@@ -1413,14 +1437,15 @@ void buat_file_index(unsigned int flag, char *kata) {
 							//ket_konter(ket, penv->kalib[i].status, 0);
 							sprintf(head_buf, "<tr align='center'>\n<td>%d</td><th>%d</th>\n", (i+1), (qq+i+1));
 							strcat(tot_buf, head_buf);
-							sprintf(head_buf, "<td align=\'right\'>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[qq+i], p_dt[qq+i].nama);
+							
+							sprintf(head_buf, "<td align=\'right\'>%.2f</td><td align='left'>%s</td>\n</tr>\n", data_f[qq+i], "judulnya_tfx[i]");
 							strcat(tot_buf, head_buf);
 						}
 					}
+					#endif
 				} 
 			}
 			#ifdef PAKAI_RELAY
-			
 			if (nk==wRELAY)	{
 				char rel = 0;
 				for (rel=0; rel<JML_RELAY; rel++)	{
@@ -1430,21 +1455,35 @@ void buat_file_index(unsigned int flag, char *kata) {
 				}
 			}
 			#endif
+			
 		#endif
 	#else
 
 	#endif
 	
+	
+	
 #ifdef PAKAI_PM
-	if ((pmx[no].tipe==0 || pmx[no].tipe==1 || pmx[no].tipe==2) && (pertamax) && (pmx[no].alamat>0)) {		// Power Meter
-		//printf("_______masuk sibni ...\r\n");
+	if ((pmx[no].tipe>=PM710 && pmx[no].tipe<=A2000) && (pertamax) && (pmx[no].alamat>0)) {		// Power Meter
 		for (i=0; i<PER_SUMBER; i++)	{
-			sprintf(head_buf, "<tr>\n<td>Kanal %d</td>\n<td align=\"right\">%.2f</td>\n", (no*PER_SUMBER+i+1), data_f[no*PER_SUMBER+i]);
+			sprintf(head_buf, "<tr align='center'>\n<td>%d</td><td>%d</td>\n", i+1, (no*PER_SUMBER+i+1));
 			strcat(tot_buf, head_buf);
-			sprintf(head_buf, "<td>%s</td><td>%s</td>\n</tr>\n", judulnya_pm[i], satuannya_pm[i]);		
+			sprintf(head_buf, "<td align=\"right\">%.2f</td><td align='left'>%s [ %s ]</td>\n</tr>\n", \
+				data_f[no*PER_SUMBER+i], judulnya_pm[i], satuannya_pm[i]);		
 			strcat(tot_buf, head_buf);
 		}
-		//strcat(tot_buf, "</table>\n");
+	}
+#endif
+
+#ifdef TIPE_TFX_ULTRA
+	if ((pmx[no].tipe==TFX_ULTRA) && (pertamax) && (pmx[no].alamat>0)) {		// Power Meter
+		for (i=0; i<7; i++)		{
+			sprintf(head_buf, "<tr align='center'>\n<td>%d</td><td>%d</td>\n", i+1, (no*PER_SUMBER+i+1));
+			strcat(tot_buf, head_buf);
+			sprintf(head_buf, "<td align=\"right\">%.2f</td><td align='left'>%s [ %s ]</td>\n</tr>\n", \
+				data_f[no*PER_SUMBER+i], judulnya_tfx[i], satuannya_tfx[i]);		
+			strcat(tot_buf, head_buf);
+		}
 	}
 #endif
 
@@ -1989,9 +2028,11 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			strcat(tot_buf, head_buf);
 			#endif
 			
-			#ifdef UNTUK_MONITA_KAPAL
-			struct st_w pw;
+			//#ifdef UNTUK_MONITA_KAPAL
+			#ifdef TIPE_TFX_ULTRA
+			struct st_w pw, jw;
 			pw = pWaktu( (int) (env2ww->intKirim/2) );
+			jw = pWaktu( (int) (env2ww->jedaResetTFX)/2 );
 			
 			sprintf(head_buf, "<tr>" \
 					"<td>Periode Kirim</td><td><input type=\"text\" name=\"a\" value=\"%d\" size=\"3\">"	\
@@ -2004,6 +2045,14 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 			sprintf(head_buf, "<tr>" \
 					"<td>Status Kirim</td><td><input type=\"radio\" name=\"g\" value=\"1\" %s>Aktif <input type=\"radio\" name=\"g\" value=\"0\" %s>Mati</td>" \
 					"</tr>\r\n", env2ww->statusSerClient?"checked":" ", env2ww->statusSerClient?" ":"checked");
+			strcat(tot_buf, head_buf);
+			sprintf(head_buf, "<tr>" \
+					"<td>Jeda Reset</td><td><input type=\"text\" name=\"qqq\" value=\"%d\" size=\"3\">"	\
+					"<input type=\"radio\" name=\"r\" value=\"0\" %s>detik "	\
+					"<input type=\"radio\" name=\"rrr\" value=\"1\" %s>menit "	\
+					"<input type=\"radio\" name=\"rrr\" value=\"2\" %s>jam"	\
+					"</td>" \
+					"</tr>\r\n", jw.w, (jw.f==0)?"checked":"", (jw.f==1)?"checked":"", (jw.f==2)?"checked":"");
 			strcat(tot_buf, head_buf);
 			#endif
 			//*/
@@ -2583,8 +2632,30 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 				} else if ((pmx[no].alamat>0))	{		// POWER METER
 					#ifdef PAKAI_PM
 					for (i=0; i<PER_SUMBER; i++)	{	
-						if ((pmx[no].tipe<20)) {
+						if ((pmx[no].tipe<nPOWER)) {
 							ganti_karakter(ket, judulnya_pm[i]);
+							//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
+							sprintf(head_buf, "<tr><form action=\"setting.html\">" \
+								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 
+								"<th>%d</th><th>%d</th>\n<td align=\"right\"><input type=\"text\" name=\"i%d\" value=\"%d\" size=\"8\"/></td>\n" \
+								"<td align=\"left\">%s</td>\n" \
+								"<td><input type=\"radio\" name=\"s\" value=\"1\" %s/>Aktif" \
+								"<input type=\"radio\" name=\"s\" value=\"0\" %s/>Mati</td>\n" \
+								"<td><input type=\"submit\" value=\"Ganti\" /></td>" \
+								"</form>\n</tr>", \
+								no+1, i+1, (no*PER_SUMBER+i)+1, (no*PER_SUMBER+i)+1, konfig[PER_SUMBER*no+i].id, \
+								ket, \
+								(konfig[PER_SUMBER*no+i].status?"checked":" "), \
+								(konfig[PER_SUMBER*no+i].status?" ":"checked") \
+								);
+							strcat(tot_buf, head_buf);
+						}
+					}
+					#endif
+					#ifdef TIPE_TFX_ULTRA
+					for (i=0; i<7; i++)	{	
+						if ((pmx[no].tipe==TFX_ULTRA)) {
+							ganti_karakter(ket, judulnya_tfx[i]);
 							//printf("nama %d: %s, aslinya: %s\r\n", i+1, ket, p_dt[no*PER_SUMBER+i].nama);
 							sprintf(head_buf, "<tr><form action=\"setting.html\">" \
 								"<input type=\"hidden\" name=\"u\" value=\"1\" /><input type=\"hidden\" name=\"d\" value=\"%d\" />" \ 

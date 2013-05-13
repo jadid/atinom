@@ -73,6 +73,9 @@ static void setenv_fnt(int argc, char **argv)
 				printf("   serclient : Aktivasi pengiriman data serial 2\r\n");
 				printf("     misalnya $ set_env serclient [0|mati|1|aktif]\r\n");
 				printf(" \r\n");
+				printf("   jedareset : jeda antara reset flowmeter TFX dengan RPM 0\r\n");
+				printf("     misalnya $ set_env jedareset 60 (dalam detik)\r\n");
+				printf(" \r\n");
 				#endif
 				return;
 			} 
@@ -235,6 +238,29 @@ static void setenv_fnt(int argc, char **argv)
 		}
 		if (p_sbr->intKirim>0)
 			p_sbr->intKirim *= 2;
+	}
+	else if (strcmp(argv[1], "jedareset") == 0)	{
+		printf(" set jeda reset Flowmeter TFX\r\n");
+  		p_sbr->jedaResetTFX = atoi(argv[2]);
+  		
+  		if (argc==4)	{
+			if (strcmp(argv[3],"jam")==0)		{
+				p_sbr->jedaResetTFX *= 3600;
+			}
+			else if (strcmp(argv[3],"menit")==0)		{
+				p_sbr->jedaResetTFX *= 60; 
+			}
+		}
+  		if (argc==3)	{
+			if (p_sbr->jedaResetTFX > 3600)
+				printf(" %d jam\r\n", (int) p_sbr->jedaResetTFX/3600);
+			else if (p_sbr->jedaResetTFX > 60)
+				printf(" %d menit\r\n", (int) p_sbr->jedaResetTFX/60);
+			else
+				printf(" %d detik\r\n", p_sbr->jedaResetTFX);
+		}
+		if (p_sbr->jedaResetTFX>0)
+			p_sbr->jedaResetTFX *= 2;
 	}
 	
 	#ifdef PAKAI_WEBCLIENT

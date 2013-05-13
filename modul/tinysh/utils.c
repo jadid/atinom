@@ -300,6 +300,15 @@ int ganti_kata(char *dest, char *src) {
 		"Temp 1",
 		"Temp 2"
 	};
+	char * satuannya_tfx[] __attribute__ ((section (".lokasi_font"))) = {
+		"-",				// 0 //
+		"-",
+		"-",
+		"-",
+		"-",		
+		"C",
+		"C"
+	};
 #endif
 
 

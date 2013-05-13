@@ -67,6 +67,12 @@ int main( void )	{
 
 }
 
+#ifdef TIPE_TFX_ULTRA
+	int hitung_durasi()		{
+		
+	}
+#endif
+
 void togle_led_utama(char tog)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");
 	FIO0PIN ^= LED_UTAMA;
@@ -76,9 +82,15 @@ void togle_led_utama(char tog)	{
 		tot_idle = loop_idle - idle_lama;
 		idle_lama = loop_idle;
 		
-		//printf("isi: %x: %d\r\n", &MEM_RTC0+1, *(&MEM_RTC0+1));
-
 		tendang_wdog();		// reset wdog setiap detik //
+		
+		#ifdef TIPE_TFX_ULTRA
+		if (flagWtfx==1)	waktu_skrg(1);		// mulai ambil awal waktu
+		if (flagWtfx==2)	{	
+			waktu_skrg(0);						// cek waktu berjalan
+			cek_reset_tfx();
+		}
+		#endif
 	}
 }
 
@@ -103,6 +115,8 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 	static char tog = 0;
 	loop_idle = 0;
 	idle_lama = 0;
+	
+	vTaskDelay(3000);
 	xLastWakeTime = xTaskGetTickCount();
 	int itung = 0;
 	
@@ -153,5 +167,5 @@ static portTASK_FUNCTION(task_led2, pvParameters )	{
 }
 void init_led_utama(void) {
 	xTaskCreate(task_led2, ( signed portCHAR * ) "Led2",  (configMINIMAL_STACK_SIZE * 2) ,\
-		 NULL, tskIDLE_PRIORITY - 2, ( xTaskHandle * ) &hdl_led );
+		 NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) &hdl_led );
 }

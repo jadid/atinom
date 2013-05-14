@@ -28,12 +28,13 @@ inline unsigned int selisih_TFX()		{
 void cek_reset_tfx()	{
 	struct t_env *envw;
 	envw = (char *) ALMT_ENV;
-	if (selisih_TFX()==(envw->jedaResetTFX/2))
+	if (selisih_TFX()==(envw->jedaResetTFX/2))	{
 		reset_tfx();					// jika sudah mereset flagWtfx = 0
+		
+	}
 }
 
-void reset_tfx()	{
-	//reset_modbus_tfx();
+inline void reset_tfx()	{
 	resetTFX = 1;
 	flagWtfx = 0;
 }
@@ -55,9 +56,9 @@ char waktu_skrg(char awal)		{
 		awalWaktuTFX.tm_year	= ctime1.year - 1900;
 	}
 	
-	printf(	"  2. Waktu : %d-%d-%04d %d:%02d:%02d  ++++  ", 	\
-		awalWaktuTFX.tm_mday, awalWaktuTFX.tm_mon, awalWaktuTFX.tm_year, \
-		awalWaktuTFX.tm_hour, awalWaktuTFX.tm_min, awalWaktuTFX.tm_sec);
+	//printf(	"  2. Waktu : %d-%d-%04d %d:%02d:%02d  ++++  ", 	\
+	//	awalWaktuTFX.tm_mday, awalWaktuTFX.tm_mon, awalWaktuTFX.tm_year, \
+	//	awalWaktuTFX.tm_hour, awalWaktuTFX.tm_min, awalWaktuTFX.tm_sec);
 
 	akhirWaktuTFX.tm_sec	= ctime0.seconds; 
 	akhirWaktuTFX.tm_min	= ctime0.minutes;
@@ -66,10 +67,10 @@ char waktu_skrg(char awal)		{
 	akhirWaktuTFX.tm_mon	= ctime1.month;
 	akhirWaktuTFX.tm_year	= ctime1.year - 1900;
 	
-	printf(	"  %d-%d-%04d %d:%02d:%02d\r\n", 			\
-		akhirWaktuTFX.tm_mday, akhirWaktuTFX.tm_mon, akhirWaktuTFX.tm_year, \
-		akhirWaktuTFX.tm_hour, akhirWaktuTFX.tm_min, akhirWaktuTFX.tm_sec);
-
+	//printf(	"  %d-%d-%04d %d:%02d:%02d\r\n", 			\
+	//	akhirWaktuTFX.tm_mday, akhirWaktuTFX.tm_mon, akhirWaktuTFX.tm_year, \
+	//	akhirWaktuTFX.tm_hour, akhirWaktuTFX.tm_min, akhirWaktuTFX.tm_sec);
+	//vTaskDelay(10);
 	flagWtfx = 2;
 	
 	return 0;

@@ -46,6 +46,14 @@ extern unsigned char buf_rx[];
 #define buf	buf_rx
 extern struct d_pmod pmod;
 
+
+#define READ_COIL		0x01
+#define READ_INPUT		0x02
+#define READ_HOLDING	0x03
+#define READ_REGISTER	0x04
+#define SET_COIL		0x05
+#define SET_REGISTER	0x06
+
 #define TUNGGU_PM_TX	50
 #define TUNGGU_PM_RX	80
 
@@ -422,7 +430,7 @@ unsigned int get_tfx	(int alamatPM, unsigned short reg, unsigned char uk);
 #endif
 //---------------------------------------------------------------------------
 
-void paket_modbus_rtu(unsigned char * x, unsigned char almt, unsigned char cmd, int regx, int jmlx);
+void paket_modbus_rtu(unsigned char * x, unsigned char almt, unsigned char cmd, unsigned int regx, unsigned int jmlx);
 unsigned char minta_modbus(unsigned char *data, int tipe);
 
 #endif

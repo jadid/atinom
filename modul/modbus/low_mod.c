@@ -274,22 +274,19 @@ unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
 
 //#define DEBUG_MODBUS_ELEMEN
 
-void modbus_rtu(unsigned char *q, unsigned char almx, unsigned char cmd, int regx, int jmlx)	{
+void modbus_rtu(unsigned char *q, unsigned char almx, unsigned char cmd, unsigned int regx, unsigned int nilai)	{
 	unsigned char *stx, *x;
 	unsigned char npaket, ww;
 	unsigned char tipe = 1;
 	
-	paket_modbus_rtu(&x, almx, cmd, regx, jmlx);	
-	npaket = minta_modbus(&x, jmlx);
+	printf("===> %s() : %02x %02x %02x %02x %02x %02x\r\n", almx, cmd, (regx>>8), (regx&0xff), (nilai>>8), (nilai&0xff));
+	
+	return;
+	paket_modbus_rtu(&x, almx, cmd, regx, nilai);	
+	npaket = minta_modbus(&x, nilai);
 	printf("\r\nnPaket: %d\r\n", npaket);
 	
-	//stx = x;
-	//printf("%02x %02x %02x %02x %02x %02x %02x %02x\r\n", \
-	//	stx[0], stx[1], stx[2], stx[3], stx[4], stx[5], stx[6], stx[7]);
-	//printf("%02x %02x %02x %02x %02x %02x\r\n", \
-	//	x[HD+0], x[HD+1], x[HD+2], x[HD+3], x[HD+4], x[HD+5], x[HD+6], x[HD+7]);
-	
-	#if 1
+	#if 0
 	if (1)	{
 		stx = x;
 		//printf("data: %02x %02x %02x %02x %02x %02x\r\n", stx[0], stx[1], stx[2], stx[3], stx[4], stx[5]);
@@ -302,13 +299,6 @@ void modbus_rtu(unsigned char *q, unsigned char almx, unsigned char cmd, int reg
 		printf("data salah\r\n");
 	}
 	#endif
-	/*
-	//stx = &x[HD];
-	for (ww=0; ww<(npaket-HD); ww++)	{
-		printf("%02x ", *stx++);
-	}
-	printf("\r\n");
-	//*/
 }
 
 void proses_modbus(unsigned char *d, unsigned char almx, int lenx, unsigned char tipe)	{
@@ -330,16 +320,51 @@ void proses_modbus(unsigned char *d, unsigned char almx, int lenx, unsigned char
 	//*/
 }
 
-void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, int regx, int jmlx)	{
-	#ifdef DEBUG_MODBUS_ELEMEN
-		printf("%s() --> almtx: %d, cmd: %d, reg: %d, jml: %d\r\n", __FUNCTION__, almt, cmd, regx, jmlx);
+int cmd_modbus_rtu(unsigned char almt, unsigned char cmd, unsigned int reg, unsigned int nilai, char offset)	{
+	printf("%s() --> almtx: %02x, cmd: %02x, reg: %02x, nilai: %02x\r\n", __FUNCTION__, almt, cmd, reg, nilai);
+	
+	unsigned short dcrc;
+	int xreg = reg - offset;
+	int respon=0;
+	
+
+	//pmod.addr = (unsigned char)   addr_PM710;
+	pmod.addr = (unsigned char)   almt;
+	pmod.command = (unsigned char) cmd;
+	pmod.reg_hi = (unsigned char) ((xreg & 0xFF00) >> 8);
+	pmod.reg_lo = (unsigned char) (xreg & 0x00FF);
+	pmod.jum_hi = (unsigned char) ((nilai & 0xFF00) >> 8);
+	pmod.jum_lo = (unsigned char) (nilai & 0x00FF);
+
+	dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
+	pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
+	pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
+   
+	printf("addr: %02x, cmd: %02x, reg: %02x-%02x, jml: %02x-%02x, crc: %02x-%02x\r\n", \
+			pmod.addr, pmod.command, pmod.reg_hi, pmod.reg_lo, pmod.jum_hi, pmod.jum_lo, \
+			pmod.crc_hi, pmod.crc_lo);
+	switch (cmd)	{
+		case READ_HOLDING:
+				break;
+				
+		case SET_COIL:
+				respon = 0;
+				break;
+	}
+	return respon;
+}
+
+void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, unsigned int regx, unsigned int jmlx)	{
+	//#ifdef DEBUG_MODBUS_ELEMEN
+	#if 1
+		printf("%s() --> almtx: %02x, cmd: %02x, reg: %02x, nilai: %02x\r\n", __FUNCTION__, almt, cmd, regx, jmlx);
 	#endif
 	
-	struct d_pmod pmodx;
+	extern struct d_pmod pmodx;
 	unsigned short dcrcx;
 	unsigned char *y;
 	//int lenpmodx = 8;
-
+	return;
 	pmodx.addr    = (unsigned char) (almt);
 	pmodx.command = (unsigned char) cmd;
 	pmodx.reg_hi  = (unsigned char) ((regx & 0xFF00) >> 8);
@@ -351,7 +376,9 @@ void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, i
 	pmodx.crc_lo = (unsigned char) ((dcrcx & 0xFF00) >> 8);
 	pmodx.crc_hi = (unsigned char) (dcrcx & 0x00FF);
 	
-	#ifdef DEBUG_MODBUS_ELEMEN
+	
+	//#ifdef DEBUG_MODBUS_ELEMEN
+	#if 1
 		printf("addr: %02x, cmd: %02x, reg: %02x-%02x, jml: %02x-%02x, crc: %02x-%02x\r\n", \
 			pmodx.addr, pmodx.command, pmodx.reg_hi, pmodx.reg_lo, pmodx.jum_hi, pmodx.jum_lo, \
 			pmodx.crc_hi, pmodx.crc_lo);

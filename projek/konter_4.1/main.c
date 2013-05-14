@@ -84,6 +84,8 @@ void togle_led_utama(char tog)	{
 		
 		tendang_wdog();		// reset wdog setiap detik //
 		
+		printf("resetTFX: %d, flagWtfx: %d\r\n", resetTFX, flagWtfx);
+		
 		#ifdef TIPE_TFX_ULTRA
 		if (flagWtfx==1)	waktu_skrg(1);		// mulai ambil awal waktu
 		if (flagWtfx==2)	{	

@@ -49,6 +49,12 @@ xTaskHandle hdl_ambillama;
 
 portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	//baca_env(0);
+  	
+  	#ifdef TIPE_TFX_ULTRA
+		resetTFX = 0;
+		flagWtfx = 0;
+  	#endif
+  	
   	vTaskDelay(500);
 
   	vTaskDelay(50);
@@ -60,10 +66,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 	//	printf(" Monita : Ambil cepat init __ PRIO: %d !!\r\n", tskIDLE_PRIORITY);
   	#endif
   	
-  	#ifdef TIPE_TFX_ULTRA
-		resetTFX = 0;
-		flagWtfx = 0;
-  	#endif
+  	
   	
   	#if defined(PAKAI_I2C)
 		#if defined (PAKAI_TSC)
@@ -138,10 +141,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 		//printf("*******************baca_mem_rtc*********************\r\n");
 		baca_mem_rtc();
 	#endif
-	
-	
-	
-	
+
   	#ifdef PAKAI_RTC
   	#if 1
 		printf(" Init RTC ....\r\n");
@@ -165,8 +165,6 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
   	vTaskDelay(50);
   	for(;;) {
 		
-		
-			
 		#ifdef DATA_RANDOM
 			data_f[loopambil%10] = (float) ((rand() % 100));
 			//printf("%d: data: %.1f\r\n", loopambil%10, data_f[loopambil%10]);
@@ -178,8 +176,6 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 				sprintf(ser2, "tes serial 2 : %d\r\n", lm);
 				ser2_putstring(ser2);
 			}
-			
-			
 		#endif
 		//*/
 		
@@ -424,7 +420,7 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 #endif
 
 void init_ambilcepat(void)	{
-	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * 5), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_ambilcepat);
+	xTaskCreate( ambilcepat, "ambilcepat_task", (configMINIMAL_STACK_SIZE * 10), NULL, tskIDLE_PRIORITY+3, ( xTaskHandle * ) &hdl_ambilcepat);
 }
 
 #endif

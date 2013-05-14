@@ -44,7 +44,9 @@ extern float  data_f[];
 
 #ifdef PAKAI_PM
 
-
+#ifdef TIPE_TFX_ULTRA
+	extern char resetTFX;
+#endif
 
 //#include "modbus/low_mod.c"
 
@@ -151,6 +153,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	unsigned int jum_balik;
 	unsigned char *st;
 	int timeout=0, i;
+	
 	
 	if (tipe==100)	return;
 	
@@ -298,6 +301,11 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		#ifdef LIAT
 		printf("___TFX_ULTRA__proses_pm\n");
 		#endif
+		
+		if (resetTFX==1)	{
+			jum_balik = cmd_modbus_rtu(alamatPM, SET_COIL, 0x01, 0xFF00, 0);
+			printf("SET COIL reset TFX !!!\r\n");			
+		} else {
 			if (urut_PM710==0)    {
 				jum_balik = get_tfx(alamatPM, tfx_integer, 7);		// 
 			} 
@@ -313,10 +321,27 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 				#endif
 			}
 		}
+	}
 	#endif
 
 	#ifdef LIAT_TX
 	printf("___Minta ke PM -%d : %d : \r\n", urut_PM710, sizeof(pmod));
+	#endif
+	
+	#if 1
+	if (resetTFX==1)	{
+		//st = (char *) &pmod;
+		//printf("        Kirim RESET TFX .. \r\n");
+		resetTFX = 0;
+		/*
+		for (i=0; i< lenpmod; i++)	{
+			printf("%02hX ", *st);
+			//serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
+		}
+		
+		vTaskDelay(500);
+		//*/
+	}
 	#endif
 	
 	st = (char *) &pmod;
@@ -324,6 +349,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	FIO0CLR = RXDE;
 	for (i=0; i< lenpmod; i++)	{
 		#ifdef LIAT_TX
+		//#ifdef TIPE_TFX_ULTRA
 		printf("%02hX ", *st);
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
@@ -496,6 +522,10 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 	}
 	return 1;
 }
+
+
+
+
 #if 0
 void cek_coil(unsigned char almx, int regx, int jmlx)	{
 	struct d_pmod pmodx;
@@ -553,13 +583,20 @@ void cek_holding(unsigned char almx, int regx, int jmlx)	{
    	return (3 + jmlx + 2);	// slave address, function, bytecount, data, crc
 }
 
-void set_coil(unsigned char almx, int regx, int jmlx)	{
+#if 0
+int set_coil(unsigned char almx, unsigned int regx, unsigned int nilai)	{
 	unsigned char *stx, *x;	
 	char i;
-
-	modbus_rtu(&x, almx, 0x05, regx, jmlx);
-   	return (3 + jmlx + 2);	// slave address, function, bytecount, data, crc
+	//set_coil(alamatPM, 1, 0xFF00);
+	printf("SET COIL: %02x %02x %02x %02x %02x %02x\r\n", almx, 0x05, (regx>>8), (regx&0xff), (nilai>>8), (nilai&0xff));
+	//modbus_rtu(&x, almx, 0x05, regx, nilai);
+	format_modbus_rtu(
+	//paket_modbus_rtu(x, almx, 0x05, regx, nilai);
+	
+   	return (3 + 3 + 2);	// slave address, function, bytecount, data, crc
 }
+#endif
+
 #endif
 
 

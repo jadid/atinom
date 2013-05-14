@@ -199,6 +199,8 @@ int baca_env(char tampil)
 			#ifdef KIRIM_KE_SER_2
 				printf(" serClient    = %s\r\n", (env2->statusSerClient==1)?"Aktif":"mati"); 
 				printf(" intClient    = %d detik\r\n", (int) env2->intKirim/2);
+				printf(" kontrol TFX  = %d\r\n", env2->kontrolTFX); 
+				printf(" jedaReset    = %d detik\r\n", (int) env2->jedaResetTFX/2);
 			#endif
 			
 			garis_bawah();
@@ -459,6 +461,7 @@ void set_env_default() {
 	env2->intKirim = 20;			// 20/2 = 10 detik
 	env2->intReset = 60;
 	env2->jedaResetTFX = 60;		// 60 detik
+	env2->kontrolTFX = 1;			// kanal no 1
 	//env2->intTole = 208;			// 1 drum
 	env2->intTole = 3.785;			// 1 drum
 	

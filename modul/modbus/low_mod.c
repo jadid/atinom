@@ -320,15 +320,15 @@ void proses_modbus(unsigned char *d, unsigned char almx, int lenx, unsigned char
 	//*/
 }
 
-int cmd_modbus_rtu(unsigned char almt, unsigned char cmd, unsigned int reg, unsigned int nilai, char offset)	{
-	printf("%s() --> almtx: %02x, cmd: %02x, reg: %02x, nilai: %02x\r\n", __FUNCTION__, almt, cmd, reg, nilai);
+
+// ribet sangat urusan di sini !!!! kudu alon-alon
+unsigned int cmd_modbus_rtu(unsigned char almt, unsigned char cmd, unsigned int reg, unsigned int nilai, unsigned int offset)	{
+	//printf("%s() --> almtx: %02x, cmd: %02x, reg: %02x, nilai: %02x\r\n", __FUNCTION__, almt, cmd, reg, nilai);
 	
 	unsigned short dcrc;
-	int xreg = reg - offset;
-	int respon=0;
-	
+	unsigned int xreg = reg - offset;
+	unsigned int respon=0;
 
-	//pmod.addr = (unsigned char)   addr_PM710;
 	pmod.addr = (unsigned char)   almt;
 	pmod.command = (unsigned char) cmd;
 	pmod.reg_hi = (unsigned char) ((xreg & 0xFF00) >> 8);
@@ -337,21 +337,12 @@ int cmd_modbus_rtu(unsigned char almt, unsigned char cmd, unsigned int reg, unsi
 	pmod.jum_lo = (unsigned char) (nilai & 0x00FF);
 
 	dcrc = usMBCRC16((unsigned char *) &pmod, sizeof (pmod)-2, 0);
-	pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
-	pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
-   
-	printf("addr: %02x, cmd: %02x, reg: %02x-%02x, jml: %02x-%02x, crc: %02x-%02x\r\n", \
-			pmod.addr, pmod.command, pmod.reg_hi, pmod.reg_lo, pmod.jum_hi, pmod.jum_lo, \
-			pmod.crc_hi, pmod.crc_lo);
-	switch (cmd)	{
-		case READ_HOLDING:
-				break;
-				
-		case SET_COIL:
-				respon = 0;
-				break;
-	}
-	return respon;
+	pmod.crc_lo = (unsigned char) ((dcrc>>8 ) & 0xFF);
+	pmod.crc_hi = (unsigned char) (dcrc & 0xFF);
+
+	//printf("addr: %02x, cmd: %02x reg: %02x %02x nilai: %02x %02x crc: %04x\r\n", \
+		pmod.addr, pmod.command, pmod.reg_hi, pmod.reg_lo, pmod.jum_hi, pmod.jum_lo, dcrc); 
+	return 8;
 }
 
 void paket_modbus_rtu(unsigned char *x, unsigned char almt, unsigned char cmd, unsigned int regx, unsigned int jmlx)	{

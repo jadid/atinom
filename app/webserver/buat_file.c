@@ -478,7 +478,7 @@ struct st_w {
 };
 
 struct st_w pWaktu(int w)	{
-	printf("w: %d\r\n", w);
+	//printf("w: %d\r\n", w);
 	struct st_w pw;
 	pw.f = 0;			// detik
 	pw.w = w;
@@ -491,7 +491,7 @@ struct st_w pWaktu(int w)	{
 		pw.w = (int) (w/60);
 	}
 	
-	printf("w: %d pw.f: %d\r\n", pw.w, pw.f);
+	//printf("w: %d pw.f: %d\r\n", pw.w, pw.f);
 	return pw;
 }
 
@@ -596,7 +596,7 @@ int ganti_setting(char *str) {
 		else if (strncmp(tmp, "z", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
 			z = atoi(ids+1);
-			printf("  z: %d, ids: %s\r\n", z, ids+1);
+			//printf("  z: %d, ids: %s\r\n", z, ids+1);
 		}
 		else if (strncmp(tmp, "a", 1)==0) {		// i, 
 			ids = strchr(tmp,'=');
@@ -752,7 +752,7 @@ int ganti_setting(char *str) {
 		//*/
 		
 		p_sbr->almtSlave = gg;
-		printf("z: %d, almt: %d\r\n", gg, p_sbr->almtSlave);
+		//printf("z: %d, almt: %d\r\n", gg, p_sbr->almtSlave);
 		
 		#ifdef PAKAI_WEBCLIENT
 		p_sbr->statusWebClient = aa;
@@ -762,7 +762,10 @@ int ganti_setting(char *str) {
 		#ifdef UNTUK_MONITA_KAPAL
 		p_sbr->intKirim = uWaktu(aa, bb)*2;
 		p_sbr->statusSerClient = gg;
-		printf("p_sbr->intKirim: %d, status : %d\r\n", p_sbr->intKirim, p_sbr->statusSerClient);
+		
+		p_sbr->jedaResetTFX = uWaktu((int) y, (int) r)*2;
+		p_sbr->kontrolTFX = (int) t;
+		//printf("p_sbr->intKirim: %d, status : %d\r\n", p_sbr->intKirim, p_sbr->statusSerClient);
 		#endif
 		
 		if (p_sbr == NULL) {
@@ -2047,12 +2050,16 @@ void buat_file_setting(unsigned int flag, char *kata)	{
 					"</tr>\r\n", env2ww->statusSerClient?"checked":" ", env2ww->statusSerClient?" ":"checked");
 			strcat(tot_buf, head_buf);
 			sprintf(head_buf, "<tr>" \
-					"<td>Jeda Reset</td><td><input type=\"text\" name=\"qqq\" value=\"%d\" size=\"3\">"	\
+					"<td>Jeda Reset</td><td><input type=\"text\" name=\"y\" value=\"%d\" size=\"3\">"	\
 					"<input type=\"radio\" name=\"r\" value=\"0\" %s>detik "	\
-					"<input type=\"radio\" name=\"rrr\" value=\"1\" %s>menit "	\
-					"<input type=\"radio\" name=\"rrr\" value=\"2\" %s>jam"	\
+					"<input type=\"radio\" name=\"r\" value=\"1\" %s>menit "	\
+					"<input type=\"radio\" name=\"r\" value=\"2\" %s>jam"	\
 					"</td>" \
 					"</tr>\r\n", jw.w, (jw.f==0)?"checked":"", (jw.f==1)?"checked":"", (jw.f==2)?"checked":"");
+			strcat(tot_buf, head_buf);
+			sprintf(head_buf, "<tr>" \
+					"<td>Data Kontrol</td><td><input type=\"text\" name=\"e\" value=\"%d\" size=\"3\"> [ No Kanal RPM ]</td>" \
+					"</tr>\r\n", env2ww->kontrolTFX);
 			strcat(tot_buf, head_buf);
 			#endif
 			//*/

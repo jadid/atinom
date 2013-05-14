@@ -303,8 +303,9 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		#endif
 		
 		if (resetTFX==1)	{
-			jum_balik = cmd_modbus_rtu(alamatPM, SET_COIL, 0x01, 0xFF00, 0);
-			printf("SET COIL reset TFX !!!\r\n");			
+			jum_balik = cmd_modbus_rtu(alamatPM, SET_COIL, 0x01, 0xFF00, 1);
+			printf("SET COIL reset TFX : %d !!!\r\n", jum_balik);
+			resetTFX = 0;
 		} else {
 			if (urut_PM710==0)    {
 				jum_balik = get_tfx(alamatPM, tfx_integer, 7);		// 
@@ -328,28 +329,11 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	printf("___Minta ke PM -%d : %d : \r\n", urut_PM710, sizeof(pmod));
 	#endif
 	
-	#if 1
-	if (resetTFX==1)	{
-		//st = (char *) &pmod;
-		//printf("        Kirim RESET TFX .. \r\n");
-		resetTFX = 0;
-		/*
-		for (i=0; i< lenpmod; i++)	{
-			printf("%02hX ", *st);
-			//serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
-		}
-		
-		vTaskDelay(500);
-		//*/
-	}
-	#endif
-	
 	st = (char *) &pmod;
 	FIO0SET = TXDE;		// on	---> bisa kirim
 	FIO0CLR = RXDE;
 	for (i=0; i< lenpmod; i++)	{
 		#ifdef LIAT_TX
-		//#ifdef TIPE_TFX_ULTRA
 		printf("%02hX ", *st);
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);

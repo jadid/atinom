@@ -67,12 +67,6 @@ int main( void )	{
 
 }
 
-#ifdef TIPE_TFX_ULTRA
-	int hitung_durasi()		{
-		
-	}
-#endif
-
 void togle_led_utama(char tog)	{
 	//printf("debound 8 : %d, relay 8 : %s\r\n", debound[7], (data_f[(JML_SUMBER*PER_SUMBER)+7])?"Aktif":"Mati");
 	FIO0PIN ^= LED_UTAMA;
@@ -84,14 +78,10 @@ void togle_led_utama(char tog)	{
 		
 		tendang_wdog();		// reset wdog setiap detik //
 		
-		printf("resetTFX: %d, flagWtfx: %d\r\n", resetTFX, flagWtfx);
+		//printf("resetTFX: %d, flagWtfx: %d\r\n", resetTFX, flagWtfx);
 		
 		#ifdef TIPE_TFX_ULTRA
-		if (flagWtfx==1)	waktu_skrg(1);		// mulai ambil awal waktu
-		if (flagWtfx==2)	{	
-			waktu_skrg(0);						// cek waktu berjalan
-			cek_reset_tfx();
-		}
+		cek_kontrol_tfx();
 		#endif
 	}
 }

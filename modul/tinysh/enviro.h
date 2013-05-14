@@ -95,6 +95,7 @@ struct t_env {
 	unsigned char almtSlave;
 	char statusSlave;
 	int	  jedaResetTFX;
+	int	  kontrolTFX;
 };
 
 //#define SEKTOR_ENV	24

@@ -262,7 +262,10 @@ static void setenv_fnt(int argc, char **argv)
 		if (p_sbr->jedaResetTFX>0)
 			p_sbr->jedaResetTFX *= 2;
 	}
-	
+	else if (strcmp(argv[1], "kontroltfx") == 0)	{
+		printf(" set data pengendali reset flow TFX\r\n");
+  		p_sbr->kontrolTFX = atoi(argv[2]);
+	}
 	#ifdef PAKAI_WEBCLIENT
 	else if (strcmp(argv[1], "file") == 0)	{
 		printf(" set file");

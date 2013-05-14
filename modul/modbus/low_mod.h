@@ -432,5 +432,5 @@ unsigned int get_tfx	(int alamatPM, unsigned short reg, unsigned char uk);
 
 void paket_modbus_rtu(unsigned char * x, unsigned char almt, unsigned char cmd, unsigned int regx, unsigned int jmlx);
 unsigned char minta_modbus(unsigned char *data, int tipe);
-
+unsigned int cmd_modbus_rtu(unsigned char almt, unsigned char cmd, unsigned int reg, unsigned int nilai, unsigned int offset);
 #endif

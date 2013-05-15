@@ -233,6 +233,7 @@ unsigned int get_A2000(int alamatPM, unsigned short reg, unsigned char uk)	{
 unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
    unsigned short dcrc;
    int i;
+   unsigned int jml=0;
 	
 	#ifdef LIAT
 	printf("[%s]: Alamat Modbus: %d, register: %d (0x%0.4X), ukuran: %d\n",__FUNCTION__, alamatPM,reg,reg, uk);
@@ -254,9 +255,9 @@ unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
    pmod.crc_lo = (unsigned char) ((dcrc & 0xFF00) >> 8);
    pmod.crc_hi = (unsigned char) (dcrc & 0x00FF);
 
-	//#define LIAT
 	#ifdef LIAT   
-	printf("Kirim: %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X %0.2X  \n",
+	//#if 0
+	printf("Kirim: %02X %02X %02X %02X %02X %02X %0.2X %0.2X  \n",
 			pmod.addr,
 			pmod.command,
 			pmod.reg_hi,
@@ -267,8 +268,15 @@ unsigned int get_tfx(int alamatPM, unsigned short reg, unsigned char uk)	{
 			pmod.crc_lo);
 	
 	#endif		
-			
-   	return (1 + 1 + 1 + (uk * 2) + 2);	// slave address, function, bytecount, data, crc
+
+	if (reg_flag == tfx_integer)			jml = uk*2;
+	if (reg_flag == tfx_single_precision)	jml = uk*2;
+	if (reg_flag == tfx_double_precision)	jml = uk*4;
+
+	//printf("jml TFX: %d, uk: %d, reg: %02x\r\n", jml, uk, reg);
+	
+	//return (1 + 1 + 1 + (uk * 2) + 2);
+   	return (1 + 1 + 1 + jml + 2);	// slave address, function, bytecount, data, crc
 }
 #endif
 
@@ -2535,9 +2543,10 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
     float SKALA_tfx=1;
     
 	if (urut==0) {	//Integer Data
-		#ifdef LIAT
-		printf(">Long Integer Precision\n");
-		#endif
+		//#ifdef LIAT
+		//printf(">Long Integer Precision\r\n");
+		//#endif
+		//printf("\r\nBalas: ");		for(i=8;i<27;i++)	printf("%02x ", buf[i]);	printf("\r\n");
 		
 		for(i=0;i<7;i++)	{
 			int j=i*2;
@@ -2551,7 +2560,10 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 			//LITTLE ENDIAN
 			//temp3=(temp1<<16) + temp2;
 			//temp3=temp1;
-						
+			
+			//printf("1: 0x%08X\r\n",  *(int *)&temp3);
+			
+			#if 0
 			if(temp1 & 0x8000)	{
 				//printf("| minus =>");
 				temp2= ~temp1 +1 ;
@@ -2563,27 +2575,32 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 				temp2=temp1;
 				temp3=temp2;
 				ftemp=((float) temp3);
-			}	
+			}
+			#endif
 			
 			//#define LIAT
 			#ifdef LIAT
 			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",tfx_integer+i*2, temp1, temp2,temp3,temp3,ftemp);
 			#endif
+			//printf(" %.2f ", (float) ftemp);
+			ftemp = *(float *)&temp3;
+			if (ftemp>9999999 || ftemp<-99999999) ftemp = 0;
 			
 			if (i==0)	{
-				asli_PM710[pm_dibaca].kwh = ftemp;		// signal strength
+				//printf("1: 0x%08X, %.2f\r\n",  *(int *)&temp3, (float) temp3);
+				asli_PM710[pm_dibaca].kwh = (float) ftemp;		// signal strength
 				//data_PM710[pm_dibaca].kwh = ftemp;
 			}
 			if (i==1)	{
-				asli_PM710[pm_dibaca].kvah = ftemp;		// flowrate
+				asli_PM710[pm_dibaca].kvah = (float) ftemp;		// flowrate
 				//data_PM710[pm_dibaca].kvah = ftemp;
 			}
 			if (i==2)	{
-				asli_PM710[pm_dibaca].kvarh = ftemp;	// net Tot
+				asli_PM710[pm_dibaca].kvarh = (float) ftemp;	// net Tot
 				//data_PM710[pm_dibaca].kvarh = ftemp;
 			}
 			if(i==3)	{
-				asli_PM710[pm_dibaca].kw = ftemp;		// Pos Tot
+				asli_PM710[pm_dibaca].kw = (float) ftemp;		// Pos Tot
 				//data_PM710[pm_dibaca].kw = ftemp;
 			}
 			if(i==4)	{
@@ -2603,22 +2620,21 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 			//	asli_PM710[pm_dibaca].kwh, asli_PM710[pm_dibaca].kvah, 			\
 			//	asli_PM710[pm_dibaca].kvarh, asli_PM710[pm_dibaca].kw, asli_PM710[pm_dibaca].kva);
 		}
-		
-		//Hitung Rata-rata
-		//ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
-		//asli_PM710[pm_dibaca].volt2=ftemp/3;
-		
+
 	}// EOF urut 0: Integer Format
-	if (urut==1) 	{ //Single Precission Format
-		#ifdef LIAT
-		printf(">Single Precision\n");
-		#endif
-		
+	if (urut==1) 	{ //Double Precission Format
+		//#ifdef LIAT
+		//printf(">Double Precision\r\n");
+		//#endif
+
+		//return ;
 		for(i=0;i<7;i++)	{
-			int j=i*2;
+			int j=i*2;	//	i=0, j=0
 			temp1=(buf[shift+3+j*2]<<8)+buf[shift+4+j*2];
-			int k=j+1;
+			// temp1 = buf[8+3]<<8  + buf[8+4];
+			int k=j+1;	//	k=1;
 			temp2=(buf[shift+3+k*2]<<8)+buf[shift+4+k*2];
+			// temp2 = buf[8+5]<<8  + buf[8+6];
 			
 			//BIG ENDIAN
 			temp3=(temp2<<16) + temp1;
@@ -2635,8 +2651,8 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 				temp3 =temp3;
 				ftemp=- ((float) temp3);
 			} else	{
-				temp2=temp1;
-				temp3=temp2;
+				//temp2=temp1;
+				temp3=temp2=temp1;
 				ftemp=((float) temp3);
 			}	
 			
@@ -2645,26 +2661,23 @@ void taruh_data_tfx(int pm_dibaca, int urut) {
 			printf(" - Address 4%0.4d: (0x%0.4X)+(0x%0.4X)= (0x%0.4X) =>  %d => %0.3f\n",tfx_integer+i*2, temp1, temp2,temp3,temp3,ftemp);
 			#endif
 			
-			if (i==0)	{
-				asli_PM710[pm_dibaca].voltA_B = ftemp;
-				data_PM710[pm_dibaca].voltA_B = ftemp;
-			}
-			if (i==1)	{
-				asli_PM710[pm_dibaca].voltB_C = ftemp;
-				data_PM710[pm_dibaca].voltB_C = ftemp;
-			}
-			if(i==2)	{
-				asli_PM710[pm_dibaca].voltA_C = ftemp;
-				data_PM710[pm_dibaca].voltA_C = ftemp;
-			}	
+			if (i==0)	asli_PM710[pm_dibaca].volt1 = ftemp;
+			if (i==1)	asli_PM710[pm_dibaca].volt2 = ftemp;
+			if (i==2)	asli_PM710[pm_dibaca].amp = ftemp;
+			if (i==3)	asli_PM710[pm_dibaca].frek = ftemp;
+			if (i==4)	asli_PM710[pm_dibaca].ampA = ftemp;
+			if (i==5)	asli_PM710[pm_dibaca].ampB = ftemp;
+			if (i==6)	asli_PM710[pm_dibaca].ampC = ftemp;
+			
+			printf("signal: %d\r\n", asli_PM710[pm_dibaca].volt1);
 		}
 		
 		//Hitung Rata-rata
 		ftemp=asli_PM710[pm_dibaca].voltA_B+asli_PM710[pm_dibaca].voltB_C+asli_PM710[pm_dibaca].voltA_C;
 		asli_PM710[pm_dibaca].volt2=ftemp/3;
 		
-	}// EOF urut 1: Single Precission Format
-	if (urut==2)	{ // Double Precission Format
+	}// EOF urut 1: Double Precission Format
+	if (urut==2)	{ // Single Precission Format
 		#ifdef LIAT
 		printf("> Double Precission Format\n");
 		#endif

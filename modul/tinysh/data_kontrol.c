@@ -215,13 +215,20 @@ int cek_data(int argc, char **argv)
 						#ifdef TIPE_TFX_ULTRA
 							if (sumber[sumb-1].tipe==TFX_ULTRA)	{
 								//printf("jml : %d\r\n", sizeof (judulnya_tfx));
-								printf("data1: %.1f, 2: %.1f, 3: %.1f, 4: %.1f, 5: %.1f, 6: %.1f\r\n", \
-									data_f[0], data_f[1], data_f[2], data_f[3], data_f[4], data_f[5], data_f[6] );
+								//printf("data1: %.1f, 2: %.1f, 3: %.1f, 4: %.1f, 5: %.1f, 6: %.1f\r\n", \
+								//	data_f[0], data_f[1], data_f[2], data_f[3], data_f[4], data_f[5], data_f[6] );
 								for (i=0; i<7; i++) {
 									printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+1), \
 									judulnya_tfx[i], data_f[(sumb-1)*PER_SUMBER+i], \
 									p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
 								}
+								#if 0
+								for (i=0; i<7; i++) {
+									printf(" (%3d): %-16s : %10.2f : %-6s : (%X)\r\n", ((sumb-1)*PER_SUMBER+i+8), \
+									judulnya_tfx[i], data_f[(sumb-1)*PER_SUMBER+i+7], \
+									p_dt[(sumb-1)*PER_SUMBER+i].satuan, &p_dt[(sumb-1)*PER_SUMBER+i]);	
+								}
+								#endif
 								printf("Data Flowmeter TFX Alamat %d\r\n", sumber[sumb-1].alamat);
 							}
 						#endif

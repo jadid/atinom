@@ -219,10 +219,9 @@ extern struct d_pmod pmod;
 
 #ifdef TIPE_TFX_ULTRA
 	#define comand_baca_tfx 0x03
-	
-	#define tfx_integer				0x0064	 // 0x40100 s/d 0x40113  
-	#define tfx_single_precision	0x0066	 // 0x40200 s/d 0x40213 
-	#define tfx_double_precision	0x0068	 // 0x40200 s/d 0x40327 
+	#define tfx_integer				100	// 0x40100 s/d 0x40113  
+	#define tfx_single_precision	200	// 0x40200 s/d 0x40213 
+	#define tfx_double_precision	300	// 0x40300 s/d 0x40327 
 	
 	/*
 	#define tfx_signal_strength    	0x40100	 // 0x0000 s/d 0x0005 = 2 register
@@ -346,7 +345,7 @@ struct f_PM710 {
    float kw;
    float kva;		
    float kvar;
-   float pf;
+   float pf;		// 6
    float volt1;
    float volt2;
    float amp;

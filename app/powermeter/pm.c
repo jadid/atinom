@@ -304,17 +304,20 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 		
 		if (resetTFX==1)	{
 			jum_balik = cmd_modbus_rtu(alamatPM, SET_COIL, 0x01, 0xFF00, 1);
-			printf("SET COIL reset TFX : %d !!!\r\n", jum_balik);
+			//printf("SET COIL reset TFX : %d !!!\r\n", jum_balik);
 			resetTFX = 0;
 		} else {
 			if (urut_PM710==0)    {
-				jum_balik = get_tfx(alamatPM, tfx_integer, 7);		// 
+				//jum_balik = get_tfx(alamatPM, tfx_integer, 7);		// 
+				jum_balik = get_tfx(alamatPM, tfx_single_precision, 7);  //
 			} 
 			else if (urut_PM710==1)		{	
-				jum_balik = get_tfx(alamatPM, tfx_single_precision, 7);// 
+				jum_balik = get_tfx(alamatPM, tfx_single_precision, 7);  //
 			} 
 			else if (urut_PM710==2)		{
-				jum_balik = get_tfx(alamatPM, tfx_double_precision, 7);  //
+				//return 0;
+				jum_balik = get_tfx(alamatPM, tfx_single_precision, 7);// 
+				//
 			} 
 			else	{
 				#ifdef LIAT
@@ -334,6 +337,7 @@ int proses_pm (char no, char alamatPM, char tipe, char urut_PM710)	{
 	FIO0CLR = RXDE;
 	for (i=0; i< lenpmod; i++)	{
 		#ifdef LIAT_TX
+		//#if 1
 		printf("%02hX ", *st);
 		#endif
 		serX_putchar(PAKAI_PM, st++, TUNGGU_PM_TX);
@@ -411,13 +415,16 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 	FIO0CLR = RXDE;		// mode brutal
 	while(i<sequen) {
 		vTaskDelay(20);			// MIN: 2, -delay10=5PM- -delay4=8PM-
-		#ifdef LIAT
+		//if (i==0)		printf("--------------------------------\r\n");
+		//#ifdef LIAT
+		#if 0
 		printf("%s() almt %d, k: %d, i: %d\r\n", __FUNCTION__, alamat, no, i);
 		#endif
-
+		//if (i==0)
 		hasil_pm = proses_pm(no, alamat, tipe, i);		// i: PM810: 8 request (0-7), k:
 		
-		#ifdef LIAT
+		//#ifdef LIAT
+		#if 0
 		printf("hasil proses_pm: %d\r\n", hasil_pm);
 		#endif
 		
@@ -425,8 +432,9 @@ int ambil_pmnya(char no, char alamat, char tipe, char sequen) {
 			return 0;
 		}
 		#ifdef LIAT_RX
+		//#if 1
 			printf("\r\nbalasan: %d\r\n", hasil_pm);
-			#if 0
+			#if 1
 				ph = &buf_rx[HD];
 				for(gg=0;gg<hasil_pm-lenpmod-2; gg++) {
 					printf("%02X ", *ph++);

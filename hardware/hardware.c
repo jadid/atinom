@@ -146,6 +146,7 @@ void init_hardware()	{
 	
 	#ifdef PAKAI_SERIAL_2_P0
 		serial2_init( PAKAI_SERIAL_2_P0, (1 * configMINIMAL_STACK_SIZE) );
+		printf("init serial 2 .... %d : SUKSES\r\n", hsl);
 	#endif
 	
 	#ifdef PAKAI_SERIAL_3_P0

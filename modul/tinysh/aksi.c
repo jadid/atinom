@@ -18,7 +18,7 @@ char waktu_skrg(char awal);
 
 char sh_rpm_nol()		{
 	printf("SH CMD: reset TFX !!\r\n");
-	flagWtfx = 1;
+	flagWtfx = 2;
 }
 
 static tinysh_cmd_t ambil_waktu_cmd={0,"ambil_waktu","","",  sh_rpm_nol,0,0,0};
@@ -32,8 +32,8 @@ inline unsigned int selisih_TFX()		{
 void cek_kontrol_tfx()		{
 	struct t_env *envw;
 	envw = (char *) ALMT_ENV;
-	//printf("flagWtfx: %d, resetTFX: %d ", flagWtfx, resetTFX);
-	if ((data_f[envw->kontrolTFX-1]==0) && (flagWtfx==0))	{
+	//printf("flagWtfx: %d, resetTFX: %d ==== Sinyal: %.2f\r\n", flagWtfx, resetTFX, data_f[envw->kontrolTFX-1]);
+	if ((data_f[envw->kontrolTFX-1]>20) && (flagWtfx==0))	{
 		//printf("Mulai ngitung reset TFX : %d !!\r\n", (int) (envw->jedaResetTFX/2));
 		flagWtfx=1;
 		waktu_skrg(1);
@@ -42,7 +42,7 @@ void cek_kontrol_tfx()		{
 		waktu_skrg(0);						// cek waktu berjalan
 		cek_reset_tfx();
 	}
-	if ( (flagWtfx==2) && (data_f[envw->kontrolTFX-1]>0) )	{
+	if ( (flagWtfx==2) && (data_f[envw->kontrolTFX-1]<=20) )	{
 		flagWtfx = 0;
 	}
 	//printf(" +++++++++++ flagWtfx: %d, resetTFX: %d\r\n", flagWtfx, resetTFX);
@@ -57,9 +57,9 @@ void cek_reset_tfx()	{
 }
 
 inline void reset_tfx()	{
-	//printf(">>>>>>>>>>>>> RESET TFX\r\n");
 	resetTFX = 1;
 	flagWtfx = 0;
+	//printf(">>>>>>>>>>>>> RESET TFX: %d\r\n", resetTFX);
 }
 
 char waktu_skrg(char awal)		{

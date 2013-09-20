@@ -81,6 +81,7 @@
 	
 //	#define AMBIL_PM
 //	#define PAKAI_PM			3
+	#define ADA_PM
 
 	#define PAKAI_MODBUS_SLAVE
 	#define DEBUG_MODBUS_SLAVE

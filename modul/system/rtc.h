@@ -14,7 +14,7 @@
 //typedef unsigned long  DWORD;
 #include "../fatfs/integer.h"
 
-#if 0
+#if 1
 typedef struct {
     DWORD RTC_Sec;     /* Second value - [0,59] */
     DWORD RTC_Min;     /* Minute value - [0,59] */

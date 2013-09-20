@@ -236,13 +236,13 @@ portTASK_FUNCTION(ambilcepat, pvParameters )	{
 			}
 		#endif
 
-		/*
+		//*
 		#ifdef PAKAI_TIMER_2
 			if (flagT2)	{
-				//printf("lb: %d : %d\r\n", lb, iTim2);
+				printf("lb: %d : %d\r\n", lb, iTim2);
 				
 				#ifdef PAKAI_CRON
-				//if (loopambil%120==0)	//	60 detik
+				if (loopambil%120==0)	//	60 detik
 					baca_cron();		// tiap detik
 				#endif
 				

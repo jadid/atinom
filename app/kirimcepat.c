@@ -51,10 +51,14 @@ int np;
 char flag_ms;
 //int alamat_slave;
 //void parsing_ping(int ch);
+
+
+#ifdef PAKAI_PM
 void sedot_mod(int ch);
 void pr_mod(unsigned char *jud, unsigned char *x, int jml);
 //struct d_pmod resp_modx;
 struct	st_mod_slave p_mod_sl;
+#endif
 
 portTASK_FUNCTION(kirimcepat, pvParameters )	{
   	vTaskDelay(1060);
@@ -115,9 +119,10 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 	flag_ms = 0;
 	//alamat_slave = 5;
   	
+  	#if 0
   	for(;;) {
-		#if 1
-		//#ifdef PAKAI_MODBUS_SLAVE
+		//#if 1
+		#ifdef PAKAI_MODBUS_SLAVE
 		FIO0CLR = TXDE;
 		FIO0CLR = RXDE;
 		if (ser3_getchar(1, &ch, 40) == pdTRUE)	  {		// 100
@@ -127,6 +132,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		} else {
 			//printf("&");
 			if (flag_ms==1)	{
+				//printf("\r\n--------------------------------- CMD datang\r\n");
 				proses_mod_cmd();
 			}
 			flag_ms = 0;
@@ -134,6 +140,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		}
 		#endif
   	}
+  	#endif
   	
   	for(;;) {
 		#ifdef PAKAI_TIMER_2
@@ -309,7 +316,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 			#endif
 		
 
-		#if 1
+		#if 0
 		FIO0SET = TXDE;
 		FIO0CLR = RXDE;
 		vTaskDelay(1000);
@@ -331,8 +338,8 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 		#endif
 		#endif
 
-		//#ifdef PAKAI_SENSOR_JARAK
-		#if 0
+		#ifdef PAKAI_SENSOR_JARAK
+		//#if 0
 		//FIO0CLR = TXDE;		// on	---> bisa kirim
 		FIO0CLR = RXDE;
 		
@@ -350,6 +357,7 @@ portTASK_FUNCTION(kirimcepat, pvParameters )	{
 	}
 }
 
+#ifdef PAKAI_PM
 void pr_mod(unsigned char *jud, unsigned char *x, int jml)	{
 	int i=0;
 	printf("%s: %3d -->", jud, jml);
@@ -380,7 +388,9 @@ int parsing_mod(unsigned char *x)	{
 	p_mod_sl.almt = x[0];
 	p_mod_sl.cmd  = x[1];
 	p_mod_sl.reg  = (x[2] << 8) + x[3]; 
-	p_mod_sl.jml  = ((x[4]<<8)+x[5])/4;
+	//p_mod_sl.jml  = ((x[4]<<8)+x[5])/4;
+	//p_mod_sl.jml  = ((x[4]<<8)+x[5])/2;		// pake QModMaster
+	p_mod_sl.jml  = ((x[4]<<8)+x[5]);
 	//printf("al: %d, cmd: %d, reg: %d, jml: %d\r\n", p_mod_sl.almt, p_mod_sl.cmd, p_mod_sl.reg, p_mod_sl.jml);
 	
 	if (p_mod_sl.almt==p_env3->almtSlave)	{		// untuk sendiri
@@ -398,8 +408,9 @@ int respon_modbus()	{
 	int jmlData = (sizeof(data_f)/sizeof(float));
 	unsigned char *w;
 	char fk=0;
+	int iTemp;
 	
-	//printf("reg: %d\r\n", p_mod_sl.reg);
+	//printf("----> %s, reg: %d\r\n", __FUNCTION__, p_mod_sl.reg);
 	for (i=0; i<jmlData; i++)	{
 		if (p_mod_sl.reg == p_kfg[i].id)	{
 			n = i;
@@ -412,11 +423,21 @@ int respon_modbus()	{
 	dtmod[1] = p_mod_sl.cmd;
 	dtmod[2] = p_mod_sl.jml*4;
 	for (i=0; i<p_mod_sl.jml; i++)		{
+		iTemp = (int) (data_f[n+i]*10);
 		memcpy( (char *) &ix, (char *) &data_f[n+i], 4);
-		dtmod[4+i*4] = (unsigned char) ( (ix>>24) & 0xff );		// 3
-		dtmod[3+i*4] = (unsigned char) ( (ix>>16) & 0xff );		// 2
-		dtmod[6+i*4] = (unsigned char) ( (ix>>8)  & 0xff );		// 1
-		dtmod[5+i*4] = (unsigned char) (  ix & 0xff );			// 0
+		
+		#if 1		// versi RedLion
+		dtmod[3+i*4] = (unsigned char) ( (ix>>24) & 0xff );		// 3
+		dtmod[4+i*4] = (unsigned char) ( (ix>>16) & 0xff );		// 2
+		dtmod[5+i*4] = (unsigned char) ( (ix>>8)  & 0xff );		// 1
+		dtmod[6+i*4] = (unsigned char) (  ix & 0xff );				// 0
+		#endif
+		#if 0
+		dtmod[6+i*4] = (unsigned char) ( (ix>>24) & 0xff );		// 3
+		dtmod[5+i*4] = (unsigned char) ( (ix>>16) & 0xff );		// 2
+		dtmod[4+i*4] = (unsigned char) ( (ix>>8)  & 0xff );		// 1
+		dtmod[3+i*4] = (unsigned char) (  ix & 0xff );				// 0
+		#endif
 	}
 	ix = 3+4*p_mod_sl.jml;
 	
@@ -426,15 +447,18 @@ int respon_modbus()	{
 	ix += 2;
 	#endif
 	
+	#if 0
 	//printf(">>>>> BALAS: %d -->", ix);
 	FIO0SET = TXDE;
 	FIO0SET = RXDE;
+	#endif
 	
 	w = (char *) &dtmod;
 	for (i=0; i<ix; i++)	{
+		//printf("%02hX ", *w);
 		serX_putchar(3, w++, 80);			// 150
 		//xSerialPutChar3(1, *w++, 150);
-		//printf("%02hX ", *w);
+		
 		//
 	}
 	//printf("\r\n");	
@@ -498,6 +522,7 @@ void sedot_mod(int ch)	{
 	}
 	#endif
 }
+#endif
 
 #ifdef PAKAI_SENSOR_JARAK
 void parsing_ping(int ch)	{

@@ -102,6 +102,8 @@ unsigned char datakeserver[512];
 	#define PER_SUMBER	33
 #elif defined(LIHAT_PM)
 	#define PER_SUMBER 33
+#elif defined(ADA_PM)
+	#define PER_SUMBER 30
 #elif defined(BOARD_KOMON_420_SAJA) || defined(BOARD_KOMON_420_SABANG_2_3)
 	#define PER_SUMBER 10
 #else

@@ -94,7 +94,7 @@
 	//#define TES_MEM_RTC
 #endif
 
-//#define PAKAI_ETH
+#define PAKAI_ETH
 #ifdef PAKAI_ETH
 //	#define PAKAI_ENC28J60		// bukan untuk modul sabang 2.3
 	#define PAKAI_ENCX24J600
@@ -109,7 +109,7 @@
 //	
 	
 	#ifdef PAKAI_WEBCLIENT
-//		#define WEBCLIENT_DATA
+		#define WEBCLIENT_DATA
 		#ifdef PAKAI_GPS
 			#define WEBCLIENT_GPS
 		#endif
@@ -121,7 +121,7 @@
 	#endif
 #endif
 
-#define PAKAI_SERIAL_3
+//#define PAKAI_SERIAL_3
 #ifdef PAKAI_SERIAL_3
 //	#define PAKAI_SERIAL_3_P0	115200		// TES
 //	#define PAKAI_SERIAL_3_P0	38400		// max PM810: 38400

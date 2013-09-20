@@ -169,12 +169,12 @@ void init_hardware()	{
  *						APLIKASI ada di sini 
  */
 //***************************************************************/
-	init_ambilcepat();
+	//init_ambilcepat();
 	
 	#ifndef BLINK
 	#ifndef BOARD_TAMPILAN
 	
-	init_kirimcepat();
+	//init_kirimcepat();
 	#endif
 	#endif
 	

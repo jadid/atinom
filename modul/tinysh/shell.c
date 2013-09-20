@@ -494,10 +494,10 @@ void cek_stack(void)	{
 		printf(" CNC         : %d\r\n", uxTaskGetStackHighWaterMark(hdl_cnc));
 	#endif
 	
-	printf(    " AmbilCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
+//	printf(    " AmbilCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_ambilcepat));
 	
 	#ifndef BOARD_TAMPILAN
-	printf(    " KirimCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_kirimcepat));
+	//printf(    " KirimCepat : %d\r\n", uxTaskGetStackHighWaterMark(hdl_kirimcepat));
 	#endif
 	
 	
